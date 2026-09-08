@@ -14,32 +14,43 @@ export const QA_PAYMENT_METHODS = [
     body: 'إذا اخترت هذه الطريقة يجب دفع المبلغ خلال يوم واحد من تاريخ الطلب، وإلا سيُرفض طلبك تلقائياً.' }
 ];
 
-export default function PaymentMethods({ title, note, methods, defaultOpen = 'card', assetBase = '/assets', thankYouSrc, onConfirm, style }) {
+export default function PaymentMethods({ title, note, methods, defaultOpen = 'card', assetBase = '/assets', thankYouSrc, onConfirm, style, submitting = false, submitted = false, orderNo = '' }) {
   const list = methods && methods.length ? methods : QA_PAYMENT_METHODS;
   const [open, setOpen] = React.useState(defaultOpen);
   const [receipt, setReceipt] = React.useState('');
-  const [done, setDone] = React.useState(false);
+  const [confirmError, setConfirmError] = React.useState('');
   const chosen = list.find((m) => m.id === open);
   const atOffice = !!chosen && chosen.id === 'office';
   const ready = atOffice || !!receipt;
   const uploadId = React.useId();
-  const [orderNo] = React.useState(() => 'QA-' + String(Math.floor(100000 + Math.random() * 899999)));
 
-  if (done) {
+  async function handleConfirm() {
+    setConfirmError('');
+    try {
+      if (onConfirm) await onConfirm({ method: chosen.id, receipt: atOffice ? '' : receipt });
+    } catch (e) {
+      // Parent already surfaces its own error state (e.g. the page-level error banner);
+      // this local message is a fallback in case PaymentMethods is used standalone.
+      setConfirmError(e?.message || 'تعذّر إرسال الطلب، حاول مرة أخرى');
+    }
+  }
+
+  if (submitted) {
     return (
       <div dir="rtl" style={{ display: 'grid', gridTemplateColumns: 'clamp(180px,34%,300px) minmax(240px,1fr)', alignItems: 'stretch', borderRadius: 24, overflow: 'hidden', background: '#eaf8fd', border: '1px solid #bfe9f6', ...style }}>
         <img src={thankYouSrc || assetBase + '/mascot-skylo-thankyou.webp'} alt="سكايلو يشكرك" style={{ width: '100%', height: '100%', minHeight: 300, display: 'block', objectFit: 'cover' }} />
         <div style={{ minWidth: 0, display: 'flex', flexDirection: 'column', alignItems: 'flex-start', textAlign: 'start', justifyContent: 'center', gap: 10, padding: 26 }}>
           <span style={{ fontSize: 24, fontWeight: 700, color: '#036f8c' }}>شكراً لك!</span>
-          <span style={{ display: 'inline-flex', alignItems: 'center', gap: 10, padding: '8px 16px', borderRadius: 999, background: '#fff', border: '1px solid #bfe9f6' }}>
-            <span style={{ fontSize: 13, color: '#7b8087' }}>رقم الطلب</span>
-            <span dir="ltr" style={{ fontSize: 15, fontWeight: 700, letterSpacing: '.06em', color: '#036f8c' }}>{orderNo}</span>
-          </span>
+          {orderNo && (
+            <span style={{ display: 'inline-flex', alignItems: 'center', gap: 10, padding: '8px 16px', borderRadius: 999, background: '#fff', border: '1px solid #bfe9f6' }}>
+              <span style={{ fontSize: 13, color: '#7b8087' }}>رقم الطلب</span>
+              <span dir="ltr" style={{ fontSize: 15, fontWeight: 700, letterSpacing: '.06em', color: '#036f8c' }}>{orderNo}</span>
+            </span>
+          )}
           <span style={{ fontSize: 15, lineHeight: 1.7, color: '#036f8c' }}>
             استلمنا إشعار الدفع{receipt ? ' («' + receipt + '»)' : ''}. يتحقق فريقنا منه ويعود إليك على واتساب خلال ٢٤ ساعة بتأكيد الطلب.
           </span>
           <span style={{ fontSize: 13, color: '#3d4650' }}>الرقم المختصر 6393 · sales@almarayagroup.com</span>
-          <button onClick={() => { setDone(false); setReceipt(''); }} style={{ cursor: 'pointer', border: 0, background: 'none', fontFamily: 'inherit', fontSize: 13, fontWeight: 600, color: '#036f8c' }}>إرفاق إشعار آخر</button>
         </div>
       </div>
     );
@@ -91,6 +102,9 @@ export default function PaymentMethods({ title, note, methods, defaultOpen = 'ca
             <span style={{ fontSize: 15, fontWeight: 600, color: '#1d2733' }}>{atOffice ? 'تأكيد الدفع في المكتب' : 'أرفق إشعار الدفع — ' + chosen.label}</span>
             <span style={{ fontSize: 12, color: '#3d4650' }}>{atOffice ? 'أكِّد اختيارك، وادفع المبلغ في المكتب خلال يوم واحد — لا حاجة لإرفاق أي ملف.' : 'صورة أو PDF لإشعار التحويل — حتى ٥ ميغابايت.'}</span>
           </div>
+          {confirmError && (
+            <p style={{ margin: 0, padding: '10px 14px', borderRadius: 10, background: '#fdecef', border: '1px solid #f7c3cc', color: '#d2324f', fontSize: 13 }}>{confirmError}</p>
+          )}
           <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
             {atOffice ? null : (
               <label htmlFor={uploadId} style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 8, padding: '10px 18px', borderRadius: 999, background: '#fff', border: '1px solid #036f8c', color: '#036f8c', fontSize: 13.5, fontWeight: 600 }}>
@@ -99,9 +113,9 @@ export default function PaymentMethods({ title, note, methods, defaultOpen = 'ca
             )}
             {atOffice ? null : <input id={uploadId} type="file" style={{ display: 'none' }} onChange={(e) => setReceipt(e.target.files && e.target.files[0] ? e.target.files[0].name : '')} />}
             {atOffice ? null : <span style={{ flex: 1, minWidth: 120, fontSize: 12, color: receipt ? '#1d2733' : '#7b8087', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{receipt || 'لم يتم اختيار ملف بعد'}</span>}
-            <button disabled={!ready} onClick={() => { setDone(true); if (onConfirm) onConfirm({ method: chosen.id, receipt: atOffice ? '' : receipt }); }}
-              style={{ cursor: ready ? 'pointer' : 'not-allowed', opacity: ready ? 1 : 0.45, border: 0, borderRadius: 999, padding: '12px 26px', background: '#049dc5', color: '#fff', fontFamily: 'inherit', fontSize: 13.5, fontWeight: 600 }}>
-              تأكيد الدفع
+            <button disabled={!ready || submitting} onClick={handleConfirm}
+              style={{ cursor: (ready && !submitting) ? 'pointer' : 'not-allowed', opacity: (ready && !submitting) ? 1 : 0.45, border: 0, borderRadius: 999, padding: '12px 26px', background: '#049dc5', color: '#fff', fontFamily: 'inherit', fontSize: 13.5, fontWeight: 600 }}>
+              {submitting ? 'جارٍ الإرسال...' : 'تأكيد الدفع'}
             </button>
           </div>
         </div>

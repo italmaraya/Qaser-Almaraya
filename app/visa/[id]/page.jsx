@@ -184,6 +184,7 @@ export default function VisaApplyPage() {
   const [travelerPayloads, setTravelerPayloads] = useState({});
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [applicationId, setApplicationId] = useState(null);
   const [step, setStep] = useState('form'); // 'form' | 'payment'
 
   useEffect(() => {
@@ -229,11 +230,14 @@ export default function VisaApplyPage() {
       });
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));
-        throw new Error(data.error || 'حدث خطأ أثناء إرسال الطلب');
+        throw new Error(data.error || 'حدث خطأ أثناء إرسال الطلب — يرجى المحاولة مرة أخرى أو التواصل معنا على الرقم 6393');
       }
+      const data = await res.json();
+      setApplicationId(data.application_id);
       setSubmitted(true);
     } catch (e) {
       setError(e.message);
+      throw e; // re-throw so PaymentMethods knows not to show the success screen
     } finally {
       setSubmitting(false);
     }
@@ -318,9 +322,12 @@ export default function VisaApplyPage() {
               <p style={{ margin: 0, padding: 12, background: '#fdecef', border: '1px solid #f7c3cc', borderRadius: 10, color: '#d2324f', fontSize: 14 }}>{error}</p>
             )}
             <PaymentMethods
+              submitting={submitting}
+              submitted={submitted}
+              orderNo={applicationId ? 'QA-' + String(applicationId).padStart(6, '0') : ''}
               onConfirm={(info) => {
                 setPaymentMethod(info.method);
-                submit(info);
+                return submit(info);
               }}
             />
             <button style={{ ...btnStyle('ghost'), alignSelf: 'flex-start' }} onClick={() => setStep('form')}>

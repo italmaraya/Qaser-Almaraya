@@ -14,6 +14,7 @@ export async function POST(request) {
   if (!(await requireAuth(request))) return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
   await ensureSchema();
   const b = await request.json();
+  // action: 'add_internal' | 'add_customer' | 'update_internal' | 'update_customer' | 'delete_internal' | 'delete_customer' | 'set_mapping'
   if (b.action === 'add_internal') {
     const rows = await sql`INSERT INTO internal_statuses (name_ar, name_en) VALUES (${b.name_ar}, ${b.name_en}) RETURNING *`;
     return NextResponse.json(rows[0]);

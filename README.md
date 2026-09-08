@@ -48,4 +48,4 @@ Remove `output: 'export'` from `next.config.mjs` if you want SSR / a Node server
 - Baked-in Arabic text lives inside the hero banner and achievement photography, so those images do
   not translate; English artwork is needed for a full English experience.
 
-Contact: info@almarayagroup.com · sales@almarayagroup.com · 6393 · +964 784 999 9600 
+Contact: info@almarayagroup.com · sales@almarayagroup.com · 6393 · +964 784 999 9600
