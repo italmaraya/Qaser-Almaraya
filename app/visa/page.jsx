@@ -104,11 +104,11 @@ export default function VisaLandingPage() {
             <div className="qa-sec" style={{ paddingTop: 32, paddingBottom: 0 }}>
               <div style={{ position: 'relative', background: '#fff', borderRadius: 24, boxShadow: '0 24px 50px rgba(1,42,55,.28)', overflow: 'hidden' }}>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '18px 26px', borderBottom: '1px solid #ececed' }}>
-                  <span style={{ fontSize: 13, fontWeight: 700, color: '#7b8087', letterSpacing: '.04em' }}>QASER · ALMARAYA</span>
-                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
+                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
                     <span style={{ fontSize: 17, fontWeight: 700, color: '#1d2733' }}>طلب تأشيرة</span>
                     <span style={{ fontSize: 11, fontWeight: 600, color: '#7b8087', letterSpacing: '.06em' }}>VISA REQUEST</span>
                   </div>
+                  <span style={{ fontSize: 13, fontWeight: 700, color: '#7b8087', letterSpacing: '.04em' }}>QASER · ALMARAYA</span>
                 </div>
                 <form onSubmit={goSearch} style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(150px,1fr))', gap: 20, padding: '24px 26px' }}>
                   <label style={{ display: 'flex', flexDirection: 'column', gap: 6, textAlign: 'right' }}>

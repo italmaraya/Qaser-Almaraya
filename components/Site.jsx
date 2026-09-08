@@ -2,6 +2,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import Icon from './Icon';
+import { getStoredLang } from '../lib/i18n';
 import AchievementSpread from './AchievementSpread';
 import MascotLoader from './MascotLoader';
 import PackageCard from './PackageCard';
@@ -161,6 +162,15 @@ export default function Site(props) {
     contact: { name: '', phone: '', email: '', company: '', subject: 'حجز طيران', message: '' },
     contactSending: false, contactSent: false, contactError: '' });
   const patch = (o) => setSt((s) => (typeof o === 'function' ? { ...s, ...o(s) } : { ...s, ...o }));
+
+  // Keep language in sync with the shared preference used by every other
+  // page on the site (including the standalone /visa pages), so switching
+  // language on one page stays consistent when navigating to another.
+  useEffect(() => {
+    const stored = getStoredLang();
+    if (stored !== st.lang) patch({ lang: stored });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const goRef = useRef(null);
   const go = (page) => {
@@ -402,7 +412,12 @@ function   renderVals(){
       isFlights: page === 'flights',
       isJobs: page === 'jobs',
       langLabel: st.lang === 'ar' ? 'EN' : 'ع',
-      toggleLang: e => { if(e) e.preventDefault(); patch({ lang: st.lang === 'ar' ? 'en' : 'ar' }); },
+      toggleLang: e => {
+        if(e) e.preventDefault();
+        const next = st.lang === 'ar' ? 'en' : 'ar';
+        try { localStorage.setItem('qa_lang', next); } catch {}
+        patch({ lang: next });
+      },
       applyOpen: !!st.apply,
       applyJob: st.apply || '',
       applySent: st.applySent,

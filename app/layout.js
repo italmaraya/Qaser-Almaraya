@@ -21,6 +21,7 @@ export default function RootLayout({ children }) {
         <script src="/qa-i18n-2.js" />
         <script src="/qa-i18n-3.js" />
         <script src="/qa-i18n-4.js" />
+        <script src="/qa-i18n-5.js" />
       </head>
       <body>{children}</body>
     </html>
