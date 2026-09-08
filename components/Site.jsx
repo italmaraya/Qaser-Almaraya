@@ -160,7 +160,7 @@ export default function Site(props) {
     fileUploading: { cv: false, cover: false, work: false },
     contact: { name: '', phone: '', email: '', company: '', subject: 'حجز طيران', message: '' },
     contactSending: false, contactSent: false, contactError: '' });
-  const patch = (o) => setSt((s) => (typeof o === 'function' ? o(s) : { ...s, ...o }));
+  const patch = (o) => setSt((s) => (typeof o === 'function' ? { ...s, ...o(s) } : { ...s, ...o }));
 
   const goRef = useRef(null);
   const go = (page) => {
