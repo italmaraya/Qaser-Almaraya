@@ -2,6 +2,9 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import PaymentMethods from '../../../components/PaymentMethods';
+import SiteHeader from '../../../components/SiteHeader';
+import SiteFooter from '../../../components/SiteFooter';
+import MascotLoader from '../../../components/MascotLoader';
 
 const inputStyle = {
   width: '100%',
@@ -245,15 +248,22 @@ export default function VisaApplyPage() {
 
   if (error && !card) {
     return (
-      <div dir="rtl" style={{ padding: 40, fontFamily: "'IBM Plex Sans Arabic', system-ui, sans-serif" }}>
-        {error}
+      <div dir="rtl" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+        <SiteHeader active="التأشيرات" />
+        <main style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 40 }}>
+          <p style={{ color: '#d2324f', background: '#fdecef', border: '1px solid #f7c3cc', borderRadius: 10, padding: '14px 20px' }}>{error}</p>
+        </main>
+        <SiteFooter />
       </div>
     );
   }
   if (!card) {
     return (
-      <div dir="rtl" style={{ padding: 40, fontFamily: "'IBM Plex Sans Arabic', system-ui, sans-serif" }}>
-        ...جارٍ التحميل
+      <div dir="rtl" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+        <SiteHeader active="التأشيرات" />
+        <main style={{ flex: 1 }} />
+        <SiteFooter />
+        <MascotLoader assetBase="/assets" />
       </div>
     );
   }
@@ -264,14 +274,16 @@ export default function VisaApplyPage() {
   ];
 
   return (
-    <div dir="rtl" style={{ fontFamily: "'IBM Plex Sans Arabic', system-ui, sans-serif", minHeight: '100vh', background: '#f8f7f8' }}>
-      <div style={{ maxWidth: 720, margin: '0 auto', padding: '40px 20px', display: 'flex', flexDirection: 'column', gap: 18 }}>
-        <div>
-          <span style={{ fontSize: 13, fontWeight: 700, color: '#faab18' }}>{card.visa_type_name_ar}</span>
-          <h1 style={{ margin: '4px 0 0', color: '#049dc5', fontSize: 28 }}>
-            التقديم على تأشيرة {card.country_name_ar}
-          </h1>
-        </div>
+    <div dir="rtl" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+      <SiteHeader active="التأشيرات" />
+      <main style={{ flex: 1 }}>
+        <div className="qa-page" style={{ maxWidth: 760, margin: '0 auto', padding: '40px 20px 60px', display: 'flex', flexDirection: 'column', gap: 18 }}>
+          <div>
+            <span style={{ fontSize: 13, fontWeight: 700, color: '#faab18' }}>{card.visa_type_name_ar}</span>
+            <h1 style={{ margin: '4px 0 0', fontSize: 'clamp(24px,2.6vw,32px)' }}>
+              التقديم على تأشيرة {card.country_name_ar}
+            </h1>
+          </div>
 
         <div style={cardStyle}>
           <h4 style={{ margin: 0 }}>بيانات التواصل</h4>
@@ -335,7 +347,9 @@ export default function VisaApplyPage() {
             </button>
           </div>
         )}
-      </div>
+        </div>
+      </main>
+      <SiteFooter />
     </div>
   );
 }

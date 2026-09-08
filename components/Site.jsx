@@ -1,5 +1,6 @@
 'use client';
 import React, { useState, useEffect, useRef } from 'react';
+import { useRouter } from 'next/navigation';
 import Icon from './Icon';
 import AchievementSpread from './AchievementSpread';
 import MascotLoader from './MascotLoader';
@@ -124,6 +125,8 @@ const GROUPS=['الكل','عائلي','شبابي','رجال أعمال','حج �
 
 export default function Site(props) {
   props = props || {};
+  const router = useRouter();
+  const ROUTE_MAP = { home: '/', flights: '/flights', visas: '/visa', jobs: '/jobs', faq: '/faq', contact: '/contact' };
   const contentJobs = (props.content && props.content.jobs) || null;
   const contentFaq = (props.content && props.content.faq) || null;
   const contentContact = (props.content && props.content.contact) || null;
@@ -134,7 +137,7 @@ export default function Site(props) {
     ? props.content.legacyVisas
     : VISAS_DEFAULT;
   const DEFAULT_ACTIVE_COUNTRY = (COUNTRIES[0] && COUNTRIES[0].code) || 'tr';
-  const [st, setSt] = useState({ lang: 'ar', page: 'home', active: DEFAULT_ACTIVE_COUNTRY, group: 'الكل', achievement: 'forum', pkg: '', loading: false, toast: '',
+  const [st, setSt] = useState({ lang: 'ar', page: props.initialPage || 'home', active: DEFAULT_ACTIVE_COUNTRY, group: 'الكل', achievement: 'forum', pkg: '', loading: false, toast: '',
     travellers: 1, children: 0, tripDate: '', visaType: 'الكل', resultKind: 'الكل', visaDetailOpen: false, searched: false, visaId: '', appStage: 'form', ask: false, app: null, appError: '', appNo: '',
     countryPanelOpen: false, countryQuery: '',
     trackOpen: false, trackInput: '', trackQuery: '', trackSending: false, trackError: '', trackData: null,
@@ -348,8 +351,8 @@ function   renderVals(){
         weight: isOn ? 700 : 500,
         color: isOn ? '#049dc5' : '#3d4650',
         border: isOn ? '#049dc5' : 'transparent',
-        go: n.id === 'visas'
-          ? e => { e.preventDefault(); window.location.href = '/visa'; }
+        go: ROUTE_MAP[n.id]
+          ? e => { e.preventDefault(); router.push(ROUTE_MAP[n.id]); }
           : e => { e.preventDefault(); go(n.id); }
       };
     });
@@ -448,8 +451,8 @@ function   renderVals(){
       isGroups: page === 'groups',
       goInsurance: e => { if(e) e.preventDefault(); go('insurance'); },
       goGroups: e => { if(e) e.preventDefault(); go('groups'); },
-      goJobs: e => { if(e) e.preventDefault(); go('jobs'); },
-      goFaq: e => { if(e) e.preventDefault(); go('faq'); },
+      goJobs: e => { if(e) e.preventDefault(); router.push('/jobs'); },
+      goFaq: e => { if(e) e.preventDefault(); router.push('/faq'); },
       isContact: page === 'contact',
       contact: st.contact,
       contactSending: st.contactSending,
@@ -470,9 +473,9 @@ function   renderVals(){
         }
       },
       openWhatsapp: e => { if(e) e.preventDefault(); window.open('https://wa.me/9647749999600', '_blank'); },
-      goHome: e => { if(e) e.preventDefault(); go('home'); },
-      goFlights: e => { if(e) e.preventDefault(); go('flights'); },
-      goContact: e => { if(e) e.preventDefault(); go('contact'); },
+      goHome: e => { if(e) e.preventDefault(); router.push('/'); },
+      goFlights: e => { if(e) e.preventDefault(); router.push('/flights'); },
+      goContact: e => { if(e) e.preventDefault(); router.push('/contact'); },
       selectCountry: code => patch({ active: code }),
       achievements: (props.content && props.content.achievements) || ACHIEVEMENTS,
       achievement: st.achievement,
@@ -515,7 +518,7 @@ function   renderVals(){
       isVisas: page === 'visas',
       isVisaApply: page === 'visa-apply',
       goVisaApply: e => { if(e) e.preventDefault(); go('visa-apply'); },
-      goVisas: e => { if(e) e.preventDefault(); go('visas'); },
+      goVisas: e => { if(e) e.preventDefault(); router.push('/visa'); },
     };
     return Object.assign(out, visaVals(country));
   }
