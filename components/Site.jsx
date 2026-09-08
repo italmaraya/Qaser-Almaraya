@@ -137,10 +137,14 @@ export default function Site(props) {
   const [st, setSt] = useState({ lang: 'ar', page: 'home', active: DEFAULT_ACTIVE_COUNTRY, group: 'الكل', achievement: 'forum', pkg: '', loading: false, toast: '',
     travellers: 1, children: 0, tripDate: '', visaType: 'الكل', resultKind: 'الكل', visaDetailOpen: false, searched: false, visaId: '', appStage: 'form', ask: false, app: null, appError: '', appNo: '',
     countryPanelOpen: false, countryQuery: '',
-    trackOpen: false, trackInput: '', trackQuery: '',
-    apply: null, applySent: false, applyError: '',
+    trackOpen: false, trackInput: '', trackQuery: '', trackSending: false, trackError: '', trackData: null,
+    apply: null, applySent: false, applyError: '', applySending: false,
     af: { name: '', phone: '', email: '', bring: '' },
-    files: { cv: '', cover: '', work: '' } });
+    files: { cv: '', cover: '', work: '' },
+    fileUrls: { cv: '', cover: '', work: '' },
+    fileUploading: { cv: false, cover: false, work: false },
+    contact: { name: '', phone: '', email: '', company: '', subject: 'حجز طيران', message: '' },
+    contactSending: false, contactSent: false, contactError: '' });
   const patch = (o) => setSt((s) => (typeof o === 'function' ? o(s) : { ...s, ...o }));
 
   const goRef = useRef(null);
@@ -344,7 +348,9 @@ function   renderVals(){
         weight: isOn ? 700 : 500,
         color: isOn ? '#049dc5' : '#3d4650',
         border: isOn ? '#049dc5' : 'transparent',
-        go: e => { e.preventDefault(); go(n.id); }
+        go: n.id === 'visas'
+          ? e => { e.preventDefault(); window.location.href = '/visa'; }
+          : e => { e.preventDefault(); go(n.id); }
       };
     });
     const groups = GROUPS.map(g => ({
@@ -386,8 +392,10 @@ function   renderVals(){
       applyJob: st.apply || '',
       applySent: st.applySent,
       applyForm: !st.applySent,
+      applySending: st.applySending,
       applyError: !!st.applyError,
       applyErrorText: st.applyError,
+      fileUploading: st.fileUploading,
       afName: st.af.name,
       afPhone: st.af.phone,
       afEmail: st.af.email,
@@ -402,10 +410,10 @@ function   renderVals(){
       setAfPhone: e => patch({ af: Object.assign({}, st.af, { phone: e.target.value }) }),
       setAfEmail: e => patch({ af: Object.assign({}, st.af, { email: e.target.value }) }),
       setAfBring: e => patch({ af: Object.assign({}, st.af, { bring: e.target.value }) }),
-      pickCv: e => { const f = e.target.files && e.target.files[0]; patch({ files: Object.assign({}, st.files, { cv: f ? f.name : '' }) }); },
-      pickCover: e => { const f = e.target.files && e.target.files[0]; patch({ files: Object.assign({}, st.files, { cover: f ? f.name : '' }) }); },
-      pickWork: e => { const f = e.target.files && e.target.files[0]; patch({ files: Object.assign({}, st.files, { work: f ? f.name : '' }) }); },
-      submitApply: e => {
+      pickCv: async e => { const f = e.target.files && e.target.files[0]; if (f) { patch((s) => ({ fileUploading: { ...s.fileUploading, cv: true }, applyError: '' })); try { const fd = new FormData(); fd.append('file', f); const res = await fetch('/api/jobs/upload', { method: 'POST', body: fd }); const data = await res.json(); if (!res.ok) throw new Error(data.error || 'فشل رفع الملف'); patch((s) => ({ files: { ...s.files, cv: f.name }, fileUrls: { ...s.fileUrls, cv: data.url }, fileUploading: { ...s.fileUploading, cv: false } })); } catch (err) { patch((s) => ({ applyError: err.message, fileUploading: { ...s.fileUploading, cv: false } })); } } },
+      pickCover: async e => { const f = e.target.files && e.target.files[0]; if (f) { patch((s) => ({ fileUploading: { ...s.fileUploading, cover: true }, applyError: '' })); try { const fd = new FormData(); fd.append('file', f); const res = await fetch('/api/jobs/upload', { method: 'POST', body: fd }); const data = await res.json(); if (!res.ok) throw new Error(data.error || 'فشل رفع الملف'); patch((s) => ({ files: { ...s.files, cover: f.name }, fileUrls: { ...s.fileUrls, cover: data.url }, fileUploading: { ...s.fileUploading, cover: false } })); } catch (err) { patch((s) => ({ applyError: err.message, fileUploading: { ...s.fileUploading, cover: false } })); } } },
+      pickWork: async e => { const f = e.target.files && e.target.files[0]; if (f) { patch((s) => ({ fileUploading: { ...s.fileUploading, work: true }, applyError: '' })); try { const fd = new FormData(); fd.append('file', f); const res = await fetch('/api/jobs/upload', { method: 'POST', body: fd }); const data = await res.json(); if (!res.ok) throw new Error(data.error || 'فشل رفع الملف'); patch((s) => ({ files: { ...s.files, work: f.name }, fileUrls: { ...s.fileUrls, work: data.url }, fileUploading: { ...s.fileUploading, work: false } })); } catch (err) { patch((s) => ({ applyError: err.message, fileUploading: { ...s.fileUploading, work: false } })); } } },
+      submitApply: async e => {
         if(e) e.preventDefault();
         const a = st.af, f = st.files, missing = [];
         if(!a.name.trim()) missing.push('الاسم الكامل');
@@ -415,7 +423,19 @@ function   renderVals(){
         if(!f.cv) missing.push('السيرة الذاتية');
         if(!f.cover) missing.push('رسالة التقديم');
         if(missing.length) { patch({ applyError: 'يرجى إكمال: ' + missing.join('، ') + '.' }); return; }
-        patch({ applySent: true, applyError: '' });
+        if(st.fileUploading.cv || st.fileUploading.cover || st.fileUploading.work) { patch({ applyError: 'يرجى الانتظار حتى اكتمال رفع الملفات.' }); return; }
+        patch({ applySending: true, applyError: '' });
+        try {
+          const res = await fetch('/api/jobs/apply', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ job: st.apply, name: a.name, phone: a.phone, email: a.email, bring: a.bring, cvUrl: st.fileUrls.cv, coverUrl: st.fileUrls.cover, workUrl: st.fileUrls.work }),
+          });
+          if(!res.ok) { const d = await res.json().catch(() => ({})); throw new Error(d.error || 'تعذر إرسال الطلب، حاول مرة أخرى'); }
+          patch({ applySent: true, applyError: '', applySending: false });
+        } catch(err) {
+          patch({ applyError: err.message, applySending: false });
+        }
       },
       isPrivacy: page === 'privacy',
       isTerms: page === 'terms',
@@ -431,6 +451,25 @@ function   renderVals(){
       goJobs: e => { if(e) e.preventDefault(); go('jobs'); },
       goFaq: e => { if(e) e.preventDefault(); go('faq'); },
       isContact: page === 'contact',
+      contact: st.contact,
+      contactSending: st.contactSending,
+      contactSent: st.contactSent,
+      contactError: st.contactError,
+      setContactField: field => e => patch((s) => ({ contact: { ...s.contact, [field]: e.target.value }, contactError: '' })),
+      submitContact: async e => {
+        if(e) e.preventDefault();
+        const c = st.contact;
+        if(!c.name.trim() || !c.email.trim() || !c.message.trim()) { patch({ contactError: 'يرجى تعبئة الاسم والبريد الإلكتروني والسؤال.' }); return; }
+        patch({ contactSending: true, contactError: '' });
+        try {
+          const res = await fetch('/api/contact', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(c) });
+          if(!res.ok) { const d = await res.json().catch(() => ({})); throw new Error(d.error || 'تعذر إرسال الرسالة، حاول لاحقاً'); }
+          patch({ contactSent: true, contactSending: false, contact: { name: '', phone: '', email: '', company: '', subject: 'حجز طيران', message: '' } });
+        } catch(err) {
+          patch({ contactError: err.message, contactSending: false });
+        }
+      },
+      openWhatsapp: e => { if(e) e.preventDefault(); window.open('https://wa.me/9647749999600', '_blank'); },
       goHome: e => { if(e) e.preventDefault(); go('home'); },
       goFlights: e => { if(e) e.preventDefault(); go('flights'); },
       goContact: e => { if(e) e.preventDefault(); go('contact'); },
@@ -445,43 +484,32 @@ function   renderVals(){
       trackResult: !!st.trackQuery,
       trackQuery: st.trackQuery,
       trackInput: st.trackInput,
-      openTrack: e => { if(e) e.preventDefault(); patch({ trackOpen: true, trackQuery: '', trackInput: '' }); },
+      trackSending: st.trackSending,
+      trackError: st.trackError,
+      openTrack: e => { if(e) e.preventDefault(); patch({ trackOpen: true, trackQuery: '', trackInput: '', trackData: null, trackError: '' }); },
       closeTrack: e => { if(e) e.preventDefault(); patch({ trackOpen: false }); },
       stopTrack: e => { if(e) e.stopPropagation(); },
       setTrackInput: e => patch({ trackInput: e.target.value }),
-      resetTrack: e => { if(e) e.preventDefault(); patch({ trackQuery: '', trackInput: '' }); },
-      submitTrack: e => {
+      resetTrack: e => { if(e) e.preventDefault(); patch({ trackQuery: '', trackInput: '', trackData: null, trackError: '' }); },
+      submitTrack: async e => {
         if(e) e.preventDefault();
         const v = st.trackInput.trim();
         if(!v) { flash('أدخل رقم هاتفك أو رقم الطلب'); return; }
-        patch({ trackQuery: v });
+        patch({ trackSending: true, trackError: '' });
+        try {
+          const res = await fetch('/api/visa/track?q=' + encodeURIComponent(v));
+          const data = await res.json();
+          if(!res.ok) throw new Error(data.error || 'تعذر التحقق من الطلب');
+          patch({ trackQuery: v, trackData: data.applications || [], trackSending: false });
+        } catch(err) {
+          patch({ trackError: err.message, trackSending: false });
+        }
       },
-      trackSteps: (() => {
-        const v = st.trackInput.trim();
-        let sum = 0; for (let i = 0; i < v.length; i++) sum += v.charCodeAt(i);
-        const stage = sum % 3; // 0=in process, 1=action required, 2=ready
-        const base = [
-          { key: 'received', label: 'استلام الطلب', hint: 'تم استلام طلبك وربطه بملفك' },
-          { key: 'process', label: 'قيد المعالجة', hint: 'ملفك الآن لدى الجهة المصدرة للتأشيرة' },
-          { key: 'action', label: 'إجراء مطلوب منك', hint: 'يرجى إكمال مستند ناقص لمتابعة الطلب' },
-          { key: 'ready', label: 'جاهزة للتحميل', hint: 'التأشيرة جاهزة — حمّلها من هنا' }
-        ];
-        const order = stage === 1 ? ['received','action'] : stage === 2 ? ['received','process','ready'] : ['received','process'];
-        return order.map((k, i) => {
-          const item = base.find(b => b.key === k);
-          const active = i === order.length - 1;
-          const isAction = k === 'action';
-          const bg = active ? (isAction ? '#fef3dc' : '#faab18') : '#eaf8fd';
-          const ink = active ? (isAction ? '#a06a00' : '#012a37') : '#049dc5';
-          const titleColor = active ? (isAction ? '#a06a00' : '#1d2733') : '#1d2733';
-          return {
-            label: item.label, hint: item.hint,
-            icon: k === 'received' ? 'file-text' : k === 'process' ? 'clock' : k === 'action' ? 'info' : 'check',
-            chipStyle: 'flex:none;display:grid;place-items:center;width:34px;height:34px;border-radius:50%;background:' + bg + ';color:' + ink,
-            titleStyle: 'font-size:14.5px;font-weight:700;color:' + titleColor
-          };
-        });
-      })(),
+      trackSteps: (st.trackData || []).map((a) => ({
+        label: (a.country_name_ar || '') + ' — ' + (a.visa_type_name_ar || ''),
+        hint: 'الحالة: ' + (a.status_name_ar || 'قيد المعالجة') + ' · طلب رقم QA-' + String(a.id).padStart(6, '0'),
+        icon: 'file-text',
+      })),
       toastOn: !!st.toast,
       toastText: st.toast,
       isVisas: page === 'visas',
@@ -730,7 +758,8 @@ function   visaVals(country){
   }
 
   const V = renderVals();
-  const { achievement, achievements, addAdult, addChild, adultPrice, afBring, afEmail, afName, afPhone, appAccept, appDone, appDoneCount, appEmail, appError, appErrorOn, appForm, appNo, appPay, appPhone, appProgress, appSavedAt, appSteps, appTotal, appTotalLines, appTravellerCount, applyError, applyErrorText, applyForm, applyJob, applyOpen, applySent, askKind, backToForm, cancelAsk, cardRows, chevronRotate, childPrice, childrenAr, clearCountryQuery, closeApply, closeCountryPanel, closeTrack, closeVisaDetail, copyGroup, copyVisa, country, countryPanelOpen, countryQuery, coverName, cvName, decChildren, decTravellers, docCount, docRows, exportOn, featured, feeTotal, filteredCountries, flowSteps, fromAdult, fromChild, fromIssuing, goAbout, goContact, goFaq, goFlights, goGroups, goHome, goInsurance, goJobs, goPrivacy, goTerms, goVisaApplyDetail, goVisas, groupLabel, groups, hasCountryMatches, hasFeatured, hotelQuery, incChildren, incTravellers, isAbout, isContact, isFaq, isFlights, isGroups, isHome, isInsurance, isJobs, isPackages, isPrivacy, isTerms, isVisaApply, isVisaDetail, isVisas, issuingLabel, langLabel, loading, navItems, noCountryMatch, noPackages, noResults, notAsking, notGuaranteed, onPaid, openApply, openAsk, openTrack, packages, pdfGroup, pdfVisa, pickCover, pickCv, pickWork, priceRows, regionTiles, resetTrack, resultCount, resultKinds, results, roomType, runVisaSearch, scrollToPackages, selectAchievement, setAfBring, setAfEmail, setAfName, setAfPhone, setAppEmail, setAppPhone, setCountryQuery, setHotelQuery, setRoomType, setTrackInput, setTripDate, showResults, showSearchPrompt, showVisaRail, statusLegend, stayLabel, stepsOn, stopClose, stopTrack, submitApp, submitApply, submitTrack, suggestedCountries, ticks, toggleAccept, toggleCountryPanel, toggleLang, trackForm, trackInput, trackOpen, trackQuery, trackResult, trackSteps, travellersAr, travellersList, tripDate, typesLabel, upcomingEvents, visa, visaCardCount, visaCount, visaExportOn, visaTypes, workName } = V;
+  const { achievement, achievements, addAdult, addChild, adultPrice, afBring, afEmail, afName, afPhone, appAccept, appDone, appDoneCount, appEmail, appError, appErrorOn, appForm, appNo, appPay, appPhone, appProgress, appSavedAt, appSteps, appTotal, appTotalLines, appTravellerCount, applyError, applyErrorText, applyForm, applyJob, applyOpen, applySending, applySent, askKind, backToForm, cancelAsk, cardRows, chevronRotate, childPrice, childrenAr, clearCountryQuery, closeApply, closeCountryPanel, closeTrack, closeVisaDetail, copyGroup, copyVisa, country, countryPanelOpen, countryQuery, coverName, cvName, decChildren, decTravellers, docCount, docRows, exportOn, featured, feeTotal, fileUploading, filteredCountries, flowSteps, fromAdult, fromChild, fromIssuing, goAbout, goContact, goFaq, goFlights, goGroups, goHome, goInsurance, goJobs, goPrivacy, goTerms, goVisaApplyDetail, goVisas, groupLabel, groups, hasCountryMatches, hasFeatured, hotelQuery, incChildren, incTravellers, isAbout, isContact, isFaq, isFlights, isGroups, isHome, isInsurance, isJobs, isPackages, isPrivacy, isTerms, isVisaApply, isVisaDetail, isVisas, issuingLabel, langLabel, loading, navItems, noCountryMatch, noPackages, noResults, notAsking, notGuaranteed, onPaid, openApply, openAsk, openTrack, packages, pdfGroup, pdfVisa, pickCover, pickCv, pickWork, priceRows, regionTiles, resetTrack, resultCount, resultKinds, results, roomType, runVisaSearch, scrollToPackages, selectAchievement, setAfBring, setAfEmail, setAfName, setAfPhone, setAppEmail, setAppPhone, setCountryQuery, setHotelQuery, setRoomType, setTrackInput, setTripDate, showResults, showSearchPrompt, showVisaRail, statusLegend, stayLabel, stepsOn, stopClose, stopTrack, submitApp, submitApply, submitTrack, suggestedCountries, ticks, toggleAccept, toggleCountryPanel, toggleLang, trackData, trackError, trackForm, trackInput, trackOpen, trackQuery, trackResult, trackSending, trackSteps, travellersAr, travellersList, tripDate, typesLabel, upcomingEvents, visa, visaCardCount, visaCount, visaExportOn, visaTypes, workName,
+    contact, contactSending, contactSent, contactError, setContactField, submitContact, openWhatsapp } = V;
 
   return (
     <>
@@ -2451,7 +2480,7 @@ function   visaVals(country){
 <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
 <h1 style={{ fontSize: "44px", fontWeight: "700" }} data-cx="1">تواصل معنا</h1>
 <p style={{ fontSize: "18px", lineHeight: "1.75", color: "#22a9d4" }}>هل لديك استفسار؟ ترغب بالتخطيط لرحلتك القادمة؟ فريق قصر المرايا للسفر والسياحة جاهز لخدمتك بكل احترافية وسرعة.</p>
-<button className="qa-btn qa-amber" style={{ alignSelf: "flex-start", fontSize: "18px", padding: "16px 34px" }}>واتساب</button>
+<button className="qa-btn qa-amber" onClick={openWhatsapp} style={{ alignSelf: "flex-start", fontSize: "18px", padding: "16px 34px" }}>واتساب</button>
 <div style={{ display: "flex", flexDirection: "column", gap: "10px", fontSize: "16px", color: "#3d4650" }}>
 <span dir="ltr" style={{ textAlign: "right" }}>00964-774-9999-600</span>
 <span dir="ltr" style={{ textAlign: "right" }}>00964-784-9999-600</span>
@@ -2461,16 +2490,25 @@ function   visaVals(country){
 <img src="/assets/mascot-skylo-support.webp" alt="سكايلو في مركز الاتصال" style={{ width: "100%", maxWidth: "calc(var(--tw-poster,340px) + 80px)", borderRadius: "18px", boxShadow: "0 14px 34px rgba(29,39,51,.14)" }} />
 </div>
 <div className="qa-card" style={{ padding: "32px", display: "flex", flexDirection: "column", gap: "20px" }}>
+{contactSent ? (<>
+<div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "14px", textAlign: "center", padding: "20px 0" }}>
+<span style={{ fontSize: "22px", fontWeight: "700", color: "#036f8c" }}>شكراً لتواصلك معنا!</span>
+<p style={{ margin: 0, fontSize: "16px", color: "#3d4650" }}>استلمنا رسالتك وسيتواصل فريقنا معك في أقرب وقت.</p>
+<button className="qa-btn qa-cyan" onClick={() => window.location.reload()}>إرسال رسالة أخرى</button>
+</div>
+</>) : (<>
 <p style={{ fontSize: "18px", color: "#1d2733" }}>املأ النموذج وسنقوم بالتواصل معك في أقرب وقت.</p>
 <div className="qa-2col" style={{ display: "grid", gridTemplateColumns: "minmax(0,1fr) minmax(0,1fr)", gap: "16px" }}>
-<label style={{ display: "flex", flexDirection: "column", gap: "8px" }}><span style={{ fontSize: "14px", fontWeight: "500", color: "#1d2733" }}>اسمك *</span><input style={{ height: "46px", border: "1px solid #ececed", borderRadius: "8px", padding: "0 16px", font: "inherit", fontSize: "16px", color: "#1d2733" }} /></label>
-<label style={{ display: "flex", flexDirection: "column", gap: "8px" }}><span style={{ fontSize: "14px", fontWeight: "500", color: "#1d2733" }}>رقم الهاتف</span><input style={{ height: "46px", border: "1px solid #ececed", borderRadius: "8px", padding: "0 16px", font: "inherit", fontSize: "16px", color: "#1d2733" }} /></label>
-<label style={{ display: "flex", flexDirection: "column", gap: "8px" }}><span style={{ fontSize: "14px", fontWeight: "500", color: "#1d2733" }}>بريدك الإلكتروني *</span><input style={{ height: "46px", border: "1px solid #ececed", borderRadius: "8px", padding: "0 16px", font: "inherit", fontSize: "16px", color: "#1d2733" }} /></label>
-<label style={{ display: "flex", flexDirection: "column", gap: "8px" }}><span style={{ fontSize: "14px", fontWeight: "500", color: "#1d2733" }}>شركتك</span><input style={{ height: "46px", border: "1px solid #ececed", borderRadius: "8px", padding: "0 16px", font: "inherit", fontSize: "16px", color: "#1d2733" }} /></label>
+<label style={{ display: "flex", flexDirection: "column", gap: "8px" }}><span style={{ fontSize: "14px", fontWeight: "500", color: "#1d2733" }}>اسمك *</span><input value={contact.name} onChange={setContactField('name')} style={{ height: "46px", border: "1px solid #ececed", borderRadius: "8px", padding: "0 16px", font: "inherit", fontSize: "16px", color: "#1d2733" }} /></label>
+<label style={{ display: "flex", flexDirection: "column", gap: "8px" }}><span style={{ fontSize: "14px", fontWeight: "500", color: "#1d2733" }}>رقم الهاتف</span><input value={contact.phone} onChange={setContactField('phone')} style={{ height: "46px", border: "1px solid #ececed", borderRadius: "8px", padding: "0 16px", font: "inherit", fontSize: "16px", color: "#1d2733" }} /></label>
+<label style={{ display: "flex", flexDirection: "column", gap: "8px" }}><span style={{ fontSize: "14px", fontWeight: "500", color: "#1d2733" }}>بريدك الإلكتروني *</span><input value={contact.email} onChange={setContactField('email')} style={{ height: "46px", border: "1px solid #ececed", borderRadius: "8px", padding: "0 16px", font: "inherit", fontSize: "16px", color: "#1d2733" }} /></label>
+<label style={{ display: "flex", flexDirection: "column", gap: "8px" }}><span style={{ fontSize: "14px", fontWeight: "500", color: "#1d2733" }}>شركتك</span><input value={contact.company} onChange={setContactField('company')} style={{ height: "46px", border: "1px solid #ececed", borderRadius: "8px", padding: "0 16px", font: "inherit", fontSize: "16px", color: "#1d2733" }} /></label>
 </div>
-<label style={{ display: "flex", flexDirection: "column", gap: "8px" }}><span style={{ fontSize: "14px", fontWeight: "500", color: "#1d2733" }}>الموضوع *</span><select style={{ height: "46px", border: "1px solid #ececed", borderRadius: "8px", padding: "0 16px", font: "inherit", fontSize: "16px", color: "#1d2733" }}><option>حجز طيران</option><option>حجز فندق</option><option>تأشيرة</option><option>باقة أو جولة</option><option>أخرى</option></select></label>
-<label style={{ display: "flex", flexDirection: "column", gap: "8px" }}><span style={{ fontSize: "14px", fontWeight: "500", color: "#1d2733" }}>سؤالك *</span><textarea rows="5" style={{ border: "1px solid #ececed", borderRadius: "8px", padding: "12px 16px", font: "inherit", fontSize: "16px", color: "#1d2733", resize: "vertical" }}></textarea></label>
-<button className="qa-btn qa-cyan" style={{ alignSelf: "flex-start", fontSize: "18px", padding: "16px 34px" }}>إرسال</button>
+<label style={{ display: "flex", flexDirection: "column", gap: "8px" }}><span style={{ fontSize: "14px", fontWeight: "500", color: "#1d2733" }}>الموضوع *</span><select value={contact.subject} onChange={setContactField('subject')} style={{ height: "46px", border: "1px solid #ececed", borderRadius: "8px", padding: "0 16px", font: "inherit", fontSize: "16px", color: "#1d2733" }}><option>حجز طيران</option><option>حجز فندق</option><option>تأشيرة</option><option>باقة أو جولة</option><option>أخرى</option></select></label>
+<label style={{ display: "flex", flexDirection: "column", gap: "8px" }}><span style={{ fontSize: "14px", fontWeight: "500", color: "#1d2733" }}>سؤالك *</span><textarea rows="5" value={contact.message} onChange={setContactField('message')} style={{ border: "1px solid #ececed", borderRadius: "8px", padding: "12px 16px", font: "inherit", fontSize: "16px", color: "#1d2733", resize: "vertical" }}></textarea></label>
+{contactError ? (<p style={{ margin: 0, background: "#fdecef", border: "1px solid #f7c3cc", borderRadius: "8px", padding: "10px 14px", fontSize: "14px", color: "#d2324f" }}>{contactError}</p>) : null}
+<button className="qa-btn qa-cyan" disabled={contactSending} style={{ alignSelf: "flex-start", fontSize: "18px", padding: "16px 34px", opacity: contactSending ? 0.6 : 1, cursor: contactSending ? 'not-allowed' : 'pointer' }} onClick={submitContact}>{contactSending ? 'جارٍ الإرسال...' : 'إرسال'}</button>
+</>)}
 </div>
 </section>
 </div>
@@ -2561,17 +2599,21 @@ function   visaVals(country){
 {trackResult ? (<>
 <div style={{ padding: "22px 24px 26px", display: "flex", flexDirection: "column", gap: "22px" }}>
 <div style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
-<span style={{ fontSize: "13px", color: "#7b8087" }}>رقم الطلب</span>
+<span style={{ fontSize: "13px", color: "#7b8087" }}>نتيجة البحث عن</span>
 <span data-no-i18n="" style={{ fontSize: "16px", fontWeight: "700", color: "#1d2733" }}>{trackQuery}</span>
 </div>
+{trackError ? (<p style={{ margin: 0, background: "#fdecef", border: "1px solid #f7c3cc", borderRadius: "8px", padding: "10px 14px", fontSize: "14px", color: "#d2324f" }}>{trackError}</p>) : null}
+{!trackError && (trackSteps || []).length === 0 ? (
+<p style={{ margin: 0, fontSize: "14.5px", color: "#7b8087" }}>لم يتم العثور على أي طلب بهذا الرقم. تأكد من رقم الهاتف أو رقم الطلب وحاول مرة أخرى.</p>
+) : null}
 <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
 {(trackSteps || []).map((step, $index) => (<React.Fragment key={$index}>
 <div style={{ display: "flex", alignItems: "flex-start", gap: "12px" }}>
-<span style={{  }}>
+<span style={{ flex: "none", display: "grid", placeItems: "center", width: "34px", height: "34px", borderRadius: "50%", background: "#eaf8fd", color: "#049dc5" }}>
 <Icon name={step.icon} size={16} />
 </span>
 <span style={{ display: "flex", flexDirection: "column", gap: "2px", paddingTop: "5px" }}>
-<span style={{  }}>{step.label}</span>
+<span style={{ fontSize: "14.5px", fontWeight: "700", color: "#1d2733" }}>{step.label}</span>
 <span style={{ fontSize: "13px", color: "#7b8087" }}>{step.hint}</span>
 </span>
 </div>
@@ -2582,11 +2624,12 @@ function   visaVals(country){
 </>) : null}
 {trackForm ? (<>
 <div style={{ padding: "22px 24px 26px", display: "flex", flexDirection: "column", gap: "16px" }}>
-<p style={{ margin: "0", fontSize: "14.5px", lineHeight: "1.7", color: "#7b8087" }}>أدخل رقم هاتفك أو رقم الطلب الذي استلمته عند التقديم.</p>
+<p style={{ margin: "0", fontSize: "14.5px", lineHeight: "1.7", color: "#7b8087" }}>أدخل رقم هاتفك أو رقم الطلب الذي استلمته عند التقديم (مثال: QA-000012).</p>
 <label style={{ display: "flex", flexDirection: "column", gap: "8px", fontSize: "14px", fontWeight: "600", color: "#1d2733" }}>رقم الهاتف أو رقم الطلب
-<input type="text" dir="ltr" value={trackInput} onChange={setTrackInput} placeholder="+964 7XX XXX XXXX أو REQ-1029" style={{ fontFamily: "inherit", fontSize: "16px", padding: "12px 14px", border: "1px solid #ececed", borderRadius: "8px", background: "#fff", color: "#1d2733" }} />
+<input type="text" dir="ltr" value={trackInput} onChange={setTrackInput} placeholder="+964 7XX XXX XXXX أو QA-000012" style={{ fontFamily: "inherit", fontSize: "16px", padding: "12px 14px", border: "1px solid #ececed", borderRadius: "8px", background: "#fff", color: "#1d2733" }} />
 </label>
-<button type="button" onClick={submitTrack} className="qa-btn qa-cyan">تحقق من الحالة</button>
+{trackError ? (<p style={{ margin: 0, background: "#fdecef", border: "1px solid #f7c3cc", borderRadius: "8px", padding: "10px 14px", fontSize: "14px", color: "#d2324f" }}>{trackError}</p>) : null}
+<button type="button" onClick={submitTrack} disabled={trackSending} style={{ opacity: trackSending ? 0.6 : 1, cursor: trackSending ? 'not-allowed' : 'pointer' }} className="qa-btn qa-cyan">{trackSending ? 'جارٍ التحقق...' : 'تحقق من الحالة'}</button>
 </div>
 </>) : null}
 </div>
@@ -2630,17 +2673,17 @@ function   visaVals(country){
 </label>
 <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
 <label style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "14px", background: "#f8f7f8", border: "1px dashed #bfe9f6", borderRadius: "12px", padding: "14px 16px", cursor: "pointer" }}>
-<span style={{ display: "flex", flexDirection: "column", gap: "2px" }}><span style={{ fontSize: "15px", fontWeight: "600", color: "#1d2733" }}>السيرة الذاتية *</span><span style={{ fontSize: "13.5px", color: "#7b8087" }}>{cvName}</span></span>
+<span style={{ display: "flex", flexDirection: "column", gap: "2px" }}><span style={{ fontSize: "15px", fontWeight: "600", color: "#1d2733" }}>السيرة الذاتية *</span><span style={{ fontSize: "13.5px", color: "#7b8087" }}>{fileUploading.cv ? 'جارٍ الرفع...' : cvName}</span></span>
 <span style={{ flex: "none", fontSize: "14px", fontWeight: "600", color: "#22a9d4" }}>اختر ملفًا</span>
 <input type="file" accept=".pdf,.doc,.docx" onChange={pickCv} style={{ display: "none" }} />
 </label>
 <label style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "14px", background: "#f8f7f8", border: "1px dashed #bfe9f6", borderRadius: "12px", padding: "14px 16px", cursor: "pointer" }}>
-<span style={{ display: "flex", flexDirection: "column", gap: "2px" }}><span style={{ fontSize: "15px", fontWeight: "600", color: "#1d2733" }}>رسالة التقديم *</span><span style={{ fontSize: "13.5px", color: "#7b8087" }}>{coverName}</span></span>
+<span style={{ display: "flex", flexDirection: "column", gap: "2px" }}><span style={{ fontSize: "15px", fontWeight: "600", color: "#1d2733" }}>رسالة التقديم *</span><span style={{ fontSize: "13.5px", color: "#7b8087" }}>{fileUploading.cover ? 'جارٍ الرفع...' : coverName}</span></span>
 <span style={{ flex: "none", fontSize: "14px", fontWeight: "600", color: "#22a9d4" }}>اختر ملفًا</span>
 <input type="file" accept=".pdf,.doc,.docx" onChange={pickCover} style={{ display: "none" }} />
 </label>
 <label style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "14px", background: "#fff", border: "1px dashed #ececed", borderRadius: "12px", padding: "14px 16px", cursor: "pointer" }}>
-<span style={{ display: "flex", flexDirection: "column", gap: "2px" }}><span style={{ fontSize: "15px", fontWeight: "600", color: "#1d2733" }}>نماذج من أعمالك (اختياري)</span><span style={{ fontSize: "13.5px", color: "#7b8087" }}>{workName}</span></span>
+<span style={{ display: "flex", flexDirection: "column", gap: "2px" }}><span style={{ fontSize: "15px", fontWeight: "600", color: "#1d2733" }}>نماذج من أعمالك (اختياري)</span><span style={{ fontSize: "13.5px", color: "#7b8087" }}>{fileUploading.work ? 'جارٍ الرفع...' : workName}</span></span>
 <span style={{ flex: "none", fontSize: "14px", fontWeight: "600", color: "#22a9d4" }}>اختر ملفًا</span>
 <input type="file" onChange={pickWork} style={{ display: "none" }} />
 </label>
@@ -2649,7 +2692,7 @@ function   visaVals(country){
 <p style={{ margin: "0", background: "#fdecef", border: "1px solid #f7c3cc", borderRadius: "12px", padding: "12px 16px", fontSize: "15px", fontWeight: "500", color: "#d2324f" }}>{applyErrorText}</p>
 </>) : null}
 <div style={{ display: "flex", alignItems: "center", gap: "12px", flexWrap: "wrap", paddingTop: "2px" }}>
-<button className="qa-btn qa-cyan" onClick={submitApply}>إرسال الطلب</button>
+<button className="qa-btn qa-cyan" disabled={applySending} style={{ opacity: applySending ? 0.6 : 1, cursor: applySending ? 'not-allowed' : 'pointer' }} onClick={submitApply}>{applySending ? 'جارٍ الإرسال...' : 'إرسال الطلب'}</button>
 <button type="button" onClick={closeApply} style={{ background: "none", border: "0", fontFamily: "inherit", fontSize: "15px", fontWeight: "600", color: "#7b8087", cursor: "pointer" }}>إلغاء</button>
 </div>
 </div>
