@@ -130,12 +130,24 @@ export default function Site(props) {
   const contentJobs = (props.content && props.content.jobs) || null;
   const contentFaq = (props.content && props.content.faq) || null;
   const contentContact = (props.content && props.content.contact) || null;
-  const COUNTRIES = (props.content && props.content.legacyCountries && props.content.legacyCountries.length)
-    ? props.content.legacyCountries
-    : COUNTRIES_DEFAULT;
-  const VISAS = (props.content && props.content.legacyVisas && props.content.legacyVisas.length)
-    ? props.content.legacyVisas
-    : VISAS_DEFAULT;
+  const hasLegacyData = !!(
+    props.content &&
+    props.content.legacyCountries && props.content.legacyCountries.length &&
+    props.content.legacyVisas && props.content.legacyVisas.length
+  );
+  // Only ever use the real admin-configured data once BOTH countries and visas
+  // exist together — using one real list with the other still on defaults
+  // causes lookups for a country with no matching visas (and vice versa).
+  const legacyVisasRaw = hasLegacyData ? props.content.legacyVisas : VISAS_DEFAULT;
+  const legacyCountriesRaw = hasLegacyData ? props.content.legacyCountries : COUNTRIES_DEFAULT;
+  // Further guard: drop any country that ends up with zero visas (e.g. a
+  // country added in the admin dashboard with no active visa card yet), so
+  // the search widget never lands on a country it can't find a visa for.
+  const filteredCountriesList = hasLegacyData
+    ? legacyCountriesRaw.filter((c) => legacyVisasRaw.some((v) => v.country === c.code))
+    : legacyCountriesRaw;
+  const COUNTRIES = filteredCountriesList.length ? filteredCountriesList : COUNTRIES_DEFAULT;
+  const VISAS = filteredCountriesList.length ? legacyVisasRaw : VISAS_DEFAULT;
   const DEFAULT_ACTIVE_COUNTRY = (COUNTRIES[0] && COUNTRIES[0].code) || 'tr';
   const [st, setSt] = useState({ lang: 'ar', page: props.initialPage || 'home', active: DEFAULT_ACTIVE_COUNTRY, group: 'الكل', achievement: 'forum', pkg: '', loading: false, toast: '',
     travellers: 1, children: 0, tripDate: '', visaType: 'الكل', resultKind: 'الكل', visaDetailOpen: false, searched: false, visaId: '', appStage: 'form', ask: false, app: null, appError: '', appNo: '',
@@ -529,7 +541,7 @@ function   money(n){ const s = Number(n || 0).toLocaleString('en-US'); return st
 
 function   L(ar, en){ return st.lang === 'en' && en != null ? en : ar; }
 
-function   typeOf(v){ return VISA_TYPES.find(t => t.id === v.type) || VISA_TYPES[0]; }
+function   typeOf(v){ return VISA_TYPES.find(t => t.id === (v && v.type)) || VISA_TYPES[0]; }
 
 function   typeName(v){ const t = typeOf(v); return L(t.name, t.en) + (v.tier ? ' — ' + L(v.tier, v.tierEn) : ''); }
 
