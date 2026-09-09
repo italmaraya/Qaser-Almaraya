@@ -20,9 +20,8 @@ export default function PaymentBadges({ assetBase = '/assets' }) {
             <path d="M17 3.3a9 9 0 0 1 0 13.4 9 9 0 0 1 0-13.4Z" fill="#FF5F00" />
           </svg>
         </span>
-        <span style={{ ...chip, fontWeight: 800, fontSize: 13, gap: 1, color: '#5b0e91', fontFamily: 'inherit' }} title="ZainCash" aria-label="ZainCash">
-          <span style={{ color: '#5b0e91' }}>Zain</span>
-          <span style={{ color: '#f7941d' }}>Cash</span>
+        <span style={{ ...chip, background: '#0e0e10' }} title="ZainCash" aria-label="ZainCash">
+          <img src={`${assetBase}/payment-zaincash.png`} alt="ZainCash" style={{ height: 20, width: 'auto', objectFit: 'contain' }} />
         </span>
         <span style={chip} title="اقساطي" aria-label="اقساطي">
           <img src={`${assetBase}/payment-aqsati.png`} alt="اقساطي" style={{ height: 22, width: 'auto', objectFit: 'contain' }} />
