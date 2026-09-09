@@ -266,6 +266,12 @@ export default function VisaApplyPage() {
       setError('يجب إضافة مسافر واحد على الأقل');
       return;
     }
+    const incompleteTraveler = Object.values(travelerProgress).some((p) => p.done < p.total);
+    const progressCount = Object.keys(travelerProgress).length;
+    if (incompleteTraveler || progressCount < travelerList.length) {
+      setError('يرجى إكمال جميع بيانات ومستندات المسافرين المطلوبة قبل المتابعة إلى الدفع');
+      return;
+    }
     setStep('payment');
   }
 
@@ -330,6 +336,11 @@ export default function VisaApplyPage() {
 
   const totalDone = Object.values(travelerProgress).reduce((s, p) => s + p.done, 0);
   const totalNeeded = Object.values(travelerProgress).reduce((s, p) => s + p.total, 0) || travelerList.length;
+  const allTravelersComplete = travelerList.length > 0 && travelerList.every((t) => {
+    const p = travelerProgress[t.key];
+    return p && p.done >= p.total;
+  });
+  const canProceedToPayment = !!customerName && customerPhone.length >= 7 && allTravelersComplete;
   const activeStep = submitted ? 4 : step === 'payment' ? 3 : 2;
   const estimatedTotal = Number(card.adult_price) * adultCount + Number(card.child_price) * childCount;
 
@@ -402,7 +413,14 @@ export default function VisaApplyPage() {
                       <div style={{ height: '100%', width: totalNeeded ? `${Math.min(100, (totalDone / totalNeeded) * 100)}%` : '0%', background: '#049dc5' }} />
                     </div>
                   </div>
-                  <button className="qa-btn qa-cyan" onClick={goToPayment}>متابعة إلى الدفع</button>
+                  <button
+                    className="qa-btn qa-cyan"
+                    onClick={goToPayment}
+                    disabled={!canProceedToPayment}
+                    style={{ opacity: canProceedToPayment ? 1 : 0.55, cursor: canProceedToPayment ? 'pointer' : 'not-allowed' }}
+                  >
+                    متابعة إلى الدفع
+                  </button>
                 </>
               )}
               {step === 'payment' && !submitted && (
