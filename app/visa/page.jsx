@@ -26,6 +26,11 @@ export default function VisaLandingPage() {
   const [adultCount, setAdultCount] = useState(1);
   const [childCount, setChildCount] = useState(0);
   const [nationality, setNationality] = useState('');
+  const [trackOpen, setTrackOpen] = useState(false);
+  const [trackInput, setTrackInput] = useState('');
+  const [trackLoading, setTrackLoading] = useState(false);
+  const [trackError, setTrackError] = useState('');
+  const [trackResults, setTrackResults] = useState(null);
 
   useEffect(() => {
     fetch('/api/visa/cards')
@@ -86,6 +91,39 @@ export default function VisaLandingPage() {
   function goSearch(e) {
     e.preventDefault();
     if (selectedCountry) router.push(`/visa/country/${selectedCountry.country_id}`);
+  }
+
+  async function submitTrack(e) {
+    if (e) e.preventDefault();
+    if (!trackInput.trim()) {
+      setTrackError('يرجى إدخال رقم الهاتف أو رقم الطلب');
+      return;
+    }
+    setTrackLoading(true);
+    setTrackError('');
+    setTrackResults(null);
+    try {
+      const res = await fetch(`/api/visa/track?q=${encodeURIComponent(trackInput.trim())}`);
+      const data = await res.json();
+      if (!res.ok) {
+        setTrackError(data.error || 'تعذّر البحث عن الطلب');
+      } else if (!data.applications || data.applications.length === 0) {
+        setTrackError('لم يتم العثور على أي طلب بهذا الرقم. تأكد من رقم الهاتف أو رقم الطلب وحاول مرة أخرى.');
+      } else {
+        setTrackResults(data.applications);
+      }
+    } catch {
+      setTrackError('تعذّر البحث عن الطلب — تحقق من الاتصال وحاول مرة أخرى');
+    } finally {
+      setTrackLoading(false);
+    }
+  }
+
+  function closeTrack() {
+    setTrackOpen(false);
+    setTrackInput('');
+    setTrackError('');
+    setTrackResults(null);
   }
 
   return (
@@ -167,6 +205,22 @@ export default function VisaLandingPage() {
                     <div style={{ fontSize: 22, fontWeight: 700, color: '#049dc5' }}>{estimatedTotal != null ? estimatedTotal.toLocaleString() : '—'} د.ع</div>
                   </div>
                 </div>
+              </div>
+            </div>
+
+            <div className="qa-sec" style={{ paddingTop: 20 }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 14, background: 'rgba(255,255,255,.14)', border: '1px solid rgba(255,255,255,.3)', borderRadius: 16, padding: '16px 22px' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                  <span style={{ fontSize: 15, fontWeight: 700, color: '#fff' }}>هل لديك طلب تأشيرة؟</span>
+                  <span style={{ fontSize: 13, color: 'rgba(255,255,255,.85)' }}>تتبع حالة طلبك بإدخال رقم الهاتف أو رقم الطلب</span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setTrackOpen(true)}
+                  style={{ cursor: 'pointer', border: 0, borderRadius: 999, padding: '11px 24px', fontSize: 14, fontWeight: 700, fontFamily: 'inherit', background: '#fff', color: '#049dc5' }}
+                >
+                  تتبع طلبك
+                </button>
               </div>
             </div>
           </section>
@@ -271,6 +325,61 @@ export default function VisaLandingPage() {
       </main>
       <SiteFooter />
       {cards == null && !error && <MascotLoader assetBase="/assets" />}
+
+      {trackOpen && (
+        <div
+          style={{ position: 'fixed', inset: 0, zIndex: 80, background: 'rgba(1,42,55,.55)', backdropFilter: 'blur(6px)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24 }}
+          onClick={closeTrack}
+        >
+          <div
+            dir="rtl"
+            onClick={(e) => e.stopPropagation()}
+            style={{ width: '100%', maxWidth: 460, maxHeight: '88vh', overflow: 'auto', background: '#fff', borderRadius: 24, boxShadow: '0 30px 70px rgba(1,42,55,.4)' }}
+          >
+            <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 14, padding: '22px 24px 14px', borderBottom: '1px solid #ececed' }}>
+              <span style={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+                <span style={{ fontSize: 13, fontWeight: 600, color: '#faab18' }}>تتبّع الطلب</span>
+                <h3 style={{ margin: 0, fontSize: 20, fontWeight: 700, color: '#1d2733' }}>حالة طلب التأشيرة</h3>
+              </span>
+              <button type="button" onClick={closeTrack} aria-label="إغلاق" style={{ flex: 'none', width: 34, height: 34, borderRadius: '50%', border: '1px solid #ececed', background: '#fff', color: '#7b8087', fontSize: 15, cursor: 'pointer' }}>✕</button>
+            </div>
+
+            <form onSubmit={submitTrack} style={{ padding: '22px 24px 26px', display: 'flex', flexDirection: 'column', gap: 14 }}>
+              <label style={{ display: 'flex', flexDirection: 'column', gap: 6, fontSize: 14, fontWeight: 600, color: '#3d4650' }}>
+                رقم الهاتف أو رقم الطلب
+                <input
+                  autoFocus
+                  value={trackInput}
+                  onChange={(e) => setTrackInput(e.target.value)}
+                  placeholder="مثال: 07xxxxxxxx أو QA-000012"
+                  style={{ width: '100%', boxSizing: 'border-box', padding: '10px 12px', borderRadius: 8, border: '1px solid #ececed', fontSize: 15, fontFamily: 'inherit' }}
+                />
+              </label>
+              {trackError && (
+                <p style={{ margin: 0, background: '#fdecef', border: '1px solid #f7c3cc', borderRadius: 8, padding: '10px 14px', fontSize: 14, color: '#d2324f' }}>{trackError}</p>
+              )}
+              <button type="submit" disabled={trackLoading} className="qa-btn qa-cyan" style={{ opacity: trackLoading ? 0.6 : 1, cursor: trackLoading ? 'not-allowed' : 'pointer' }}>
+                {trackLoading ? '...جارٍ البحث' : 'بحث'}
+              </button>
+
+              {trackResults && (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginTop: 6 }}>
+                  {trackResults.map((a) => (
+                    <div key={a.id} style={{ border: '1px solid #ececed', borderRadius: 12, padding: '14px 16px', display: 'flex', flexDirection: 'column', gap: 6 }}>
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                        <span style={{ fontSize: 14, fontWeight: 700, color: '#1d2733' }}>QA-{String(a.id).padStart(6, '0')}</span>
+                        <span style={{ fontSize: 12, fontWeight: 700, color: '#036f8c', background: '#eaf8fd', borderRadius: 999, padding: '3px 12px' }}>{a.status_name_ar}</span>
+                      </div>
+                      <span style={{ fontSize: 13.5, color: '#3d4650' }}>{a.country_name_ar} — {a.visa_type_name_ar}</span>
+                      <span style={{ fontSize: 12.5, color: '#7b8087' }}>{a.customer_name}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
