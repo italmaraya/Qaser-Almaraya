@@ -5,12 +5,14 @@ import Link from 'next/link';
 import SiteHeader from '../../../../components/SiteHeader';
 import SiteFooter from '../../../../components/SiteFooter';
 import MascotLoader from '../../../../components/MascotLoader';
+import { printDoc, visaTableHtml, combinedDocsLine } from '../../../../lib/printDoc';
 
 export default function CountryVisaListPage() {
   const { countryId } = useParams();
   const [cards, setCards] = useState(null);
   const [error, setError] = useState('');
   const [typeFilter, setTypeFilter] = useState('الكل');
+  const [downloading, setDownloading] = useState(false);
 
   useEffect(() => {
     fetch('/api/visa/cards')
@@ -27,6 +29,23 @@ export default function CountryVisaListPage() {
   const typeOptions = useMemo(() => ['الكل', ...new Set(countryCards.map((c) => c.visa_type_name_ar))], [countryCards]);
   const filtered = countryCards.filter((c) => typeFilter === 'الكل' || c.visa_type_name_ar === typeFilter);
   const country = countryCards[0];
+
+  async function downloadCountryPdf() {
+    setDownloading(true);
+    try {
+      const detailed = await Promise.all(
+        filtered.map((c) => fetch(`/api/visa/cards/${c.id}`).then((r) => r.json()).catch(() => c))
+      );
+      const bodyHtml =
+        '<h1>' + country.country_name_ar + '</h1>' +
+        visaTableHtml(detailed) +
+        '<h2>المستمسكات المطلوبة:</h2>' +
+        '<p class="docs">' + combinedDocsLine(detailed) + '</p>';
+      printDoc('تأشيرات ' + country.country_name_ar, bodyHtml);
+    } finally {
+      setDownloading(false);
+    }
+  }
 
   if (cards && countryCards.length === 0) {
     return (
@@ -54,7 +73,17 @@ export default function CountryVisaListPage() {
 
           {country && (
             <>
-              <h1 style={{ fontSize: 'clamp(24px,2.6vw,34px)' }}>{filtered.length} تأشيرة متاحة لـ {country.country_name_ar}</h1>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12 }}>
+                <h1 style={{ fontSize: 'clamp(24px,2.6vw,34px)', margin: 0 }}>{filtered.length} تأشيرة متاحة لـ {country.country_name_ar}</h1>
+                <button
+                  type="button"
+                  onClick={downloadCountryPdf}
+                  disabled={downloading}
+                  style={{ cursor: downloading ? 'not-allowed' : 'pointer', opacity: downloading ? 0.6 : 1, border: '1px solid #ececed', borderRadius: 999, padding: '10px 20px', fontSize: 14, fontWeight: 700, fontFamily: 'inherit', background: '#fff', color: '#036f8c' }}
+                >
+                  {downloading ? '...جارٍ التحضير' : 'تحميل PDF لكل تأشيرات ' + country.country_name_ar}
+                </button>
+              </div>
 
               {typeOptions.length > 2 && (
                 <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>

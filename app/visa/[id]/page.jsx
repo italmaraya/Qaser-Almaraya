@@ -5,6 +5,7 @@ import Link from 'next/link';
 import SiteHeader from '../../../components/SiteHeader';
 import SiteFooter from '../../../components/SiteFooter';
 import MascotLoader from '../../../components/MascotLoader';
+import { printDoc, visaTableHtml, combinedDocsLine } from '../../../lib/printDoc';
 
 const WHY_US = [
   'مراجعة كاملة لمستنداتك قبل التقديم',
@@ -91,6 +92,20 @@ export default function VisaDetailPage() {
                 </div>
               </div>
               <Link href={`/visa/${id}/apply`} className="qa-btn qa-cyan" style={{ textAlign: 'center', textDecoration: 'none' }}>ابدأ الآن</Link>
+              <button
+                type="button"
+                onClick={() => {
+                  const bodyHtml =
+                    '<h1>' + card.country_name_ar + '</h1>' +
+                    visaTableHtml([card]) +
+                    '<h2>المستمسكات المطلوبة:</h2>' +
+                    '<p class="docs">' + combinedDocsLine([card]) + '</p>';
+                  printDoc(card.visa_type_name_ar + ' — ' + card.country_name_ar, bodyHtml);
+                }}
+                style={{ cursor: 'pointer', border: '1px solid #ececed', borderRadius: 999, padding: '10px 20px', fontSize: 14, fontWeight: 700, fontFamily: 'inherit', background: '#fff', color: '#036f8c', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}
+              >
+                تحميل PDF لهذه التأشيرة
+              </button>
               <span style={{ fontSize: 12, color: '#7b8087', textAlign: 'center' }}>السعر بالدينار العراقي، ويُثبَّت عند تقديم الطلب.</span>
 
               <div style={{ background: 'linear-gradient(135deg,#0e6f8f,#049dc5)', borderRadius: 14, padding: 18, color: '#fff', display: 'flex', flexDirection: 'column', gap: 10 }}>
