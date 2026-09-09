@@ -72,8 +72,8 @@ export default function VisaDetailPage() {
             <Link href={`/visa/country/${card.country_id}`} style={{ fontSize: 13.5, fontWeight: 600, color: '#036f8c', textDecoration: 'none' }}>← رجوع</Link>
           </div>
 
-          <section className="qa-sec" style={{ display: 'grid', gridTemplateColumns: 'minmax(240px,320px) 1fr', gap: 28, alignItems: 'flex-start' }}>
-            <div className="qa-card" style={{ position: 'sticky', top: 90, display: 'flex', flexDirection: 'column', gap: 14 }}>
+          <section className="qa-sec qa-2col" style={{ display: 'grid', gridTemplateColumns: 'minmax(240px,320px) 1fr', gap: 28, alignItems: 'flex-start' }}>
+            <div className="qa-card qa-visa-side" style={{ position: 'sticky', top: 90, display: 'flex', flexDirection: 'column', gap: 14 }}>
               <h3 style={{ margin: 0, fontSize: 19 }}>{card.visa_type_name_ar} — {card.country_name_ar}</h3>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 6, fontSize: 14 }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between' }}><span style={{ color: '#7b8087' }}>مدة الإقامة</span><span>{card.stay_duration || '—'}</span></div>
@@ -144,7 +144,7 @@ export default function VisaDetailPage() {
                 <h4 style={{ margin: '0 0 14px' }}>ما يشمله هذا النوع</h4>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
                   {included.map((f) => (
-                    <div key={f.label} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
+                    <div key={f.label} className="qa-feat-row" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
                       <span style={{ fontSize: 14.5, color: '#1d2733' }}>{f.label}</span>
                       <span
                         style={{
@@ -171,7 +171,7 @@ export default function VisaDetailPage() {
                   </div>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
                     {[...requiredDocs, ...optionalDocs].map((d) => (
-                      <div key={d.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, borderBottom: '1px solid #f4f4f4', paddingBottom: 10 }}>
+                      <div key={d.id} className="qa-doc-row" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, borderBottom: '1px solid #f4f4f4', paddingBottom: 10 }}>
                         <div>
                           <div style={{ fontSize: 14.5, color: '#1d2733' }}>{d.name_ar}</div>
                           <div style={{ fontSize: 12, color: '#7b8087' }}>{d.kind === 'file' ? 'رفع ملف' : d.kind === 'photo' ? 'رفع صورة' : 'إجابة'} · {d.audience === 'adults' ? 'البالغين' : d.audience === 'children' ? 'الأطفال' : 'الجميع'}</div>

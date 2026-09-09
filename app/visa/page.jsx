@@ -25,6 +25,7 @@ export default function VisaLandingPage() {
   const [destination, setDestination] = useState('');
   const [adultCount, setAdultCount] = useState(1);
   const [childCount, setChildCount] = useState(0);
+  const [nationality, setNationality] = useState('');
 
   useEffect(() => {
     fetch('/api/visa/cards')
@@ -124,6 +125,17 @@ export default function VisaLandingPage() {
                       ))}
                     </select>
                     <span style={{ fontSize: 12, color: '#7b8087' }}>{selectedCountry ? selectedCountry.typeNames.join('، ') : 'بلد التقديم'}</span>
+                  </label>
+                  <label style={{ display: 'flex', flexDirection: 'column', gap: 6, textAlign: 'right' }}>
+                    <span style={{ fontSize: 13, color: '#7b8087' }}>الجنسية</span>
+                    <input
+                      type="text"
+                      value={nationality}
+                      onChange={(e) => setNationality(e.target.value)}
+                      placeholder="مثال: عراقي"
+                      style={{ fontFamily: 'inherit', fontSize: 17, fontWeight: 700, color: '#1d2733', border: 0, background: 'transparent', padding: '4px 0' }}
+                    />
+                    <span style={{ fontSize: 12, color: '#7b8087' }}>جنسية مقدّم الطلب</span>
                   </label>
                   <label style={{ display: 'flex', flexDirection: 'column', gap: 6, textAlign: 'right' }}>
                     <span style={{ fontSize: 13, color: '#7b8087' }}>تاريخ السفر المتوقع</span>
