@@ -16,6 +16,11 @@ const inputStyle = {
   fontSize: 15,
   fontFamily: 'inherit',
 };
+
+function sanitizeName(value) {
+  // Strip Latin and Arabic-Indic digits, keep letters/spaces/hyphens only
+  return value.replace(/[0-9\u0660-\u0669]/g, '');
+}
 const labelStyle = { display: 'flex', flexDirection: 'column', gap: 6, fontSize: 14, fontWeight: 600, color: '#3d4650' };
 const btnStyle = (variant) => ({
   cursor: 'pointer',
@@ -37,7 +42,10 @@ const STEPS = [
 ];
 
 function applicableDocs(documents, travelerType) {
-  return documents.filter((d) => d.audience === 'everyone' || (d.audience === 'adults' && travelerType === 'adult') || (d.audience === 'children' && travelerType === 'child'));
+  return documents.filter((d) => {
+    const audience = d.audience || 'everyone';
+    return audience === 'everyone' || (audience === 'adults' && travelerType === 'adult') || (audience === 'children' && travelerType === 'child');
+  });
 }
 
 function isVisible(doc, answers) {
@@ -114,7 +122,7 @@ function TravelerForm({ index, travelerType, documents, onChange, onProgress }) 
       </div>
       <label style={labelStyle}>
         الاسم الكامل كما في الجواز *
-        <input style={inputStyle} value={fullName} onChange={(e) => setFullName(e.target.value)} />
+        <input style={inputStyle} value={fullName} onChange={(e) => setFullName(sanitizeName(e.target.value))} />
       </label>
 
       {docs.map((d) => {
@@ -246,6 +254,14 @@ export default function VisaApplyPage() {
       setError('يرجى إدخال الاسم ورقم الهاتف');
       return;
     }
+    if (customerPhone.length < 7) {
+      setError('يرجى إدخال رقم هاتف صحيح');
+      return;
+    }
+    if (customerEmail && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(customerEmail)) {
+      setError('يرجى إدخال بريد إلكتروني صحيح');
+      return;
+    }
     if (adultCount + childCount < 1) {
       setError('يجب إضافة مسافر واحد على الأقل');
       return;
@@ -264,7 +280,7 @@ export default function VisaApplyPage() {
         body: JSON.stringify({
           visa_card_id: card.id,
           customer_name: customerName,
-          customer_phone: customerPhone,
+          customer_phone: '+964' + customerPhone,
           customer_email: customerEmail,
           payment_method: paymentInfo?.method || paymentMethod,
           travelers,
@@ -330,7 +346,7 @@ export default function VisaApplyPage() {
                 <h1 style={{ margin: '4px 0 0', fontSize: 'clamp(24px,2.6vw,32px)', color: '#fff' }}>طلب تأشيرة — {card.country_name_ar}</h1>
                 <p style={{ margin: '4px 0 0', fontSize: 14.5, color: 'rgba(255,255,255,.9)' }}>{card.visa_type_name_ar} · إقامة {card.stay_duration || '—'} · الإصدار {card.issuing_time_days || '—'} أيام عمل</p>
               </div>
-              <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
+              <div className="qa-steps-row" style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
                 {STEPS.map((s) => (
                   <span
                     key={s.id}
@@ -354,8 +370,8 @@ export default function VisaApplyPage() {
             </div>
           </section>
 
-          <section className="qa-sec" style={{ display: 'grid', gridTemplateColumns: 'minmax(240px,320px) 1fr', gap: 28, alignItems: 'flex-start' }}>
-            <div className="qa-card" style={{ position: 'sticky', top: 90, display: 'flex', flexDirection: 'column', gap: 14 }}>
+          <section className="qa-sec qa-2col" style={{ display: 'grid', gridTemplateColumns: 'minmax(240px,320px) 1fr', gap: 28, alignItems: 'flex-start' }}>
+            <div className="qa-card qa-visa-side" style={{ position: 'sticky', top: 90, display: 'flex', flexDirection: 'column', gap: 14 }}>
               <h4 style={{ margin: 0 }}>ملخص الطلب</h4>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 8, fontSize: 14 }}>
                 {adultCount > 0 && (
@@ -402,16 +418,26 @@ export default function VisaApplyPage() {
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
                       <label style={labelStyle}>
                         رقم الهاتف *
-                        <input style={inputStyle} dir="ltr" value={customerPhone} onChange={(e) => setCustomerPhone(e.target.value)} placeholder="07xx xxx xxxx" />
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 8, ...inputStyle, padding: '0 12px' }}>
+                          <span dir="ltr" style={{ color: '#7b8087', fontWeight: 700, flex: 'none' }}>+964</span>
+                          <input
+                            style={{ border: 0, outline: 'none', fontFamily: 'inherit', fontSize: 15, flex: 1, padding: '10px 0', minWidth: 0 }}
+                            dir="ltr"
+                            inputMode="numeric"
+                            value={customerPhone}
+                            onChange={(e) => setCustomerPhone(e.target.value.replace(/\D/g, '').slice(0, 10))}
+                            placeholder="7xx xxx xxxx"
+                          />
+                        </div>
                       </label>
                       <label style={labelStyle}>
                         البريد الإلكتروني (اختياري)
-                        <input style={inputStyle} dir="ltr" value={customerEmail} onChange={(e) => setCustomerEmail(e.target.value)} placeholder="name@example.com" />
+                        <input style={inputStyle} type="email" dir="ltr" pattern="[^\s@]+@[^\s@]+\.[^\s@]+" value={customerEmail} onChange={(e) => setCustomerEmail(e.target.value)} placeholder="name@example.com" />
                       </label>
                     </div>
                     <label style={labelStyle}>
                       الاسم الكامل *
-                      <input style={inputStyle} value={customerName} onChange={(e) => setCustomerName(e.target.value)} />
+                      <input style={inputStyle} value={customerName} onChange={(e) => setCustomerName(sanitizeName(e.target.value))} />
                     </label>
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
                       <label style={labelStyle}>
