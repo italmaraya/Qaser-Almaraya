@@ -1025,9 +1025,9 @@ function   visaVals(country){
 <h2 style={{ fontSize: "38px", fontWeight: "700", color: "#22a9d4", lineHeight: "1.3" }}>توصيات العملاء</h2>
 <p style={{ fontSize: "17px", lineHeight: "1.75", color: "#7b8087", textWrap: "pretty" }}>رضا العملاء هو حجر الأساس لنجاحنا. هذه تجارب حقيقية لعملاء وثقوا بنا في تنظيم رحلاتهم.</p>
 </div>
-<div className="qa-2col" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(300px,1fr))", gap: "24px", alignItems: "stretch" }}>
-<div style={{ position: "relative", background: "#fff", border: "1px solid #ececed", borderRadius: "18px", padding: "30px 30px 26px", display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center", gap: "16px", boxShadow: "0 10px 26px rgba(29,39,51,.07)" }}>
-<span style={{ width: "112px", height: "112px", borderRadius: "50%", flex: "none", overflow: "hidden", background: "#e4f5fb", boxShadow: "0 0 0 4px #e4f5fb,0 10px 22px rgba(1,42,55,.12)" }}><img src="/assets/avatar-ibrahim.png" alt="ابراهيم مناضل" style={{ width: "100%", height: "100%", objectFit: "cover" }} /></span>
+<div className="qa-2col qa-testi-grid" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(300px,1fr))", gap: "24px", alignItems: "stretch" }}>
+<div className="qa-testi-card" style={{ position: "relative", background: "#fff", border: "1px solid #ececed", borderRadius: "18px", padding: "30px 30px 26px", display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center", gap: "16px", boxShadow: "0 10px 26px rgba(29,39,51,.07)" }}>
+<span className="qa-testi-avatar" style={{ width: "112px", height: "112px", borderRadius: "50%", flex: "none", overflow: "hidden", background: "#e4f5fb", boxShadow: "0 0 0 4px #e4f5fb,0 10px 22px rgba(1,42,55,.12)" }}><img src="/assets/avatar-ibrahim.png" alt="ابراهيم مناضل" style={{ width: "100%", height: "100%", objectFit: "cover" }} /></span>
 <span aria-hidden="true" style={{ fontSize: "34px", lineHeight: ".6", color: "#e4f5fb", fontWeight: "700" }}>”</span>
 <p style={{ margin: "0", fontSize: "16.5px", lineHeight: "1.8", color: "#1d2733", textWrap: "pretty" }}>حجزتُ رحلة عائلية إلى ماليزيا، وكانت رحلة ممتعة من جميع النواحي — سواء من حيث الطيران، الفنادق، البرامج السياحية، أو حتى حسن التعامل من قبل موظفي الشركة والمندوبين.</p>
 <div style={{ marginTop: "auto", display: "flex", flexDirection: "column", gap: "3px", paddingTop: "12px", borderTop: "1px solid #ececed", width: "100%" }}>
@@ -1035,8 +1035,8 @@ function   visaVals(country){
 <span style={{ fontSize: "14px", color: "#7b8087" }}>موظف</span>
 </div>
 </div>
-<div style={{ position: "relative", background: "#fff", border: "1px solid #ececed", borderRadius: "18px", padding: "30px 30px 26px", display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center", gap: "16px", boxShadow: "0 10px 26px rgba(29,39,51,.07)" }}>
-<span style={{ width: "112px", height: "112px", borderRadius: "50%", flex: "none", overflow: "hidden", background: "#fef3dc", boxShadow: "0 0 0 4px #fef3dc,0 10px 22px rgba(1,42,55,.12)" }}><img src="/assets/avatar-hasan.png" alt="م.م. حسن عصام الدليمي" style={{ width: "100%", height: "100%", objectFit: "cover" }} /></span>
+<div className="qa-testi-card" style={{ position: "relative", background: "#fff", border: "1px solid #ececed", borderRadius: "18px", padding: "30px 30px 26px", display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center", gap: "16px", boxShadow: "0 10px 26px rgba(29,39,51,.07)" }}>
+<span className="qa-testi-avatar" style={{ width: "112px", height: "112px", borderRadius: "50%", flex: "none", overflow: "hidden", background: "#fef3dc", boxShadow: "0 0 0 4px #fef3dc,0 10px 22px rgba(1,42,55,.12)" }}><img src="/assets/avatar-hasan.png" alt="م.م. حسن عصام الدليمي" style={{ width: "100%", height: "100%", objectFit: "cover" }} /></span>
 <span aria-hidden="true" style={{ fontSize: "34px", lineHeight: ".6", color: "#fef3dc", fontWeight: "700" }}>”</span>
 <p style={{ margin: "0", fontSize: "16.5px", lineHeight: "1.8", color: "#1d2733", textWrap: "pretty" }}>تعاملتُ مع شركة قصر المرايا عدة مرات، وقد قاموا باستخراج تأشيرات الدخول لي لعدة دول. بكل صراحة وأمانة، كان تعاملهم راقيًا للغاية وأسعارهم مناسبة جدًا، كما أنهم يوفرون خيارات متعددة للعديد من الوجهات.</p>
 <div style={{ marginTop: "auto", display: "flex", flexDirection: "column", gap: "3px", paddingTop: "12px", borderTop: "1px solid #ececed", width: "100%" }}>
@@ -1044,8 +1044,8 @@ function   visaVals(country){
 <span style={{ fontSize: "14px", color: "#7b8087" }}>أستاذ جامعي</span>
 </div>
 </div>
-<div style={{ position: "relative", background: "#fff", border: "1px solid #ececed", borderRadius: "18px", padding: "30px 30px 26px", display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center", gap: "16px", boxShadow: "0 10px 26px rgba(29,39,51,.07)" }}>
-<span style={{ width: "112px", height: "112px", borderRadius: "50%", flex: "none", overflow: "hidden", background: "#e4f5fb", boxShadow: "0 0 0 4px #e4f5fb,0 10px 22px rgba(1,42,55,.12)" }}><img src="/assets/avatar-ali.png" alt="علي حسين الزبيدي" style={{ width: "100%", height: "100%", objectFit: "cover" }} /></span>
+<div className="qa-testi-card" style={{ position: "relative", background: "#fff", border: "1px solid #ececed", borderRadius: "18px", padding: "30px 30px 26px", display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center", gap: "16px", boxShadow: "0 10px 26px rgba(29,39,51,.07)" }}>
+<span className="qa-testi-avatar" style={{ width: "112px", height: "112px", borderRadius: "50%", flex: "none", overflow: "hidden", background: "#e4f5fb", boxShadow: "0 0 0 4px #e4f5fb,0 10px 22px rgba(1,42,55,.12)" }}><img src="/assets/avatar-ali.png" alt="علي حسين الزبيدي" style={{ width: "100%", height: "100%", objectFit: "cover" }} /></span>
 <span aria-hidden="true" style={{ fontSize: "34px", lineHeight: ".6", color: "#e4f5fb", fontWeight: "700" }}>”</span>
 <p style={{ margin: "0", fontSize: "16.5px", lineHeight: "1.8", color: "#1d2733", textWrap: "pretty" }}>رتّبوا لي رحلة إلى باكو خلال يومين — التأشيرة، الفندق، والجولات. حتى تغيير موعد العودة في اللحظة الأخيرة تولّوه بأنفسهم دون أي عناء عليّ.</p>
 <div style={{ marginTop: "auto", display: "flex", flexDirection: "column", gap: "3px", paddingTop: "12px", borderTop: "1px solid #ececed", width: "100%" }}>
@@ -1053,8 +1053,8 @@ function   visaVals(country){
 <span style={{ fontSize: "14px", color: "#7b8087" }}>رجل أعمال</span>
 </div>
 </div>
-<div style={{ position: "relative", background: "#fff", border: "1px solid #ececed", borderRadius: "18px", padding: "30px 30px 26px", display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center", gap: "16px", boxShadow: "0 10px 26px rgba(29,39,51,.07)" }}>
-<span style={{ width: "112px", height: "112px", borderRadius: "50%", flex: "none", overflow: "hidden", background: "#fef3dc", boxShadow: "0 0 0 4px #fef3dc,0 10px 22px rgba(1,42,55,.12)" }}><img src="/assets/avatar-saif.png" alt="سيف الدين قاسم" style={{ width: "100%", height: "100%", objectFit: "cover" }} /></span>
+<div className="qa-testi-card" style={{ position: "relative", background: "#fff", border: "1px solid #ececed", borderRadius: "18px", padding: "30px 30px 26px", display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center", gap: "16px", boxShadow: "0 10px 26px rgba(29,39,51,.07)" }}>
+<span className="qa-testi-avatar" style={{ width: "112px", height: "112px", borderRadius: "50%", flex: "none", overflow: "hidden", background: "#fef3dc", boxShadow: "0 0 0 4px #fef3dc,0 10px 22px rgba(1,42,55,.12)" }}><img src="/assets/avatar-saif.png" alt="سيف الدين قاسم" style={{ width: "100%", height: "100%", objectFit: "cover" }} /></span>
 <span aria-hidden="true" style={{ fontSize: "34px", lineHeight: ".6", color: "#fef3dc", fontWeight: "700" }}>”</span>
 <p style={{ margin: "0", fontSize: "16.5px", lineHeight: "1.8", color: "#1d2733", textWrap: "pretty" }}>نتعامل معهم لسفر موظفينا منذ سنتين. الأسعار التعاقدية واضحة، والتعديلات على الحجوزات تُنجَز في نفس اليوم — هذا ما نحتاجه في سفر الأعمال.</p>
 <div style={{ marginTop: "auto", display: "flex", flexDirection: "column", gap: "3px", paddingTop: "12px", borderTop: "1px solid #ececed", width: "100%" }}>
