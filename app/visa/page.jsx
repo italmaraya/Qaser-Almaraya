@@ -365,13 +365,36 @@ export default function VisaLandingPage() {
               {trackResults && (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginTop: 6 }}>
                   {trackResults.map((a) => (
-                    <div key={a.id} style={{ border: '1px solid #ececed', borderRadius: 12, padding: '14px 16px', display: 'flex', flexDirection: 'column', gap: 6 }}>
+                    <div key={a.id} style={{ border: '1px solid #ececed', borderRadius: 12, padding: '14px 16px', display: 'flex', flexDirection: 'column', gap: 8 }}>
                       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                         <span style={{ fontSize: 14, fontWeight: 700, color: '#1d2733' }}>QA-{String(a.id).padStart(6, '0')}</span>
                         <span style={{ fontSize: 12, fontWeight: 700, color: '#036f8c', background: '#eaf8fd', borderRadius: 999, padding: '3px 12px' }}>{a.status_name_ar}</span>
                       </div>
                       <span style={{ fontSize: 13.5, color: '#3d4650' }}>{a.country_name_ar} — {a.visa_type_name_ar}</span>
                       <span style={{ fontSize: 12.5, color: '#7b8087' }}>{a.customer_name}</span>
+
+                      {a.latest_note && (
+                        <div style={{ fontSize: 13, color: '#a06a00', background: '#fef3dc', border: '1px solid #fdd27c', borderRadius: 8, padding: '10px 12px', lineHeight: 1.6 }}>
+                          {a.latest_note}
+                        </div>
+                      )}
+
+                      <div style={{ display: 'flex', gap: 8, marginTop: 4 }}>
+                        <a
+                          href="https://wa.me/9647749999600"
+                          target="_blank"
+                          rel="noopener"
+                          style={{ flex: 1, textAlign: 'center', textDecoration: 'none', fontSize: 13, fontWeight: 700, color: '#fff', background: '#25d366', borderRadius: 999, padding: '9px 0' }}
+                        >
+                          واتساب
+                        </a>
+                        <a
+                          href="tel:+9647749999600"
+                          style={{ flex: 1, textAlign: 'center', textDecoration: 'none', fontSize: 13, fontWeight: 700, color: '#036f8c', background: '#eaf8fd', borderRadius: 999, padding: '9px 0' }}
+                        >
+                          اتصال
+                        </a>
+                      </div>
                     </div>
                   ))}
                 </div>

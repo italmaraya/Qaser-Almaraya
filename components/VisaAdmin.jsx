@@ -163,6 +163,7 @@ const REGIONS = ['الشرق الأوسط وأفريقيا', 'تركيا وال�
 function ApplicationsTab({ applications, statuses, reload, setError }) {
   const [expanded, setExpanded] = useState(null);
   const [detail, setDetail] = useState(null);
+  const [noteDrafts, setNoteDrafts] = useState({});
 
   async function openDetail(id) {
     if (expanded === id) {
@@ -179,11 +180,11 @@ function ApplicationsTab({ applications, statuses, reload, setError }) {
     }
   }
 
-  async function changeStatus(id, statusId) {
+  async function changeStatus(id, statusId, note) {
     try {
       await api(`/api/admin/visa/applications/${id}/status`, {
         method: 'POST',
-        body: JSON.stringify({ internal_status_id: statusId || null }),
+        body: JSON.stringify({ internal_status_id: statusId || null, note: note || '' }),
       });
       reload();
       if (expanded === id) openDetail(id); // refresh detail + history too
@@ -250,24 +251,46 @@ function ApplicationsTab({ applications, statuses, reload, setError }) {
                 )}
               </span>
             </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-              <select
-                style={{ ...inputStyle, width: 'auto' }}
-                value={a.status_id || ''}
-                onChange={(e) => changeStatus(a.id, e.target.value)}
-              >
-                <option value="">— بدون حالة —</option>
-                {internalStatuses.map((s) => (
-                  <option key={s.id} value={s.id}>
-                    {s.name_ar}
-                  </option>
-                ))}
-              </select>
-              <button style={btnStyle('ghost')} onClick={() => openDetail(a.id)}>
-                {expanded === a.id ? 'إخفاء' : 'التفاصيل'}
-              </button>
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 6 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <select
+                  style={{ ...inputStyle, width: 'auto' }}
+                  value={a.status_id || ''}
+                  onChange={(e) => changeStatus(a.id, e.target.value, noteDrafts[a.id])}
+                >
+                  <option value="">— بدون حالة —</option>
+                  {internalStatuses.map((s) => (
+                    <option key={s.id} value={s.id}>
+                      {s.name_ar}
+                    </option>
+                  ))}
+                </select>
+                <button style={btnStyle('ghost')} onClick={() => openDetail(a.id)}>
+                  {expanded === a.id ? 'إخفاء' : 'التفاصيل'}
+                </button>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                <input
+                  style={{ ...inputStyle, width: 220, fontSize: 12.5, padding: '6px 10px' }}
+                  placeholder="ملاحظة للعميل (تظهر له عند التتبع)"
+                  value={noteDrafts[a.id] ?? ''}
+                  onChange={(e) => setNoteDrafts({ ...noteDrafts, [a.id]: e.target.value })}
+                />
+                <button
+                  style={{ ...btnStyle('ghost'), padding: '6px 12px', fontSize: 12.5 }}
+                  onClick={() => changeStatus(a.id, a.status_id, noteDrafts[a.id])}
+                >
+                  حفظ الملاحظة
+                </button>
+              </div>
             </div>
           </div>
+
+          {a.latest_note && (
+            <div style={{ fontSize: 12.5, color: '#a06a00', background: '#fef3dc', border: '1px solid #fdd27c', borderRadius: 8, padding: '6px 10px' }}>
+              آخر ملاحظة للعميل: {a.latest_note}
+            </div>
+          )}
 
           {expanded === a.id && detail && (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12, borderTop: '1px dashed #ececed', paddingTop: 14 }}>

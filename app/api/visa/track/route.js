@@ -19,13 +19,19 @@ export async function GET(request) {
     rows = await sql`
       SELECT a.id, a.customer_name, a.customer_phone, a.submitted_at,
              c.name_ar AS country_name_ar, vt.name_ar AS visa_type_name_ar,
-             COALESCE(cs.name_ar, 'قيد المعالجة') AS status_name_ar
+             COALESCE(cs.name_ar, 'قيد المعالجة') AS status_name_ar,
+             latest_hist.note AS latest_note
       FROM visa_applications a
       LEFT JOIN visa_cards vc ON vc.id = a.visa_card_id
       LEFT JOIN countries c ON c.id = vc.country_id
       LEFT JOIN visa_types vt ON vt.id = vc.visa_type_id
       LEFT JOIN internal_statuses ist ON ist.id = a.internal_status_id
       LEFT JOIN customer_statuses cs ON cs.id = ist.customer_status_id
+      LEFT JOIN LATERAL (
+        SELECT note FROM visa_status_history h
+        WHERE h.application_id = a.id AND h.note <> ''
+        ORDER BY h.changed_at DESC LIMIT 1
+      ) latest_hist ON true
       WHERE a.id = ${id}
       ORDER BY a.submitted_at DESC
     `;
@@ -35,13 +41,19 @@ export async function GET(request) {
     rows = await sql`
       SELECT a.id, a.customer_name, a.customer_phone, a.submitted_at,
              c.name_ar AS country_name_ar, vt.name_ar AS visa_type_name_ar,
-             COALESCE(cs.name_ar, 'قيد المعالجة') AS status_name_ar
+             COALESCE(cs.name_ar, 'قيد المعالجة') AS status_name_ar,
+             latest_hist.note AS latest_note
       FROM visa_applications a
       LEFT JOIN visa_cards vc ON vc.id = a.visa_card_id
       LEFT JOIN countries c ON c.id = vc.country_id
       LEFT JOIN visa_types vt ON vt.id = vc.visa_type_id
       LEFT JOIN internal_statuses ist ON ist.id = a.internal_status_id
       LEFT JOIN customer_statuses cs ON cs.id = ist.customer_status_id
+      LEFT JOIN LATERAL (
+        SELECT note FROM visa_status_history h
+        WHERE h.application_id = a.id AND h.note <> ''
+        ORDER BY h.changed_at DESC LIMIT 1
+      ) latest_hist ON true
       WHERE regexp_replace(a.customer_phone, '[^0-9]', '', 'g') LIKE '%' || regexp_replace(${q}, '[^0-9]', '', 'g') || '%'
       ORDER BY a.submitted_at DESC
       LIMIT 10
