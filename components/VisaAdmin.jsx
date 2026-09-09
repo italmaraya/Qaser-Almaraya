@@ -202,8 +202,29 @@ function ApplicationsTab({ applications, statuses, reload, setError }) {
         <div key={a.id} style={cardStyle}>
           <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 12, justifyContent: 'space-between' }}>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-              <span style={{ fontWeight: 700, fontSize: 15.5 }}>
-                {a.customer_name} <span style={{ color: '#7b8087', fontWeight: 400 }}>({a.customer_phone})</span>
+              <span style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
+                <span
+                  style={{
+                    fontSize: 12.5,
+                    fontWeight: 700,
+                    color: '#036f8c',
+                    background: '#eaf8fd',
+                    borderRadius: 999,
+                    padding: '2px 10px',
+                    letterSpacing: '.02em',
+                  }}
+                >
+                  QA-{String(a.id).padStart(6, '0')}
+                </span>
+                <span style={{ fontWeight: 700, fontSize: 15.5 }}>{a.customer_name}</span>
+              </span>
+              <span style={{ fontSize: 13.5, color: '#3d4650' }}>
+                <a href={`tel:${a.customer_phone}`} dir="ltr" style={{ color: '#036f8c', fontWeight: 600, textDecoration: 'none' }}>
+                  📞 {a.customer_phone}
+                </a>
+                {a.customer_email && (
+                  <span style={{ marginInlineStart: 10, color: '#7b8087' }}>· {a.customer_email}</span>
+                )}
               </span>
               <span style={{ fontSize: 13.5, color: '#3d4650', display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
                 {a.country_name_ar} — {a.visa_type_name_ar} · {a.adult_count} بالغ / {a.child_count} طفل
