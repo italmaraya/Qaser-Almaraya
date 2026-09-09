@@ -140,29 +140,19 @@ export default function VisaDetailPage() {
                 </div>
               </div>
 
-              <div className="qa-card">
-                <h4 style={{ margin: '0 0 14px' }}>ما يشمله هذا النوع</h4>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-                  {included.map((f) => (
-                    <div key={f.label} className="qa-feat-row" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
-                      <span style={{ fontSize: 14.5, color: '#1d2733' }}>{f.label}</span>
-                      <span
-                        style={{
-                          fontSize: 12,
-                          fontWeight: 700,
-                          borderRadius: 999,
-                          padding: '4px 12px',
-                          color: f.on ? '#036f8c' : '#a8adb3',
-                          background: f.on ? '#eaf8fd' : '#f4f4f4',
-                        }}
-                      >
-                        {f.on ? 'مشمول' : 'غير مشمول'}
-                      </span>
-                    </div>
-                  ))}
+              {included.some((f) => f.on) && (
+                <div className="qa-card">
+                  <h4 style={{ margin: '0 0 14px' }}>ما يشمله هذا النوع</h4>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                    {included.filter((f) => f.on).map((f) => (
+                      <div key={f.label} className="qa-feat-row" style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                        <span style={{ flex: 'none', color: '#049dc5', fontWeight: 700 }}>✓</span>
+                        <span style={{ fontSize: 14.5, color: '#1d2733' }}>{f.label}</span>
+                      </div>
+                    ))}
+                  </div>
                 </div>
-              </div>
-
+              )}
               {(card.documents || []).length > 0 && (
                 <div className="qa-card">
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
