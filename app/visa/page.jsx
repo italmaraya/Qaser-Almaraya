@@ -29,6 +29,7 @@ export default function VisaLandingPage() {
   const [adultCount, setAdultCount] = useState(1);
   const [childCount, setChildCount] = useState(0);
   const [nationality, setNationality] = useState('');
+  const [nationalities, setNationalities] = useState([]);
   const [trackOpen, setTrackOpen] = useState(false);
   const [trackInput, setTrackInput] = useState('');
   const [trackLoading, setTrackLoading] = useState(false);
@@ -41,6 +42,14 @@ export default function VisaLandingPage() {
       .then((r) => r.json())
       .then(setCards)
       .catch(() => setError('تعذّر تحميل قائمة التأشيرات'));
+    fetch('/api/visa/nationalities')
+      .then((r) => r.json())
+      .then((list) => {
+        setNationalities(list);
+        if (list.length && !nationality) setNationality(String(list[0].id));
+      })
+      .catch(() => {});
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const countries = useMemo(() => {
@@ -160,7 +169,7 @@ export default function VisaLandingPage() {
                   </div>
                   <span style={{ fontSize: 13, fontWeight: 700, color: '#7b8087', letterSpacing: '.04em' }}>QASER · ALMARAYA</span>
                 </div>
-                <form onSubmit={goSearch} style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(150px,1fr))', gap: 20, padding: '24px 26px' }}>
+                <form onSubmit={goSearch} style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(190px,1fr))', gap: 22, padding: '26px 26px 6px' }}>
                   <label style={{ display: 'flex', flexDirection: 'column', gap: 6, textAlign: 'right' }}>
                     <span style={{ fontSize: 13, color: '#7b8087' }}>إلى أين تسافر؟</span>
                     <select
@@ -173,40 +182,53 @@ export default function VisaLandingPage() {
                         <option key={c.country_id} value={c.country_id}>{nm(c.country_name_ar, c.country_name_en)}</option>
                       ))}
                     </select>
-                    <span style={{ fontSize: 12, color: '#7b8087' }}>{selectedCountry ? selectedCountry.typeNames.map((t) => nm(t, typeNameMap[t])).join('، ') : 'بلد التقديم'}</span>
                   </label>
+
                   <label style={{ display: 'flex', flexDirection: 'column', gap: 6, textAlign: 'right' }}>
                     <span style={{ fontSize: 13, color: '#7b8087' }}>الجنسية</span>
-                    <input
-                      type="text"
+                    <select
                       value={nationality}
                       onChange={(e) => setNationality(e.target.value)}
-                      placeholder="مثال: عراقي"
                       style={{ fontFamily: 'inherit', fontSize: 17, fontWeight: 700, color: '#1d2733', border: 0, background: 'transparent', padding: '4px 0' }}
-                    />
-                    <span style={{ fontSize: 12, color: '#7b8087' }}>جنسية مقدّم الطلب</span>
+                    >
+                      {nationalities.length === 0 && <option value="">—</option>}
+                      {nationalities.map((n) => (
+                        <option key={n.id} value={n.id}>{nm(n.name_ar, n.name_en)}</option>
+                      ))}
+                    </select>
                   </label>
+
                   <label style={{ display: 'flex', flexDirection: 'column', gap: 6, textAlign: 'right' }}>
                     <span style={{ fontSize: 13, color: '#7b8087' }}>تاريخ السفر المتوقع</span>
                     <input type="date" style={{ fontFamily: 'inherit', fontSize: 15, border: 0, color: '#1d2733', padding: '4px 0' }} />
-                    <span style={{ fontSize: 12, color: '#7b8087' }}>الإصدار من {selectedCountry ? Math.round(selectedCountry.minIssuing) : '٣'} أيام عمل</span>
                   </label>
+
                   <div style={{ display: 'flex', flexDirection: 'column', gap: 6, textAlign: 'right' }}>
                     <span style={{ fontSize: 13, color: '#7b8087' }}>عدد المسافرين</span>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                      <button type="button" onClick={() => setAdultCount((n) => Math.max(0, n - 1))} style={stepperBtn}>−</button>
-                      <span style={{ fontSize: 16, fontWeight: 700, minWidth: 14, textAlign: 'center' }}>{adultCount}</span>
-                      <button type="button" onClick={() => setAdultCount((n) => n + 1)} style={stepperBtn}>+</button>
-                      <span style={{ fontSize: 13, color: '#7b8087' }}>بالغ</span>
-                    </div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                      <button type="button" onClick={() => setChildCount((n) => Math.max(0, n - 1))} style={stepperBtn}>−</button>
-                      <span style={{ fontSize: 16, fontWeight: 700, minWidth: 14, textAlign: 'center' }}>{childCount}</span>
-                      <button type="button" onClick={() => setChildCount((n) => n + 1)} style={stepperBtn}>+</button>
-                      <span style={{ fontSize: 13, color: '#7b8087' }}>طفل</span>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                        <button type="button" onClick={() => setAdultCount((n) => Math.max(0, n - 1))} style={stepperBtn}>−</button>
+                        <span style={{ fontSize: 16, fontWeight: 700, minWidth: 14, textAlign: 'center' }}>{adultCount}</span>
+                        <button type="button" onClick={() => setAdultCount((n) => n + 1)} style={stepperBtn}>+</button>
+                        <span style={{ fontSize: 13, color: '#7b8087' }}>بالغ</span>
+                      </div>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                        <button type="button" onClick={() => setChildCount((n) => Math.max(0, n - 1))} style={stepperBtn}>−</button>
+                        <span style={{ fontSize: 16, fontWeight: 700, minWidth: 14, textAlign: 'center' }}>{childCount}</span>
+                        <button type="button" onClick={() => setChildCount((n) => n + 1)} style={stepperBtn}>+</button>
+                        <span style={{ fontSize: 13, color: '#7b8087' }}>طفل</span>
+                      </div>
                     </div>
                   </div>
                 </form>
+
+                {selectedCountry && (
+                  <div style={{ padding: '0 26px 20px' }}>
+                    <span style={{ fontSize: 12.5, color: '#7b8087' }}>
+                      {selectedCountry.typeNames.map((t) => nm(t, typeNameMap[t])).join('، ')} · الإصدار من {Math.round(selectedCountry.minIssuing)} أيام عمل
+                    </span>
+                  </div>
+                )}
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 14, padding: '18px 26px', background: '#f8fdfe' }}>
                   <button type="submit" onClick={goSearch} disabled={!selectedCountry} className="qa-btn qa-cyan" style={{ opacity: selectedCountry ? 1 : 0.5, cursor: selectedCountry ? 'pointer' : 'not-allowed' }}>
                     عرض التفاصيل

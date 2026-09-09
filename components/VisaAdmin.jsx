@@ -37,6 +37,7 @@ const checkboxRow = { display: 'flex', alignItems: 'center', gap: 8, fontSize: 1
 const VISA_SUBTABS = [
   { id: 'applications', label: 'الطلبات' },
   { id: 'countries', label: 'الدول' },
+  { id: 'nationalities', label: 'الجنسيات' },
   { id: 'types', label: 'أنواع التأشيرات' },
   { id: 'providers', label: 'مزودو الخدمة' },
   { id: 'cards', label: 'بطاقات التأشيرة' },
@@ -69,6 +70,7 @@ export default function VisaAdmin() {
   const [subTab, setSubTab] = useState('applications');
   const [applications, setApplications] = useState(null);
   const [countries, setCountries] = useState(null);
+  const [nationalities, setNationalities] = useState(null);
   const [types, setTypes] = useState(null);
   const [providers, setProviders] = useState(null);
   const [cards, setCards] = useState(null);
@@ -80,6 +82,9 @@ export default function VisaAdmin() {
   }
   function loadCountries() {
     api('/api/admin/visa/countries').then(setCountries).catch((e) => setError(e.message));
+  }
+  function loadNationalities() {
+    api('/api/admin/visa/nationalities').then(setNationalities).catch((e) => setError(e.message));
   }
   function loadTypes() {
     api('/api/admin/visa/types').then(setTypes).catch((e) => setError(e.message));
@@ -100,6 +105,7 @@ export default function VisaAdmin() {
       if (statuses == null) loadStatuses();
     }
     if (subTab === 'countries' && countries == null) loadCountries();
+    if (subTab === 'nationalities' && nationalities == null) loadNationalities();
     if (subTab === 'types' && types == null) loadTypes();
     if (subTab === 'providers' && providers == null) loadProviders();
     if (subTab === 'cards' && cards == null) {
@@ -141,6 +147,7 @@ export default function VisaAdmin() {
         <ApplicationsTab applications={applications} statuses={statuses} reload={loadApplications} setError={setError} />
       )}
       {subTab === 'countries' && <CountriesTab countries={countries} reload={loadCountries} setError={setError} />}
+      {subTab === 'nationalities' && <NationalitiesTab nationalities={nationalities} reload={loadNationalities} setError={setError} />}
       {subTab === 'types' && <TypesTab types={types} reload={loadTypes} setError={setError} />}
       {subTab === 'providers' && <ProvidersTab providers={providers} reload={loadProviders} setError={setError} />}
       {subTab === 'cards' && (
@@ -364,6 +371,93 @@ function ApplicationsTab({ applications, statuses, reload, setError }) {
           )}
         </div>
       ))}
+    </div>
+  );
+}
+
+function NationalitiesTab({ nationalities, reload, setError }) {
+  const [nameAr, setNameAr] = useState('');
+  const [nameEn, setNameEn] = useState('');
+
+  async function add() {
+    if (!nameAr || !nameEn) return;
+    try {
+      await api('/api/admin/visa/nationalities', {
+        method: 'POST',
+        body: JSON.stringify({ name_ar: nameAr, name_en: nameEn }),
+      });
+      setNameAr('');
+      setNameEn('');
+      reload();
+    } catch (e) {
+      setError(e.message);
+    }
+  }
+
+  async function update(nat) {
+    try {
+      await api(`/api/admin/visa/nationalities/${nat.id}`, { method: 'PUT', body: JSON.stringify(nat) });
+      reload();
+    } catch (e) {
+      setError(e.message);
+    }
+  }
+
+  async function remove(id) {
+    try {
+      await api(`/api/admin/visa/nationalities/${id}`, { method: 'DELETE' });
+      reload();
+    } catch (e) {
+      setError(e.message);
+    }
+  }
+
+  if (nationalities == null) return <p>...جارٍ التحميل</p>;
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+      <p style={{ margin: 0, fontSize: 13.5, color: '#7b8087' }}>
+        هذه القائمة تظهر للعميل كقائمة جنسيات جاهزة عند طلب التأشيرة، بدلاً من كتابتها يدويًا.
+      </p>
+      <div style={cardStyle}>
+        <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', alignItems: 'flex-end' }}>
+          <label style={{ ...labelStyle, flex: 1, minWidth: 160 }}>
+            الاسم بالعربية
+            <input style={inputStyle} placeholder="عراقي" value={nameAr} onChange={(e) => setNameAr(e.target.value)} />
+          </label>
+          <label style={{ ...labelStyle, flex: 1, minWidth: 160 }}>
+            الاسم بالإنجليزية
+            <input style={inputStyle} placeholder="Iraqi" value={nameEn} onChange={(e) => setNameEn(e.target.value)} />
+          </label>
+          <button style={{ ...btnStyle('primary'), alignSelf: 'flex-end' }} onClick={add}>
+            + إضافة جنسية
+          </button>
+        </div>
+      </div>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+        {nationalities.map((n) => (
+          <div key={n.id} style={cardStyle}>
+            <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', alignItems: 'flex-end' }}>
+              <label style={{ ...labelStyle, flex: 1, minWidth: 140 }}>
+                الاسم بالعربية
+                <input style={inputStyle} value={n.name_ar} onChange={(e) => update({ ...n, name_ar: e.target.value })} />
+              </label>
+              <label style={{ ...labelStyle, flex: 1, minWidth: 140 }}>
+                الاسم بالإنجليزية
+                <input style={inputStyle} value={n.name_en} onChange={(e) => update({ ...n, name_en: e.target.value })} />
+              </label>
+              <label style={{ ...labelStyle, width: 100 }}>
+                الترتيب
+                <input type="number" style={inputStyle} value={n.sort_order || 0} onChange={(e) => update({ ...n, sort_order: parseInt(e.target.value, 10) || 0 })} />
+              </label>
+              <button style={btnStyle('danger')} onClick={() => remove(n.id)}>
+                حذف
+              </button>
+            </div>
+          </div>
+        ))}
+        {nationalities.length === 0 && <p style={{ color: '#7b8087' }}>لا توجد جنسيات بعد.</p>}
+      </div>
     </div>
   );
 }
