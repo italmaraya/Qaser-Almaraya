@@ -31,6 +31,7 @@ export default function VisaLandingPage() {
   const [trackLoading, setTrackLoading] = useState(false);
   const [trackError, setTrackError] = useState('');
   const [trackResults, setTrackResults] = useState(null);
+  const [trackStages, setTrackStages] = useState([]);
 
   useEffect(() => {
     fetch('/api/visa/cards')
@@ -111,6 +112,7 @@ export default function VisaLandingPage() {
         setTrackError('لم يتم العثور على أي طلب بهذا الرقم. تأكد من رقم الهاتف أو رقم الطلب وحاول مرة أخرى.');
       } else {
         setTrackResults(data.applications);
+        setTrackStages(data.stages || []);
       }
     } catch {
       setTrackError('تعذّر البحث عن الطلب — تحقق من الاتصال وحاول مرة أخرى');
@@ -364,39 +366,90 @@ export default function VisaLandingPage() {
 
               {trackResults && (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginTop: 6 }}>
-                  {trackResults.map((a) => (
-                    <div key={a.id} style={{ border: '1px solid #ececed', borderRadius: 12, padding: '14px 16px', display: 'flex', flexDirection: 'column', gap: 8 }}>
-                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                        <span style={{ fontSize: 14, fontWeight: 700, color: '#1d2733' }}>QA-{String(a.id).padStart(6, '0')}</span>
-                        <span style={{ fontSize: 12, fontWeight: 700, color: '#036f8c', background: '#eaf8fd', borderRadius: 999, padding: '3px 12px' }}>{a.status_name_ar}</span>
-                      </div>
-                      <span style={{ fontSize: 13.5, color: '#3d4650' }}>{a.country_name_ar} — {a.visa_type_name_ar}</span>
-                      <span style={{ fontSize: 12.5, color: '#7b8087' }}>{a.customer_name}</span>
-
-                      {a.latest_note && (
-                        <div style={{ fontSize: 13, color: '#a06a00', background: '#fef3dc', border: '1px solid #fdd27c', borderRadius: 8, padding: '10px 12px', lineHeight: 1.6 }}>
-                          {a.latest_note}
+                  {trackResults.map((a) => {
+                    const currentIdx = trackStages.findIndex((s) => s.id === a.customer_status_id);
+                    return (
+                      <div key={a.id} style={{ border: '1px solid #ececed', borderRadius: 12, padding: '14px 16px', display: 'flex', flexDirection: 'column', gap: 10 }}>
+                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                          <span style={{ fontSize: 14, fontWeight: 700, color: '#1d2733' }}>QA-{String(a.id).padStart(6, '0')}</span>
+                          <span style={{ fontSize: 12, fontWeight: 700, color: '#036f8c', background: '#eaf8fd', borderRadius: 999, padding: '3px 12px' }}>{a.status_name_ar}</span>
                         </div>
-                      )}
+                        <span style={{ fontSize: 13.5, color: '#3d4650' }}>{a.country_name_ar} — {a.visa_type_name_ar}</span>
+                        <span style={{ fontSize: 12.5, color: '#7b8087' }}>{a.customer_name}</span>
 
-                      <div style={{ display: 'flex', gap: 8, marginTop: 4 }}>
-                        <a
-                          href="https://wa.me/9647749999600"
-                          target="_blank"
-                          rel="noopener"
-                          style={{ flex: 1, textAlign: 'center', textDecoration: 'none', fontSize: 13, fontWeight: 700, color: '#fff', background: '#25d366', borderRadius: 999, padding: '9px 0' }}
-                        >
-                          واتساب
-                        </a>
-                        <a
-                          href="tel:+9647749999600"
-                          style={{ flex: 1, textAlign: 'center', textDecoration: 'none', fontSize: 13, fontWeight: 700, color: '#036f8c', background: '#eaf8fd', borderRadius: 999, padding: '9px 0' }}
-                        >
-                          اتصال
-                        </a>
+                        {trackStages.length > 0 && (
+                          <div style={{ display: 'flex', alignItems: 'center', gap: 0, padding: '8px 0 2px', overflowX: 'auto' }}>
+                            {trackStages.map((s, i) => {
+                              const done = currentIdx >= 0 && i <= currentIdx;
+                              return (
+                                <div key={s.id} style={{ display: 'flex', alignItems: 'center', flex: i < trackStages.length - 1 ? 1 : 'none', minWidth: 0 }}>
+                                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4, flex: 'none' }}>
+                                    <span
+                                      style={{
+                                        width: 22,
+                                        height: 22,
+                                        borderRadius: '50%',
+                                        flex: 'none',
+                                        display: 'grid',
+                                        placeItems: 'center',
+                                        fontSize: 11,
+                                        fontWeight: 700,
+                                        color: done ? '#fff' : '#a8adb3',
+                                        background: done ? '#049dc5' : '#f0f0f0',
+                                      }}
+                                    >
+                                      {done ? '✓' : i + 1}
+                                    </span>
+                                    <span style={{ fontSize: 10, color: done ? '#036f8c' : '#a8adb3', fontWeight: done ? 700 : 500, textAlign: 'center', maxWidth: 64, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                                      {s.name_ar}
+                                    </span>
+                                  </div>
+                                  {i < trackStages.length - 1 && (
+                                    <span style={{ flex: 1, height: 2, background: currentIdx >= 0 && i < currentIdx ? '#049dc5' : '#f0f0f0', margin: '0 2px', marginBottom: 16 }} />
+                                  )}
+                                </div>
+                              );
+                            })}
+                          </div>
+                        )}
+
+                        {a.latest_note && (
+                          <div style={{ fontSize: 13, color: '#a06a00', background: '#fef3dc', border: '1px solid #fdd27c', borderRadius: 8, padding: '10px 12px', lineHeight: 1.6 }}>
+                            {a.latest_note}
+                          </div>
+                        )}
+
+                        {a.result_file_url && (
+                          <a
+                            href={a.result_file_url}
+                            target="_blank"
+                            rel="noopener"
+                            className="qa-btn qa-cyan"
+                            style={{ textAlign: 'center', textDecoration: 'none' }}
+                          >
+                            ⬇ تحميل ملف التأشيرة
+                          </a>
+                        )}
+
+                        <div style={{ display: 'flex', gap: 8, marginTop: 4 }}>
+                          <a
+                            href="https://wa.me/9647749999600"
+                            target="_blank"
+                            rel="noopener"
+                            style={{ flex: 1, textAlign: 'center', textDecoration: 'none', fontSize: 13, fontWeight: 700, color: '#fff', background: '#25d366', borderRadius: 999, padding: '9px 0' }}
+                          >
+                            واتساب
+                          </a>
+                          <a
+                            href="tel:+9647749999600"
+                            style={{ flex: 1, textAlign: 'center', textDecoration: 'none', fontSize: 13, fontWeight: 700, color: '#036f8c', background: '#eaf8fd', borderRadius: 999, padding: '9px 0' }}
+                          >
+                            اتصال
+                          </a>
+                        </div>
                       </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               )}
             </form>

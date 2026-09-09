@@ -164,6 +164,7 @@ function ApplicationsTab({ applications, statuses, reload, setError }) {
   const [expanded, setExpanded] = useState(null);
   const [detail, setDetail] = useState(null);
   const [noteDrafts, setNoteDrafts] = useState({});
+  const [fileUploading, setFileUploading] = useState({});
 
   async function openDetail(id) {
     if (expanded === id) {
@@ -180,16 +181,34 @@ function ApplicationsTab({ applications, statuses, reload, setError }) {
     }
   }
 
-  async function changeStatus(id, statusId, note) {
+  async function changeStatus(id, statusId, note, resultFileUrl) {
     try {
       await api(`/api/admin/visa/applications/${id}/status`, {
         method: 'POST',
-        body: JSON.stringify({ internal_status_id: statusId || null, note: note || '' }),
+        body: JSON.stringify({ internal_status_id: statusId || null, note: note || '', result_file_url: resultFileUrl ?? null }),
       });
       reload();
       if (expanded === id) openDetail(id); // refresh detail + history too
     } catch (e) {
       setError(e.message);
+    }
+  }
+
+  async function uploadResultFile(id, statusId, file) {
+    if (!file) return;
+    setFileUploading((u) => ({ ...u, [id]: true }));
+    try {
+      const fd = new FormData();
+      fd.append('file', file);
+      const res = await fetch('/api/visa/upload', { method: 'POST', body: fd });
+      const data = await res.json();
+      if (res.ok) {
+        await changeStatus(id, statusId, undefined, data.url);
+      } else {
+        setError(data.error || 'تعذّر رفع الملف');
+      }
+    } finally {
+      setFileUploading((u) => ({ ...u, [id]: false }));
     }
   }
 
@@ -282,6 +301,20 @@ function ApplicationsTab({ applications, statuses, reload, setError }) {
                 >
                   حفظ الملاحظة
                 </button>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                <label style={{ cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: 6, padding: '6px 12px', borderRadius: 999, border: '1px solid #036f8c', color: '#036f8c', fontSize: 12.5, fontWeight: 600 }}>
+                  {a.result_file_url ? '📎 استبدال ملف التأشيرة' : '📎 رفع ملف التأشيرة الجاهز'}
+                  <input
+                    type="file"
+                    style={{ display: 'none' }}
+                    onChange={(e) => uploadResultFile(a.id, a.status_id, e.target.files[0])}
+                  />
+                </label>
+                {fileUploading[a.id] && <span style={{ fontSize: 12, color: '#7b8087' }}>...جارٍ الرفع</span>}
+                {a.result_file_url && !fileUploading[a.id] && (
+                  <a href={a.result_file_url} target="_blank" rel="noopener" style={{ fontSize: 12, color: '#049dc5', fontWeight: 600 }}>✓ عرض الملف المرفوع</a>
+                )}
               </div>
             </div>
           </div>

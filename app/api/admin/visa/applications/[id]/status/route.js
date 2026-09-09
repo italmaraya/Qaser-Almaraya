@@ -6,10 +6,13 @@ export async function POST(request, { params }) {
   if (!(await requireAuth(request))) return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
   await ensureSchema();
   const { id } = await params;
-  const { internal_status_id, note } = await request.json();
+  const { internal_status_id, note, result_file_url } = await request.json();
 
   const rows = await sql`
-    UPDATE visa_applications SET internal_status_id = ${internal_status_id || null}, updated_at = now()
+    UPDATE visa_applications
+    SET internal_status_id = ${internal_status_id || null},
+        result_file_url = COALESCE(${result_file_url ?? null}, result_file_url),
+        updated_at = now()
     WHERE id = ${id} RETURNING *
   `;
   await sql`

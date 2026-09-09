@@ -17,8 +17,9 @@ export async function GET(request) {
     // Looking up by order number, e.g. "QA-000012"
     const id = parseInt(orderMatch[1], 10);
     rows = await sql`
-      SELECT a.id, a.customer_name, a.customer_phone, a.submitted_at,
+      SELECT a.id, a.customer_name, a.customer_phone, a.submitted_at, a.result_file_url,
              c.name_ar AS country_name_ar, vt.name_ar AS visa_type_name_ar,
+             cs.id AS customer_status_id,
              COALESCE(cs.name_ar, 'قيد المعالجة') AS status_name_ar,
              latest_hist.note AS latest_note
       FROM visa_applications a
@@ -39,8 +40,9 @@ export async function GET(request) {
     // Looking up by phone number — compare digits only so spacing/dashes/country-code
     // formatting differences don't cause false negatives.
     rows = await sql`
-      SELECT a.id, a.customer_name, a.customer_phone, a.submitted_at,
+      SELECT a.id, a.customer_name, a.customer_phone, a.submitted_at, a.result_file_url,
              c.name_ar AS country_name_ar, vt.name_ar AS visa_type_name_ar,
+             cs.id AS customer_status_id,
              COALESCE(cs.name_ar, 'قيد المعالجة') AS status_name_ar,
              latest_hist.note AS latest_note
       FROM visa_applications a
@@ -60,5 +62,7 @@ export async function GET(request) {
     `;
   }
 
-  return NextResponse.json({ applications: rows });
+  const stages = await sql`SELECT id, name_ar FROM customer_statuses ORDER BY sort_order ASC, id ASC`;
+
+  return NextResponse.json({ applications: rows, stages });
 }
