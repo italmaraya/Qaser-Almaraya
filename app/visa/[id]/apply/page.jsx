@@ -6,6 +6,7 @@ import PaymentMethods from '../../../../components/PaymentMethods';
 import SiteHeader from '../../../../components/SiteHeader';
 import SiteFooter from '../../../../components/SiteFooter';
 import MascotLoader from '../../../../components/MascotLoader';
+import { useLangToggle } from '../../../../lib/i18n';
 
 const inputStyle = {
   width: '100%',
@@ -218,6 +219,8 @@ function TravelerForm({ index, travelerType, documents, onChange, onProgress }) 
 }
 
 export default function VisaApplyPage() {
+  const { lang } = useLangToggle();
+  const nm = (ar, en) => (lang === 'en' && en ? en : ar);
   const { id } = useParams();
   const [card, setCard] = useState(null);
   const [error, setError] = useState('');
@@ -354,8 +357,8 @@ export default function VisaApplyPage() {
               <Link href={`/visa/${id}`} style={{ fontSize: 13.5, color: 'rgba(255,255,255,.85)', textDecoration: 'none', alignSelf: 'flex-start' }}>← رجوع إلى التأشيرات</Link>
               <div>
                 <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: '.04em', color: 'rgba(255,255,255,.85)' }}>VISA APPLICATION</span>
-                <h1 style={{ margin: '4px 0 0', fontSize: 'clamp(24px,2.6vw,32px)', color: '#fff' }}>طلب تأشيرة — {card.country_name_ar}</h1>
-                <p style={{ margin: '4px 0 0', fontSize: 14.5, color: 'rgba(255,255,255,.9)' }}>{card.visa_type_name_ar} · إقامة {card.stay_duration || '—'} · الإصدار {card.issuing_time_days || '—'} أيام عمل</p>
+                <h1 style={{ margin: '4px 0 0', fontSize: 'clamp(24px,2.6vw,32px)', color: '#fff' }}>طلب تأشيرة — {nm(card.country_name_ar, card.country_name_en)}</h1>
+                <p style={{ margin: '4px 0 0', fontSize: 14.5, color: 'rgba(255,255,255,.9)' }}>{nm(card.visa_type_name_ar, card.visa_type_name_en)} · إقامة {card.stay_duration || '—'} · الإصدار {card.issuing_time_days || '—'} أيام عمل</p>
               </div>
               <div className="qa-steps-row" style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
                 {STEPS.map((s) => (

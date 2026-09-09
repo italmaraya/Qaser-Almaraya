@@ -5,6 +5,7 @@ import Link from 'next/link';
 import SiteHeader from '../../components/SiteHeader';
 import SiteFooter from '../../components/SiteFooter';
 import MascotLoader from '../../components/MascotLoader';
+import { useLangToggle } from '../../lib/i18n';
 
 const STEPS = [
   { n: '01', who: 'أنت', title: 'تختار التأشيرة', hint: 'ترى السعر والمدة وقائمة المستندات' },
@@ -19,6 +20,8 @@ const STEPS = [
 
 export default function VisaLandingPage() {
   const router = useRouter();
+  const { lang } = useLangToggle();
+  const nm = (ar, en) => (lang === 'en' && en ? en : ar);
   const [cards, setCards] = useState(null);
   const [error, setError] = useState('');
   const [typeFilter, setTypeFilter] = useState('الكل');
@@ -63,6 +66,12 @@ export default function VisaLandingPage() {
       minIssuing: Math.min(...c.cards.map((x) => Number(x.issuing_time_days) || 999)),
       typeNames: [...new Set(c.cards.map((x) => x.visa_type_name_ar))],
     }));
+  }, [cards]);
+
+  const typeNameMap = useMemo(() => {
+    const m = {};
+    (cards || []).forEach((c) => { m[c.visa_type_name_ar] = c.visa_type_name_en; });
+    return m;
   }, [cards]);
 
   const typeOptions = useMemo(() => {
@@ -161,10 +170,10 @@ export default function VisaLandingPage() {
                     >
                       <option value="">اختر دولة</option>
                       {countries.map((c) => (
-                        <option key={c.country_id} value={c.country_id}>{c.country_name_ar}</option>
+                        <option key={c.country_id} value={c.country_id}>{nm(c.country_name_ar, c.country_name_en)}</option>
                       ))}
                     </select>
-                    <span style={{ fontSize: 12, color: '#7b8087' }}>{selectedCountry ? selectedCountry.typeNames.join('، ') : 'بلد التقديم'}</span>
+                    <span style={{ fontSize: 12, color: '#7b8087' }}>{selectedCountry ? selectedCountry.typeNames.map((t) => nm(t, typeNameMap[t])).join('، ') : 'بلد التقديم'}</span>
                   </label>
                   <label style={{ display: 'flex', flexDirection: 'column', gap: 6, textAlign: 'right' }}>
                     <span style={{ fontSize: 13, color: '#7b8087' }}>الجنسية</span>
@@ -254,7 +263,7 @@ export default function VisaLandingPage() {
                       fontFamily: 'inherit',
                     }}
                   >
-                    {t}
+                    {t === 'الكل' ? nm('الكل', 'All') : nm(t, typeNameMap[t])}
                   </button>
                 ))}
               </div>
@@ -289,10 +298,10 @@ export default function VisaLandingPage() {
                       </div>
                       <div style={{ padding: 16, display: 'flex', flexDirection: 'column', gap: 4 }}>
                         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                          <span style={{ fontSize: 17, fontWeight: 700, color: '#1d2733' }}>{c.country_name_ar}</span>
+                          <span style={{ fontSize: 17, fontWeight: 700, color: '#1d2733' }}>{nm(c.country_name_ar, c.country_name_en)}</span>
                           <span style={{ fontSize: 11, fontWeight: 700, color: '#7b8087' }}>{(c.flag_code || '').toUpperCase()}</span>
                         </div>
-                        <span style={{ fontSize: 13, color: '#7b8087' }}>{c.typeNames.length === 1 ? 'نوع واحد' : c.typeNames.length + ' أنواع'}: {c.typeNames.join('، ')}</span>
+                        <span style={{ fontSize: 13, color: '#7b8087' }}>{c.typeNames.length === 1 ? 'نوع واحد' : c.typeNames.length + ' أنواع'}: {c.typeNames.map((t) => nm(t, typeNameMap[t])).join('، ')}</span>
                         <span style={{ fontSize: 12.5, color: '#7b8087' }}>الإصدار من {Math.round(c.minIssuing)} {c.minIssuing < 3 ? 'ساعة' : 'أيام عمل'}</span>
                       </div>
                     </Link>
@@ -374,7 +383,7 @@ export default function VisaLandingPage() {
                           <span style={{ fontSize: 14, fontWeight: 700, color: '#1d2733' }}>QA-{String(a.id).padStart(6, '0')}</span>
                           <span style={{ fontSize: 12, fontWeight: 700, color: '#036f8c', background: '#eaf8fd', borderRadius: 999, padding: '3px 12px' }}>{a.status_name_ar}</span>
                         </div>
-                        <span style={{ fontSize: 13.5, color: '#3d4650' }}>{a.country_name_ar} — {a.visa_type_name_ar}</span>
+                        <span style={{ fontSize: 13.5, color: '#3d4650' }}>{nm(a.country_name_ar, a.country_name_en)} — {nm(a.visa_type_name_ar, a.visa_type_name_en)}</span>
                         <span style={{ fontSize: 12.5, color: '#7b8087' }}>{a.customer_name}</span>
 
                         {trackStages.length > 0 && (

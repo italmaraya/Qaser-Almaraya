@@ -7,6 +7,7 @@ import AchievementSpread from './AchievementSpread';
 import MascotLoader from './MascotLoader';
 import PackageCard from './PackageCard';
 import PaymentMethods from './PaymentMethods';
+import PaymentBadges from './PaymentBadges';
 
 const COUNTRIES_DEFAULT=[
  {code:'tr',name:'تركيا',en:'Turkey',region:'تركيا والقوقاز'},
@@ -2664,6 +2665,7 @@ function   visaVals(country){
 <a href="https://www.facebook.com/p/%D8%B4%D8%B1%D9%83%D8%A9-%D9%82%D8%B5%D8%B1-%D8%A7%D9%84%D9%85%D8%B1%D8%A7%D9%8A%D8%A7-%D9%84%D9%84%D8%B3%D9%81%D8%B1-%D9%88%D8%A7%D9%84%D8%B3%D9%8A%D8%A7%D8%AD%D8%A9-61567289284263/?locale=ar_AR" target="_blank" rel="noopener" aria-label="Facebook" title="Facebook" style={{ width: "36px", height: "36px", borderRadius: "999px", background: "rgba(255,255,255,.1)", border: "1px solid rgba(255,255,255,.18)", display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", textDecoration: "none", fontSize: "19px", fontWeight: "700", fontFamily: "Georgia,serif" }}>f</a>
 </div>
 </div>
+<PaymentBadges />
 </div>
 <div style={{ borderTop: "1px solid rgba(255,255,255,.16)" }}>
 <div style={{ maxWidth: "1240px", margin: "0 auto", padding: "12px 32px", display: "flex", alignItems: "center", justifyContent: "center" }}>

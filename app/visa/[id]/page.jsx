@@ -5,7 +5,8 @@ import Link from 'next/link';
 import SiteHeader from '../../../components/SiteHeader';
 import SiteFooter from '../../../components/SiteFooter';
 import MascotLoader from '../../../components/MascotLoader';
-import { printDoc, visaTableHtml, combinedDocsLine } from '../../../lib/printDoc';
+import { printDoc, visaTableHtml, combinedDocsLine, esc } from '../../../lib/printDoc';
+import { useLangToggle } from '../../../lib/i18n';
 
 const WHY_US = [
   'مراجعة كاملة لمستنداتك قبل التقديم',
@@ -14,6 +15,8 @@ const WHY_US = [
 ];
 
 export default function VisaDetailPage() {
+  const { lang } = useLangToggle();
+  const nm = (ar, en) => (lang === 'en' && en ? en : ar);
   const { id } = useParams();
   const [card, setCard] = useState(null);
   const [error, setError] = useState('');
@@ -75,7 +78,7 @@ export default function VisaDetailPage() {
 
           <section className="qa-sec qa-2col" style={{ display: 'grid', gridTemplateColumns: 'minmax(240px,320px) 1fr', gap: 28, alignItems: 'flex-start' }}>
             <div className="qa-card qa-visa-side" style={{ position: 'sticky', top: 90, display: 'flex', flexDirection: 'column', gap: 14 }}>
-              <h3 style={{ margin: 0, fontSize: 19 }}>{card.visa_type_name_ar} — {card.country_name_ar}</h3>
+              <h3 style={{ margin: 0, fontSize: 19 }}>{nm(card.visa_type_name_ar, card.visa_type_name_en)} — {nm(card.country_name_ar, card.country_name_en)}</h3>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 6, fontSize: 14 }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between' }}><span style={{ color: '#7b8087' }}>مدة الإقامة</span><span>{card.stay_duration || '—'}</span></div>
                 <div style={{ display: 'flex', justifyContent: 'space-between' }}><span style={{ color: '#7b8087' }}>مدة الإصدار</span><span>{card.issuing_time_days || '—'} أيام عمل</span></div>
@@ -96,11 +99,11 @@ export default function VisaDetailPage() {
                 type="button"
                 onClick={() => {
                   const bodyHtml =
-                    '<h1>' + card.country_name_ar + '</h1>' +
-                    visaTableHtml([card]) +
-                    '<h2>المستمسكات المطلوبة:</h2>' +
-                    '<p class="docs">' + combinedDocsLine([card]) + '</p>';
-                  printDoc(card.visa_type_name_ar + ' — ' + card.country_name_ar, bodyHtml);
+                    '<h1>' + esc(nm(card.country_name_ar, card.country_name_en)) + '</h1>' +
+                    visaTableHtml([card], lang) +
+                    '<h2>' + (lang === 'en' ? 'Required documents:' : 'المستمسكات المطلوبة:') + '</h2>' +
+                    '<p class="docs">' + combinedDocsLine([card], lang) + '</p>';
+                  printDoc(nm(card.visa_type_name_ar, card.visa_type_name_en) + ' — ' + nm(card.country_name_ar, card.country_name_en), bodyHtml, lang);
                 }}
                 style={{ cursor: 'pointer', border: '1px solid #ececed', borderRadius: 999, padding: '10px 20px', fontSize: 14, fontWeight: 700, fontFamily: 'inherit', background: '#fff', color: '#036f8c', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}
               >
@@ -130,8 +133,8 @@ export default function VisaDetailPage() {
                   />
                 ) : null}
                 <div>
-                  <h1 style={{ margin: 0, fontSize: 30, color: '#fff' }}>{card.country_name_ar}</h1>
-                  <span style={{ fontSize: 14.5, color: 'rgba(255,255,255,.9)' }}>{card.visa_type_name_ar} · إقامة {card.stay_duration || '—'}</span>
+                  <h1 style={{ margin: 0, fontSize: 30, color: '#fff' }}>{nm(card.country_name_ar, card.country_name_en)}</h1>
+                  <span style={{ fontSize: 14.5, color: 'rgba(255,255,255,.9)' }}>{nm(card.visa_type_name_ar, card.visa_type_name_en)} · إقامة {card.stay_duration || '—'}</span>
                 </div>
               </div>
 
@@ -139,8 +142,8 @@ export default function VisaDetailPage() {
                 <h4 style={{ margin: '0 0 14px' }}>بطاقة التأشيرة</h4>
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(160px,1fr))', gap: 12 }}>
                   {[
-                    ['الدولة', card.country_name_ar],
-                    ['النوع', card.visa_type_name_ar],
+                    ['الدولة', nm(card.country_name_ar, card.country_name_en)],
+                    ['النوع', nm(card.visa_type_name_ar, card.visa_type_name_en)],
                     ['مدة الإقامة', card.stay_duration || '—'],
                     ['سعر البالغ', Number(card.adult_price).toLocaleString() + ' د.ع'],
                     ['صلاحية قبل السفر', card.validity_before_travel || '—'],

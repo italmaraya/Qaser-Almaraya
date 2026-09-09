@@ -1,3 +1,5 @@
+import PaymentBadges from './PaymentBadges';
+
 export default function SiteFooter() {
   return (
     <footer style={{ background: '#049dc5', color: 'rgba(255,255,255,.95)' }}>
@@ -39,6 +41,7 @@ export default function SiteFooter() {
           <h4 style={{ fontSize: 18.5, color: '#fff', margin: 0 }}>تحتاج مساعدة؟</h4>
           <span style={{ fontSize: 15.5, lineHeight: 1.7, color: 'rgba(255,255,255,.85)' }}>الرقم المختصر 6393 — فريقنا جاهز لخدمتك بكل احترافية وسرعة.</span>
         </div>
+        <PaymentBadges />
       </div>
       <div style={{ borderTop: '1px solid rgba(255,255,255,.2)', textAlign: 'center', padding: '14px 20px', fontSize: 13.5, color: 'rgba(255,255,255,.8)' }}>
         © 2026 قصر المرايا للسفر و السياحة — جميع الحقوق محفوظة

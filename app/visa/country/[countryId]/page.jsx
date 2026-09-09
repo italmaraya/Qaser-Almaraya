@@ -5,9 +5,12 @@ import Link from 'next/link';
 import SiteHeader from '../../../../components/SiteHeader';
 import SiteFooter from '../../../../components/SiteFooter';
 import MascotLoader from '../../../../components/MascotLoader';
-import { printDoc, visaTableHtml, combinedDocsLine } from '../../../../lib/printDoc';
+import { printDoc, visaTableHtml, combinedDocsLine, esc } from '../../../../lib/printDoc';
+import { useLangToggle } from '../../../../lib/i18n';
 
 export default function CountryVisaListPage() {
+  const { lang } = useLangToggle();
+  const nm = (ar, en) => (lang === 'en' && en ? en : ar);
   const { countryId } = useParams();
   const [cards, setCards] = useState(null);
   const [error, setError] = useState('');
@@ -27,6 +30,11 @@ export default function CountryVisaListPage() {
   }, [cards, countryId]);
 
   const typeOptions = useMemo(() => ['الكل', ...new Set(countryCards.map((c) => c.visa_type_name_ar))], [countryCards]);
+  const typeNameMap = useMemo(() => {
+    const m = {};
+    countryCards.forEach((c) => { m[c.visa_type_name_ar] = c.visa_type_name_en; });
+    return m;
+  }, [countryCards]);
   const filtered = countryCards.filter((c) => typeFilter === 'الكل' || c.visa_type_name_ar === typeFilter);
   const country = countryCards[0];
 
@@ -37,11 +45,11 @@ export default function CountryVisaListPage() {
         filtered.map((c) => fetch(`/api/visa/cards/${c.id}`).then((r) => r.json()).catch(() => c))
       );
       const bodyHtml =
-        '<h1>' + country.country_name_ar + '</h1>' +
-        visaTableHtml(detailed) +
-        '<h2>المستمسكات المطلوبة:</h2>' +
-        '<p class="docs">' + combinedDocsLine(detailed) + '</p>';
-      printDoc('تأشيرات ' + country.country_name_ar, bodyHtml);
+        '<h1>' + esc(nm(country.country_name_ar, country.country_name_en)) + '</h1>' +
+        visaTableHtml(detailed, lang) +
+        '<h2>' + (lang === 'en' ? 'Required documents:' : 'المستمسكات المطلوبة:') + '</h2>' +
+        '<p class="docs">' + combinedDocsLine(detailed, lang) + '</p>';
+      printDoc((lang === 'en' ? 'Visas — ' : 'تأشيرات ') + nm(country.country_name_ar, country.country_name_en), bodyHtml, lang);
     } finally {
       setDownloading(false);
     }
@@ -74,14 +82,14 @@ export default function CountryVisaListPage() {
           {country && (
             <>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12 }}>
-                <h1 style={{ fontSize: 'clamp(24px,2.6vw,34px)', margin: 0 }}>{filtered.length} تأشيرة متاحة لـ {country.country_name_ar}</h1>
+                <h1 style={{ fontSize: 'clamp(24px,2.6vw,34px)', margin: 0 }}>{filtered.length} تأشيرة متاحة لـ {nm(country.country_name_ar, country.country_name_en)}</h1>
                 <button
                   type="button"
                   onClick={downloadCountryPdf}
                   disabled={downloading}
                   style={{ cursor: downloading ? 'not-allowed' : 'pointer', opacity: downloading ? 0.6 : 1, border: '1px solid #ececed', borderRadius: 999, padding: '10px 20px', fontSize: 14, fontWeight: 700, fontFamily: 'inherit', background: '#fff', color: '#036f8c' }}
                 >
-                  {downloading ? '...جارٍ التحضير' : 'تحميل PDF لكل تأشيرات ' + country.country_name_ar}
+                  {downloading ? '...جارٍ التحضير' : <>تحميل PDF لكل تأشيرات {nm(country.country_name_ar, country.country_name_en)}</>}
                 </button>
               </div>
 
@@ -103,7 +111,7 @@ export default function CountryVisaListPage() {
                         fontFamily: 'inherit',
                       }}
                     >
-                      {t}
+                      {t === 'الكل' ? nm('الكل', 'All') : nm(t, typeNameMap[t])}
                     </button>
                   ))}
                 </div>
@@ -123,10 +131,10 @@ export default function CountryVisaListPage() {
                     </div>
                     <div style={{ padding: '20px 24px', display: 'flex', flexDirection: 'column', gap: 12 }}>
                       <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
-                        <span style={pillStyle}>{c.visa_type_name_ar}</span>
+                        <span style={pillStyle}>{nm(c.visa_type_name_ar, c.visa_type_name_en)}</span>
                         {c.stay_duration ? <span style={pillStyle}>إقامة {c.stay_duration}</span> : null}
                       </div>
-                      <h3 style={{ margin: 0, fontSize: 19, color: '#1d2733' }}>{c.visa_type_name_ar} — {c.country_name_ar}</h3>
+                      <h3 style={{ margin: 0, fontSize: 19, color: '#1d2733' }}>{nm(c.visa_type_name_ar, c.visa_type_name_en)} — {nm(c.country_name_ar, c.country_name_en)}</h3>
                       <div style={{ display: 'flex', flexWrap: 'wrap', gap: 20, fontSize: 13.5, color: '#3d4650' }}>
                         <span>مدة الإصدار: {c.issuing_time_days || '—'} أيام عمل</span>
                         {c.validity_before_travel ? <span>صلاحية قبل السفر: {c.validity_before_travel}</span> : null}
