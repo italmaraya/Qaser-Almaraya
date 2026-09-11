@@ -323,6 +323,7 @@ export default function VisaApplyPage() {
           customer_phone: '+964' + customerPhone,
           customer_email: customerEmail,
           payment_method: paymentInfo?.method || paymentMethod,
+          payment_proof_url: paymentInfo?.receipt_url || '',
           travelers,
         }),
       });

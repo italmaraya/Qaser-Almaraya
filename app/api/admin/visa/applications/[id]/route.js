@@ -36,3 +36,13 @@ export async function GET(request, { params }) {
 
   return NextResponse.json({ ...application, travelers: travelersWithAnswers, documents, history });
 }
+
+export async function DELETE(request, { params }) {
+  if (!(await requireAuth(request))) return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
+  await ensureSchema();
+  const { id } = await params;
+  // Cascades clean up visa_travelers, visa_application_answers, and
+  // visa_status_history automatically (all declared ON DELETE CASCADE).
+  await sql`DELETE FROM visa_applications WHERE id = ${id}`;
+  return NextResponse.json({ ok: true });
+}

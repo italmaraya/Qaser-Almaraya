@@ -1,11 +1,11 @@
 import { NextResponse } from 'next/server';
 import { sql, ensureSchema } from '../../../../lib/db';
-import { sendApplicationEmail } from '../../../../lib/mailer';
+import { sendPaymentReviewNotice } from '../../../../lib/mailer';
 
 export async function POST(request) {
   await ensureSchema();
   const body = await request.json();
-  const { visa_card_id, customer_name, customer_phone, customer_email, payment_method, travelers } = body || {};
+  const { visa_card_id, customer_name, customer_phone, customer_email, payment_method, payment_proof_url, travelers } = body || {};
 
   if (!visa_card_id || !customer_name || !customer_phone || !Array.isArray(travelers) || travelers.length === 0) {
     return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
@@ -13,25 +13,34 @@ export async function POST(request) {
 
   const cards = await sql`
     SELECT vc.*, c.name_ar AS country_name_ar, c.name_en AS country_name_en,
-           vt.name_ar AS visa_type_name_ar, vt.name_en AS visa_type_name_en,
-           p.name AS provider_name, p.emails AS provider_emails
+           vt.name_ar AS visa_type_name_ar, vt.name_en AS visa_type_name_en
     FROM visa_cards vc
     LEFT JOIN countries c ON c.id = vc.country_id
     LEFT JOIN visa_types vt ON vt.id = vc.visa_type_id
-    LEFT JOIN providers p ON p.id = vc.provider_id
     WHERE vc.id = ${visa_card_id}
   `;
   if (cards.length === 0) return NextResponse.json({ error: 'Visa not found' }, { status: 404 });
   const card = cards[0];
 
-  const documents = await sql`SELECT * FROM visa_documents WHERE visa_card_id = ${visa_card_id}`;
-
   const adultCount = travelers.filter((t) => t.traveler_type === 'adult').length;
   const childCount = travelers.filter((t) => t.traveler_type === 'child').length;
 
+  // Every new application starts as 'awaiting_review' — regardless of payment
+  // method — and is NEVER forwarded to the provider at this point. A customer
+  // uploading an unrelated image, or simply lying about paying in person, must
+  // not be able to trigger a real visa order on its own. A staff member has to
+  // look at the payment proof (or confirm the office visit happened) and
+  // explicitly approve it from the dashboard before anything goes to a
+  // provider — see /api/admin/visa/applications/[id]/payment.
   const [application] = await sql`
-    INSERT INTO visa_applications (visa_card_id, customer_name, customer_phone, customer_email, adult_count, child_count, payment_method)
-    VALUES (${visa_card_id}, ${customer_name}, ${customer_phone}, ${customer_email || ''}, ${adultCount}, ${childCount}, ${payment_method || ''})
+    INSERT INTO visa_applications (
+      visa_card_id, customer_name, customer_phone, customer_email,
+      adult_count, child_count, payment_method, payment_proof_url, payment_status
+    )
+    VALUES (
+      ${visa_card_id}, ${customer_name}, ${customer_phone}, ${customer_email || ''},
+      ${adultCount}, ${childCount}, ${payment_method || ''}, ${payment_proof_url || ''}, 'awaiting_review'
+    )
     RETURNING *
   `;
 
@@ -55,45 +64,27 @@ export async function POST(request) {
     savedTravelers.push({ ...row, answers });
   }
 
-  // Send the routing email according to the visa card's configured method.
-  let recipients = [];
-  const providerEmails = (card.provider_emails || []).map((e) => e.email).filter(Boolean);
-  if (card.send_method === 'provider') recipients = card.provider_email ? [card.provider_email] : providerEmails;
-  else if (card.send_method === 'team') recipients = process.env.GMAIL_USER ? [process.env.GMAIL_USER] : [];
-  else if (card.send_method === 'both') {
-    recipients = [...(card.provider_email ? [card.provider_email] : providerEmails), ...(process.env.GMAIL_USER ? [process.env.GMAIL_USER] : [])];
-  }
-  // send_method === 'none' -> no provider/team recipients added above, but we still
-  // always notify the main team inbox below so a submission can never be silently missed.
-
-  // Always notify the main team address, regardless of the card's own routing setting.
-  const alwaysNotify = process.env.NOTIFY_EMAIL || process.env.GMAIL_USER;
-  if (alwaysNotify && !recipients.includes(alwaysNotify)) recipients.push(alwaysNotify);
-  recipients = [...new Set(recipients.filter(Boolean))];
-
+  // Notify the team's own inbox only — never the provider — so staff know a
+  // new payment needs checking. This goes out no matter which payment method
+  // was chosen, including "pay at the office", since that one still needs
+  // someone watching for the customer to actually show up and pay.
   let emailResult = { skipped: true };
   try {
-    emailResult = await sendApplicationEmail({
-      recipients,
+    emailResult = await sendPaymentReviewNotice({
       application: {
         ...application,
         country_name_ar: card.country_name_ar,
         visa_type_name_ar: card.visa_type_name_ar,
-        travelers: savedTravelers,
-        documents,
       },
     });
   } catch (err) {
-    console.error('Failed to send application email:', err);
+    console.error('Failed to send payment-review notice:', err);
     emailResult = { error: err.message };
   }
 
   return NextResponse.json({
     ok: true,
     application_id: application.id,
-    // Only report whether the notification email went out — never the
-    // actual recipient addresses (that includes the provider's email,
-    // which is a staff-only detail and must not reach the customer's browser).
     email: { sent: !!emailResult.sent, skipped: !!emailResult.skipped, error: emailResult.error ? true : undefined },
   });
 }

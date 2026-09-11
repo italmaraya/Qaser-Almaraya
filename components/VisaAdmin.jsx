@@ -304,6 +304,7 @@ function ApplicationsTab({ applications, statuses, reload, setError }) {
   const [detail, setDetail] = useState(null);
   const [noteDrafts, setNoteDrafts] = useState({});
   const [fileUploading, setFileUploading] = useState({});
+  const [paymentBusy, setPaymentBusy] = useState({});
 
   async function openDetail(id) {
     if (expanded === id) {
@@ -315,6 +316,29 @@ function ApplicationsTab({ applications, statuses, reload, setError }) {
     try {
       const data = await api(`/api/admin/visa/applications/${id}`);
       setDetail(data);
+    } catch (e) {
+      setError(e.message);
+    }
+  }
+
+  async function decidePayment(id, action) {
+    if (action === 'reject' && !window.confirm('سيتم حذف هذا الطلب نهائيًا لأن الدفع غير مؤكد. متابعة؟')) return;
+    setPaymentBusy((b) => ({ ...b, [id]: true }));
+    try {
+      await api(`/api/admin/visa/applications/${id}/payment`, { method: 'POST', body: JSON.stringify({ action }) });
+      reload();
+    } catch (e) {
+      setError(e.message);
+    } finally {
+      setPaymentBusy((b) => ({ ...b, [id]: false }));
+    }
+  }
+
+  async function deleteApplication(id) {
+    if (!window.confirm('سيتم حذف هذا الطلب نهائيًا ولا يمكن التراجع. متابعة؟')) return;
+    try {
+      await api(`/api/admin/visa/applications/${id}`, { method: 'DELETE' });
+      reload();
     } catch (e) {
       setError(e.message);
     }
@@ -477,6 +501,49 @@ function ApplicationsTab({ applications, statuses, reload, setError }) {
             </div>
           )}
 
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              flexWrap: 'wrap',
+              gap: 10,
+              padding: '10px 12px',
+              borderRadius: 10,
+              background: a.payment_status === 'approved' ? '#eafaf1' : '#fef3dc',
+              border: '1px solid ' + (a.payment_status === 'approved' ? '#b7e4c7' : '#fdd27c'),
+            }}
+          >
+            <span style={{ fontSize: 12.5, fontWeight: 700, color: a.payment_status === 'approved' ? '#1e7d46' : '#a06a00' }}>
+              {a.payment_status === 'approved' ? '✓ تمت الموافقة على الدفع — أُرسل إلى المزود' : '⏳ بانتظار مراجعة الدفع — لم يُرسَل إلى المزود بعد'}
+            </span>
+            <span style={{ fontSize: 12.5, color: '#3d4650' }}>
+              {a.payment_method === 'office' ? 'طريقة الدفع: الدفع في المكتب' : a.payment_method ? `طريقة الدفع: ${a.payment_method}` : ''}
+            </span>
+            {a.payment_proof_url && (
+              <a href={a.payment_proof_url} target="_blank" rel="noopener" style={{ fontSize: 12.5, fontWeight: 700, color: '#036f8c' }}>
+                📎 عرض إشعار الدفع
+              </a>
+            )}
+            {a.payment_status !== 'approved' && (
+              <div style={{ display: 'flex', gap: 8, marginInlineStart: 'auto' }}>
+                <button
+                  disabled={!!paymentBusy[a.id]}
+                  style={{ ...btnStyle('primary'), padding: '6px 14px', fontSize: 12.5, opacity: paymentBusy[a.id] ? 0.6 : 1 }}
+                  onClick={() => decidePayment(a.id, 'approve')}
+                >
+                  ✓ قبول الدفع وإرسال للمزود
+                </button>
+                <button
+                  disabled={!!paymentBusy[a.id]}
+                  style={{ ...btnStyle('danger'), padding: '6px 14px', fontSize: 12.5, opacity: paymentBusy[a.id] ? 0.6 : 1 }}
+                  onClick={() => decidePayment(a.id, 'reject')}
+                >
+                  ✕ رفض وحذف
+                </button>
+              </div>
+            )}
+          </div>
+
           {expanded === a.id && detail && (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12, borderTop: '1px dashed #ececed', paddingTop: 14 }}>
               {detail.travelers.map((t) => (
@@ -514,6 +581,9 @@ function ApplicationsTab({ applications, statuses, reload, setError }) {
               )}
             </div>
           )}
+          <button style={{ ...btnStyle('danger'), alignSelf: 'flex-start' }} onClick={() => deleteApplication(a.id)}>
+            حذف هذا الطلب نهائيًا
+          </button>
         </div>
       ))}
     </div>
@@ -1410,6 +1480,22 @@ function StatusesTab({ statuses, reload, setError }) {
       setError(e.message);
     }
   }
+  async function updateInternal(id, name_ar, name_en) {
+    try {
+      await api('/api/admin/visa/statuses', { method: 'POST', body: JSON.stringify({ action: 'update_internal', id, name_ar, name_en }) });
+      reload();
+    } catch (e) {
+      setError(e.message);
+    }
+  }
+  async function updateCustomer(id, name_ar, name_en) {
+    try {
+      await api('/api/admin/visa/statuses', { method: 'POST', body: JSON.stringify({ action: 'update_customer', id, name_ar, name_en }) });
+      reload();
+    } catch (e) {
+      setError(e.message);
+    }
+  }
   async function setMapping(internalId, customerStatusId) {
     try {
       await api('/api/admin/visa/statuses', { method: 'POST', body: JSON.stringify({ action: 'set_mapping', internal_id: internalId, customer_status_id: customerStatusId || null }) });
@@ -1443,7 +1529,20 @@ function StatusesTab({ statuses, reload, setError }) {
         <h4 style={{ margin: 0 }}>الحالات الداخلية (لفريقنا فقط)</h4>
         {statuses.internal.map((s) => (
           <div key={s.id} style={{ ...cardStyle, padding: 14 }}>
-            <span style={{ fontWeight: 700 }}>{s.name_ar}</span>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
+              <input
+                style={inputStyle}
+                value={s.name_ar}
+                placeholder="الاسم بالعربية"
+                onChange={(e) => updateInternal(s.id, e.target.value, s.name_en)}
+              />
+              <input
+                style={inputStyle}
+                value={s.name_en || ''}
+                placeholder="Name in English"
+                onChange={(e) => updateInternal(s.id, s.name_ar, e.target.value)}
+              />
+            </div>
             <label style={labelStyle}>
               تظهر للعميل كـ:
               <select style={inputStyle} value={s.customer_status_id || ''} onChange={(e) => setMapping(s.id, e.target.value)}>
@@ -1460,8 +1559,9 @@ function StatusesTab({ statuses, reload, setError }) {
             </button>
           </div>
         ))}
-        <div style={{ ...cardStyle, flexDirection: 'row', alignItems: 'flex-end' }}>
-          <input style={inputStyle} placeholder="اسم الحالة" value={internalName.ar} onChange={(e) => setInternalName({ ...internalName, ar: e.target.value })} />
+        <div style={{ ...cardStyle, flexDirection: 'row', alignItems: 'flex-end', flexWrap: 'wrap' }}>
+          <input style={{ ...inputStyle, flex: 1, minWidth: 140 }} placeholder="اسم الحالة بالعربية" value={internalName.ar} onChange={(e) => setInternalName({ ...internalName, ar: e.target.value })} />
+          <input style={{ ...inputStyle, flex: 1, minWidth: 140 }} placeholder="Name in English" value={internalName.en} onChange={(e) => setInternalName({ ...internalName, en: e.target.value })} />
           <button style={btnStyle('primary')} onClick={addInternal}>
             + إضافة
           </button>
@@ -1471,15 +1571,27 @@ function StatusesTab({ statuses, reload, setError }) {
       <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
         <h4 style={{ margin: 0 }}>حالات العميل (ما يظهر له)</h4>
         {statuses.customer.map((s) => (
-          <div key={s.id} style={{ ...cardStyle, padding: 14, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-            <span style={{ fontWeight: 700 }}>{s.name_ar}</span>
+          <div key={s.id} style={{ ...cardStyle, padding: 14, flexDirection: 'row', alignItems: 'flex-end', flexWrap: 'wrap', justifyContent: 'space-between' }}>
+            <input
+              style={{ ...inputStyle, flex: 1, minWidth: 120 }}
+              value={s.name_ar}
+              placeholder="الاسم بالعربية"
+              onChange={(e) => updateCustomer(s.id, e.target.value, s.name_en)}
+            />
+            <input
+              style={{ ...inputStyle, flex: 1, minWidth: 120 }}
+              value={s.name_en || ''}
+              placeholder="Name in English"
+              onChange={(e) => updateCustomer(s.id, s.name_ar, e.target.value)}
+            />
             <button style={btnStyle('danger')} onClick={() => removeCustomer(s.id)}>
               حذف
             </button>
           </div>
         ))}
-        <div style={{ ...cardStyle, flexDirection: 'row', alignItems: 'flex-end' }}>
-          <input style={inputStyle} placeholder="اسم الحالة" value={customerName.ar} onChange={(e) => setCustomerName({ ...customerName, ar: e.target.value })} />
+        <div style={{ ...cardStyle, flexDirection: 'row', alignItems: 'flex-end', flexWrap: 'wrap' }}>
+          <input style={{ ...inputStyle, flex: 1, minWidth: 140 }} placeholder="اسم الحالة بالعربية" value={customerName.ar} onChange={(e) => setCustomerName({ ...customerName, ar: e.target.value })} />
+          <input style={{ ...inputStyle, flex: 1, minWidth: 140 }} placeholder="Name in English" value={customerName.en} onChange={(e) => setCustomerName({ ...customerName, en: e.target.value })} />
           <button style={btnStyle('primary')} onClick={addCustomer}>
             + إضافة
           </button>

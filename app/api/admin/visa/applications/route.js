@@ -7,6 +7,19 @@ export async function GET(request) {
   if (!(await requireAuth(request))) return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
   await ensureSchema();
 
+  // Lazy cleanup: a "pay at the office" application that's still awaiting
+  // review 24 hours after submission means the customer never showed up to
+  // pay, so it's auto-removed here. This runs opportunistically whenever
+  // staff open this list, which needs no separate cron/infrastructure.
+  // Applications with an uploaded payment proof are never auto-deleted this
+  // way — those always wait for an explicit staff decision.
+  await sql`
+    DELETE FROM visa_applications
+    WHERE payment_status = 'awaiting_review'
+      AND payment_method = 'office'
+      AND submitted_at < now() - interval '24 hours'
+  `;
+
   const apps = await sql`
     SELECT a.*, c.name_ar AS country_name_ar, vt.name_ar AS visa_type_name_ar,
            vc.issuing_time_days, vc.adult_cost, vc.child_cost, vc.cost_currency, vc.adult_price, vc.child_price,

@@ -17,17 +17,43 @@ export const QA_PAYMENT_METHODS = [
 export default function PaymentMethods({ title, note, methods, defaultOpen = 'card', assetBase = '/assets', thankYouSrc, onConfirm, style, submitting = false, submitted = false, orderNo = '' }) {
   const list = methods && methods.length ? methods : QA_PAYMENT_METHODS;
   const [open, setOpen] = React.useState(defaultOpen);
-  const [receipt, setReceipt] = React.useState('');
+  const [receiptName, setReceiptName] = React.useState('');
+  const [receiptUrl, setReceiptUrl] = React.useState('');
+  const [uploading, setUploading] = React.useState(false);
+  const [uploadError, setUploadError] = React.useState('');
   const [confirmError, setConfirmError] = React.useState('');
   const chosen = list.find((m) => m.id === open);
   const atOffice = !!chosen && chosen.id === 'office';
-  const ready = atOffice || !!receipt;
+  // Requiring an actual uploaded URL (not just a picked filename) is the
+  // whole point here — a filename alone proves nothing was ever sent to us.
+  const ready = atOffice || !!receiptUrl;
   const uploadId = React.useId();
+
+  async function handleFile(file) {
+    if (!file) return;
+    setUploadError('');
+    setReceiptUrl('');
+    setReceiptName(file.name);
+    setUploading(true);
+    try {
+      const fd = new FormData();
+      fd.append('file', file);
+      const res = await fetch('/api/visa/upload', { method: 'POST', body: fd });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error || 'تعذّر رفع الملف');
+      setReceiptUrl(data.url);
+    } catch (e) {
+      setUploadError(e.message || 'تعذّر رفع الملف — حاول مرة أخرى');
+      setReceiptName('');
+    } finally {
+      setUploading(false);
+    }
+  }
 
   async function handleConfirm() {
     setConfirmError('');
     try {
-      if (onConfirm) await onConfirm({ method: chosen.id, receipt: atOffice ? '' : receipt });
+      if (onConfirm) await onConfirm({ method: chosen.id, receipt_url: atOffice ? '' : receiptUrl, receipt_name: atOffice ? '' : receiptName });
     } catch (e) {
       // Parent already surfaces its own error state (e.g. the page-level error banner);
       // this local message is a fallback in case PaymentMethods is used standalone.
@@ -48,7 +74,7 @@ export default function PaymentMethods({ title, note, methods, defaultOpen = 'ca
             </span>
           )}
           <span style={{ fontSize: 15, lineHeight: 1.7, color: '#036f8c' }}>
-            استلمنا إشعار الدفع{receipt ? ' («' + receipt + '»)' : ''}. يتحقق فريقنا منه ويعود إليك على واتساب خلال ٢٤ ساعة بتأكيد الطلب.
+            استلمنا إشعار الدفع{receiptName ? ' («' + receiptName + '»)' : ''}. يتحقق فريقنا منه ويعود إليك على واتساب خلال ٢٤ ساعة بتأكيد الطلب.
           </span>
           <span style={{ fontSize: 13, color: '#3d4650' }}>الرقم المختصر 6393 · sales@almarayagroup.com</span>
         </div>
@@ -105,16 +131,23 @@ export default function PaymentMethods({ title, note, methods, defaultOpen = 'ca
           {confirmError && (
             <p style={{ margin: 0, padding: '10px 14px', borderRadius: 10, background: '#fdecef', border: '1px solid #f7c3cc', color: '#d2324f', fontSize: 13 }}>{confirmError}</p>
           )}
+          {uploadError && (
+            <p style={{ margin: 0, padding: '10px 14px', borderRadius: 10, background: '#fdecef', border: '1px solid #f7c3cc', color: '#d2324f', fontSize: 13 }}>{uploadError}</p>
+          )}
           <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
             {atOffice ? null : (
-              <label htmlFor={uploadId} style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 8, padding: '10px 18px', borderRadius: 999, background: '#fff', border: '1px solid #036f8c', color: '#036f8c', fontSize: 13.5, fontWeight: 600 }}>
-                <Icon name={receipt ? 'check' : 'upload'} size={17} />{receipt ? 'تغيير الملف' : 'اختر الملف'}
+              <label htmlFor={uploadId} style={{ cursor: uploading ? 'not-allowed' : 'pointer', opacity: uploading ? 0.6 : 1, display: 'flex', alignItems: 'center', gap: 8, padding: '10px 18px', borderRadius: 999, background: '#fff', border: '1px solid #036f8c', color: '#036f8c', fontSize: 13.5, fontWeight: 600 }}>
+                <Icon name={receiptUrl ? 'check' : 'upload'} size={17} />{uploading ? 'جارٍ الرفع...' : receiptUrl ? 'تغيير الملف' : 'اختر الملف'}
               </label>
             )}
-            {atOffice ? null : <input id={uploadId} type="file" style={{ display: 'none' }} onChange={(e) => setReceipt(e.target.files && e.target.files[0] ? e.target.files[0].name : '')} />}
-            {atOffice ? null : <span style={{ flex: 1, minWidth: 120, fontSize: 12, color: receipt ? '#1d2733' : '#7b8087', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{receipt || 'لم يتم اختيار ملف بعد'}</span>}
-            <button disabled={!ready || submitting} onClick={handleConfirm}
-              style={{ cursor: (ready && !submitting) ? 'pointer' : 'not-allowed', opacity: (ready && !submitting) ? 1 : 0.45, border: 0, borderRadius: 999, padding: '12px 26px', background: '#049dc5', color: '#fff', fontFamily: 'inherit', fontSize: 13.5, fontWeight: 600 }}>
+            {atOffice ? null : <input id={uploadId} type="file" accept="image/*,.pdf" disabled={uploading} style={{ display: 'none' }} onChange={(e) => handleFile(e.target.files && e.target.files[0])} />}
+            {atOffice ? null : (
+              <span style={{ flex: 1, minWidth: 120, fontSize: 12, color: receiptUrl ? '#1d2733' : '#7b8087', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                {receiptUrl ? receiptName : uploading ? 'جارٍ رفع الملف…' : 'لم يتم اختيار ملف بعد'}
+              </span>
+            )}
+            <button disabled={!ready || submitting || uploading} onClick={handleConfirm}
+              style={{ cursor: (ready && !submitting && !uploading) ? 'pointer' : 'not-allowed', opacity: (ready && !submitting && !uploading) ? 1 : 0.45, border: 0, borderRadius: 999, padding: '12px 26px', background: '#049dc5', color: '#fff', fontFamily: 'inherit', fontSize: 13.5, fontWeight: 600 }}>
               {submitting ? 'جارٍ الإرسال...' : 'تأكيد الدفع'}
             </button>
           </div>
