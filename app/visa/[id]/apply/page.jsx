@@ -62,6 +62,7 @@ function TravelerForm({ index, travelerType, documents, onChange, onProgress }) 
   const [files, setFiles] = useState({});
   const [repeated, setRepeated] = useState({});
   const [uploading, setUploading] = useState({});
+  const [uploadErrors, setUploadErrors] = useState({});
 
   const docs = applicableDocs(documents, travelerType);
   const visibleDocs = docs.filter((d) => isVisible(d, answers));
@@ -100,12 +101,19 @@ function TravelerForm({ index, travelerType, documents, onChange, onProgress }) 
   async function handleFile(doc, file) {
     if (!file) return;
     setUploading((u) => ({ ...u, [doc.id]: true }));
+    setUploadErrors((e) => ({ ...e, [doc.id]: '' }));
     try {
       const fd = new FormData();
       fd.append('file', file);
       const res = await fetch('/api/visa/upload', { method: 'POST', body: fd });
-      const data = await res.json();
-      if (res.ok) setFiles((f) => ({ ...f, [doc.id]: data.url }));
+      const data = await res.json().catch(() => ({}));
+      if (res.ok) {
+        setFiles((f) => ({ ...f, [doc.id]: data.url }));
+      } else {
+        setUploadErrors((e) => ({ ...e, [doc.id]: data.error || 'تعذّر رفع الملف — حاول مرة أخرى' }));
+      }
+    } catch {
+      setUploadErrors((e) => ({ ...e, [doc.id]: 'تعذّر الاتصال بالخادم — تحقّق من الإنترنت وحاول مرة أخرى' }));
     } finally {
       setUploading((u) => ({ ...u, [doc.id]: false }));
     }
@@ -139,13 +147,16 @@ function TravelerForm({ index, travelerType, documents, onChange, onProgress }) 
             </div>
 
             {(d.kind === 'file' || d.kind === 'photo') && (
-              <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                <label style={{ cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: 6, padding: '8px 16px', borderRadius: 999, border: '1px solid #036f8c', color: '#036f8c', fontSize: 13.5, fontWeight: 600 }}>
-                  رفع
-                  <input type="file" accept={d.kind === 'photo' ? 'image/*' : undefined} onChange={(e) => handleFile(d, e.target.files[0])} style={{ display: 'none' }} />
-                </label>
-                {uploading[d.id] && <span style={{ fontSize: 13, color: '#7b8087' }}>...جارٍ الرفع</span>}
-                {files[d.id] && <span style={{ fontSize: 13, color: '#049dc5' }}>✓ تم الرفع</span>}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                  <label style={{ cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: 6, padding: '8px 16px', borderRadius: 999, border: '1px solid #036f8c', color: '#036f8c', fontSize: 13.5, fontWeight: 600 }}>
+                    {files[d.id] ? 'تغيير الملف' : 'رفع'}
+                    <input type="file" accept={d.kind === 'photo' ? 'image/*' : undefined} onChange={(e) => handleFile(d, e.target.files[0])} style={{ display: 'none' }} />
+                  </label>
+                  {uploading[d.id] && <span style={{ fontSize: 13, color: '#7b8087' }}>...جارٍ الرفع</span>}
+                  {!uploading[d.id] && files[d.id] && <span style={{ fontSize: 13, color: '#049dc5' }}>✓ تم الرفع</span>}
+                </div>
+                {uploadErrors[d.id] && <span style={{ fontSize: 12.5, color: '#d2324f' }}>{uploadErrors[d.id]}</span>}
               </div>
             )}
 
