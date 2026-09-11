@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { sql, ensureSchema } from '../../../../../lib/db';
 import { requireAuth } from '../../../../../lib/session';
+import { IQD_PER_USD } from '../../../../../lib/exchangeRate';
 
 export async function GET(request) {
   if (!(await requireAuth(request))) return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
@@ -8,7 +9,7 @@ export async function GET(request) {
 
   const apps = await sql`
     SELECT a.*, c.name_ar AS country_name_ar, vt.name_ar AS visa_type_name_ar,
-           vc.issuing_time_days, vc.adult_cost, vc.child_cost, vc.adult_price, vc.child_price,
+           vc.issuing_time_days, vc.adult_cost, vc.child_cost, vc.cost_currency, vc.adult_price, vc.child_price,
            s.name_ar AS status_name_ar, s.name_en AS status_name_en, s.id AS status_id,
            p.name AS provider_name,
            latest_hist.note AS latest_note
@@ -33,7 +34,10 @@ export async function GET(request) {
       deadline.setDate(deadline.getDate() + Number(a.issuing_time_days));
       isDelayed = new Date() > deadline;
     }
-    const internal_cost_total = (Number(a.adult_cost) || 0) * (Number(a.adult_count) || 0) + (Number(a.child_cost) || 0) * (Number(a.child_count) || 0);
+    let internal_cost_total = (Number(a.adult_cost) || 0) * (Number(a.adult_count) || 0) + (Number(a.child_cost) || 0) * (Number(a.child_count) || 0);
+    // The admin may have entered this card's internal cost in USD — convert
+    // to IQD here so the badge always reads in one consistent currency.
+    if (a.cost_currency === 'USD') internal_cost_total *= IQD_PER_USD;
     return { ...a, is_delayed: isDelayed, internal_cost_total };
   });
 

@@ -18,6 +18,7 @@ export async function PUT(request, { params }) {
       child_price = ${b.child_price || 0},
       adult_cost = ${b.adult_cost || 0},
       child_cost = ${b.child_cost || 0},
+      cost_currency = ${b.cost_currency || 'IQD'},
       booking_notes = ${b.booking_notes || ''},
       image_url = ${b.image_url || ''},
       provider_id = ${b.provider_id || null},

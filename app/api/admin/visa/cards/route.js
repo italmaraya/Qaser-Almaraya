@@ -30,12 +30,12 @@ export async function POST(request) {
   const rows = await sql`
     INSERT INTO visa_cards (
       country_id, visa_type_id, stay_duration, issuing_time_days, validity_before_travel,
-      adult_price, child_price, adult_cost, child_cost, booking_notes, image_url,
+      adult_price, child_price, adult_cost, child_cost, cost_currency, booking_notes, image_url,
       provider_id, provider_email, send_method, active
     ) VALUES (
       ${b.country_id || null}, ${b.visa_type_id || null}, ${b.stay_duration || ''}, ${b.issuing_time_days || null},
       ${b.validity_before_travel || ''}, ${b.adult_price || 0}, ${b.child_price || 0}, ${b.adult_cost || 0},
-      ${b.child_cost || 0}, ${b.booking_notes || ''}, ${b.image_url || ''}, ${b.provider_id || null},
+      ${b.child_cost || 0}, ${b.cost_currency || 'IQD'}, ${b.booking_notes || ''}, ${b.image_url || ''}, ${b.provider_id || null},
       ${b.provider_email || ''}, ${b.send_method || 'provider'}, ${b.active !== false}
     ) RETURNING *
   `;

@@ -8,6 +8,7 @@ import MascotLoader from '../../components/MascotLoader';
 import { useLangToggle } from '../../lib/i18n';
 import { useCurrencyToggle, formatPrice } from '../../lib/currency';
 import { flagSrc, isUploadedFlag } from '../../lib/flags';
+import CountrySelect from '../../components/CountrySelect';
 
 const STEPS = [
   { n: '01', who: 'أنت', title: 'تختار التأشيرة', hint: 'ترى السعر والمدة وقائمة المستندات' },
@@ -80,6 +81,16 @@ export default function VisaLandingPage() {
       typeNames: [...new Set(c.cards.map((x) => x.visa_type_name_ar))],
     }));
   }, [cards]);
+
+  const destinationOptions = useMemo(
+    () => countries.map((c) => ({ value: c.country_id, label: nm(c.country_name_ar, c.country_name_en), flagCode: c.flag_code })),
+    [countries, lang]
+  );
+
+  const nationalityOptions = useMemo(
+    () => nationalities.map((n) => ({ value: n.id, label: nm(n.name_ar, n.name_en) })),
+    [nationalities, lang]
+  );
 
   const typeNameMap = useMemo(() => {
     const m = {};
@@ -156,12 +167,20 @@ export default function VisaLandingPage() {
       <main style={{ flex: 1 }}>
         <div className="qa-page">
           <section style={{ position: 'relative', background: 'linear-gradient(135deg,#34bbe1 0%,#049dc5 100%)', paddingBottom: 90 }}>
-            <div className="qa-sec" style={{ paddingBottom: 0, display: 'flex', flexDirection: 'column', gap: 8, alignItems: 'flex-end', textAlign: 'right' }}>
-              <span style={{ fontSize: 14, fontWeight: 700, letterSpacing: '.06em', color: '#fff' }}>VISAS</span>
-              <h1 style={{ margin: 0, fontSize: 'clamp(30px,3.4vw,56px)', color: '#fff' }}>التأشيرات</h1>
-              <p style={{ margin: 0, fontSize: 17, lineHeight: 1.7, color: 'rgba(255,255,255,.92)', maxWidth: 620 }}>
-                اختر الدولة من الشريط أدناه لتظهر لك نوع التأشيرة ورسومها ومدة الإنجاز والمستندات المطلوبة.
-              </p>
+            <div className="qa-sec" style={{ paddingBottom: 0, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 24, flexWrap: 'wrap' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 8, alignItems: 'flex-end', textAlign: 'right', flex: '1 1 380px', minWidth: 280 }}>
+                <span style={{ fontSize: 14, fontWeight: 700, letterSpacing: '.06em', color: '#fff' }}>VISAS</span>
+                <h1 style={{ margin: 0, fontSize: 'clamp(30px,3.4vw,56px)', color: '#fff' }}>التأشيرات</h1>
+                <p style={{ margin: 0, fontSize: 17, lineHeight: 1.7, color: 'rgba(255,255,255,.92)', maxWidth: 620 }}>
+                  اختر الدولة من الشريط أدناه لتظهر لك نوع التأشيرة ورسومها ومدة الإنجاز والمستندات المطلوبة.
+                </p>
+              </div>
+              <img
+                src="/assets/mascot-skylo-visa-fan.png"
+                alt="سكايلو يحمل تأشيرات وجواز سفر"
+                className="qa-visa-hero-mascot"
+                style={{ width: 220, maxWidth: '36vw', height: 'auto', flex: 'none', filter: 'drop-shadow(0 24px 44px rgba(1,42,55,.35))' }}
+              />
             </div>
 
             <div className="qa-sec" style={{ paddingTop: 32, paddingBottom: 0 }}>
@@ -182,28 +201,26 @@ export default function VisaLandingPage() {
                 >
                   <label style={segmentStyle}>
                     <span style={segmentLabel}>إلى أين تسافر؟</span>
-                    <div style={{ position: 'relative' }}>
-                      <select value={destination} onChange={(e) => setDestination(e.target.value)} style={segmentSelect}>
-                        <option value="">اختر دولة</option>
-                        {countries.map((c) => (
-                          <option key={c.country_id} value={c.country_id}>{nm(c.country_name_ar, c.country_name_en)}</option>
-                        ))}
-                      </select>
-                      <span style={chevron}>⌄</span>
-                    </div>
+                    <CountrySelect
+                      value={destination}
+                      onChange={setDestination}
+                      options={destinationOptions}
+                      placeholder="اختر دولة"
+                      searchPlaceholder="ابحث عن دولة…"
+                      emptyLabel="لا توجد دولة بهذا الاسم"
+                    />
                   </label>
 
                   <label style={segmentStyle}>
                     <span style={segmentLabel}>الجنسية</span>
-                    <div style={{ position: 'relative' }}>
-                      <select value={nationality} onChange={(e) => setNationality(e.target.value)} style={segmentSelect}>
-                        {nationalities.length === 0 && <option value="">—</option>}
-                        {nationalities.map((n) => (
-                          <option key={n.id} value={n.id}>{nm(n.name_ar, n.name_en)}</option>
-                        ))}
-                      </select>
-                      <span style={chevron}>⌄</span>
-                    </div>
+                    <CountrySelect
+                      value={nationality}
+                      onChange={setNationality}
+                      options={nationalityOptions}
+                      placeholder="اختر جنسية"
+                      searchPlaceholder="ابحث عن جنسية…"
+                      emptyLabel="لا توجد جنسية بهذا الاسم"
+                    />
                   </label>
 
                   <label style={segmentStyle}>

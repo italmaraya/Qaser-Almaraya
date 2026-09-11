@@ -71,14 +71,83 @@ async function uploadImage(file) {
   fd.append('file', file);
   const res = await fetch('/api/admin/upload', { method: 'POST', body: fd });
   const data = await res.json().catch(() => ({}));
-  if (!res.ok) throw new Error(data.error || 'تعذّر رفع الصورة');
+  if (!res.ok) throw new Error(data.error || 'تعذّر رفع الصورة (خطأ غير متوقع من الخادم)');
   return data.url;
+}
+
+// Phone photos can be several MB — shrink them down to a small square before
+// upload so it's fast, fits well as a round flag icon, and never trips a
+// server-side file-size limit. SVGs are left untouched since they're vector.
+function resizeImageForFlag(file, maxDim = 256) {
+  return new Promise((resolve) => {
+    if (!file.type.startsWith('image/') || file.type === 'image/svg+xml') {
+      resolve(file);
+      return;
+    }
+    const img = new Image();
+    const objectUrl = URL.createObjectURL(file);
+    img.onload = () => {
+      const size = Math.min(maxDim, Math.max(img.width, img.height));
+      const canvas = document.createElement('canvas');
+      canvas.width = size;
+      canvas.height = size;
+      const ctx = canvas.getContext('2d');
+      // Cover-crop to a centered square so it looks right in a round frame.
+      const srcSize = Math.min(img.width, img.height);
+      const sx = (img.width - srcSize) / 2;
+      const sy = (img.height - srcSize) / 2;
+      ctx.drawImage(img, sx, sy, srcSize, srcSize, 0, 0, size, size);
+      canvas.toBlob(
+        (blob) => {
+          URL.revokeObjectURL(objectUrl);
+          if (!blob) { resolve(file); return; }
+          resolve(new File([blob], (file.name || 'flag').replace(/\.\w+$/, '') + '.png', { type: 'image/png' }));
+        },
+        'image/png',
+        0.92
+      );
+    };
+    img.onerror = () => { URL.revokeObjectURL(objectUrl); resolve(file); };
+    img.src = objectUrl;
+  });
 }
 
 function flagSrc(flagCode) {
   if (!flagCode) return '';
   if (/^https?:\/\//i.test(flagCode) || flagCode.startsWith('/')) return flagCode;
   return `/assets/flags/${flagCode}.png`;
+}
+
+// Two-way pill toggle so the admin can mark whether an internal cost figure
+// was entered in Iraqi Dinars or US Dollars (some providers quote in USD).
+function CostCurrencyPicker({ value, onChange }) {
+  const cur = value || 'IQD';
+  const opt = (id, label) => (
+    <button
+      key={id}
+      type="button"
+      onClick={() => onChange(id)}
+      style={{
+        cursor: 'pointer',
+        padding: '8px 18px',
+        borderRadius: 999,
+        border: '1px solid ' + (cur === id ? '#049dc5' : '#ececed'),
+        background: cur === id ? '#049dc5' : '#fff',
+        color: cur === id ? '#fff' : '#3d4650',
+        fontFamily: 'inherit',
+        fontSize: 13.5,
+        fontWeight: 700,
+      }}
+    >
+      {label}
+    </button>
+  );
+  return (
+    <div style={{ display: 'flex', gap: 8 }}>
+      {opt('IQD', 'دينار عراقي (IQD)')}
+      {opt('USD', 'دولار أمريكي (USD)')}
+    </div>
+  );
 }
 
 // Small reusable "upload a flag image" control: shows a round preview of the
@@ -90,10 +159,15 @@ function FlagUploader({ value, onChange }) {
 
   async function handleFile(file) {
     if (!file) return;
+    if (!file.type.startsWith('image/')) {
+      setErr('الملف المختار ليس صورة');
+      return;
+    }
     setBusy(true);
     setErr('');
     try {
-      const url = await uploadImage(file);
+      const resized = await resizeImageForFlag(file);
+      const url = await uploadImage(resized);
       onChange(url);
     } catch (e) {
       setErr(e.message);
@@ -866,6 +940,7 @@ function blankCard() {
     child_price: '',
     adult_cost: '',
     child_cost: '',
+    cost_currency: 'IQD',
     booking_notes: '',
     provider_id: '',
     provider_email: '',
@@ -990,6 +1065,10 @@ function CardsTab({ cards, countries, types, providers, reload, setError }) {
           </label>
         </div>
         <label style={labelStyle}>
+          عملة التكلفة الداخلية (لكِلا الحقلين أعلاه)
+          <CostCurrencyPicker value={draft.cost_currency} onChange={(v) => setDraft({ ...draft, cost_currency: v })} />
+        </label>
+        <label style={labelStyle}>
           ملاحظات الحجز
           <textarea style={{ ...inputStyle, minHeight: 60 }} value={draft.booking_notes} onChange={(e) => setDraft({ ...draft, booking_notes: e.target.value })} />
         </label>
@@ -1093,6 +1172,10 @@ function CardsTab({ cards, countries, types, providers, reload, setError }) {
                   <input type="number" style={inputStyle} value={editDraft.child_cost || ''} onChange={(e) => setEditDraft({ ...editDraft, child_cost: e.target.value })} />
                 </label>
               </div>
+              <label style={labelStyle}>
+                عملة التكلفة الداخلية (لكِلا الحقلين أعلاه)
+                <CostCurrencyPicker value={editDraft.cost_currency} onChange={(v) => setEditDraft({ ...editDraft, cost_currency: v })} />
+              </label>
               <label style={labelStyle}>
                 ملاحظات الحجز
                 <textarea style={{ ...inputStyle, minHeight: 60 }} value={editDraft.booking_notes || ''} onChange={(e) => setEditDraft({ ...editDraft, booking_notes: e.target.value })} />
