@@ -117,7 +117,9 @@ export default function CountrySelect({ value, onChange, options, placeholder = 
           </div>
           <div ref={listRef} className="qa-dropdown-scroll" style={{ maxHeight: 264, overflowY: 'auto', padding: 6 }}>
             {filtered.length === 0 && (
-              <div style={{ padding: '18px 12px', textAlign: 'center', color: '#7b8087', fontSize: 13.5 }}>{emptyLabel}</div>
+              <div style={{ padding: '18px 12px', textAlign: 'center', color: '#7b8087', fontSize: 13.5 }}>
+                {options.length === 0 ? '...جارٍ التحميل' : emptyLabel}
+              </div>
             )}
             {filtered.map((o, i) => {
               const isSelected = String(o.value) === String(value);

@@ -230,7 +230,7 @@ export default function VisaLandingPage() {
             </div>
 
             <div className="qa-sec" style={{ paddingTop: 20, paddingBottom: 0 }}>
-              <div style={{ position: 'relative', background: '#fff', borderRadius: 24, boxShadow: '0 24px 50px rgba(1,42,55,.28)', overflow: 'hidden' }}>
+              <div style={{ position: 'relative', background: '#fff', borderRadius: 24, boxShadow: '0 24px 50px rgba(1,42,55,.28)' }}>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '18px 26px', borderBottom: '1px solid #ececed' }}>
                   <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
                     <span style={{ fontSize: 17, fontWeight: 700, color: '#1d2733' }}>طلب تأشيرة</span>
