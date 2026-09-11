@@ -7,6 +7,7 @@ import SiteHeader from '../../../../components/SiteHeader';
 import SiteFooter from '../../../../components/SiteFooter';
 import MascotLoader from '../../../../components/MascotLoader';
 import { useLangToggle } from '../../../../lib/i18n';
+import { useCurrencyToggle, formatPrice } from '../../../../lib/currency';
 
 const inputStyle = {
   width: '100%',
@@ -180,12 +181,31 @@ function TravelerForm({ index, travelerType, documents, onChange, onProgress }) 
             )}
 
             {d.kind === 'choice' && (
-              <select style={inputStyle} value={answers[d.id] || ''} onChange={(e) => setAnswers({ ...answers, [d.id]: e.target.value })}>
-                <option value="">اختر</option>
+              <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
                 {(d.choices || []).map((c, i) => (
-                  <option key={i} value={c}>{c}</option>
+                  <button
+                    key={i}
+                    type="button"
+                    onClick={() => setAnswers({ ...answers, [d.id]: c })}
+                    style={{
+                      cursor: 'pointer',
+                      padding: '10px 18px',
+                      borderRadius: 999,
+                      border: '1px solid ' + (answers[d.id] === c ? '#049dc5' : '#ececed'),
+                      background: answers[d.id] === c ? '#049dc5' : '#fff',
+                      color: answers[d.id] === c ? '#fff' : '#3d4650',
+                      fontFamily: 'inherit',
+                      fontSize: 14,
+                      fontWeight: 600,
+                    }}
+                  >
+                    {c}
+                  </button>
                 ))}
-              </select>
+                {(!d.choices || d.choices.length === 0) && (
+                  <span style={{ fontSize: 12.5, color: '#7b8087' }}>لم يحدد الخيارات بعد</span>
+                )}
+              </div>
             )}
 
             {d.kind === 'repeated' && (
@@ -220,6 +240,7 @@ function TravelerForm({ index, travelerType, documents, onChange, onProgress }) 
 
 export default function VisaApplyPage() {
   const { lang } = useLangToggle();
+  const { currency } = useCurrencyToggle();
   const nm = (ar, en) => (lang === 'en' && en ? en : ar);
   const { id } = useParams();
   const [card, setCard] = useState(null);
@@ -391,18 +412,18 @@ export default function VisaApplyPage() {
                 {adultCount > 0 && (
                   <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                     <span style={{ color: '#7b8087' }}>{adultCount} × بالغ</span>
-                    <span>{(Number(card.adult_price) * adultCount).toLocaleString()} د.ع</span>
+                    <span>{formatPrice(Number(card.adult_price) * adultCount, currency, lang)}</span>
                   </div>
                 )}
                 {childCount > 0 && (
                   <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                     <span style={{ color: '#7b8087' }}>{childCount} × طفل</span>
-                    <span>{(Number(card.child_price) * childCount).toLocaleString()} د.ع</span>
+                    <span>{formatPrice(Number(card.child_price) * childCount, currency, lang)}</span>
                   </div>
                 )}
                 <div style={{ display: 'flex', justifyContent: 'space-between', borderTop: '1px solid #ececed', paddingTop: 8, fontWeight: 700 }}>
                   <span>الإجمالي</span>
-                  <span style={{ color: '#049dc5' }}>{estimatedTotal.toLocaleString()} د.ع</span>
+                  <span style={{ color: '#049dc5' }}>{formatPrice(estimatedTotal, currency, lang)}</span>
                 </div>
               </div>
               {step === 'form' && (

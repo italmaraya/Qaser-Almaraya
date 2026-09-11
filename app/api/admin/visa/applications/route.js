@@ -8,7 +8,7 @@ export async function GET(request) {
 
   const apps = await sql`
     SELECT a.*, c.name_ar AS country_name_ar, vt.name_ar AS visa_type_name_ar,
-           vc.issuing_time_days,
+           vc.issuing_time_days, vc.adult_cost, vc.child_cost, vc.adult_price, vc.child_price,
            s.name_ar AS status_name_ar, s.name_en AS status_name_en, s.id AS status_id,
            p.name AS provider_name,
            latest_hist.note AS latest_note
@@ -33,7 +33,8 @@ export async function GET(request) {
       deadline.setDate(deadline.getDate() + Number(a.issuing_time_days));
       isDelayed = new Date() > deadline;
     }
-    return { ...a, is_delayed: isDelayed };
+    const internal_cost_total = (Number(a.adult_cost) || 0) * (Number(a.adult_count) || 0) + (Number(a.child_cost) || 0) * (Number(a.child_count) || 0);
+    return { ...a, is_delayed: isDelayed, internal_cost_total };
   });
 
   return NextResponse.json(withDelay);

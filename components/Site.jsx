@@ -3,6 +3,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import Icon from './Icon';
 import { getStoredLang } from '../lib/i18n';
+import { getStoredCurrency } from '../lib/currency';
 import AchievementSpread from './AchievementSpread';
 import MascotLoader from './MascotLoader';
 import PackageCard from './PackageCard';
@@ -19,7 +20,7 @@ const COUNTRIES_DEFAULT=[
  {code:'eg',name:'مصر',en:'Egypt',region:'الشرق الأوسط وأفريقيا'},
  {code:'th',name:'تايلاند',en:'Thailand',region:'آسيا'},
  {code:'am',name:'أرمينيا',en:'Armenia',region:'تركيا والقوقاز'}];
-const REGIONS=['الشرق الأوسط وأفريقيا','تركيا والقوقاز','آسيا','الأمريكتان'];
+const REGIONS=['الشرق الأوسط وأفريقيا','تركيا والقوقاز','آسيا','أوروبا','الأمريكتان'];
 /* BRD §4 — visa types are tick boxes, not products */
 const VISA_TYPES=[
  {id:'electronic',name:'تأشيرة إلكترونية',en:'Electronic visa',filter:'إلكترونية',appointment:false,deliversFile:true,takesPassport:false,preparesPapers:false,guaranteed:true},
@@ -156,7 +157,7 @@ export default function Site(props) {
   const COUNTRIES = filteredCountriesList.length ? filteredCountriesList : COUNTRIES_DEFAULT;
   const VISAS = filteredCountriesList.length ? legacyVisasRaw : VISAS_DEFAULT;
   const DEFAULT_ACTIVE_COUNTRY = (COUNTRIES[0] && COUNTRIES[0].code) || 'tr';
-  const [st, setSt] = useState({ lang: 'ar', page: props.initialPage || 'home', active: DEFAULT_ACTIVE_COUNTRY, group: 'الكل', achievement: 'forum', pkg: '', loading: false, toast: '',
+  const [st, setSt] = useState({ lang: 'ar', currency: 'IQD', page: props.initialPage || 'home', active: DEFAULT_ACTIVE_COUNTRY, group: 'الكل', achievement: 'forum', pkg: '', loading: false, toast: '',
     travellers: 1, children: 0, tripDate: '', visaType: 'الكل', resultKind: 'الكل', visaDetailOpen: false, searched: false, visaId: '', appStage: 'form', ask: false, app: null, appError: '', appNo: '',
     countryPanelOpen: false, countryQuery: '',
     trackOpen: false, trackInput: '', trackQuery: '', trackSending: false, trackError: '', trackData: null,
@@ -175,6 +176,13 @@ export default function Site(props) {
   useEffect(() => {
     const stored = getStoredLang();
     if (stored !== st.lang) patch({ lang: stored });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Same sync for the IQD/USD currency preference.
+  useEffect(() => {
+    const stored = getStoredCurrency();
+    if (stored !== st.currency) patch({ currency: stored });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -390,7 +398,7 @@ function   renderVals(){
       go: () => patch({ group: g })
     }));
     const country0 = COUNTRIES.find(c => c.code === active) || COUNTRIES[0];
-    const country = Object.assign({}, country0, { flagUrl: '/assets/flags/' + country0.code + '.png', upper: country0.code.toUpperCase(), isAppointment: VISAS.some(v => v.country === country0.code && v.type === 'appointment') });
+    const country = Object.assign({}, country0, { flagUrl: country0.flagUrl || ('/assets/flags/' + country0.code + '.png'), upper: country0.code.toUpperCase(), isAppointment: VISAS.some(v => v.country === country0.code && v.type === 'appointment') });
     const out = {
       navItems, groups,
       countries: COUNTRIES,
@@ -423,6 +431,13 @@ function   renderVals(){
         const next = st.lang === 'ar' ? 'en' : 'ar';
         try { localStorage.setItem('qa_lang', next); } catch {}
         patch({ lang: next });
+      },
+      currencyLabel: st.currency === 'IQD' ? 'USD' : 'IQD',
+      toggleCurrency: e => {
+        if(e) e.preventDefault();
+        const next = st.currency === 'IQD' ? 'USD' : 'IQD';
+        try { localStorage.setItem('qa_currency', next); } catch {}
+        patch({ currency: next });
       },
       applyOpen: !!st.apply,
       applyJob: st.apply || '',
@@ -558,7 +573,7 @@ function   renderVals(){
 
   /* ---------- Visa module (BRD v3) ---------- */
 
-function   money(n){ const s = Number(n || 0).toLocaleString('en-US'); return st.lang === 'en' ? 'IQD ' + s : s.replace(/\d/g, d => '٠١٢٣٤٥٦٧٨٩'[+d]).replace(/,/g, '٬') + ' د.ع'; }
+function   money(n){ const num = Number(n || 0); if(st.currency === 'USD'){ const usd = num / 1310; return '$' + usd.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 2 }); } const s = num.toLocaleString('en-US'); return st.lang === 'en' ? 'IQD ' + s : s.replace(/\d/g, d => '٠١٢٣٤٥٦٧٨٩'[+d]).replace(/,/g, '٬') + ' د.ع'; }
 
 function   L(ar, en){ return st.lang === 'en' && en != null ? en : ar; }
 
@@ -728,7 +743,7 @@ function   visaVals(country){
       regionTiles: REGIONS.map(r => {
         const items = COUNTRIES.filter(c => c.region === r).filter(c => S.visaType === 'الكل' || visasFor(c.code).some(v => typeOf(v).filter === S.visaType)).map(c => {
           const l = visasFor(c.code), on = c.code === S.active, ch = cheapest(l);
-          return { code: c.code, flagUrl: '/assets/flags/' + c.code + '.png', name: c.name, upper: c.code.toUpperCase(), types: typesLabel(l), issuing: minBy(l, issuingDays).issuing,
+          return { code: c.code, flagUrl: c.flagUrl || ('/assets/flags/' + c.code + '.png'), name: c.name, upper: c.code.toUpperCase(), types: typesLabel(l), issuing: minBy(l, issuingDays).issuing,
             feeK: fees ? toArabic(Math.round(ch.adult / 1000)) : '—', border: on ? '2px solid #049dc5' : '1px solid #ececed', shadow: on ? '0 18px 34px rgba(4,157,197,.26)' : 'var(--tw-card-shadow,0 2px 8px rgba(29,39,51,.07))',
             cta: on ? '#049dc5' : '#7b8087', action: on ? 'معروضة الآن' : 'اعرض التفاصيل', go: () => pick(c.code) };
         });
@@ -742,10 +757,10 @@ function   visaVals(country){
       clearCountryQuery: e => { if(e) e.preventDefault(); patch({ countryQuery: '' }); },
       hasCountryMatches: COUNTRIES.some(matchesQuery), noCountryMatch: !!q && !COUNTRIES.some(matchesQuery),
       filteredCountries: COUNTRIES.filter(matchesQuery).map(c => { const l = visasFor(c.code), on = c.code === S.active; return {
-        flagUrl: '/assets/flags/' + c.code + '.png', name: c.name, types: typesLabel(l), fromFee: money(cheapest(l).adult),
+        flagUrl: c.flagUrl || ('/assets/flags/' + c.code + '.png'), name: c.name, types: typesLabel(l), fromFee: money(cheapest(l).adult),
         border: on ? '1px solid #bfe9f6' : '1px solid transparent', bg: on ? '#f6fcfe' : '#fff', pick: e => { if(e) e.preventDefault(); pick(c.code); } }; }),
       suggestedCountries: COUNTRIES.slice(0, 4).map(c => { const l = visasFor(c.code); return {
-        flagUrl: '/assets/flags/' + c.code + '.png', name: c.name, types: typesLabel(l), pick: e => { if(e) e.preventDefault(); pick(c.code); } }; }),
+        flagUrl: c.flagUrl || ('/assets/flags/' + c.code + '.png'), name: c.name, types: typesLabel(l), pick: e => { if(e) e.preventDefault(); pick(c.code); } }; }),
       runVisaSearch: e => { if(e) e.preventDefault(); patch({ visaDetailOpen: false, searched: true }); scrollRes(); flash(L('تأشيرات ', 'Visas for ') + country.name); },
       isVisaDetail: S.visaDetailOpen, searched: S.searched,
       showSearchPrompt: page === 'visas' && !S.searched && !S.visaDetailOpen,
@@ -794,7 +809,7 @@ function   visaVals(country){
   }
 
   const V = renderVals();
-  const { achievement, achievements, addAdult, addChild, adultPrice, afBring, afEmail, afName, afPhone, appAccept, appDone, appDoneCount, appEmail, appError, appErrorOn, appForm, appNo, appPay, appPhone, appProgress, appSavedAt, appSteps, appTotal, appTotalLines, appTravellerCount, applyError, applyErrorText, applyForm, applyJob, applyOpen, applySending, applySent, askKind, backToForm, cancelAsk, cardRows, chevronRotate, childPrice, childrenAr, clearCountryQuery, closeApply, closeCountryPanel, closeTrack, closeVisaDetail, copyGroup, copyVisa, country, countryPanelOpen, countryQuery, coverName, cvName, decChildren, decTravellers, docCount, docRows, exportOn, featured, feeTotal, fileUploading, filteredCountries, flowSteps, fromAdult, fromChild, fromIssuing, goAbout, goContact, goFaq, goFlights, goGroups, goHome, goInsurance, goJobs, goPrivacy, goTerms, goVisaApplyDetail, goVisas, groupLabel, groups, hasCountryMatches, hasFeatured, hotelQuery, incChildren, incTravellers, isAbout, isContact, isFaq, isFlights, isGroups, isHome, isInsurance, isJobs, isPackages, isPrivacy, isTerms, isVisaApply, isVisaDetail, isVisas, issuingLabel, langLabel, loading, navItems, noCountryMatch, noPackages, noResults, notAsking, notGuaranteed, onPaid, openApply, openAsk, openTrack, packages, pdfGroup, pdfVisa, pickCover, pickCv, pickWork, priceRows, regionTiles, resetTrack, resultCount, resultKinds, results, roomType, runVisaSearch, scrollToPackages, selectAchievement, setAfBring, setAfEmail, setAfName, setAfPhone, setAppEmail, setAppPhone, setCountryQuery, setHotelQuery, setRoomType, setTrackInput, setTripDate, showResults, showSearchPrompt, showVisaRail, statusLegend, stayLabel, stepsOn, stopClose, stopTrack, submitApp, submitApply, submitTrack, suggestedCountries, ticks, toggleAccept, toggleCountryPanel, toggleLang, trackData, trackError, trackForm, trackInput, trackOpen, trackQuery, trackResult, trackSending, trackSteps, travellersAr, travellersList, tripDate, typesLabel, upcomingEvents, visa, visaCardCount, visaCount, visaExportOn, visaTypes, workName,
+  const { achievement, achievements, addAdult, addChild, adultPrice, afBring, afEmail, afName, afPhone, appAccept, appDone, appDoneCount, appEmail, appError, appErrorOn, appForm, appNo, appPay, appPhone, appProgress, appSavedAt, appSteps, appTotal, appTotalLines, appTravellerCount, applyError, applyErrorText, applyForm, applyJob, applyOpen, applySending, applySent, askKind, backToForm, cancelAsk, cardRows, chevronRotate, childPrice, childrenAr, clearCountryQuery, closeApply, closeCountryPanel, closeTrack, closeVisaDetail, copyGroup, copyVisa, country, countryPanelOpen, countryQuery, coverName, cvName, decChildren, decTravellers, docCount, docRows, exportOn, featured, feeTotal, fileUploading, filteredCountries, flowSteps, fromAdult, fromChild, fromIssuing, goAbout, goContact, goFaq, goFlights, goGroups, goHome, goInsurance, goJobs, goPrivacy, goTerms, goVisaApplyDetail, goVisas, groupLabel, groups, hasCountryMatches, hasFeatured, hotelQuery, incChildren, incTravellers, isAbout, isContact, isFaq, isFlights, isGroups, isHome, isInsurance, isJobs, isPackages, isPrivacy, isTerms, isVisaApply, isVisaDetail, isVisas, issuingLabel, langLabel, loading, navItems, noCountryMatch, noPackages, noResults, notAsking, notGuaranteed, onPaid, openApply, openAsk, openTrack, packages, pdfGroup, pdfVisa, pickCover, pickCv, pickWork, priceRows, regionTiles, resetTrack, resultCount, resultKinds, results, roomType, runVisaSearch, scrollToPackages, selectAchievement, setAfBring, setAfEmail, setAfName, setAfPhone, setAppEmail, setAppPhone, setCountryQuery, setHotelQuery, setRoomType, setTrackInput, setTripDate, showResults, showSearchPrompt, showVisaRail, statusLegend, stayLabel, stepsOn, stopClose, stopTrack, submitApp, submitApply, submitTrack, suggestedCountries, ticks, toggleAccept, toggleCountryPanel, toggleLang, toggleCurrency, currencyLabel, trackData, trackError, trackForm, trackInput, trackOpen, trackQuery, trackResult, trackSending, trackSteps, travellersAr, travellersList, tripDate, typesLabel, upcomingEvents, visa, visaCardCount, visaCount, visaExportOn, visaTypes, workName,
     contact, contactSending, contactSent, contactError, setContactField, submitContact, openWhatsapp } = V;
 
   return (
@@ -820,6 +835,9 @@ function   visaVals(country){
 <button type="button" onClick={toggleLang} aria-label="Language" title="Language" className="qa-langbtn" style={{ flex: "none", display: "flex", alignItems: "center", gap: "7px", padding: "8px 14px", border: "1px solid #ececed", borderRadius: "999px", background: "#fff", fontFamily: "inherit", fontSize: "13px", fontWeight: "700", letterSpacing: ".04em", color: "#22a9d4", cursor: "pointer" }}>
 <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"><circle cx="12" cy="12" r="9"></circle><path d="M3 12h18"></path><path d="M12 3c2.5 2.6 2.5 15.4 0 18M12 3c-2.5 2.6-2.5 15.4 0 18"></path></svg>
 <span data-no-i18n="">{langLabel}</span>
+</button>
+<button type="button" onClick={toggleCurrency} aria-label="Currency" title="Currency" className="qa-langbtn" style={{ flex: "none", display: "flex", alignItems: "center", gap: "7px", padding: "8px 14px", border: "1px solid #ececed", borderRadius: "999px", background: "#fff", fontFamily: "inherit", fontSize: "13px", fontWeight: "700", letterSpacing: ".04em", color: "#22a9d4", cursor: "pointer" }}>
+<span data-no-i18n="">{currencyLabel}</span>
 </button>
 <button className="qa-btn qa-cyan qa-headcta" style={{ flex: "none", padding: "9px 18px", fontSize: "14px" }} onClick={goContact}>تواصل معنا</button>
 <button
@@ -866,6 +884,9 @@ function   visaVals(country){
       <button type="button" onClick={toggleLang} data-no-i18n="" style={{ display: "flex", alignItems: "center", gap: 7, padding: "10px 16px", border: "1px solid rgba(255,255,255,.35)", borderRadius: 999, background: "transparent", fontFamily: "inherit", fontSize: 13, fontWeight: 700, letterSpacing: ".04em", color: "#fff", cursor: "pointer" }}>
         <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"><circle cx="12" cy="12" r="9" /><path d="M3 12h18" /><path d="M12 3c2.5 2.6 2.5 15.4 0 18M12 3c-2.5 2.6-2.5 15.4 0 18" /></svg>
         <span>{langLabel}</span>
+      </button>
+      <button type="button" onClick={toggleCurrency} data-no-i18n="" style={{ display: "flex", alignItems: "center", gap: 7, padding: "10px 16px", border: "1px solid rgba(255,255,255,.35)", borderRadius: 999, background: "transparent", fontFamily: "inherit", fontSize: 13, fontWeight: 700, letterSpacing: ".04em", color: "#fff", cursor: "pointer" }}>
+        <span>{currencyLabel}</span>
       </button>
       <button
         type="button"

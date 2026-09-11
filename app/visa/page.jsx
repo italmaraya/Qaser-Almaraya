@@ -6,6 +6,8 @@ import SiteHeader from '../../components/SiteHeader';
 import SiteFooter from '../../components/SiteFooter';
 import MascotLoader from '../../components/MascotLoader';
 import { useLangToggle } from '../../lib/i18n';
+import { useCurrencyToggle, formatPrice } from '../../lib/currency';
+import { flagSrc, isUploadedFlag } from '../../lib/flags';
 
 const STEPS = [
   { n: '01', who: 'أنت', title: 'تختار التأشيرة', hint: 'ترى السعر والمدة وقائمة المستندات' },
@@ -21,6 +23,7 @@ const STEPS = [
 export default function VisaLandingPage() {
   const router = useRouter();
   const { lang } = useLangToggle();
+  const { currency } = useCurrencyToggle();
   const nm = (ar, en) => (lang === 'en' && en ? en : ar);
   const [cards, setCards] = useState(null);
   const [error, setError] = useState('');
@@ -277,7 +280,7 @@ export default function VisaLandingPage() {
                   </button>
                   <div style={{ textAlign: 'left' }}>
                     <div style={{ fontSize: 13, color: '#7b8087' }}>الإجمالي التقديري</div>
-                    <div style={{ fontSize: 22, fontWeight: 700, color: '#049dc5' }}>{estimatedTotal != null ? estimatedTotal.toLocaleString() : '—'} د.ع</div>
+                    <div style={{ fontSize: 22, fontWeight: 700, color: '#049dc5' }}>{estimatedTotal != null ? formatPrice(estimatedTotal, currency, lang) : '—'}</div>
                   </div>
                 </div>
               </div>
@@ -352,10 +355,10 @@ export default function VisaLandingPage() {
                     <Link key={c.country_id} href={`/visa/country/${c.country_id}`} className="qa-card" style={{ padding: 0, overflow: 'hidden', textDecoration: 'none', color: 'inherit', display: 'flex', flexDirection: 'column' }}>
                       <div style={{ position: 'relative', height: 96, background: 'linear-gradient(135deg,#34bbe1,#049dc5)', display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', padding: 16 }}>
                         <span style={{ background: 'rgba(255,255,255,.18)', color: '#fff', fontSize: 12, fontWeight: 700, borderRadius: 999, padding: '5px 12px' }}>
-                          من {Number(c.minPrice).toLocaleString()} د.ع
+                          من {formatPrice(c.minPrice, currency, lang)}
                         </span>
                         {c.flag_code ? (
-                          <img src={`/assets/flags/${c.flag_code}.png`} alt="" style={{ width: 40, height: 40, borderRadius: '50%', border: '2px solid #fff', objectFit: 'cover' }} onError={(e) => { e.currentTarget.style.display = 'none'; }} />
+                          <img src={flagSrc(c.flag_code)} alt="" style={{ width: 40, height: 40, borderRadius: '50%', border: '2px solid #fff', objectFit: 'cover' }} onError={(e) => { e.currentTarget.style.display = 'none'; }} />
                         ) : (
                           <span style={{ width: 40, height: 40, borderRadius: '50%', background: 'rgba(255,255,255,.3)' }} />
                         )}
@@ -363,7 +366,7 @@ export default function VisaLandingPage() {
                       <div style={{ padding: 16, display: 'flex', flexDirection: 'column', gap: 4 }}>
                         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                           <span style={{ fontSize: 17, fontWeight: 700, color: '#1d2733' }}>{nm(c.country_name_ar, c.country_name_en)}</span>
-                          <span style={{ fontSize: 11, fontWeight: 700, color: '#7b8087' }}>{(c.flag_code || '').toUpperCase()}</span>
+                          <span style={{ fontSize: 11, fontWeight: 700, color: '#7b8087' }}>{isUploadedFlag(c.flag_code) ? '' : (c.flag_code || '').toUpperCase()}</span>
                         </div>
                         <span style={{ fontSize: 13, color: '#7b8087' }}>{c.typeNames.length === 1 ? 'نوع واحد' : c.typeNames.length + ' أنواع'}: {c.typeNames.map((t) => nm(t, typeNameMap[t])).join('، ')}</span>
                         <span style={{ fontSize: 12.5, color: '#7b8087' }}>الإصدار من {Math.round(c.minIssuing)} {c.minIssuing < 3 ? 'ساعة' : 'أيام عمل'}</span>

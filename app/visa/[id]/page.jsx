@@ -7,6 +7,8 @@ import SiteFooter from '../../../components/SiteFooter';
 import MascotLoader from '../../../components/MascotLoader';
 import { printDoc, visaTableHtml, combinedDocsLine, esc } from '../../../lib/printDoc';
 import { useLangToggle } from '../../../lib/i18n';
+import { useCurrencyToggle, formatPrice } from '../../../lib/currency';
+import { flagSrc } from '../../../lib/flags';
 
 const WHY_US = [
   'مراجعة كاملة لمستنداتك قبل التقديم',
@@ -16,6 +18,7 @@ const WHY_US = [
 
 export default function VisaDetailPage() {
   const { lang } = useLangToggle();
+  const { currency } = useCurrencyToggle();
   const nm = (ar, en) => (lang === 'en' && en ? en : ar);
   const { id } = useParams();
   const [card, setCard] = useState(null);
@@ -87,11 +90,11 @@ export default function VisaDetailPage() {
               <div style={{ display: 'flex', justifyContent: 'space-between', borderTop: '1px solid #ececed', paddingTop: 12 }}>
                 <div>
                   <div style={{ fontSize: 12, color: '#7b8087' }}>البالغ</div>
-                  <div style={{ fontSize: 20, fontWeight: 700, color: '#049dc5' }}>{Number(card.adult_price).toLocaleString()} د.ع</div>
+                  <div style={{ fontSize: 20, fontWeight: 700, color: '#049dc5' }}>{formatPrice(card.adult_price, currency, lang)}</div>
                 </div>
                 <div style={{ textAlign: 'left' }}>
                   <div style={{ fontSize: 12, color: '#7b8087' }}>الطفل</div>
-                  <div style={{ fontSize: 20, fontWeight: 700, color: '#049dc5' }}>{Number(card.child_price).toLocaleString()} د.ع</div>
+                  <div style={{ fontSize: 20, fontWeight: 700, color: '#049dc5' }}>{formatPrice(card.child_price, currency, lang)}</div>
                 </div>
               </div>
               <Link href={`/visa/${id}/apply`} className="qa-btn qa-cyan" style={{ textAlign: 'center', textDecoration: 'none' }}>ابدأ الآن</Link>
@@ -126,7 +129,7 @@ export default function VisaDetailPage() {
               <div style={{ position: 'relative', height: 220, borderRadius: 20, overflow: 'hidden', background: 'linear-gradient(135deg,#34bbe1,#049dc5)', display: 'flex', alignItems: 'flex-end', padding: 20 }}>
                 {card.flag_code ? (
                   <img
-                    src={`/assets/flags/${card.flag_code}.png`}
+                    src={flagSrc(card.flag_code)}
                     alt=""
                     style={{ position: 'absolute', top: 20, right: 20, width: 52, height: 52, borderRadius: '50%', border: '2px solid #fff', objectFit: 'cover' }}
                     onError={(e) => { e.currentTarget.style.display = 'none'; }}

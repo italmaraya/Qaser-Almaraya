@@ -7,9 +7,12 @@ import SiteFooter from '../../../../components/SiteFooter';
 import MascotLoader from '../../../../components/MascotLoader';
 import { printDoc, visaTableHtml, combinedDocsLine, esc } from '../../../../lib/printDoc';
 import { useLangToggle } from '../../../../lib/i18n';
+import { useCurrencyToggle, formatPrice } from '../../../../lib/currency';
+import { flagSrc } from '../../../../lib/flags';
 
 export default function CountryVisaListPage() {
   const { lang } = useLangToggle();
+  const { currency } = useCurrencyToggle();
   const nm = (ar, en) => (lang === 'en' && en ? en : ar);
   const { countryId } = useParams();
   const [cards, setCards] = useState(null);
@@ -123,7 +126,7 @@ export default function CountryVisaListPage() {
                     <div style={{ position: 'relative', background: 'linear-gradient(135deg,#0e6f8f,#049dc5)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                       {c.flag_code ? (
                         <span style={{ width: 60, height: 60, borderRadius: '50%', border: '2px dashed rgba(255,255,255,.6)', display: 'grid', placeItems: 'center' }}>
-                          <img src={`/assets/flags/${c.flag_code}.png`} alt="" style={{ width: 44, height: 44, borderRadius: '50%', objectFit: 'cover' }} onError={(e) => { e.currentTarget.style.display = 'none'; }} />
+                          <img src={flagSrc(c.flag_code)} alt="" style={{ width: 44, height: 44, borderRadius: '50%', objectFit: 'cover' }} onError={(e) => { e.currentTarget.style.display = 'none'; }} />
                         </span>
                       ) : (
                         <span style={{ fontSize: 22, fontWeight: 700, color: '#fff' }}>{(c.country_name_en || '').slice(0, 2).toUpperCase()}</span>
@@ -141,8 +144,8 @@ export default function CountryVisaListPage() {
                       </div>
                       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12, marginTop: 4 }}>
                         <div>
-                          <div style={{ fontSize: 20, fontWeight: 700, color: '#049dc5' }}>{Number(c.adult_price).toLocaleString()} د.ع</div>
-                          <div style={{ fontSize: 12.5, color: '#7b8087' }}>للبالغ · {Number(c.child_price).toLocaleString()} د.ع للطفل</div>
+                          <div style={{ fontSize: 20, fontWeight: 700, color: '#049dc5' }}>{formatPrice(c.adult_price, currency, lang)}</div>
+                          <div style={{ fontSize: 12.5, color: '#7b8087' }}>للبالغ · {formatPrice(c.child_price, currency, lang)} للطفل</div>
                         </div>
                         <Link href={`/visa/${c.id}`} className="qa-btn qa-cyan" style={{ textDecoration: 'none' }}>عرض التفاصيل</Link>
                       </div>

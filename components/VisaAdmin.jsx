@@ -66,6 +66,64 @@ async function api(path, options) {
   return res.json();
 }
 
+async function uploadImage(file) {
+  const fd = new FormData();
+  fd.append('file', file);
+  const res = await fetch('/api/admin/upload', { method: 'POST', body: fd });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(data.error || 'تعذّر رفع الصورة');
+  return data.url;
+}
+
+function flagSrc(flagCode) {
+  if (!flagCode) return '';
+  if (/^https?:\/\//i.test(flagCode) || flagCode.startsWith('/')) return flagCode;
+  return `/assets/flags/${flagCode}.png`;
+}
+
+// Small reusable "upload a flag image" control: shows a round preview of the
+// current flag (if any) plus a button to pick and upload a new image. Once
+// uploaded, the resulting URL is stored directly as the country's flag_code.
+function FlagUploader({ value, onChange }) {
+  const [busy, setBusy] = useState(false);
+  const [err, setErr] = useState('');
+
+  async function handleFile(file) {
+    if (!file) return;
+    setBusy(true);
+    setErr('');
+    try {
+      const url = await uploadImage(file);
+      onChange(url);
+    } catch (e) {
+      setErr(e.message);
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  return (
+    <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+      {value ? (
+        <img src={flagSrc(value)} alt="" style={{ width: 36, height: 36, borderRadius: '50%', objectFit: 'cover', border: '1px solid #ececed', flex: 'none' }} />
+      ) : (
+        <span style={{ width: 36, height: 36, borderRadius: '50%', background: '#f2f2f3', flex: 'none' }} />
+      )}
+      <label style={{ ...btnStyle('ghost'), padding: '8px 14px', fontSize: 13, cursor: 'pointer' }}>
+        {busy ? '...جارٍ الرفع' : value ? 'تغيير صورة العلم' : 'رفع صورة العلم'}
+        <input
+          type="file"
+          accept="image/*"
+          style={{ display: 'none' }}
+          disabled={busy}
+          onChange={(e) => handleFile(e.target.files[0])}
+        />
+      </label>
+      {err && <span style={{ fontSize: 12, color: '#d2324f' }}>{err}</span>}
+    </div>
+  );
+}
+
 export default function VisaAdmin() {
   const [subTab, setSubTab] = useState('applications');
   const [applications, setApplications] = useState(null);
@@ -165,7 +223,7 @@ export default function VisaAdmin() {
   );
 }
 
-const REGIONS = ['الشرق الأوسط وأفريقيا', 'تركيا والقوقاز', 'آسيا', 'الأمريكتان'];
+const REGIONS = ['الشرق الأوسط وأفريقيا', 'تركيا والقوقاز', 'آسيا', 'أوروبا', 'الأمريكتان'];
 
 function ApplicationsTab({ applications, statuses, reload, setError }) {
   const [expanded, setExpanded] = useState(null);
@@ -269,6 +327,19 @@ function ApplicationsTab({ applications, statuses, reload, setError }) {
                     {a.provider_name}
                   </span>
                 )}
+                <span
+                  style={{
+                    fontSize: 12,
+                    fontWeight: 700,
+                    color: '#a06a00',
+                    background: '#fef3dc',
+                    borderRadius: 999,
+                    padding: '2px 10px',
+                  }}
+                  title="التكلفة الداخلية لهذا الطلب"
+                >
+                  التكلفة الداخلية: {Number(a.internal_cost_total || 0).toLocaleString()} د.ع
+                </span>
               </span>
               <span style={{ fontSize: 12.5, color: '#7b8087' }}>
                 {new Date(a.submitted_at).toLocaleString('ar')}
@@ -529,8 +600,8 @@ function CountriesTab({ countries, reload, setError }) {
             </select>
           </label>
           <label style={{ ...labelStyle, flex: 1, minWidth: 160 }}>
-            رمز العلم (مثل tr، jo، us — يجب أن تتوفر صورة العلم في public/assets/flags)
-            <input style={inputStyle} placeholder="tr" value={flagCode} onChange={(e) => setFlagCode(e.target.value)} />
+            صورة العلم
+            <FlagUploader value={flagCode} onChange={setFlagCode} />
           </label>
         </div>
         <button style={{ ...btnStyle('primary'), alignSelf: 'flex-start' }} onClick={add}>
@@ -559,9 +630,9 @@ function CountriesTab({ countries, reload, setError }) {
                   ))}
                 </select>
               </label>
-              <label style={{ ...labelStyle, flex: 1, minWidth: 100 }}>
-                رمز العلم
-                <input style={inputStyle} value={c.flag_code || ''} onChange={(e) => update({ ...c, flag_code: e.target.value })} />
+              <label style={{ ...labelStyle, flex: 1, minWidth: 160 }}>
+                صورة العلم
+                <FlagUploader value={c.flag_code} onChange={(url) => update({ ...c, flag_code: url })} />
               </label>
               <button style={btnStyle('danger')} onClick={() => remove(c.id)}>
                 حذف
@@ -805,6 +876,8 @@ function blankCard() {
 function CardsTab({ cards, countries, types, providers, reload, setError }) {
   const [draft, setDraft] = useState(blankCard());
   const [expanded, setExpanded] = useState(null);
+  const [editing, setEditing] = useState(null);
+  const [editDraft, setEditDraft] = useState(null);
 
   async function add() {
     if (!draft.country_id || !draft.visa_type_id) {
@@ -823,6 +896,22 @@ function CardsTab({ cards, countries, types, providers, reload, setError }) {
   async function update(card) {
     try {
       await api(`/api/admin/visa/cards/${card.id}`, { method: 'PUT', body: JSON.stringify(card) });
+      reload();
+    } catch (e) {
+      setError(e.message);
+    }
+  }
+
+  function startEdit(card) {
+    setEditing(card.id);
+    setEditDraft({ ...card });
+  }
+
+  async function saveEdit() {
+    try {
+      await api(`/api/admin/visa/cards/${editDraft.id}`, { method: 'PUT', body: JSON.stringify(editDraft) });
+      setEditing(null);
+      setEditDraft(null);
       reload();
     } catch (e) {
       setError(e.message);
@@ -934,20 +1023,121 @@ function CardsTab({ cards, countries, types, providers, reload, setError }) {
 
       {cards.map((c) => (
         <div key={c.id} style={cardStyle}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 8 }}>
             <h4 style={{ margin: 0 }}>
               {c.country_name_ar} — {c.visa_type_name_ar}
             </h4>
-            <button style={btnStyle('ghost')} onClick={() => setExpanded(expanded === c.id ? null : c.id)}>
-              {expanded === c.id ? 'إخفاء المستمسكات' : 'إدارة المستمسكات المطلوبة'}
-            </button>
+            <div style={{ display: 'flex', gap: 8 }}>
+              <button style={btnStyle('ghost')} onClick={() => (editing === c.id ? setEditing(null) : startEdit(c))}>
+                {editing === c.id ? 'إلغاء التعديل' : 'تعديل البطاقة'}
+              </button>
+              <button style={btnStyle('ghost')} onClick={() => setExpanded(expanded === c.id ? null : c.id)}>
+                {expanded === c.id ? 'إخفاء المستمسكات' : 'إدارة المستمسكات المطلوبة'}
+              </button>
+            </div>
           </div>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: 10, fontSize: 14 }}>
-            <span>سعر البالغ: {c.adult_price} د.ع</span>
-            <span>سعر الطفل: {c.child_price} د.ع</span>
-            <span>المزود: {c.provider_name || '—'}</span>
-            <span>مدة الإصدار: {c.issuing_time_days || '—'} يوم</span>
-          </div>
+
+          {editing === c.id && editDraft ? (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 12, borderTop: '1px dashed #ececed', paddingTop: 14 }}>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+                <label style={labelStyle}>
+                  الدولة
+                  <select style={inputStyle} value={editDraft.country_id || ''} onChange={(e) => setEditDraft({ ...editDraft, country_id: e.target.value })}>
+                    {countries.map((cc) => (
+                      <option key={cc.id} value={cc.id}>
+                        {cc.name_ar}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                <label style={labelStyle}>
+                  نوع التأشيرة
+                  <select style={inputStyle} value={editDraft.visa_type_id || ''} onChange={(e) => setEditDraft({ ...editDraft, visa_type_id: e.target.value })}>
+                    {types.map((t) => (
+                      <option key={t.id} value={t.id}>
+                        {t.name_ar}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+              </div>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 12 }}>
+                <label style={labelStyle}>
+                  مدة الإقامة
+                  <input style={inputStyle} value={editDraft.stay_duration || ''} onChange={(e) => setEditDraft({ ...editDraft, stay_duration: e.target.value })} />
+                </label>
+                <label style={labelStyle}>
+                  مدة الإصدار (أيام)
+                  <input type="number" style={inputStyle} value={editDraft.issuing_time_days || ''} onChange={(e) => setEditDraft({ ...editDraft, issuing_time_days: e.target.value })} />
+                </label>
+                <label style={labelStyle}>
+                  صلاحية قبل السفر
+                  <input style={inputStyle} value={editDraft.validity_before_travel || ''} onChange={(e) => setEditDraft({ ...editDraft, validity_before_travel: e.target.value })} />
+                </label>
+              </div>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: 12 }}>
+                <label style={labelStyle}>
+                  سعر البالغ (IQD)
+                  <input type="number" style={inputStyle} value={editDraft.adult_price || ''} onChange={(e) => setEditDraft({ ...editDraft, adult_price: e.target.value })} />
+                </label>
+                <label style={labelStyle}>
+                  سعر الطفل (IQD)
+                  <input type="number" style={inputStyle} value={editDraft.child_price || ''} onChange={(e) => setEditDraft({ ...editDraft, child_price: e.target.value })} />
+                </label>
+                <label style={labelStyle}>
+                  تكلفة البالغ (داخلي)
+                  <input type="number" style={inputStyle} value={editDraft.adult_cost || ''} onChange={(e) => setEditDraft({ ...editDraft, adult_cost: e.target.value })} />
+                </label>
+                <label style={labelStyle}>
+                  تكلفة الطفل (داخلي)
+                  <input type="number" style={inputStyle} value={editDraft.child_cost || ''} onChange={(e) => setEditDraft({ ...editDraft, child_cost: e.target.value })} />
+                </label>
+              </div>
+              <label style={labelStyle}>
+                ملاحظات الحجز
+                <textarea style={{ ...inputStyle, minHeight: 60 }} value={editDraft.booking_notes || ''} onChange={(e) => setEditDraft({ ...editDraft, booking_notes: e.target.value })} />
+              </label>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+                <label style={labelStyle}>
+                  مزود الخدمة
+                  <select style={inputStyle} value={editDraft.provider_id || ''} onChange={(e) => setEditDraft({ ...editDraft, provider_id: e.target.value })}>
+                    <option value="">بدون</option>
+                    {providers.map((p) => (
+                      <option key={p.id} value={p.id}>
+                        {p.name}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                <label style={labelStyle}>
+                  طريقة الإرسال
+                  <select style={inputStyle} value={editDraft.send_method || 'provider'} onChange={(e) => setEditDraft({ ...editDraft, send_method: e.target.value })}>
+                    {SEND_METHODS.map((m) => (
+                      <option key={m.id} value={m.id}>
+                        {m.label}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+              </div>
+              <div style={{ display: 'flex', gap: 8 }}>
+                <button style={btnStyle('primary')} onClick={saveEdit}>
+                  حفظ التعديلات
+                </button>
+                <button style={btnStyle('ghost')} onClick={() => setEditing(null)}>
+                  إلغاء
+                </button>
+              </div>
+            </div>
+          ) : (
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: 10, fontSize: 14 }}>
+              <span>سعر البالغ: {c.adult_price} د.ع</span>
+              <span>سعر الطفل: {c.child_price} د.ع</span>
+              <span>المزود: {c.provider_name || '—'}</span>
+              <span>مدة الإصدار: {c.issuing_time_days || '—'} يوم</span>
+            </div>
+          )}
+
           {expanded === c.id && <DocumentsBuilder card={c} reload={reload} setError={setError} />}
           <button style={{ ...btnStyle('danger'), alignSelf: 'flex-start' }} onClick={() => remove(c.id)}>
             حذف هذه البطاقة
@@ -960,6 +1150,58 @@ function CardsTab({ cards, countries, types, providers, reload, setError }) {
 
 function blankDoc() {
   return { name_ar: '', name_en: '', kind: 'file', required: true, audience: 'everyone', choices: [] };
+}
+
+// Lets the admin type in the button options for a "سؤال باختيارات" (choice)
+// document — each one becomes a clickable button the passenger sees.
+function ChoicesEditor({ choices, onChange }) {
+  const [text, setText] = useState('');
+
+  function addChoice() {
+    const v = text.trim();
+    if (!v) return;
+    onChange([...(choices || []), v]);
+    setText('');
+  }
+
+  function removeChoice(i) {
+    onChange((choices || []).filter((_, idx) => idx !== i));
+  }
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 8, width: '100%' }}>
+      <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+        {(choices || []).map((c, i) => (
+          <span
+            key={i}
+            style={{ display: 'inline-flex', alignItems: 'center', gap: 6, background: '#eaf8fd', color: '#036f8c', borderRadius: 999, padding: '4px 10px', fontSize: 13, fontWeight: 600 }}
+          >
+            {c}
+            <button
+              type="button"
+              onClick={() => removeChoice(i)}
+              style={{ cursor: 'pointer', border: 0, background: 'none', color: '#036f8c', fontWeight: 700, padding: 0, lineHeight: 1 }}
+            >
+              ×
+            </button>
+          </span>
+        ))}
+        {(!choices || choices.length === 0) && <span style={{ fontSize: 12.5, color: '#7b8087' }}>لم تُضَف خيارات بعد</span>}
+      </div>
+      <div style={{ display: 'flex', gap: 8 }}>
+        <input
+          style={{ ...inputStyle, width: 220 }}
+          placeholder="اكتب خيارًا واضغط إضافة"
+          value={text}
+          onChange={(e) => setText(e.target.value)}
+          onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); addChoice(); } }}
+        />
+        <button style={btnStyle('ghost')} onClick={addChoice}>
+          + إضافة خيار
+        </button>
+      </div>
+    </div>
+  );
 }
 
 function DocumentsBuilder({ card, reload, setError }) {
@@ -1025,6 +1267,9 @@ function DocumentsBuilder({ card, reload, setError }) {
               حذف
             </button>
           </div>
+          {d.kind === 'choice' && (
+            <ChoicesEditor choices={d.choices} onChange={(choices) => update({ ...d, choices })} />
+          )}
         </div>
       ))}
 
@@ -1050,6 +1295,9 @@ function DocumentsBuilder({ card, reload, setError }) {
             + إضافة مستمسك (يمكنك التكرار لإضافة عدة مستمسكات)
           </button>
         </div>
+        {draft.kind === 'choice' && (
+          <ChoicesEditor choices={draft.choices} onChange={(choices) => setDraft({ ...draft, choices })} />
+        )}
       </div>
     </div>
   );
