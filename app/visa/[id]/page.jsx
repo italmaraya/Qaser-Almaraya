@@ -182,6 +182,15 @@ export default function VisaDetailPage() {
                 </div>
               </div>
 
+              {(card.booking_notes || card.booking_notes_en) && (
+                <div className="qa-card" style={{ background: '#f8fdfe', border: '1px solid #bfe9f6' }}>
+                  <h4 style={{ margin: '0 0 8px' }}>معلومات إضافية</h4>
+                  <p style={{ margin: 0, fontSize: 14.5, lineHeight: 1.7, color: '#3d4650', whiteSpace: 'pre-wrap' }}>
+                    {nm(card.booking_notes, card.booking_notes_en)}
+                  </p>
+                </div>
+              )}
+
               {included.some((f) => f.on) && (
                 <div className="qa-card">
                   <h4 style={{ margin: '0 0 14px' }}>ما يشمله هذا النوع</h4>

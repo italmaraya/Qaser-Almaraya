@@ -519,11 +519,15 @@ function ApplicationsTab({ applications, statuses, reload, setError }) {
             <span style={{ fontSize: 12.5, color: '#3d4650' }}>
               {a.payment_method === 'office' ? 'طريقة الدفع: الدفع في المكتب' : a.payment_method ? `طريقة الدفع: ${a.payment_method}` : ''}
             </span>
-            {a.payment_proof_url && (
+            {a.payment_proof_url ? (
               <a href={a.payment_proof_url} target="_blank" rel="noopener" style={{ fontSize: 12.5, fontWeight: 700, color: '#036f8c' }}>
                 📎 عرض إشعار الدفع
               </a>
-            )}
+            ) : a.payment_method !== 'office' ? (
+              <span style={{ fontSize: 12.5, fontWeight: 700, color: '#d2324f' }} title="لا يوجد ملف إشعار مرفق بهذا الطلب — إما لم يُرفَق أصلاً أو أن الطلب قديم من قبل تفعيل رفع الإشعار الفعلي">
+                ⚠ لم يُرفَق إشعار دفع
+              </span>
+            ) : null}
             {a.payment_status !== 'approved' && (
               <div style={{ display: 'flex', gap: 8, marginInlineStart: 'auto' }}>
                 <button
@@ -1012,6 +1016,7 @@ function blankCard() {
     child_cost: '',
     cost_currency: 'IQD',
     booking_notes: '',
+    booking_notes_en: '',
     provider_id: '',
     provider_email: '',
     send_method: 'provider',
@@ -1138,10 +1143,16 @@ function CardsTab({ cards, countries, types, providers, reload, setError }) {
           عملة التكلفة الداخلية (لكِلا الحقلين أعلاه)
           <CostCurrencyPicker value={draft.cost_currency} onChange={(v) => setDraft({ ...draft, cost_currency: v })} />
         </label>
-        <label style={labelStyle}>
-          ملاحظات الحجز
-          <textarea style={{ ...inputStyle, minHeight: 60 }} value={draft.booking_notes} onChange={(e) => setDraft({ ...draft, booking_notes: e.target.value })} />
-        </label>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+          <label style={labelStyle}>
+            ملاحظات الحجز (تظهر للعميل بالعربية)
+            <textarea style={{ ...inputStyle, minHeight: 60 }} value={draft.booking_notes} onChange={(e) => setDraft({ ...draft, booking_notes: e.target.value })} />
+          </label>
+          <label style={labelStyle}>
+            Booking Notes (shown in English)
+            <textarea style={{ ...inputStyle, minHeight: 60 }} value={draft.booking_notes_en} onChange={(e) => setDraft({ ...draft, booking_notes_en: e.target.value })} />
+          </label>
+        </div>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
           <label style={labelStyle}>
             مزود الخدمة
@@ -1246,10 +1257,16 @@ function CardsTab({ cards, countries, types, providers, reload, setError }) {
                 عملة التكلفة الداخلية (لكِلا الحقلين أعلاه)
                 <CostCurrencyPicker value={editDraft.cost_currency} onChange={(v) => setEditDraft({ ...editDraft, cost_currency: v })} />
               </label>
-              <label style={labelStyle}>
-                ملاحظات الحجز
-                <textarea style={{ ...inputStyle, minHeight: 60 }} value={editDraft.booking_notes || ''} onChange={(e) => setEditDraft({ ...editDraft, booking_notes: e.target.value })} />
-              </label>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+                <label style={labelStyle}>
+                  ملاحظات الحجز (تظهر للعميل بالعربية)
+                  <textarea style={{ ...inputStyle, minHeight: 60 }} value={editDraft.booking_notes || ''} onChange={(e) => setEditDraft({ ...editDraft, booking_notes: e.target.value })} />
+                </label>
+                <label style={labelStyle}>
+                  Booking Notes (shown in English)
+                  <textarea style={{ ...inputStyle, minHeight: 60 }} value={editDraft.booking_notes_en || ''} onChange={(e) => setEditDraft({ ...editDraft, booking_notes_en: e.target.value })} />
+                </label>
+              </div>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
                 <label style={labelStyle}>
                   مزود الخدمة
