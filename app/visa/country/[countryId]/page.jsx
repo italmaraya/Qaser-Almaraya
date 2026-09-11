@@ -9,9 +9,11 @@ import { printDoc, visaTableHtml, combinedDocsLine, esc } from '../../../../lib/
 import { useLangToggle } from '../../../../lib/i18n';
 import { formatPrice } from '../../../../lib/currency';
 import { flagSrc } from '../../../../lib/flags';
+import { useProviderReveal } from '../../../../lib/useProviderReveal';
 
 export default function CountryVisaListPage() {
   const { lang } = useLangToggle();
+  const { providers: providerHints, denied: providerDenied } = useProviderReveal();
   const nm = (ar, en) => (lang === 'en' && en ? en : ar);
   const { countryId } = useParams();
   const [cards, setCards] = useState(null);
@@ -123,6 +125,27 @@ export default function CountryVisaListPage() {
                 {filtered.map((c) => (
                   <div key={c.id} className="qa-card" style={{ padding: 0, overflow: 'hidden', display: 'grid', gridTemplateColumns: '200px 1fr', minHeight: 160 }}>
                     <div style={{ position: 'relative', background: 'linear-gradient(135deg,#0e6f8f,#049dc5)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      {providerHints && providerHints[c.id] && (
+                        <span
+                          style={{
+                            position: 'absolute',
+                            top: 8,
+                            insetInlineStart: 8,
+                            zIndex: 2,
+                            fontSize: 10.5,
+                            fontWeight: 700,
+                            color: '#036f8c',
+                            background: 'rgba(255,255,255,.96)',
+                            borderRadius: 999,
+                            padding: '3px 9px',
+                            boxShadow: '0 4px 10px rgba(1,42,55,.25)',
+                            whiteSpace: 'nowrap',
+                          }}
+                          title="مزود الخدمة — يظهر لفريق العمل فقط"
+                        >
+                          {providerHints[c.id]}
+                        </span>
+                      )}
                       {c.flag_code ? (
                         <span style={{ width: 60, height: 60, borderRadius: '50%', border: '2px dashed rgba(255,255,255,.6)', display: 'grid', placeItems: 'center' }}>
                           <img src={flagSrc(c.flag_code)} alt="" style={{ width: 44, height: 44, borderRadius: '50%', objectFit: 'cover' }} onError={(e) => { e.currentTarget.style.display = 'none'; }} />
@@ -158,6 +181,16 @@ export default function CountryVisaListPage() {
       </main>
       <SiteFooter />
       {cards == null && !error && <MascotLoader assetBase="/assets" />}
+      {providerHints && (
+        <div style={{ position: 'fixed', bottom: 18, insetInlineStart: 18, zIndex: 60, background: '#1d2733', color: '#fff', fontSize: 12.5, fontWeight: 700, borderRadius: 999, padding: '8px 16px', boxShadow: '0 10px 24px rgba(1,42,55,.3)' }}>
+          ⌕ وضع الموظفين مفعّل — Ctrl+Shift+P للإخفاء
+        </div>
+      )}
+      {providerDenied && (
+        <div style={{ position: 'fixed', bottom: 18, insetInlineStart: 18, zIndex: 60, background: '#d2324f', color: '#fff', fontSize: 12.5, fontWeight: 700, borderRadius: 999, padding: '8px 16px', boxShadow: '0 10px 24px rgba(1,42,55,.3)' }}>
+          غير مصرح لك بعرض هذه المعلومات
+        </div>
+      )}
     </div>
   );
 }

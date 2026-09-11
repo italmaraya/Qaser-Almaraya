@@ -9,6 +9,7 @@ import { printDoc, visaTableHtml, combinedDocsLine, esc } from '../../../lib/pri
 import { useLangToggle } from '../../../lib/i18n';
 import { formatPrice } from '../../../lib/currency';
 import { flagSrc } from '../../../lib/flags';
+import { useProviderReveal } from '../../../lib/useProviderReveal';
 
 const WHY_US = [
   'مراجعة كاملة لمستنداتك قبل التقديم',
@@ -18,6 +19,7 @@ const WHY_US = [
 
 export default function VisaDetailPage() {
   const { lang } = useLangToggle();
+  const { providers: providerHints, denied: providerDenied } = useProviderReveal();
   const nm = (ar, en) => (lang === 'en' && en ? en : ar);
   const { id } = useParams();
   const [card, setCard] = useState(null);
@@ -126,6 +128,26 @@ export default function VisaDetailPage() {
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
               <div style={{ position: 'relative', height: 220, borderRadius: 20, overflow: 'hidden', background: 'linear-gradient(135deg,#34bbe1,#049dc5)', display: 'flex', alignItems: 'flex-end', padding: 20 }}>
+                {providerHints && providerHints[card.id] && (
+                  <span
+                    style={{
+                      position: 'absolute',
+                      top: 20,
+                      insetInlineStart: 20,
+                      zIndex: 2,
+                      fontSize: 11.5,
+                      fontWeight: 700,
+                      color: '#036f8c',
+                      background: 'rgba(255,255,255,.96)',
+                      borderRadius: 999,
+                      padding: '4px 12px',
+                      boxShadow: '0 4px 10px rgba(1,42,55,.25)',
+                    }}
+                    title="مزود الخدمة — يظهر لفريق العمل فقط"
+                  >
+                    {providerHints[card.id]}
+                  </span>
+                )}
                 {card.flag_code ? (
                   <img
                     src={flagSrc(card.flag_code)}
@@ -209,6 +231,16 @@ export default function VisaDetailPage() {
         </div>
       </main>
       <SiteFooter />
+      {providerHints && (
+        <div style={{ position: 'fixed', bottom: 18, insetInlineStart: 18, zIndex: 60, background: '#1d2733', color: '#fff', fontSize: 12.5, fontWeight: 700, borderRadius: 999, padding: '8px 16px', boxShadow: '0 10px 24px rgba(1,42,55,.3)' }}>
+          ⌕ وضع الموظفين مفعّل — Ctrl+Shift+P للإخفاء
+        </div>
+      )}
+      {providerDenied && (
+        <div style={{ position: 'fixed', bottom: 18, insetInlineStart: 18, zIndex: 60, background: '#d2324f', color: '#fff', fontSize: 12.5, fontWeight: 700, borderRadius: 999, padding: '8px 16px', boxShadow: '0 10px 24px rgba(1,42,55,.3)' }}>
+          غير مصرح لك بعرض هذه المعلومات
+        </div>
+      )}
     </div>
   );
 }
