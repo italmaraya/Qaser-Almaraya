@@ -36,15 +36,35 @@ export default function CountrySelect({ value, onChange, options, placeholder = 
     if (!btn) return;
     const rect = btn.getBoundingClientRect();
     const margin = 10;
+    const gap = 8;
     const panelWidth = Math.min(Math.max(rect.width, 260), window.innerWidth - margin * 2);
     // Align the panel's right edge with the trigger's right edge (natural
     // reading direction for this RTL site), then clamp both edges so it
     // never spills past the viewport regardless of where the field sits.
     let left = rect.right - panelWidth;
     left = Math.max(margin, Math.min(left, window.innerWidth - panelWidth - margin));
-    let top = rect.bottom + 8;
-    top = Math.min(top, window.innerHeight - margin); // keep the panel starting on-screen
-    setCoords({ top, left, width: panelWidth });
+
+    const searchBarHeight = 47; // matches the fixed search-row block below
+    const desiredListHeight = 264;
+    const spaceBelow = window.innerHeight - rect.bottom - gap - margin;
+    const spaceAbove = rect.top - gap - margin;
+
+    // Prefer opening downward, but flip upward if there isn't enough room
+    // below and there's clearly more room above — this is what actually
+    // prevents the panel from ever landing partly off-screen, which was
+    // what triggered the browser's auto-scroll-into-view (and, in turn,
+    // our old "close on scroll" handler) the instant the search box focused.
+    let placement = 'below';
+    if (spaceBelow < 160 && spaceAbove > spaceBelow) placement = 'above';
+
+    const available = placement === 'below' ? spaceBelow : spaceAbove;
+    const listMaxHeight = Math.max(120, Math.min(desiredListHeight, available - searchBarHeight));
+
+    if (placement === 'below') {
+      setCoords({ placement, left, width: panelWidth, top: rect.bottom + gap, listMaxHeight });
+    } else {
+      setCoords({ placement, left, width: panelWidth, bottom: window.innerHeight - rect.top + gap, listMaxHeight });
+    }
   }
 
   useLayoutEffect(() => {
@@ -57,17 +77,11 @@ export default function CountrySelect({ value, onChange, options, placeholder = 
     function onReflow() {
       reposition();
     }
-    function onScroll() {
-      // Closing on scroll avoids a stale fixed-position panel drifting away
-      // from its trigger as the page moves underneath it.
-      setOpen(false);
-      setQuery('');
-    }
     window.addEventListener('resize', onReflow);
-    window.addEventListener('scroll', onScroll, true);
+    window.addEventListener('scroll', onReflow, true);
     return () => {
       window.removeEventListener('resize', onReflow);
-      window.removeEventListener('scroll', onScroll, true);
+      window.removeEventListener('scroll', onReflow, true);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open]);
@@ -86,7 +100,10 @@ export default function CountrySelect({ value, onChange, options, placeholder = 
   useEffect(() => {
     if (open) {
       setHighlight(0);
-      setTimeout(() => inputRef.current && inputRef.current.focus(), 30);
+      // preventScroll matters here: without it, the browser scrolls the page
+      // to bring this newly-focused input into view, which is exactly what
+      // was making the panel flash open and immediately vanish before.
+      setTimeout(() => inputRef.current && inputRef.current.focus({ preventScroll: true }), 30);
     }
   }, [open]);
 
@@ -142,7 +159,8 @@ export default function CountrySelect({ value, onChange, options, placeholder = 
           data-country-select-panel=""
           style={{
             position: 'fixed',
-            top: coords.top,
+            top: coords.placement === 'below' ? coords.top : undefined,
+            bottom: coords.placement === 'above' ? coords.bottom : undefined,
             left: coords.left,
             width: coords.width,
             zIndex: 200,
@@ -152,7 +170,7 @@ export default function CountrySelect({ value, onChange, options, placeholder = 
             boxShadow: '0 20px 46px rgba(1,42,55,.22)',
             overflow: 'hidden',
             animation: 'qa-dropdown-in 160ms cubic-bezier(.16,1,.3,1) both',
-            transformOrigin: 'top center',
+            transformOrigin: coords.placement === 'below' ? 'top center' : 'bottom center',
           }}
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '10px 14px', borderBottom: '1px solid #f2f2f3' }}>
@@ -166,7 +184,7 @@ export default function CountrySelect({ value, onChange, options, placeholder = 
               style={{ flex: 1, border: 0, outline: 'none', fontFamily: 'inherit', fontSize: 14.5, background: 'transparent', color: '#1d2733' }}
             />
           </div>
-          <div ref={listRef} className="qa-dropdown-scroll" style={{ maxHeight: 264, overflowY: 'auto', padding: 6 }}>
+          <div ref={listRef} className="qa-dropdown-scroll" style={{ maxHeight: coords.listMaxHeight, overflowY: 'auto', padding: 6 }}>
             {filtered.length === 0 && (
               <div style={{ padding: '18px 12px', textAlign: 'center', color: '#7b8087', fontSize: 13.5 }}>
                 {options.length === 0 ? '...جارٍ التحميل' : emptyLabel}
