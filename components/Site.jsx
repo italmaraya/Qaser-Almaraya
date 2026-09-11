@@ -3,7 +3,6 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import Icon from './Icon';
 import { getStoredLang } from '../lib/i18n';
-import { getStoredCurrency } from '../lib/currency';
 import AchievementSpread from './AchievementSpread';
 import MascotLoader from './MascotLoader';
 import PackageCard from './PackageCard';
@@ -157,7 +156,7 @@ export default function Site(props) {
   const COUNTRIES = filteredCountriesList.length ? filteredCountriesList : COUNTRIES_DEFAULT;
   const VISAS = filteredCountriesList.length ? legacyVisasRaw : VISAS_DEFAULT;
   const DEFAULT_ACTIVE_COUNTRY = (COUNTRIES[0] && COUNTRIES[0].code) || 'tr';
-  const [st, setSt] = useState({ lang: 'ar', currency: 'IQD', page: props.initialPage || 'home', active: DEFAULT_ACTIVE_COUNTRY, group: 'الكل', achievement: 'forum', pkg: '', loading: false, toast: '',
+  const [st, setSt] = useState({ lang: 'ar', page: props.initialPage || 'home', active: DEFAULT_ACTIVE_COUNTRY, group: 'الكل', achievement: 'forum', pkg: '', loading: false, toast: '',
     travellers: 1, children: 0, tripDate: '', visaType: 'الكل', resultKind: 'الكل', visaDetailOpen: false, searched: false, visaId: '', appStage: 'form', ask: false, app: null, appError: '', appNo: '',
     countryPanelOpen: false, countryQuery: '',
     trackOpen: false, trackInput: '', trackQuery: '', trackSending: false, trackError: '', trackData: null,
@@ -176,13 +175,6 @@ export default function Site(props) {
   useEffect(() => {
     const stored = getStoredLang();
     if (stored !== st.lang) patch({ lang: stored });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  // Same sync for the IQD/USD currency preference.
-  useEffect(() => {
-    const stored = getStoredCurrency();
-    if (stored !== st.currency) patch({ currency: stored });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -432,13 +424,6 @@ function   renderVals(){
         try { localStorage.setItem('qa_lang', next); } catch {}
         patch({ lang: next });
       },
-      currencyLabel: st.currency === 'IQD' ? 'USD' : 'IQD',
-      toggleCurrency: e => {
-        if(e) e.preventDefault();
-        const next = st.currency === 'IQD' ? 'USD' : 'IQD';
-        try { localStorage.setItem('qa_currency', next); } catch {}
-        patch({ currency: next });
-      },
       applyOpen: !!st.apply,
       applyJob: st.apply || '',
       applySent: st.applySent,
@@ -573,7 +558,7 @@ function   renderVals(){
 
   /* ---------- Visa module (BRD v3) ---------- */
 
-function   money(n){ const num = Number(n || 0); if(st.currency === 'USD'){ const usd = num / 1310; return '$' + usd.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 2 }); } const s = num.toLocaleString('en-US'); return st.lang === 'en' ? 'IQD ' + s : s.replace(/\d/g, d => '٠١٢٣٤٥٦٧٨٩'[+d]).replace(/,/g, '٬') + ' د.ع'; }
+function   money(n){ const s = Number(n || 0).toLocaleString('en-US'); return st.lang === 'en' ? 'IQD ' + s : s.replace(/\d/g, d => '٠١٢٣٤٥٦٧٨٩'[+d]).replace(/,/g, '٬') + ' د.ع'; }
 
 function   L(ar, en){ return st.lang === 'en' && en != null ? en : ar; }
 
@@ -809,7 +794,7 @@ function   visaVals(country){
   }
 
   const V = renderVals();
-  const { achievement, achievements, addAdult, addChild, adultPrice, afBring, afEmail, afName, afPhone, appAccept, appDone, appDoneCount, appEmail, appError, appErrorOn, appForm, appNo, appPay, appPhone, appProgress, appSavedAt, appSteps, appTotal, appTotalLines, appTravellerCount, applyError, applyErrorText, applyForm, applyJob, applyOpen, applySending, applySent, askKind, backToForm, cancelAsk, cardRows, chevronRotate, childPrice, childrenAr, clearCountryQuery, closeApply, closeCountryPanel, closeTrack, closeVisaDetail, copyGroup, copyVisa, country, countryPanelOpen, countryQuery, coverName, cvName, decChildren, decTravellers, docCount, docRows, exportOn, featured, feeTotal, fileUploading, filteredCountries, flowSteps, fromAdult, fromChild, fromIssuing, goAbout, goContact, goFaq, goFlights, goGroups, goHome, goInsurance, goJobs, goPrivacy, goTerms, goVisaApplyDetail, goVisas, groupLabel, groups, hasCountryMatches, hasFeatured, hotelQuery, incChildren, incTravellers, isAbout, isContact, isFaq, isFlights, isGroups, isHome, isInsurance, isJobs, isPackages, isPrivacy, isTerms, isVisaApply, isVisaDetail, isVisas, issuingLabel, langLabel, loading, navItems, noCountryMatch, noPackages, noResults, notAsking, notGuaranteed, onPaid, openApply, openAsk, openTrack, packages, pdfGroup, pdfVisa, pickCover, pickCv, pickWork, priceRows, regionTiles, resetTrack, resultCount, resultKinds, results, roomType, runVisaSearch, scrollToPackages, selectAchievement, setAfBring, setAfEmail, setAfName, setAfPhone, setAppEmail, setAppPhone, setCountryQuery, setHotelQuery, setRoomType, setTrackInput, setTripDate, showResults, showSearchPrompt, showVisaRail, statusLegend, stayLabel, stepsOn, stopClose, stopTrack, submitApp, submitApply, submitTrack, suggestedCountries, ticks, toggleAccept, toggleCountryPanel, toggleLang, toggleCurrency, currencyLabel, trackData, trackError, trackForm, trackInput, trackOpen, trackQuery, trackResult, trackSending, trackSteps, travellersAr, travellersList, tripDate, typesLabel, upcomingEvents, visa, visaCardCount, visaCount, visaExportOn, visaTypes, workName,
+  const { achievement, achievements, addAdult, addChild, adultPrice, afBring, afEmail, afName, afPhone, appAccept, appDone, appDoneCount, appEmail, appError, appErrorOn, appForm, appNo, appPay, appPhone, appProgress, appSavedAt, appSteps, appTotal, appTotalLines, appTravellerCount, applyError, applyErrorText, applyForm, applyJob, applyOpen, applySending, applySent, askKind, backToForm, cancelAsk, cardRows, chevronRotate, childPrice, childrenAr, clearCountryQuery, closeApply, closeCountryPanel, closeTrack, closeVisaDetail, copyGroup, copyVisa, country, countryPanelOpen, countryQuery, coverName, cvName, decChildren, decTravellers, docCount, docRows, exportOn, featured, feeTotal, fileUploading, filteredCountries, flowSteps, fromAdult, fromChild, fromIssuing, goAbout, goContact, goFaq, goFlights, goGroups, goHome, goInsurance, goJobs, goPrivacy, goTerms, goVisaApplyDetail, goVisas, groupLabel, groups, hasCountryMatches, hasFeatured, hotelQuery, incChildren, incTravellers, isAbout, isContact, isFaq, isFlights, isGroups, isHome, isInsurance, isJobs, isPackages, isPrivacy, isTerms, isVisaApply, isVisaDetail, isVisas, issuingLabel, langLabel, loading, navItems, noCountryMatch, noPackages, noResults, notAsking, notGuaranteed, onPaid, openApply, openAsk, openTrack, packages, pdfGroup, pdfVisa, pickCover, pickCv, pickWork, priceRows, regionTiles, resetTrack, resultCount, resultKinds, results, roomType, runVisaSearch, scrollToPackages, selectAchievement, setAfBring, setAfEmail, setAfName, setAfPhone, setAppEmail, setAppPhone, setCountryQuery, setHotelQuery, setRoomType, setTrackInput, setTripDate, showResults, showSearchPrompt, showVisaRail, statusLegend, stayLabel, stepsOn, stopClose, stopTrack, submitApp, submitApply, submitTrack, suggestedCountries, ticks, toggleAccept, toggleCountryPanel, toggleLang, trackData, trackError, trackForm, trackInput, trackOpen, trackQuery, trackResult, trackSending, trackSteps, travellersAr, travellersList, tripDate, typesLabel, upcomingEvents, visa, visaCardCount, visaCount, visaExportOn, visaTypes, workName,
     contact, contactSending, contactSent, contactError, setContactField, submitContact, openWhatsapp } = V;
 
   return (
@@ -835,9 +820,6 @@ function   visaVals(country){
 <button type="button" onClick={toggleLang} aria-label="Language" title="Language" className="qa-langbtn" style={{ flex: "none", display: "flex", alignItems: "center", gap: "7px", padding: "8px 14px", border: "1px solid #ececed", borderRadius: "999px", background: "#fff", fontFamily: "inherit", fontSize: "13px", fontWeight: "700", letterSpacing: ".04em", color: "#22a9d4", cursor: "pointer" }}>
 <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"><circle cx="12" cy="12" r="9"></circle><path d="M3 12h18"></path><path d="M12 3c2.5 2.6 2.5 15.4 0 18M12 3c-2.5 2.6-2.5 15.4 0 18"></path></svg>
 <span data-no-i18n="">{langLabel}</span>
-</button>
-<button type="button" onClick={toggleCurrency} aria-label="Currency" title="Currency" className="qa-langbtn" style={{ flex: "none", display: "flex", alignItems: "center", gap: "7px", padding: "8px 14px", border: "1px solid #ececed", borderRadius: "999px", background: "#fff", fontFamily: "inherit", fontSize: "13px", fontWeight: "700", letterSpacing: ".04em", color: "#22a9d4", cursor: "pointer" }}>
-<span data-no-i18n="">{currencyLabel}</span>
 </button>
 <button className="qa-btn qa-cyan qa-headcta" style={{ flex: "none", padding: "9px 18px", fontSize: "14px" }} onClick={goContact}>تواصل معنا</button>
 <button
@@ -884,9 +866,6 @@ function   visaVals(country){
       <button type="button" onClick={toggleLang} data-no-i18n="" style={{ display: "flex", alignItems: "center", gap: 7, padding: "10px 16px", border: "1px solid rgba(255,255,255,.35)", borderRadius: 999, background: "transparent", fontFamily: "inherit", fontSize: 13, fontWeight: 700, letterSpacing: ".04em", color: "#fff", cursor: "pointer" }}>
         <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"><circle cx="12" cy="12" r="9" /><path d="M3 12h18" /><path d="M12 3c2.5 2.6 2.5 15.4 0 18M12 3c-2.5 2.6-2.5 15.4 0 18" /></svg>
         <span>{langLabel}</span>
-      </button>
-      <button type="button" onClick={toggleCurrency} data-no-i18n="" style={{ display: "flex", alignItems: "center", gap: 7, padding: "10px 16px", border: "1px solid rgba(255,255,255,.35)", borderRadius: 999, background: "transparent", fontFamily: "inherit", fontSize: 13, fontWeight: 700, letterSpacing: ".04em", color: "#fff", cursor: "pointer" }}>
-        <span>{currencyLabel}</span>
       </button>
       <button
         type="button"

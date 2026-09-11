@@ -7,12 +7,11 @@ import SiteFooter from '../../../../components/SiteFooter';
 import MascotLoader from '../../../../components/MascotLoader';
 import { printDoc, visaTableHtml, combinedDocsLine, esc } from '../../../../lib/printDoc';
 import { useLangToggle } from '../../../../lib/i18n';
-import { useCurrencyToggle, formatPrice } from '../../../../lib/currency';
+import { formatPrice } from '../../../../lib/currency';
 import { flagSrc } from '../../../../lib/flags';
 
 export default function CountryVisaListPage() {
   const { lang } = useLangToggle();
-  const { currency } = useCurrencyToggle();
   const nm = (ar, en) => (lang === 'en' && en ? en : ar);
   const { countryId } = useParams();
   const [cards, setCards] = useState(null);
@@ -144,8 +143,8 @@ export default function CountryVisaListPage() {
                       </div>
                       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12, marginTop: 4 }}>
                         <div>
-                          <div style={{ fontSize: 20, fontWeight: 700, color: '#049dc5' }}>{formatPrice(c.adult_price, currency, lang)}</div>
-                          <div style={{ fontSize: 12.5, color: '#7b8087' }}>للبالغ · {formatPrice(c.child_price, currency, lang)} للطفل</div>
+                          <div style={{ fontSize: 20, fontWeight: 700, color: '#049dc5' }}>{formatPrice(c.adult_price, 'IQD', lang)}</div>
+                          <div style={{ fontSize: 12.5, color: '#7b8087' }}>للبالغ · {formatPrice(c.child_price, 'IQD', lang)} للطفل</div>
                         </div>
                         <Link href={`/visa/${c.id}`} className="qa-btn qa-cyan" style={{ textDecoration: 'none' }}>عرض التفاصيل</Link>
                       </div>

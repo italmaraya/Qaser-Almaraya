@@ -88,5 +88,12 @@ export async function POST(request) {
     emailResult = { error: err.message };
   }
 
-  return NextResponse.json({ ok: true, application_id: application.id, email: emailResult });
+  return NextResponse.json({
+    ok: true,
+    application_id: application.id,
+    // Only report whether the notification email went out — never the
+    // actual recipient addresses (that includes the provider's email,
+    // which is a staff-only detail and must not reach the customer's browser).
+    email: { sent: !!emailResult.sent, skipped: !!emailResult.skipped, error: emailResult.error ? true : undefined },
+  });
 }

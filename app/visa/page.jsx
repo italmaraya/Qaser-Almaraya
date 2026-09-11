@@ -6,7 +6,7 @@ import SiteHeader from '../../components/SiteHeader';
 import SiteFooter from '../../components/SiteFooter';
 import MascotLoader from '../../components/MascotLoader';
 import { useLangToggle } from '../../lib/i18n';
-import { useCurrencyToggle, formatPrice } from '../../lib/currency';
+import { formatPrice } from '../../lib/currency';
 import { flagSrc, isUploadedFlag } from '../../lib/flags';
 import CountrySelect from '../../components/CountrySelect';
 
@@ -24,7 +24,6 @@ const STEPS = [
 export default function VisaLandingPage() {
   const router = useRouter();
   const { lang } = useLangToggle();
-  const { currency } = useCurrencyToggle();
   const nm = (ar, en) => (lang === 'en' && en ? en : ar);
   const [cards, setCards] = useState(null);
   const [error, setError] = useState('');
@@ -343,7 +342,7 @@ export default function VisaLandingPage() {
                   </button>
                   <div style={{ textAlign: 'left' }}>
                     <div style={{ fontSize: 13, color: '#7b8087' }}>الإجمالي التقديري</div>
-                    <div style={{ fontSize: 22, fontWeight: 700, color: '#049dc5' }}>{estimatedTotal != null ? formatPrice(estimatedTotal, currency, lang) : '—'}</div>
+                    <div style={{ fontSize: 22, fontWeight: 700, color: '#049dc5' }}>{estimatedTotal != null ? formatPrice(estimatedTotal, 'IQD', lang) : '—'}</div>
                   </div>
                 </div>
               </div>
@@ -418,7 +417,7 @@ export default function VisaLandingPage() {
                     <Link key={c.country_id} href={`/visa/country/${c.country_id}`} className="qa-card" style={{ padding: 0, overflow: 'hidden', textDecoration: 'none', color: 'inherit', display: 'flex', flexDirection: 'column' }}>
                       <div style={{ position: 'relative', height: 96, background: 'linear-gradient(135deg,#34bbe1,#049dc5)', display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', padding: 16 }}>
                         <span style={{ background: 'rgba(255,255,255,.18)', color: '#fff', fontSize: 12, fontWeight: 700, borderRadius: 999, padding: '5px 12px' }}>
-                          من {formatPrice(c.minPrice, currency, lang)}
+                          من {formatPrice(c.minPrice, 'IQD', lang)}
                         </span>
                         {c.flag_code ? (
                           <img src={flagSrc(c.flag_code)} alt="" style={{ width: 40, height: 40, borderRadius: '50%', border: '2px solid #fff', objectFit: 'cover' }} onError={(e) => { e.currentTarget.style.display = 'none'; }} />

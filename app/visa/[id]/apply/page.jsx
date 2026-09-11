@@ -7,7 +7,7 @@ import SiteHeader from '../../../../components/SiteHeader';
 import SiteFooter from '../../../../components/SiteFooter';
 import MascotLoader from '../../../../components/MascotLoader';
 import { useLangToggle } from '../../../../lib/i18n';
-import { useCurrencyToggle, formatPrice } from '../../../../lib/currency';
+import { formatPrice } from '../../../../lib/currency';
 
 const inputStyle = {
   width: '100%',
@@ -251,7 +251,6 @@ function TravelerForm({ index, travelerType, documents, onChange, onProgress }) 
 
 export default function VisaApplyPage() {
   const { lang } = useLangToggle();
-  const { currency } = useCurrencyToggle();
   const nm = (ar, en) => (lang === 'en' && en ? en : ar);
   const { id } = useParams();
   const [card, setCard] = useState(null);
@@ -423,18 +422,18 @@ export default function VisaApplyPage() {
                 {adultCount > 0 && (
                   <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                     <span style={{ color: '#7b8087' }}>{adultCount} × بالغ</span>
-                    <span>{formatPrice(Number(card.adult_price) * adultCount, currency, lang)}</span>
+                    <span>{formatPrice(Number(card.adult_price) * adultCount, 'IQD', lang)}</span>
                   </div>
                 )}
                 {childCount > 0 && (
                   <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                     <span style={{ color: '#7b8087' }}>{childCount} × طفل</span>
-                    <span>{formatPrice(Number(card.child_price) * childCount, currency, lang)}</span>
+                    <span>{formatPrice(Number(card.child_price) * childCount, 'IQD', lang)}</span>
                   </div>
                 )}
                 <div style={{ display: 'flex', justifyContent: 'space-between', borderTop: '1px solid #ececed', paddingTop: 8, fontWeight: 700 }}>
                   <span>الإجمالي</span>
-                  <span style={{ color: '#049dc5' }}>{formatPrice(estimatedTotal, currency, lang)}</span>
+                  <span style={{ color: '#049dc5' }}>{formatPrice(estimatedTotal, 'IQD', lang)}</span>
                 </div>
               </div>
               {step === 'form' && (

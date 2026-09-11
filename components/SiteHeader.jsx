@@ -2,7 +2,6 @@
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import { useLangToggle } from '../lib/i18n';
-import { useCurrencyToggle } from '../lib/currency';
 
 const NAV = [
   { href: '/', label: 'الرئيسية' },
@@ -15,7 +14,6 @@ const NAV = [
 
 export default function SiteHeader({ active = 'التأشيرات' }) {
   const { lang, toggle } = useLangToggle();
-  const { currency, toggle: toggleCurrency } = useCurrencyToggle();
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
@@ -64,17 +62,6 @@ export default function SiteHeader({ active = 'التأشيرات' }) {
         >
           <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"><circle cx="12" cy="12" r="9" /><path d="M3 12h18" /><path d="M12 3c2.5 2.6 2.5 15.4 0 18M12 3c-2.5 2.6-2.5 15.4 0 18" /></svg>
           <span>{lang === 'ar' ? 'EN' : 'ع'}</span>
-        </button>
-        <button
-          type="button"
-          onClick={toggleCurrency}
-          aria-label="Currency"
-          title="Currency"
-          data-no-i18n=""
-          className="qa-langbtn"
-          style={{ flex: 'none', display: 'flex', alignItems: 'center', gap: 7, padding: '8px 14px', border: '1px solid #ececed', borderRadius: 999, background: '#fff', fontFamily: 'inherit', fontSize: 13, fontWeight: 700, letterSpacing: '.04em', color: '#22a9d4', cursor: 'pointer' }}
-        >
-          <span>{currency === 'IQD' ? 'USD' : 'IQD'}</span>
         </button>
         <Link href="/contact" className="qa-btn qa-cyan qa-headcta" style={{ flex: 'none', padding: '9px 18px', fontSize: 14, textDecoration: 'none' }}>
           تواصل معنا
@@ -196,28 +183,6 @@ export default function SiteHeader({ active = 'التأشيرات' }) {
             >
               <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"><circle cx="12" cy="12" r="9" /><path d="M3 12h18" /><path d="M12 3c2.5 2.6 2.5 15.4 0 18M12 3c-2.5 2.6-2.5 15.4 0 18" /></svg>
               <span>{lang === 'ar' ? 'EN' : 'ع'}</span>
-            </button>
-            <button
-              type="button"
-              onClick={toggleCurrency}
-              data-no-i18n=""
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: 7,
-                padding: '10px 16px',
-                border: '1px solid rgba(255,255,255,.35)',
-                borderRadius: 999,
-                background: 'transparent',
-                fontFamily: 'inherit',
-                fontSize: 13,
-                fontWeight: 700,
-                letterSpacing: '.04em',
-                color: '#fff',
-                cursor: 'pointer',
-              }}
-            >
-              <span>{currency === 'IQD' ? 'USD' : 'IQD'}</span>
             </button>
             <Link
               href="/contact"

@@ -7,7 +7,7 @@ import SiteFooter from '../../../components/SiteFooter';
 import MascotLoader from '../../../components/MascotLoader';
 import { printDoc, visaTableHtml, combinedDocsLine, esc } from '../../../lib/printDoc';
 import { useLangToggle } from '../../../lib/i18n';
-import { useCurrencyToggle, formatPrice } from '../../../lib/currency';
+import { formatPrice } from '../../../lib/currency';
 import { flagSrc } from '../../../lib/flags';
 
 const WHY_US = [
@@ -18,7 +18,6 @@ const WHY_US = [
 
 export default function VisaDetailPage() {
   const { lang } = useLangToggle();
-  const { currency } = useCurrencyToggle();
   const nm = (ar, en) => (lang === 'en' && en ? en : ar);
   const { id } = useParams();
   const [card, setCard] = useState(null);
@@ -90,11 +89,11 @@ export default function VisaDetailPage() {
               <div style={{ display: 'flex', justifyContent: 'space-between', borderTop: '1px solid #ececed', paddingTop: 12 }}>
                 <div>
                   <div style={{ fontSize: 12, color: '#7b8087' }}>البالغ</div>
-                  <div style={{ fontSize: 20, fontWeight: 700, color: '#049dc5' }}>{formatPrice(card.adult_price, currency, lang)}</div>
+                  <div style={{ fontSize: 20, fontWeight: 700, color: '#049dc5' }}>{formatPrice(card.adult_price, 'IQD', lang)}</div>
                 </div>
                 <div style={{ textAlign: 'left' }}>
                   <div style={{ fontSize: 12, color: '#7b8087' }}>الطفل</div>
-                  <div style={{ fontSize: 20, fontWeight: 700, color: '#049dc5' }}>{formatPrice(card.child_price, currency, lang)}</div>
+                  <div style={{ fontSize: 20, fontWeight: 700, color: '#049dc5' }}>{formatPrice(card.child_price, 'IQD', lang)}</div>
                 </div>
               </div>
               <Link href={`/visa/${id}/apply`} className="qa-btn qa-cyan" style={{ textAlign: 'center', textDecoration: 'none' }}>ابدأ الآن</Link>
