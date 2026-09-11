@@ -166,24 +166,24 @@ export default function VisaLandingPage() {
       <SiteHeader active="التأشيرات" />
       <main style={{ flex: 1 }}>
         <div className="qa-page">
-          <section style={{ position: 'relative', background: 'linear-gradient(135deg,#34bbe1 0%,#049dc5 100%)', paddingBottom: 90, overflow: 'hidden' }}>
+          <section style={{ position: 'relative', background: 'linear-gradient(135deg,#34bbe1 0%,#049dc5 100%)', paddingBottom: 50, overflow: 'hidden' }}>
             <img src="/assets/logo-mark-white.webp" alt="" style={{ position: 'absolute', insetInlineEnd: -150, top: -80, height: 480, opacity: 0.1 }} />
-            <div className="qa-sec qa-2col" style={{ position: 'relative', paddingBottom: 0, display: 'grid', gridTemplateColumns: 'minmax(0,1.05fr) minmax(0,.95fr)', gap: 36, alignItems: 'center' }}>
+            <div className="qa-sec qa-2col" style={{ position: 'relative', paddingTop: 36, paddingBottom: 0, display: 'grid', gridTemplateColumns: 'minmax(0,1.05fr) minmax(0,.95fr)', gap: 28, alignItems: 'center' }}>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 8, alignItems: 'flex-end', textAlign: 'right' }}>
                 <span style={{ fontSize: 14, fontWeight: 700, letterSpacing: '.06em', color: '#fff' }}>VISAS</span>
-                <h1 style={{ margin: 0, fontSize: 'clamp(30px,3.4vw,56px)', color: '#fff' }}>التأشيرات</h1>
-                <p style={{ margin: 0, fontSize: 17, lineHeight: 1.7, color: 'rgba(255,255,255,.92)', maxWidth: 620 }}>
+                <h1 style={{ margin: 0, fontSize: 'clamp(28px,3vw,46px)', color: '#fff' }}>التأشيرات</h1>
+                <p style={{ margin: 0, fontSize: 16, lineHeight: 1.6, color: 'rgba(255,255,255,.92)', maxWidth: 600 }}>
                   اختر الدولة من الشريط أدناه لتظهر لك نوع التأشيرة ورسومها ومدة الإنجاز والمستندات المطلوبة.
                 </p>
               </div>
 
-              <div data-jobs-art="" className="qa-visa-hero-art" style={{ position: 'relative', alignSelf: 'stretch', minHeight: 380 }}>
-                <span aria-hidden="true" style={{ position: 'absolute', insetInlineStart: '-8%', bottom: -70, width: 320, height: 320, borderRadius: '50%', background: 'radial-gradient(circle at 50% 42%,rgba(255,255,255,.32),rgba(255,255,255,0) 70%)' }} />
-                <span aria-hidden="true" style={{ position: 'absolute', insetInlineStart: '-2%', bottom: -58, width: 288, height: 288, animation: 'qa-orbit 26s linear infinite' }}>
+              <div data-jobs-art="" className="qa-visa-hero-art" style={{ position: 'relative', alignSelf: 'stretch', minHeight: 250 }}>
+                <span aria-hidden="true" style={{ position: 'absolute', insetInlineStart: '-8%', bottom: -46, width: 210, height: 210, borderRadius: '50%', background: 'radial-gradient(circle at 50% 42%,rgba(255,255,255,.32),rgba(255,255,255,0) 70%)' }} />
+                <span aria-hidden="true" style={{ position: 'absolute', insetInlineStart: '-2%', bottom: -38, width: 190, height: 190, animation: 'qa-orbit 26s linear infinite' }}>
                   <span style={{ position: 'absolute', inset: 0, borderRadius: '50%', border: '1px dashed rgba(255,255,255,.42)' }} />
                   <span style={{ position: 'absolute', top: -5, insetInlineStart: '50%', width: 10, height: 10, marginInlineStart: -5, borderRadius: '50%', background: '#faab18', boxShadow: '0 0 0 5px rgba(250,171,24,.25)' }} />
                 </span>
-                <span aria-hidden="true" style={{ position: 'absolute', insetInlineStart: '6%', bottom: -30, width: 212, height: 212, animation: 'qa-orbit-rev 34s linear infinite' }}>
+                <span aria-hidden="true" style={{ position: 'absolute', insetInlineStart: '6%', bottom: -20, width: 140, height: 140, animation: 'qa-orbit-rev 34s linear infinite' }}>
                   <span style={{ position: 'absolute', inset: 0, borderRadius: '50%', border: '1px solid rgba(255,255,255,.26)' }} />
                   <span style={{ position: 'absolute', bottom: -4, insetInlineStart: '50%', width: 7, height: 7, marginInlineStart: -3.5, borderRadius: '50%', background: 'rgba(255,255,255,.9)' }} />
                 </span>
@@ -191,12 +191,12 @@ export default function VisaLandingPage() {
                 <img
                   src="/assets/visa-fan-cutout.webp"
                   alt="سكايلو يحمل تأشيرات وجواز سفر"
-                  style={{ position: 'absolute', zIndex: 2, insetInlineStart: '2%', bottom: -20, display: 'block', width: 'clamp(200px,58%,320px)', height: 'auto', objectFit: 'contain', filter: 'drop-shadow(0 26px 38px rgba(1,42,55,.34))' }}
+                  style={{ position: 'absolute', zIndex: 2, insetInlineStart: '2%', bottom: -14, display: 'block', width: 'clamp(150px,44%,220px)', height: 'auto', objectFit: 'contain', filter: 'drop-shadow(0 20px 30px rgba(1,42,55,.34))' }}
                 />
 
-                <div aria-hidden="true" style={{ position: 'absolute', zIndex: 4, top: '10%', insetInlineEnd: -6, width: 'clamp(168px,42%,214px)', display: 'flex', flexDirection: 'column', alignItems: 'stretch', gap: 12, pointerEvents: 'none' }}>
-                  <div style={{ alignSelf: 'stretch', maxWidth: 210, padding: 14, background: '#fff', borderRadius: 14, boxShadow: '0 18px 34px rgba(1,42,55,.28)', display: 'flex', flexDirection: 'column', gap: 8, animation: 'qa-swing 5.6s ease-in-out infinite', transformOrigin: '50% 0' }}>
-                    <span style={{ fontFamily: "'IBM Plex Sans',system-ui,sans-serif", fontSize: 8.5, fontWeight: 700, letterSpacing: '.2em', color: '#7b8087' }}>VISA STATUS</span>
+                <div aria-hidden="true" style={{ position: 'absolute', zIndex: 4, top: '8%', insetInlineEnd: -6, width: 'clamp(140px,36%,178px)', display: 'flex', flexDirection: 'column', alignItems: 'stretch', gap: 9, pointerEvents: 'none' }}>
+                  <div style={{ alignSelf: 'stretch', maxWidth: 178, padding: 11, background: '#fff', borderRadius: 12, boxShadow: '0 14px 26px rgba(1,42,55,.28)', display: 'flex', flexDirection: 'column', gap: 6, animation: 'qa-swing 5.6s ease-in-out infinite', transformOrigin: '50% 0' }}>
+                    <span style={{ fontFamily: "'IBM Plex Sans',system-ui,sans-serif", fontSize: 7.5, fontWeight: 700, letterSpacing: '.2em', color: '#7b8087' }}>VISA STATUS</span>
                     <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                       <span style={{ flex: 'none', display: 'grid', placeItems: 'center', width: 24, height: 24, borderRadius: '50%', background: '#049dc5', color: '#fff' }}>
                         <svg width={13} height={13} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={3} strokeLinecap="round" strokeLinejoin="round"><path d="M20 6 9 17l-5-5" /></svg>
@@ -208,28 +208,28 @@ export default function VisaLandingPage() {
                     </span>
                   </div>
 
-                  <div style={{ alignSelf: 'stretch', display: 'flex', flexWrap: 'wrap', gap: 8, justifyContent: 'center' }}>
-                    <span style={{ padding: '7px 14px', borderRadius: 999, background: 'rgba(255,255,255,.94)', color: '#036f8c', fontSize: 13.5, fontWeight: 700, boxShadow: '0 10px 20px rgba(1,42,55,.2)', animation: 'qa-chip 5.2s ease-in-out infinite' }}>سياحية</span>
-                    <span style={{ padding: '7px 14px', borderRadius: 999, background: 'rgba(255,255,255,.94)', color: '#036f8c', fontSize: 13.5, fontWeight: 700, boxShadow: '0 10px 20px rgba(1,42,55,.2)', animation: 'qa-chip 6.4s ease-in-out .8s infinite' }}>عمل</span>
-                    <span style={{ padding: '7px 14px', borderRadius: 999, background: 'rgba(255,255,255,.94)', color: '#036f8c', fontSize: 13.5, fontWeight: 700, boxShadow: '0 10px 20px rgba(1,42,55,.2)', animation: 'qa-chip 5.9s ease-in-out .4s infinite' }}>سفارة</span>
+                  <div style={{ alignSelf: 'stretch', display: 'flex', flexWrap: 'wrap', gap: 6, justifyContent: 'center' }}>
+                    <span style={{ padding: '5px 11px', borderRadius: 999, background: 'rgba(255,255,255,.94)', color: '#036f8c', fontSize: 11.5, fontWeight: 700, boxShadow: '0 8px 16px rgba(1,42,55,.2)', animation: 'qa-chip 5.2s ease-in-out infinite' }}>سياحية</span>
+                    <span style={{ padding: '5px 11px', borderRadius: 999, background: 'rgba(255,255,255,.94)', color: '#036f8c', fontSize: 11.5, fontWeight: 700, boxShadow: '0 8px 16px rgba(1,42,55,.2)', animation: 'qa-chip 6.4s ease-in-out .8s infinite' }}>عمل</span>
+                    <span style={{ padding: '5px 11px', borderRadius: 999, background: 'rgba(255,255,255,.94)', color: '#036f8c', fontSize: 11.5, fontWeight: 700, boxShadow: '0 8px 16px rgba(1,42,55,.2)', animation: 'qa-chip 5.9s ease-in-out .4s infinite' }}>سفارة</span>
                   </div>
 
-                  <div style={{ position: 'relative', alignSelf: 'center', width: '100%', maxWidth: 200, padding: '14px 15px 16px', background: '#fff', borderRadius: 14, boxShadow: '0 18px 34px rgba(1,42,55,.3)', animation: 'qa-pop 6.8s ease-in-out infinite' }}>
-                    <span style={{ position: 'absolute', top: -12, insetInlineStart: -12, display: 'grid', placeItems: 'center', width: 30, height: 30, borderRadius: '50%', background: '#faab18', color: '#012a37' }}>
-                      <svg width={15} height={15} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.4} strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="16" rx="2" /><path d="M3 9h18M8 4v3M16 4v3" /></svg>
+                  <div style={{ position: 'relative', alignSelf: 'center', width: '100%', maxWidth: 160, padding: '11px 12px 13px', background: '#fff', borderRadius: 12, boxShadow: '0 14px 26px rgba(1,42,55,.3)', animation: 'qa-pop 6.8s ease-in-out infinite' }}>
+                    <span style={{ position: 'absolute', top: -10, insetInlineStart: -10, display: 'grid', placeItems: 'center', width: 24, height: 24, borderRadius: '50%', background: '#faab18', color: '#012a37' }}>
+                      <svg width={12} height={12} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.4} strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="16" rx="2" /><path d="M3 9h18M8 4v3M16 4v3" /></svg>
                     </span>
-                    <span style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-                      <span style={{ fontFamily: "'IBM Plex Sans',system-ui,sans-serif", fontSize: 8.5, fontWeight: 700, letterSpacing: '.2em', color: '#7b8087' }}>PASSPORT</span>
-                      <span style={{ height: 7, width: '78%', borderRadius: 4, background: '#1d2733', opacity: 0.82 }} />
-                      <span style={{ height: 5, borderRadius: 4, background: '#e7eaec' }} />
-                      <span style={{ height: 5, width: '54%', borderRadius: 4, background: '#bfe9f6' }} />
+                    <span style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
+                      <span style={{ fontFamily: "'IBM Plex Sans',system-ui,sans-serif", fontSize: 7.5, fontWeight: 700, letterSpacing: '.2em', color: '#7b8087' }}>PASSPORT</span>
+                      <span style={{ height: 6, width: '78%', borderRadius: 4, background: '#1d2733', opacity: 0.82 }} />
+                      <span style={{ height: 4, borderRadius: 4, background: '#e7eaec' }} />
+                      <span style={{ height: 4, width: '54%', borderRadius: 4, background: '#bfe9f6' }} />
                     </span>
                   </div>
                 </div>
               </div>
             </div>
 
-            <div className="qa-sec" style={{ paddingTop: 32, paddingBottom: 0 }}>
+            <div className="qa-sec" style={{ paddingTop: 20, paddingBottom: 0 }}>
               <div style={{ position: 'relative', background: '#fff', borderRadius: 24, boxShadow: '0 24px 50px rgba(1,42,55,.28)', overflow: 'hidden' }}>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '18px 26px', borderBottom: '1px solid #ececed' }}>
                   <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
