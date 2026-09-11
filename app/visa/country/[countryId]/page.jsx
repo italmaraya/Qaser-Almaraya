@@ -183,7 +183,7 @@ export default function CountryVisaListPage() {
       {cards == null && !error && <MascotLoader assetBase="/assets" />}
       {providerHints && (
         <div style={{ position: 'fixed', bottom: 18, insetInlineStart: 18, zIndex: 60, background: '#1d2733', color: '#fff', fontSize: 12.5, fontWeight: 700, borderRadius: 999, padding: '8px 16px', boxShadow: '0 10px 24px rgba(1,42,55,.3)' }}>
-          ⌕ وضع الموظفين مفعّل — Ctrl+Shift+P للإخفاء
+          ⌕ وضع الموظفين مفعّل — اكتب نفس الكلمة السرية للإخفاء
         </div>
       )}
       {providerDenied && (
