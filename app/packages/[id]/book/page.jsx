@@ -43,6 +43,8 @@ export default function PackageBookingPage() {
   const [submitted, setSubmitted] = useState(false);
   const [orderNo, setOrderNo] = useState('');
   const [submitError, setSubmitError] = useState('');
+  const [showPayment, setShowPayment] = useState(false);
+  const [validationMsg, setValidationMsg] = useState('');
 
   useEffect(() => {
     fetch(`/api/packages/${id}`)
@@ -218,7 +220,31 @@ export default function PackageBookingPage() {
 
                   {submitError && <p style={{ color: '#d2324f', background: '#fdecef', border: '1px solid #f7c3cc', borderRadius: 10, padding: '12px 16px' }}>{submitError}</p>}
 
-                  {canSubmit ? (
+                  {!showPayment && (
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: 8, alignItems: 'flex-start' }}>
+                      <button
+                        type="button"
+                        className="qa-btn qa-cyan"
+                        onClick={() => {
+                          if (canSubmit) {
+                            setValidationMsg('');
+                            setShowPayment(true);
+                          } else {
+                            setValidationMsg(
+                              lang === 'en'
+                                ? 'Fill in every traveller’s name and a phone number to continue to payment.'
+                                : 'أكملوا اسم كل مسافر ورقم الهاتف للمتابعة إلى الدفع.'
+                            );
+                          }
+                        }}
+                      >
+                        {t.booking_cta}
+                      </button>
+                      {validationMsg && <p style={{ margin: 0, fontSize: 13.5, color: '#d2324f' }}>{validationMsg}</p>}
+                    </div>
+                  )}
+
+                  {showPayment && (
                     <PaymentMethods
                       title={t.payment_title}
                       onConfirm={handleConfirm}
@@ -227,10 +253,6 @@ export default function PackageBookingPage() {
                       orderNo={orderNo}
                       assetBase="/assets"
                     />
-                  ) : (
-                    <p style={{ fontSize: 13.5, color: '#7b8087' }}>
-                      {lang === 'en' ? 'Fill in every traveller’s name and a phone number to continue to payment.' : 'أكملوا اسم كل مسافر ورقم الهاتف للمتابعة إلى الدفع.'}
-                    </p>
                   )}
                 </>
               ) : (

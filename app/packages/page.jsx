@@ -53,19 +53,28 @@ export default function PackagesPage() {
       <main style={{ flex: 1 }}>
         <div className="qa-page">
           {/* Hero */}
-          <section style={{ background: 'linear-gradient(135deg,#34bbe1 0%,#049dc5 100%)', color: '#fff', padding: 'clamp(48px,7vw,88px) clamp(16px,4vw,32px)' }}>
-            <div style={{ maxWidth: 1240, margin: '0 auto', display: 'flex', flexDirection: 'column', gap: 14, alignItems: 'flex-start' }}>
-              <span style={{ fontSize: 13, fontWeight: 700, letterSpacing: '.08em', color: 'rgba(255,255,255,.85)' }}>{t.hero_eyebrow}</span>
-              <h1 style={{ margin: 0, fontSize: 'clamp(26px,4vw,40px)', color: '#fff', maxWidth: 640 }}>{t.hero_title}</h1>
-              <p style={{ margin: 0, fontSize: 16, lineHeight: 1.7, color: 'rgba(255,255,255,.92)', maxWidth: 620 }}>{t.hero_sub}</p>
-              <a
-                href="#qa-pkg-results"
-                onClick={(e) => { e.preventDefault(); document.getElementById('qa-pkg-results')?.scrollIntoView({ behavior: 'smooth' }); }}
-                className="qa-btn qa-amber"
-                style={{ marginTop: 8, textDecoration: 'none' }}
-              >
-                {t.hero_cta2}
-              </a>
+          <section style={{ background: 'linear-gradient(135deg,#34bbe1 0%,#049dc5 100%)', color: '#fff', padding: 'clamp(48px,7vw,88px) clamp(16px,4vw,32px)', overflow: 'hidden' }}>
+            <div style={{ maxWidth: 1240, margin: '0 auto', display: 'flex', alignItems: 'center', gap: 32, flexWrap: 'wrap-reverse' }}>
+              <div style={{ flex: '1 1 420px', display: 'flex', flexDirection: 'column', gap: 14, alignItems: 'flex-start', minWidth: 280 }}>
+                <span style={{ fontSize: 13, fontWeight: 700, letterSpacing: '.08em', color: 'rgba(255,255,255,.85)' }}>{t.hero_eyebrow}</span>
+                <h1 style={{ margin: 0, fontSize: 'clamp(26px,4vw,40px)', color: '#fff', maxWidth: 640 }}>{t.hero_title}</h1>
+                <p style={{ margin: 0, fontSize: 16, lineHeight: 1.7, color: 'rgba(255,255,255,.92)', maxWidth: 620 }}>{t.hero_sub}</p>
+                <a
+                  href="#qa-pkg-results"
+                  onClick={(e) => { e.preventDefault(); document.getElementById('qa-pkg-results')?.scrollIntoView({ behavior: 'smooth' }); }}
+                  className="qa-btn qa-amber"
+                  style={{ marginTop: 8, textDecoration: 'none' }}
+                >
+                  {t.hero_cta2}
+                </a>
+              </div>
+              <div style={{ flex: '0 0 220px', display: 'flex', justifyContent: 'center' }}>
+                <img
+                  src="/assets/mascot-skylo-packages-hero.png"
+                  alt=""
+                  style={{ width: 220, height: 220, objectFit: 'cover', borderRadius: '50%', border: '4px solid rgba(255,255,255,.35)', boxShadow: '0 16px 40px rgba(1,42,55,.3)' }}
+                />
+              </div>
             </div>
           </section>
 
