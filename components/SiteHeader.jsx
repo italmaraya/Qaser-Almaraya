@@ -5,6 +5,7 @@ import { useLangToggle } from '../lib/i18n';
 
 const NAV = [
   { href: '/', label: 'الرئيسية' },
+  { href: '/packages', label: 'المجموعات والباقات' },
   { href: '/flights', label: 'الطيران والفنادق' },
   { href: '/visa', label: 'التأشيرات' },
   { href: '/jobs', label: 'الوظائف' },

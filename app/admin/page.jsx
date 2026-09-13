@@ -1,6 +1,7 @@
 'use client';
 import React, { useEffect, useState } from 'react';
 import VisaAdmin from '../../components/VisaAdmin';
+import PackagesAdmin from '../../components/PackagesAdmin';
 
 const TABS = [
   { id: 'jobs', label: 'الوظائف' },
@@ -8,6 +9,7 @@ const TABS = [
   { id: 'achievements', label: 'الإنجازات' },
   { id: 'contact', label: 'معلومات التواصل' },
   { id: 'visa', label: 'التأشيرات' },
+  { id: 'packages', label: 'الباقات والمجموعات' },
 ];
 
 const inputStyle = {
@@ -465,6 +467,7 @@ export default function AdminPage() {
 
         {/* VISA MODULE TAB */}
         {activeTab === 'visa' && <VisaAdmin />}
+        {activeTab === 'packages' && <PackagesAdmin />}
       </div>
     </div>
   );
