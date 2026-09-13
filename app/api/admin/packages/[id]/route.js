@@ -16,12 +16,13 @@ export async function PUT(request, { params }) {
       nights_ar = ${b.nights_ar || ''}, nights_en = ${b.nights_en || ''},
       departs_ar = ${b.departs_ar || ''}, departs_en = ${b.departs_en || ''},
       price = ${b.price || 0}, child_price = ${b.child_price || 0},
+      adult_cost = ${b.adult_cost || 0}, child_cost = ${b.child_cost || 0}, cost_currency = ${b.cost_currency || 'IQD'},
       badge_ar = ${b.badge_ar || ''}, badge_en = ${b.badge_en || ''},
       prefs = ${JSON.stringify(b.prefs || [])},
       includes_ar = ${JSON.stringify(b.includes_ar || [])}, includes_en = ${JSON.stringify(b.includes_en || [])},
       hotels = ${JSON.stringify(b.hotels || [])}, flights = ${JSON.stringify(b.flights || [])},
       days = ${JSON.stringify(b.days || [])}, image_url = ${b.image_url || ''},
-      active = ${b.active !== false}, sort_order = ${b.sort_order || 0}
+      active = ${b.active !== false}, sort_order = ${b.sort_order || 0}, iqd_migrated = true
     WHERE id = ${id} RETURNING *
   `;
   return NextResponse.json(rows[0] || {});

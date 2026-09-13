@@ -5,8 +5,8 @@ import { useLangToggle } from '../lib/i18n';
 
 const NAV = [
   { href: '/', label: 'الرئيسية' },
-  { href: '/packages', label: 'المجموعات والباقات' },
   { href: '/flights', label: 'الطيران والفنادق' },
+  { href: '/packages', label: 'المجموعات والباقات', labelEn: 'Groups & Packages' },
   { href: '/visa', label: 'التأشيرات' },
   { href: '/jobs', label: 'الوظائف' },
   { href: '/faq', label: 'الأسئلة الشائعة' },
@@ -42,10 +42,11 @@ export default function SiteHeader({ active = 'التأشيرات' }) {
                 key={item.label}
                 href={item.href}
                 className="qa-nav"
-                data-i18n-short=""
+                data-i18n-short={item.labelEn ? undefined : ''}
+                data-no-i18n={item.labelEn ? '' : undefined}
                 style={{ fontWeight: on ? 700 : 500, color: on ? '#049dc5' : '#3d4650', paddingBottom: 2, borderBottom: `2px solid ${on ? '#049dc5' : 'transparent'}` }}
               >
-                {item.label}
+                {item.labelEn && lang === 'en' ? item.labelEn : item.label}
               </Link>
             );
           })}

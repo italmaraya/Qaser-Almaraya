@@ -7,7 +7,8 @@ import MascotLoader from '../../components/MascotLoader';
 import PackageCard from '../../components/PackageCard';
 import Icon from '../../components/Icon';
 import { useLangToggle } from '../../lib/i18n';
-import { CATS, PREFS, T, money } from '../../lib/packagesData';
+import { CATS, PREFS, T } from '../../lib/packagesData';
+import { formatPrice } from '../../lib/currency';
 
 export default function PackagesPage() {
   const router = useRouter();
@@ -163,7 +164,7 @@ export default function PackagesPage() {
                     nights={nm(p.nights_ar, p.nights_en)}
                     groupType={CATS.find((c) => c.id === p.cat) ? nm(CATS.find((c) => c.id === p.cat).ar, CATS.find((c) => c.id === p.cat).en) : undefined}
                     departs={nm(p.departs_ar, p.departs_en)}
-                    price={t.starts_from + ' ' + money(p.price, lang)}
+                    price={t.starts_from + ' ' + formatPrice(p.price, 'IQD', lang)}
                     includes={(lang === 'en' && p.includes_en?.length ? p.includes_en : p.includes_ar) || []}
                     badge={nm(p.badge_ar, p.badge_en) || undefined}
                     onDetails={() => router.push(`/packages/${p.id}`)}

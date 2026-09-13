@@ -7,7 +7,8 @@ import SiteFooter from '../../../components/SiteFooter';
 import MascotLoader from '../../../components/MascotLoader';
 import Icon from '../../../components/Icon';
 import { useLangToggle } from '../../../lib/i18n';
-import { T, money, signed, catLabel } from '../../../lib/packagesData';
+import { T, catLabel } from '../../../lib/packagesData';
+import { formatPrice, formatSignedPrice } from '../../../lib/currency';
 
 const optStyle = (on) => ({
   display: 'flex', alignItems: 'center', gap: 14, padding: '14px 16px', borderRadius: 14,
@@ -101,11 +102,11 @@ export default function PackageDetailPage() {
             <div className="qa-card" style={{ position: 'sticky', top: 90, display: 'flex', flexDirection: 'column', gap: 14 }}>
               <h3 style={{ margin: 0, fontSize: 18 }}>{t.price_title}</h3>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 6, fontSize: 14 }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between' }}><span style={{ color: '#7b8087' }}>{t.detail_base}</span><span>{money(basePrice, lang)}</span></div>
+                <div style={{ display: 'flex', justifyContent: 'space-between' }}><span style={{ color: '#7b8087' }}>{t.detail_base}</span><span>{formatPrice(basePrice, 'IQD', lang)}</span></div>
                 {upgrade !== 0 && (
-                  <div style={{ display: 'flex', justifyContent: 'space-between' }}><span style={{ color: '#7b8087' }}>{t.detail_upgrade}</span><span>{signed(upgrade, lang)}</span></div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between' }}><span style={{ color: '#7b8087' }}>{t.detail_upgrade}</span><span>{formatSignedPrice(upgrade, 'IQD', lang)}</span></div>
                 )}
-                <div style={{ display: 'flex', justifyContent: 'space-between', fontWeight: 700 }}><span>{t.detail_total_pp}</span><span style={{ color: '#049dc5' }}>{money(totalPerAdult, lang)}</span></div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', fontWeight: 700 }}><span>{t.detail_total_pp}</span><span style={{ color: '#049dc5' }}>{formatPrice(totalPerAdult, 'IQD', lang)}</span></div>
               </div>
 
               <div style={{ borderTop: '1px solid #ececed', paddingTop: 14, display: 'flex', flexDirection: 'column', gap: 10 }}>
@@ -125,12 +126,12 @@ export default function PackageDetailPage() {
                     <button type="button" onClick={() => setChildren((c) => c + 1)} style={{ width: 28, height: 28, borderRadius: '50%', border: '1px solid #cacbcc', background: '#fff', cursor: 'pointer' }}>+</button>
                   </div>
                 </div>
-                {children > 0 && <div style={{ fontSize: 12.5, color: '#7b8087' }}>{t.detail_child_price}: {money(totalPerChild, lang)}</div>}
+                {children > 0 && <div style={{ fontSize: 12.5, color: '#7b8087' }}>{t.detail_child_price}: {formatPrice(totalPerChild, 'IQD', lang)}</div>}
               </div>
 
               <div style={{ display: 'flex', justifyContent: 'space-between', borderTop: '1px solid #ececed', paddingTop: 14, fontSize: 17, fontWeight: 700 }}>
                 <span>{t.detail_total}</span>
-                <span style={{ color: '#049dc5' }}>{money(grandTotal, lang)}</span>
+                <span style={{ color: '#049dc5' }}>{formatPrice(grandTotal, 'IQD', lang)}</span>
               </div>
 
               <button type="button" onClick={goBook} className="qa-btn qa-cyan" style={{ textAlign: 'center' }}>{t.detail_cta}</button>
@@ -160,7 +161,7 @@ export default function PackageDetailPage() {
                     [lang === 'en' ? 'Destination' : 'الوجهة', nm(pkg.dest_ar, pkg.dest_en)],
                     [lang === 'en' ? 'Duration' : 'المدة', nm(pkg.nights_ar, pkg.nights_en)],
                     [lang === 'en' ? 'Departures' : 'المغادرة', nm(pkg.departs_ar, pkg.departs_en)],
-                    [t.detail_base, money(basePrice, lang)],
+                    [t.detail_base, formatPrice(basePrice, 'IQD', lang)],
                   ].map(([label, value]) => (
                     <div key={label} style={{ border: '1px solid #ececed', borderRadius: 10, padding: '12px 14px' }}>
                       <div style={{ fontSize: 12, color: '#7b8087' }}>{label}</div>
@@ -205,8 +206,11 @@ export default function PackageDetailPage() {
                     {hotels.map((h, idx) => (
                       <div key={idx} style={optStyle(hotelIdx === idx)} onClick={() => setHotelIdx(idx)}>
                         <input type="radio" checked={hotelIdx === idx} onChange={() => setHotelIdx(idx)} style={{ flex: 'none' }} />
+                        {h.imageUrl ? (
+                          <img src={h.imageUrl} alt="" style={{ width: 44, height: 44, borderRadius: 8, objectFit: 'cover', flex: 'none' }} />
+                        ) : null}
                         <span style={{ flex: 1, fontSize: 14.5, color: '#1d2733' }}>{nm(h.nameAr, h.nameEn)}</span>
-                        <span style={{ fontSize: 13.5, fontWeight: 700, color: h.diff ? '#049dc5' : '#7b8087' }}>{h.diff ? signed(h.diff, lang) : (lang === 'en' ? 'Included' : 'مشمول')}</span>
+                        <span style={{ fontSize: 13.5, fontWeight: 700, color: h.diff ? '#049dc5' : '#7b8087' }}>{h.diff ? formatSignedPrice(h.diff, 'IQD', lang) : (lang === 'en' ? 'Included' : 'مشمول')}</span>
                       </div>
                     ))}
                   </div>
@@ -221,7 +225,7 @@ export default function PackageDetailPage() {
                       <div key={idx} style={optStyle(flightIdx === idx)} onClick={() => setFlightIdx(idx)}>
                         <input type="radio" checked={flightIdx === idx} onChange={() => setFlightIdx(idx)} style={{ flex: 'none' }} />
                         <span style={{ flex: 1, fontSize: 14.5, color: '#1d2733' }}>{nm(f.nameAr, f.nameEn)}</span>
-                        <span style={{ fontSize: 13.5, fontWeight: 700, color: f.diff ? '#049dc5' : '#7b8087' }}>{f.diff ? signed(f.diff, lang) : (lang === 'en' ? 'Included' : 'مشمول')}</span>
+                        <span style={{ fontSize: 13.5, fontWeight: 700, color: f.diff ? '#049dc5' : '#7b8087' }}>{f.diff ? formatSignedPrice(f.diff, 'IQD', lang) : (lang === 'en' ? 'Included' : 'مشمول')}</span>
                       </div>
                     ))}
                   </div>

@@ -7,7 +7,8 @@ import SiteFooter from '../../../../components/SiteFooter';
 import MascotLoader from '../../../../components/MascotLoader';
 import PaymentMethods from '../../../../components/PaymentMethods';
 import { useLangToggle } from '../../../../lib/i18n';
-import { T, money, NATIONALITIES } from '../../../../lib/packagesData';
+import { T, NATIONALITIES } from '../../../../lib/packagesData';
+import { formatPrice } from '../../../../lib/currency';
 
 const inputStyle = {
   width: '100%', boxSizing: 'border-box', padding: '10px 12px', borderRadius: 8,
@@ -157,7 +158,7 @@ export default function PackageBookingPage() {
               <div style={{ fontSize: 13.5 }}>{t.detail_adults}: {adultCount} · {t.detail_children}: {childCount}</div>
               <div style={{ display: 'flex', justifyContent: 'space-between', borderTop: '1px solid #ececed', paddingTop: 10, fontSize: 16, fontWeight: 700 }}>
                 <span>{t.detail_total}</span>
-                <span style={{ color: '#049dc5' }}>{money(grandTotal, lang)}</span>
+                <span style={{ color: '#049dc5' }}>{formatPrice(grandTotal, 'IQD', lang)}</span>
               </div>
             </div>
 

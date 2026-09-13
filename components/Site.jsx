@@ -122,7 +122,7 @@ const ACHIEVEMENTS=[
   body:['تفخر شركة قصر المرايا للسفر والسياحة بدورها في دعم الرياضة العراقية وجماهيرها العريقة، وذلك من خلال تنظيم رحلات خاصة لنقل مشجعي منتخبنا الوطني إلى مختلف البطولات والمباريات.',
    'نواصل التزامنا بدعم رياضتنا ومشجعينا، وسنبقى دائمًا شريككم في كل رحلة انتصار، لنرسم معًا لحظات الفخر ونصنع التاريخ بوقوفنا خلف منتخبنا العظيم!']}];
 
-const NAV=[{id:'home',label:'الرئيسية'},{id:'packages',label:'المجموعات والباقات'},{id:'flights',label:'الطيران والفنادق'},{id:'visas',label:'التأشيرات'},{id:'jobs',label:'الوظائف'},{id:'faq',label:'الأسئلة الشائعة'},{id:'contact',label:'تواصل معنا'}];
+const NAV=[{id:'home',label:'الرئيسية'},{id:'flights',label:'الطيران والفنادق'},{id:'packages',label:'المجموعات والباقات'},{id:'visas',label:'التأشيرات'},{id:'jobs',label:'الوظائف'},{id:'faq',label:'الأسئلة الشائعة'},{id:'contact',label:'تواصل معنا'}];
 const GROUPS=['الكل','عائلي','شبابي','رجال أعمال','حج وعمرة'];
 
 export default function Site(props) {
@@ -177,6 +177,16 @@ export default function Site(props) {
     if (stored !== st.lang) patch({ lang: stored });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    function onExternalLangChange(e) {
+      const next = e?.detail;
+      if ((next === 'ar' || next === 'en') && next !== st.lang) patch({ lang: next });
+    }
+    window.addEventListener('qa-lang-change', onExternalLangChange);
+    return () => window.removeEventListener('qa-lang-change', onExternalLangChange);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [st.lang]);
 
   const goRef = useRef(null);
   const go = (page) => {
@@ -375,7 +385,8 @@ function   renderVals(){
     const navItems = NAV.map(n => {
       const isOn = page === n.id;
       return {
-        label: n.label,
+        label: n.id === 'packages' && st.lang === 'en' ? 'Groups & Packages' : n.label,
+        noI18n: n.id === 'packages',
         weight: isOn ? 700 : 500,
         color: isOn ? '#049dc5' : '#3d4650',
         border: isOn ? '#049dc5' : 'transparent',
@@ -422,6 +433,7 @@ function   renderVals(){
         if(e) e.preventDefault();
         const next = st.lang === 'ar' ? 'en' : 'ar';
         try { localStorage.setItem('qa_lang', next); } catch {}
+        try { window.dispatchEvent(new CustomEvent('qa-lang-change', { detail: next })); } catch {}
         patch({ lang: next });
       },
       applyOpen: !!st.apply,
@@ -814,7 +826,7 @@ function   visaVals(country){
 </a>
 <nav className="qa-navrow" style={{ display: "flex", alignItems: "center", gap: "20px", flex: "1", flexWrap: "wrap", fontSize: "16px" }}>
 {(navItems || []).map((item, $index) => (<React.Fragment key={$index}>
-<a href="#" className="qa-nav" data-i18n-short="" onClick={item.go} style={{ fontWeight: item.weight, color: item.color, paddingBottom: "2px", borderBottom: `2px solid ${item.border}`, cursor: "pointer" }}>{item.label}</a>
+<a href="#" className="qa-nav" data-i18n-short={item.noI18n ? undefined : ""} data-no-i18n={item.noI18n ? "" : undefined} onClick={item.go} style={{ fontWeight: item.weight, color: item.color, paddingBottom: "2px", borderBottom: `2px solid ${item.border}`, cursor: "pointer" }}>{item.label}</a>
 </React.Fragment>))}
 </nav>
 <button type="button" onClick={toggleLang} aria-label="Language" title="Language" className="qa-langbtn" style={{ flex: "none", display: "flex", alignItems: "center", gap: "7px", padding: "8px 14px", border: "1px solid #ececed", borderRadius: "999px", background: "#fff", fontFamily: "inherit", fontSize: "13px", fontWeight: "700", letterSpacing: ".04em", color: "#22a9d4", cursor: "pointer" }}>
