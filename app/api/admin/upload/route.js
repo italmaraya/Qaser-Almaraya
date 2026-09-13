@@ -1,13 +1,11 @@
 import { NextResponse } from 'next/server';
 import { put } from '@vercel/blob';
-import { isValidSession, SESSION_COOKIE } from '../../../../lib/session';
+import { requireAdmin } from '../../../../lib/session';
 
 const MAX_SIZE_BYTES = 8 * 1024 * 1024; // 8MB safety cap — plenty for a flag/logo image
 
 export async function POST(request) {
-  const token = request.cookies.get(SESSION_COOKIE)?.value;
-  const authenticated = await isValidSession(token);
-  if (!authenticated) {
+  if (!(await requireAdmin(request))) {
     return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
   }
 

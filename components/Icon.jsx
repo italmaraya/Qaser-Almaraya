@@ -41,7 +41,7 @@ const PATHS = {
   upload: ['M12 3v12', 'm17 8-5-5-5 5', 'M21 21H3'],
   'alert-triangle': ['m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3', 'M12 9v4', 'M12 17h.01'],
 };
-const CIRCLES = { instagram: [{ cx: 12, cy: 12, r: 10 }] };
+const CIRCLES = { instagram: [{ cx: 12, cy: 12, r: 10 }], search: [{ cx: 11, cy: 11, r: 8 }] };
 const RECTS = { instagram: [{ x: 2, y: 2, width: 20, height: 20, rx: 5 }] };
 
 export default function Icon({ name, size = 20, strokeWidth = 2, style, ...rest }) {

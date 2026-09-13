@@ -9,6 +9,7 @@ import { useLangToggle } from '../../lib/i18n';
 import { formatPrice } from '../../lib/currency';
 import { flagSrc, isUploadedFlag } from '../../lib/flags';
 import CountrySelect from '../../components/CountrySelect';
+import Icon from '../../components/Icon';
 
 const STEPS = [
   { n: '01', who: 'أنت', title: 'تختار التأشيرة', hint: 'ترى السعر والمدة وقائمة المستندات' },
@@ -28,6 +29,7 @@ export default function VisaLandingPage() {
   const [cards, setCards] = useState(null);
   const [error, setError] = useState('');
   const [typeFilter, setTypeFilter] = useState('الكل');
+  const [countrySearch, setCountrySearch] = useState('');
   const [destination, setDestination] = useState('');
   const [adultCount, setAdultCount] = useState(1);
   const [childCount, setChildCount] = useState(0);
@@ -104,14 +106,22 @@ export default function VisaLandingPage() {
   }, [countries]);
 
   const filteredByRegion = useMemo(() => {
-    const filtered = countries.filter((c) => typeFilter === 'الكل' || c.typeNames.includes(typeFilter));
+    const q = countrySearch.trim().toLowerCase();
+    const filtered = countries.filter((c) => {
+      if (typeFilter !== 'الكل' && !c.typeNames.includes(typeFilter)) return false;
+      if (q) {
+        const hay = [c.country_name_ar, c.country_name_en].filter(Boolean).join(' ').toLowerCase();
+        if (!hay.includes(q)) return false;
+      }
+      return true;
+    });
     const byRegion = new Map();
     for (const c of filtered) {
       if (!byRegion.has(c.region)) byRegion.set(c.region, []);
       byRegion.get(c.region).push(c);
     }
     return Array.from(byRegion.entries());
-  }, [countries, typeFilter]);
+  }, [countries, typeFilter, countrySearch]);
 
   const selectedCountry = countries.find((c) => String(c.country_id) === destination);
   const cheapestForSelected = selectedCountry
@@ -374,6 +384,32 @@ export default function VisaLandingPage() {
 
             {error && <p style={{ color: '#d2324f', background: '#fdecef', border: '1px solid #f7c3cc', borderRadius: 10, padding: '12px 16px' }}>{error}</p>}
 
+            <div style={{ position: 'relative', maxWidth: 420 }}>
+              <input
+                type="text"
+                value={countrySearch}
+                onChange={(e) => setCountrySearch(e.target.value)}
+                placeholder={nm('ابحث عن دولة...', 'Search for a country...')}
+                style={{
+                  width: '100%', boxSizing: 'border-box', padding: '12px 44px 12px 16px', borderRadius: 999,
+                  border: '1px solid #cacbcc', fontSize: 15, fontFamily: 'inherit',
+                }}
+              />
+              <span style={{ position: 'absolute', insetInlineEnd: 16, top: '50%', transform: 'translateY(-50%)', color: '#7b8087', pointerEvents: 'none' }}>
+                <Icon name="search" size={18} />
+              </span>
+              {countrySearch && (
+                <button
+                  type="button"
+                  onClick={() => setCountrySearch('')}
+                  aria-label={nm('مسح', 'Clear')}
+                  style={{ position: 'absolute', insetInlineStart: 10, top: '50%', transform: 'translateY(-50%)', border: 0, background: 'transparent', cursor: 'pointer', color: '#7b8087', padding: 4 }}
+                >
+                  <Icon name="x" size={16} />
+                </button>
+              )}
+            </div>
+
             {typeOptions.length > 1 && (
               <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
                 {typeOptions.map((t) => (
@@ -403,6 +439,15 @@ export default function VisaLandingPage() {
                 <img src="/assets/mascot-skylo-tours.webp" alt="" style={{ height: 120, width: 'auto' }} />
                 <p style={{ color: '#7b8087', margin: 0 }}>لا توجد تأشيرات متاحة حاليًا — تواصل معنا وسنساعدك في ترتيب رحلتك.</p>
                 <Link href="/contact" className="qa-btn qa-cyan" style={{ textDecoration: 'none' }}>تواصل معنا</Link>
+              </div>
+            )}
+
+            {countries.length > 0 && filteredByRegion.length === 0 && (
+              <div className="qa-card" style={{ textAlign: 'center', padding: 32, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10 }}>
+                <p style={{ color: '#7b8087', margin: 0 }}>{nm('لم نجد دولة مطابقة لبحثكم.', "We couldn't find a matching country.")}</p>
+                <button type="button" onClick={() => { setCountrySearch(''); setTypeFilter('الكل'); }} className="qa-btn qa-cyan" style={{ border: 0 }}>
+                  {nm('مسح البحث', 'Clear search')}
+                </button>
               </div>
             )}
 

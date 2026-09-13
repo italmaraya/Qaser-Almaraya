@@ -1,10 +1,10 @@
 import { NextResponse } from 'next/server';
 import { sql, ensureSchema } from '../../../../../../../lib/db';
-import { requireAuth } from '../../../../../../../lib/session';
+import { requireAdmin } from '../../../../../../../lib/session';
 import { sendApplicationEmail } from '../../../../../../../lib/mailer';
 
 export async function POST(request, { params }) {
-  if (!(await requireAuth(request))) return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
+  if (!(await requireAdmin(request))) return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
   await ensureSchema();
   const { id } = await params;
   const { action } = await request.json().catch(() => ({}));

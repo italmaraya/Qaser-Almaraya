@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getContent, saveContent } from '../../../../lib/content';
-import { isValidSession, SESSION_COOKIE } from '../../../../lib/session';
+import { requireAdmin } from '../../../../lib/session';
 
 export async function GET() {
   const content = await getContent();
@@ -8,9 +8,7 @@ export async function GET() {
 }
 
 export async function PUT(request) {
-  const token = request.cookies.get(SESSION_COOKIE)?.value;
-  const authenticated = await isValidSession(token);
-  if (!authenticated) {
+  if (!(await requireAdmin(request))) {
     return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
   }
 

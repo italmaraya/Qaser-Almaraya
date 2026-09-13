@@ -1,9 +1,9 @@
 import { NextResponse } from 'next/server';
 import { sql, ensureSchema } from '../../../../../../lib/db';
-import { requireAuth } from '../../../../../../lib/session';
+import { requireAdmin } from '../../../../../../lib/session';
 
 export async function PUT(request, { params }) {
-  if (!(await requireAuth(request))) return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
+  if (!(await requireAdmin(request))) return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
   await ensureSchema();
   const { id } = await params;
   const b = await request.json();
@@ -15,7 +15,7 @@ export async function PUT(request, { params }) {
 }
 
 export async function DELETE(request, { params }) {
-  if (!(await requireAuth(request))) return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
+  if (!(await requireAdmin(request))) return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
   await ensureSchema();
   const { id } = await params;
   await sql`DELETE FROM providers WHERE id = ${id}`;

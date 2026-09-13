@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { sql, ensureSchema } from '../../../../../lib/db';
-import { requireAuth } from '../../../../../lib/session';
+import { requireAuth, requireAdmin } from '../../../../../lib/session';
 
 export async function GET(request) {
   if (!(await requireAuth(request))) return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
@@ -11,7 +11,7 @@ export async function GET(request) {
 }
 
 export async function POST(request) {
-  if (!(await requireAuth(request))) return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
+  if (!(await requireAdmin(request))) return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
   await ensureSchema();
   const b = await request.json();
   // action: 'add_internal' | 'add_customer' | 'update_internal' | 'update_customer' | 'delete_internal' | 'delete_customer' | 'set_mapping'

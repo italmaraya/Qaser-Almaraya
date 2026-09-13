@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { sql, ensureSchema } from '../../../../../../lib/db';
-import { requireAuth } from '../../../../../../lib/session';
+import { requireAuth, requireAdmin } from '../../../../../../lib/session';
 
 export async function GET(request, { params }) {
   if (!(await requireAuth(request))) return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
@@ -38,7 +38,7 @@ export async function GET(request, { params }) {
 }
 
 export async function DELETE(request, { params }) {
-  if (!(await requireAuth(request))) return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
+  if (!(await requireAdmin(request))) return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
   await ensureSchema();
   const { id } = await params;
   // Cascades clean up visa_travelers, visa_application_answers, and

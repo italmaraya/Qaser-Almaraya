@@ -1,10 +1,11 @@
 import { NextResponse } from 'next/server';
 import { sql, ensureSchema } from '../../../../../lib/db';
-import { requireAuth } from '../../../../../lib/session';
+import { requireAuth, getSessionRole, SESSION_COOKIE } from '../../../../../lib/session';
 import { IQD_PER_USD } from '../../../../../lib/exchangeRate';
 
 export async function GET(request) {
   if (!(await requireAuth(request))) return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
+  const role = await getSessionRole(request.cookies.get(SESSION_COOKIE)?.value);
   await ensureSchema();
 
   // Lazy cleanup: a "pay at the office" application that's still awaiting
@@ -51,7 +52,16 @@ export async function GET(request) {
     // The admin may have entered this card's internal cost in USD — convert
     // to IQD here so the badge always reads in one consistent currency.
     if (a.cost_currency === 'USD') internal_cost_total *= IQD_PER_USD;
-    return { ...a, is_delayed: isDelayed, internal_cost_total };
+    const row = { ...a, is_delayed: isDelayed, internal_cost_total };
+    // Internal cost/margin is admin-only — a staff session (status board)
+    // never receives these fields at all.
+    if (role !== 'admin') {
+      delete row.adult_cost;
+      delete row.child_cost;
+      delete row.cost_currency;
+      delete row.internal_cost_total;
+    }
+    return row;
   });
 
   return NextResponse.json(withDelay);

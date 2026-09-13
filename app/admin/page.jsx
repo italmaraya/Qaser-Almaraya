@@ -54,6 +54,7 @@ function uid() {
 export default function AdminPage() {
   const [checkingSession, setCheckingSession] = useState(true);
   const [authenticated, setAuthenticated] = useState(false);
+  const [role, setRole] = useState(null);
   const [password, setPassword] = useState('');
   const [loginError, setLoginError] = useState('');
 
@@ -66,7 +67,7 @@ export default function AdminPage() {
   useEffect(() => {
     fetch('/api/admin/session')
       .then((r) => r.json())
-      .then((d) => setAuthenticated(!!d.authenticated))
+      .then((d) => { setAuthenticated(!!d.authenticated); setRole(d.role || null); })
       .catch(() => setAuthenticated(false))
       .finally(() => setCheckingSession(false));
   }, []);
@@ -89,7 +90,9 @@ export default function AdminPage() {
       body: JSON.stringify({ password }),
     });
     if (res.ok) {
+      const data = await res.json().catch(() => ({}));
       setAuthenticated(true);
+      setRole(data.role || null);
     } else {
       const data = await res.json().catch(() => ({}));
       setLoginError(data.error || 'حدث خطأ غير متوقع');
@@ -227,6 +230,28 @@ export default function AdminPage() {
             دخول
           </button>
         </form>
+      </div>
+    );
+  }
+
+  if (authenticated && role === 'staff') {
+    return (
+      <div
+        dir="rtl"
+        style={{
+          minHeight: '100vh',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          background: '#f8f7f8',
+          fontFamily: "'IBM Plex Sans Arabic', system-ui, sans-serif",
+        }}
+      >
+        <div style={{ ...cardStyle, width: 360, gap: 14, textAlign: 'center', alignItems: 'center' }}>
+          <h1 style={{ margin: 0, fontSize: 20, color: '#049dc5' }}>هذه اللوحة الكاملة غير متاحة لحسابك</h1>
+          <p style={{ margin: 0, color: '#7b8087', fontSize: 14.5 }}>حسابك مخصص لمتابعة حالة الطلبات فقط.</p>
+          <a href="/staff" className="qa-btn qa-cyan" style={{ textDecoration: 'none' }}>الذهاب إلى لوحة المتابعة</a>
+        </div>
       </div>
     );
   }

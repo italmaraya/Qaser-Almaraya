@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { checkPassword, createSession, SESSION_COOKIE } from '../../../../lib/session';
+import { resolveRole, createSession, SESSION_COOKIE } from '../../../../lib/session';
 
 export async function POST(request) {
   let body;
@@ -10,14 +10,15 @@ export async function POST(request) {
   }
 
   const { password } = body || {};
+  const role = resolveRole(password);
 
-  if (!checkPassword(password)) {
+  if (!role) {
     return NextResponse.json({ error: 'Incorrect password' }, { status: 401 });
   }
 
   let token;
   try {
-    token = await createSession();
+    token = await createSession(role);
   } catch (err) {
     console.error('Login succeeded but session creation failed:', err);
     return NextResponse.json(
@@ -26,7 +27,7 @@ export async function POST(request) {
     );
   }
 
-  const response = NextResponse.json({ ok: true });
+  const response = NextResponse.json({ ok: true, role });
   response.cookies.set(SESSION_COOKIE, token, {
     httpOnly: true,
     secure: true,
