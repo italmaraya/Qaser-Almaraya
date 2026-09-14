@@ -16,10 +16,10 @@ import Icon from '../../../../components/Icon';
 // matched by keyword against the type's Arabic name, since types are
 // admin-defined free text rather than a fixed enum.
 const VISA_THEMES = [
-  { test: /سريع|مستعجل|urgent|express/i, icon: 'zap', gradient: 'linear-gradient(150deg,#ff9142,#e8590c)', iconColor: '#e8590c' },
-  { test: /متعدد|سنة|سنوات|multiple/i, icon: 'refresh-cw', gradient: 'linear-gradient(150deg,#8b6cff,#5b3df0)', iconColor: '#5b3df0' },
-  { test: /الكترون|electronic|e-?visa/i, icon: 'laptop', gradient: 'linear-gradient(150deg,#2cd9c5,#0e968c)', iconColor: '#0e968c' },
-  { test: /أمن|موافق|security|approval/i, icon: 'shield-check', gradient: 'linear-gradient(150deg,#4a5f78,#232f3d)', iconColor: '#232f3d' },
+  { test: /سريع|مستعجل|urgent|express/i, icon: 'zap', gradient: 'linear-gradient(150deg,#34bbe1,#0e6f8f)', iconColor: '#e8590c' },
+  { test: /متعدد|سنة|سنوات|multiple/i, icon: 'refresh-cw', gradient: 'linear-gradient(150deg,#34bbe1,#0e6f8f)', iconColor: '#5b3df0' },
+  { test: /الكترون|electronic|e-?visa/i, icon: 'laptop', gradient: 'linear-gradient(150deg,#34bbe1,#0e6f8f)', iconColor: '#0e968c' },
+  { test: /أمن|موافق|security|approval/i, icon: 'shield-check', gradient: 'linear-gradient(150deg,#34bbe1,#0e6f8f)', iconColor: '#232f3d' },
 ];
 const DEFAULT_VISA_THEME = { icon: 'plane-takeoff', gradient: 'linear-gradient(150deg,#34bbe1,#0e6f8f)', iconColor: '#049dc5' };
 function getVisaTheme(nameAr) {
@@ -141,7 +141,7 @@ export default function CountryVisaListPage() {
                   const theme = getVisaTheme(c.visa_type_name_ar);
                   return (
                   <div key={c.id} className="qa-card qa-visa-card" style={{ padding: 0, overflow: 'hidden', position: 'relative', display: 'grid', gridTemplateColumns: '200px 1fr', minHeight: 160 }}>
-                    <div style={{ position: 'relative', background: theme.gradient, display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
+                    <div style={{ position: 'relative', height: 160, background: theme.gradient, display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
                       {/* subtle diagonal texture so the panel isn't a flat fill */}
                       <div style={{ position: 'absolute', inset: 0, backgroundImage: 'repeating-linear-gradient(135deg, rgba(255,255,255,.07) 0 2px, transparent 2px 16px)' }} />
                       {/* oversized ghost icon for depth, cropped by the panel's own overflow:hidden */}
