@@ -10,6 +10,21 @@ import { useLangToggle } from '../../../../lib/i18n';
 import { formatPrice } from '../../../../lib/currency';
 import { flagSrc } from '../../../../lib/flags';
 import { useProviderReveal } from '../../../../lib/useProviderReveal';
+import Icon from '../../../../components/Icon';
+
+// Give each visa type its own personality instead of one flat blue box —
+// matched by keyword against the type's Arabic name, since types are
+// admin-defined free text rather than a fixed enum.
+const VISA_THEMES = [
+  { test: /سريع|مستعجل|urgent|express/i, icon: 'zap', gradient: 'linear-gradient(150deg,#ff9142,#e8590c)', iconColor: '#e8590c' },
+  { test: /متعدد|سنة|سنوات|multiple/i, icon: 'refresh-cw', gradient: 'linear-gradient(150deg,#8b6cff,#5b3df0)', iconColor: '#5b3df0' },
+  { test: /الكترون|electronic|e-?visa/i, icon: 'laptop', gradient: 'linear-gradient(150deg,#2cd9c5,#0e968c)', iconColor: '#0e968c' },
+  { test: /أمن|موافق|security|approval/i, icon: 'shield-check', gradient: 'linear-gradient(150deg,#4a5f78,#232f3d)', iconColor: '#232f3d' },
+];
+const DEFAULT_VISA_THEME = { icon: 'plane-takeoff', gradient: 'linear-gradient(150deg,#34bbe1,#0e6f8f)', iconColor: '#049dc5' };
+function getVisaTheme(nameAr) {
+  return VISA_THEMES.find((t) => t.test.test(nameAr || '')) || DEFAULT_VISA_THEME;
+}
 
 export default function CountryVisaListPage() {
   const { lang } = useLangToggle();
@@ -122,9 +137,16 @@ export default function CountryVisaListPage() {
               )}
 
               <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-                {filtered.map((c) => (
-                  <div key={c.id} className="qa-card" style={{ padding: 0, overflow: 'hidden', display: 'grid', gridTemplateColumns: '200px 1fr', minHeight: 160 }}>
-                    <div style={{ position: 'relative', background: 'linear-gradient(135deg,#0e6f8f,#049dc5)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                {filtered.map((c) => {
+                  const theme = getVisaTheme(c.visa_type_name_ar);
+                  return (
+                  <div key={c.id} className="qa-card qa-visa-card" style={{ padding: 0, overflow: 'hidden', position: 'relative', display: 'grid', gridTemplateColumns: '200px 1fr', minHeight: 160 }}>
+                    <div style={{ position: 'relative', background: theme.gradient, display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
+                      {/* subtle diagonal texture so the panel isn't a flat fill */}
+                      <div style={{ position: 'absolute', inset: 0, backgroundImage: 'repeating-linear-gradient(135deg, rgba(255,255,255,.07) 0 2px, transparent 2px 16px)' }} />
+                      {/* oversized ghost icon for depth, cropped by the panel's own overflow:hidden */}
+                      <Icon name={theme.icon} size={130} strokeWidth={1} style={{ position: 'absolute', insetInlineStart: -26, bottom: -30, color: 'rgba(255,255,255,.16)' }} />
+
                       {providerHints && providerHints[c.id] && (
                         <span
                           style={{
@@ -146,14 +168,24 @@ export default function CountryVisaListPage() {
                           {providerHints[c.id]}
                         </span>
                       )}
-                      {c.flag_code ? (
-                        <span style={{ width: 60, height: 60, borderRadius: '50%', border: '2px dashed rgba(255,255,255,.6)', display: 'grid', placeItems: 'center' }}>
-                          <img src={flagSrc(c.flag_code)} alt="" style={{ width: 44, height: 44, borderRadius: '50%', objectFit: 'cover' }} onError={(e) => { e.currentTarget.style.display = 'none'; }} />
+
+                      <span style={{ position: 'relative', zIndex: 1, width: 68, height: 68, borderRadius: '50%', background: 'rgba(255,255,255,.14)', border: '2px solid rgba(255,255,255,.55)', display: 'grid', placeItems: 'center', boxShadow: '0 12px 26px rgba(1,42,55,.35)' }}>
+                        {c.flag_code ? (
+                          <img src={flagSrc(c.flag_code)} alt="" style={{ width: 50, height: 50, borderRadius: '50%', objectFit: 'cover' }} onError={(e) => { e.currentTarget.style.display = 'none'; }} />
+                        ) : (
+                          <span style={{ fontSize: 22, fontWeight: 700, color: '#fff' }}>{(c.country_name_en || '').slice(0, 2).toUpperCase()}</span>
+                        )}
+                        {/* type-icon chip, badge-style, overlapping the flag */}
+                        <span style={{ position: 'absolute', bottom: -3, insetInlineEnd: -3, width: 28, height: 28, borderRadius: '50%', background: '#fff', display: 'grid', placeItems: 'center', boxShadow: '0 4px 10px rgba(1,42,55,.3)' }}>
+                          <Icon name={theme.icon} size={15} style={{ color: theme.iconColor }} />
                         </span>
-                      ) : (
-                        <span style={{ fontSize: 22, fontWeight: 700, color: '#fff' }}>{(c.country_name_en || '').slice(0, 2).toUpperCase()}</span>
-                      )}
+                      </span>
                     </div>
+
+                    {/* ticket-stub perforation where the colored panel meets the white content */}
+                    <span className="qa-visa-notch" style={{ position: 'absolute', insetInlineStart: 200, top: -10, width: 20, height: 20, borderRadius: '50%', background: '#f8f7f8', transform: 'translateX(-50%)' }} />
+                    <span className="qa-visa-notch" style={{ position: 'absolute', insetInlineStart: 200, bottom: -10, width: 20, height: 20, borderRadius: '50%', background: '#f8f7f8', transform: 'translateX(-50%)' }} />
+
                     <div style={{ padding: '20px 24px', display: 'flex', flexDirection: 'column', gap: 12 }}>
                       <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
                         <span style={pillStyle}>{nm(c.visa_type_name_ar, c.visa_type_name_en)}</span>
@@ -173,7 +205,8 @@ export default function CountryVisaListPage() {
                       </div>
                     </div>
                   </div>
-                ))}
+                  );
+                })}
               </div>
             </>
           )}
