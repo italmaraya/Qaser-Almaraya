@@ -6,9 +6,9 @@ export async function PUT(request, { params }) {
   if (!(await requireAdmin(request))) return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
   await ensureSchema();
   const { id } = await params;
-  const { name_ar, name_en, region, flag_code } = await request.json();
+  const { name_ar, name_en, region, flag_code, card_image_url } = await request.json();
   const rows = await sql`
-    UPDATE countries SET name_ar = ${name_ar}, name_en = ${name_en}, region = ${region || ''}, flag_code = ${flag_code || ''}
+    UPDATE countries SET name_ar = ${name_ar}, name_en = ${name_en}, region = ${region || ''}, flag_code = ${flag_code || ''}, card_image_url = ${card_image_url || ''}
     WHERE id = ${id} RETURNING *
   `;
   return NextResponse.json(rows[0] || {});

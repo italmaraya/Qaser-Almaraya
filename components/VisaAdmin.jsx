@@ -239,6 +239,59 @@ function FlagUploader({ value, onChange }) {
   );
 }
 
+// Unlike FlagUploader, this doesn't force-crop to a square — the country
+// card banner is a wide rectangle, so any image the admin picks (a skyline,
+// a landmark, the flag itself, whatever) is uploaded as-is and shown with
+// object-fit: cover on the site.
+function CoverImageUploader({ value, onChange }) {
+  const [busy, setBusy] = useState(false);
+  const [err, setErr] = useState('');
+
+  async function handleFile(file) {
+    if (!file) return;
+    if (!file.type.startsWith('image/')) {
+      setErr('الملف المختار ليس صورة');
+      return;
+    }
+    setBusy(true);
+    setErr('');
+    try {
+      const url = await uploadImage(file);
+      onChange(url);
+    } catch (e) {
+      setErr(e.message);
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  return (
+    <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+      {value ? (
+        <img src={value} alt="" style={{ width: 64, height: 48, borderRadius: 8, objectFit: 'cover', border: '1px solid #ececed', flex: 'none' }} />
+      ) : (
+        <span style={{ width: 64, height: 48, borderRadius: 8, background: '#f2f2f3', flex: 'none' }} />
+      )}
+      <label style={{ ...btnStyle('ghost'), padding: '8px 14px', fontSize: 13, cursor: 'pointer' }}>
+        {busy ? '...جارٍ الرفع' : value ? 'تغيير صورة الغلاف' : 'رفع صورة غلاف'}
+        <input
+          type="file"
+          accept="image/*"
+          style={{ display: 'none' }}
+          disabled={busy}
+          onChange={(e) => handleFile(e.target.files[0])}
+        />
+      </label>
+      {value && (
+        <button type="button" style={btnStyle('danger')} onClick={() => onChange('')}>
+          إزالة
+        </button>
+      )}
+      {err && <span style={{ fontSize: 12, color: '#d2324f' }}>{err}</span>}
+    </div>
+  );
+}
+
 export default function VisaAdmin() {
   const [subTab, setSubTab] = useState('applications');
   const [applications, setApplications] = useState(null);
@@ -730,6 +783,7 @@ function CountriesTab({ countries, reload, setError }) {
   const [nameEn, setNameEn] = useState('');
   const [region, setRegion] = useState(REGIONS[0]);
   const [flagCode, setFlagCode] = useState('');
+  const [cardImageUrl, setCardImageUrl] = useState('');
   const [search, setSearch] = useState('');
 
   async function add() {
@@ -737,11 +791,12 @@ function CountriesTab({ countries, reload, setError }) {
     try {
       await api('/api/admin/visa/countries', {
         method: 'POST',
-        body: JSON.stringify({ name_ar: nameAr, name_en: nameEn, region, flag_code: flagCode }),
+        body: JSON.stringify({ name_ar: nameAr, name_en: nameEn, region, flag_code: flagCode, card_image_url: cardImageUrl }),
       });
       setNameAr('');
       setNameEn('');
       setFlagCode('');
+      setCardImageUrl('');
       reload();
     } catch (e) {
       setError(e.message);
@@ -797,6 +852,10 @@ function CountriesTab({ countries, reload, setError }) {
             صورة العلم
             <FlagUploader value={flagCode} onChange={setFlagCode} />
           </label>
+          <label style={{ ...labelStyle, flex: 1, minWidth: 200 }}>
+            صورة غلاف البطاقة (تظهر في مربع الدولة بقسم البحث)
+            <CoverImageUploader value={cardImageUrl} onChange={setCardImageUrl} />
+          </label>
         </div>
         <button style={{ ...btnStyle('primary'), alignSelf: 'flex-start' }} onClick={add}>
           + إضافة دولة
@@ -828,6 +887,10 @@ function CountriesTab({ countries, reload, setError }) {
               <label style={{ ...labelStyle, flex: 1, minWidth: 160 }}>
                 صورة العلم
                 <FlagUploader value={c.flag_code} onChange={(url) => update({ ...c, flag_code: url })} />
+              </label>
+              <label style={{ ...labelStyle, flex: 1, minWidth: 200 }}>
+                صورة غلاف البطاقة
+                <CoverImageUploader value={c.card_image_url} onChange={(url) => update({ ...c, card_image_url: url })} />
               </label>
               <button style={btnStyle('danger')} onClick={() => remove(c.id, c.name_ar)}>
                 حذف

@@ -13,13 +13,13 @@ export async function POST(request) {
   if (!(await requireAdmin(request))) return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
   await ensureSchema();
   const body = await request.json();
-  const { name_ar, name_en, region, flag_code } = body || {};
+  const { name_ar, name_en, region, flag_code, card_image_url } = body || {};
   if (!name_ar || !name_en) {
     return NextResponse.json({ error: 'name_ar and name_en are required' }, { status: 400 });
   }
   const rows = await sql`
-    INSERT INTO countries (name_ar, name_en, region, flag_code)
-    VALUES (${name_ar}, ${name_en}, ${region || ''}, ${flag_code || ''}) RETURNING *
+    INSERT INTO countries (name_ar, name_en, region, flag_code, card_image_url)
+    VALUES (${name_ar}, ${name_en}, ${region || ''}, ${flag_code || ''}, ${card_image_url || ''}) RETURNING *
   `;
   return NextResponse.json(rows[0]);
 }

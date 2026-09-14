@@ -69,6 +69,7 @@ export default function VisaLandingPage() {
           country_name_ar: c.country_name_ar,
           country_name_en: c.country_name_en,
           flag_code: c.flag_code,
+          card_image_url: c.card_image_url,
           region: c.region || 'وجهات أخرى',
           cards: [],
         });
@@ -460,7 +461,14 @@ export default function VisaLandingPage() {
                 <div className="qa-grid">
                   {list.map((c) => (
                     <Link key={c.country_id} href={`/visa/country/${c.country_id}`} className="qa-card" style={{ padding: 0, overflow: 'hidden', textDecoration: 'none', color: 'inherit', display: 'flex', flexDirection: 'column' }}>
-                      <div style={{ position: 'relative', height: 96, background: 'linear-gradient(135deg,#34bbe1,#049dc5)', display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', padding: 16 }}>
+                      <div
+                        style={{
+                          position: 'relative', height: 96, display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', padding: 16,
+                          background: c.card_image_url
+                            ? `linear-gradient(135deg, rgba(1,42,55,.45), rgba(1,42,55,.15)), url(${c.card_image_url}) center/cover`
+                            : 'linear-gradient(135deg,#34bbe1,#049dc5)',
+                        }}
+                      >
                         <span style={{ background: 'rgba(255,255,255,.18)', color: '#fff', fontSize: 12, fontWeight: 700, borderRadius: 999, padding: '5px 12px' }}>
                           من {formatPrice(c.minPrice, 'IQD', lang)}
                         </span>
