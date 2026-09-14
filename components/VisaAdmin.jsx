@@ -34,6 +34,47 @@ const btnStyle = (variant) => ({
 });
 const checkboxRow = { display: 'flex', alignItems: 'center', gap: 8, fontSize: 14, color: '#3d4650' };
 
+// Every "remove" handler in this file should go through this instead of
+// deleting straight away — one place to keep the confirmation wording
+// consistent, and impossible to accidentally skip.
+function confirmDelete(message) {
+  return window.confirm(message || 'هل أنت متأكد من الحذف؟ لا يمكن التراجع عن هذا الإجراء.');
+}
+
+function SearchBox({ value, onChange, placeholder }) {
+  return (
+    <div style={{ position: 'relative', maxWidth: 360 }}>
+      <input
+        type="text"
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        placeholder={placeholder || 'بحث...'}
+        style={{ ...inputStyle, paddingInlineStart: 36 }}
+      />
+      <span style={{ position: 'absolute', insetInlineStart: 12, top: '50%', transform: 'translateY(-50%)', color: '#7b8087', pointerEvents: 'none', fontSize: 14 }}>
+        🔍
+      </span>
+      {value && (
+        <button
+          type="button"
+          onClick={() => onChange('')}
+          aria-label="مسح"
+          style={{ position: 'absolute', insetInlineEnd: 10, top: '50%', transform: 'translateY(-50%)', border: 0, background: 'transparent', cursor: 'pointer', color: '#7b8087', fontSize: 15, lineHeight: 1 }}
+        >
+          ×
+        </button>
+      )}
+    </div>
+  );
+}
+
+// Simple case-insensitive "does any of these fields contain the query" check.
+function matchesSearch(query, ...fields) {
+  const q = (query || '').trim().toLowerCase();
+  if (!q) return true;
+  return fields.filter(Boolean).some((f) => String(f).toLowerCase().includes(q));
+}
+
 const VISA_SUBTABS = [
   { id: 'applications', label: 'الطلبات' },
   { id: 'countries', label: 'الدول' },
@@ -597,6 +638,7 @@ function ApplicationsTab({ applications, statuses, reload, setError }) {
 function NationalitiesTab({ nationalities, reload, setError }) {
   const [nameAr, setNameAr] = useState('');
   const [nameEn, setNameEn] = useState('');
+  const [search, setSearch] = useState('');
 
   async function add() {
     if (!nameAr || !nameEn) return;
@@ -622,7 +664,8 @@ function NationalitiesTab({ nationalities, reload, setError }) {
     }
   }
 
-  async function remove(id) {
+  async function remove(id, label) {
+    if (!confirmDelete(`هل أنت متأكد من حذف الجنسية "${label}"؟ لا يمكن التراجع عن هذا الإجراء.`)) return;
     try {
       await api(`/api/admin/visa/nationalities/${id}`, { method: 'DELETE' });
       reload();
@@ -653,8 +696,9 @@ function NationalitiesTab({ nationalities, reload, setError }) {
           </button>
         </div>
       </div>
+      <SearchBox value={search} onChange={setSearch} placeholder="ابحث عن جنسية..." />
       <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-        {nationalities.map((n) => (
+        {nationalities.filter((n) => matchesSearch(search, n.name_ar, n.name_en)).map((n) => (
           <div key={n.id} style={cardStyle}>
             <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', alignItems: 'flex-end' }}>
               <label style={{ ...labelStyle, flex: 1, minWidth: 140 }}>
@@ -669,7 +713,7 @@ function NationalitiesTab({ nationalities, reload, setError }) {
                 الترتيب
                 <input type="number" style={inputStyle} value={n.sort_order || 0} onChange={(e) => update({ ...n, sort_order: parseInt(e.target.value, 10) || 0 })} />
               </label>
-              <button style={btnStyle('danger')} onClick={() => remove(n.id)}>
+              <button style={btnStyle('danger')} onClick={() => remove(n.id, n.name_ar)}>
                 حذف
               </button>
             </div>
@@ -686,6 +730,7 @@ function CountriesTab({ countries, reload, setError }) {
   const [nameEn, setNameEn] = useState('');
   const [region, setRegion] = useState(REGIONS[0]);
   const [flagCode, setFlagCode] = useState('');
+  const [search, setSearch] = useState('');
 
   async function add() {
     if (!nameAr || !nameEn) return;
@@ -712,7 +757,8 @@ function CountriesTab({ countries, reload, setError }) {
     }
   }
 
-  async function remove(id) {
+  async function remove(id, label) {
+    if (!confirmDelete(`هل أنت متأكد من حذف دولة "${label}"؟ سيؤثر هذا على أي بطاقات تأشيرة مرتبطة بها. لا يمكن التراجع.`)) return;
     try {
       await api(`/api/admin/visa/countries/${id}`, { method: 'DELETE' });
       reload();
@@ -756,8 +802,9 @@ function CountriesTab({ countries, reload, setError }) {
           + إضافة دولة
         </button>
       </div>
+      <SearchBox value={search} onChange={setSearch} placeholder="ابحث عن دولة..." />
       <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-        {countries.map((c) => (
+        {countries.filter((c) => matchesSearch(search, c.name_ar, c.name_en, c.region)).map((c) => (
           <div key={c.id} style={cardStyle}>
             <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', alignItems: 'flex-end' }}>
               <label style={{ ...labelStyle, flex: 1, minWidth: 140 }}>
@@ -782,7 +829,7 @@ function CountriesTab({ countries, reload, setError }) {
                 صورة العلم
                 <FlagUploader value={c.flag_code} onChange={(url) => update({ ...c, flag_code: url })} />
               </label>
-              <button style={btnStyle('danger')} onClick={() => remove(c.id)}>
+              <button style={btnStyle('danger')} onClick={() => remove(c.id, c.name_ar)}>
                 حذف
               </button>
             </div>
@@ -808,6 +855,7 @@ function blankType() {
 
 function TypesTab({ types, reload, setError }) {
   const [draft, setDraft] = useState(blankType());
+  const [search, setSearch] = useState('');
 
   async function add() {
     if (!draft.name_ar || !draft.name_en) return;
@@ -829,7 +877,8 @@ function TypesTab({ types, reload, setError }) {
     }
   }
 
-  async function remove(id) {
+  async function remove(id, label) {
+    if (!confirmDelete(`هل أنت متأكد من حذف نوع "${label}"؟ سيؤثر هذا على أي بطاقات تأشيرة من هذا النوع. لا يمكن التراجع.`)) return;
     try {
       await api(`/api/admin/visa/types/${id}`, { method: 'DELETE' });
       reload();
@@ -866,7 +915,9 @@ function TypesTab({ types, reload, setError }) {
         </button>
       </div>
 
-      {types.map((t) => (
+      <SearchBox value={search} onChange={setSearch} placeholder="ابحث عن نوع تأشيرة..." />
+
+      {types.filter((t) => matchesSearch(search, t.name_ar, t.name_en)).map((t) => (
         <div key={t.id} style={cardStyle}>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
             <label style={labelStyle}>
@@ -886,7 +937,7 @@ function TypesTab({ types, reload, setError }) {
               </label>
             ))}
           </div>
-          <button style={{ ...btnStyle('danger'), alignSelf: 'flex-start' }} onClick={() => remove(t.id)}>
+          <button style={{ ...btnStyle('danger'), alignSelf: 'flex-start' }} onClick={() => remove(t.id, t.name_ar)}>
             حذف هذا النوع
           </button>
         </div>
@@ -897,6 +948,7 @@ function TypesTab({ types, reload, setError }) {
 
 function ProvidersTab({ providers, reload, setError }) {
   const [name, setName] = useState('');
+  const [search, setSearch] = useState('');
 
   async function add() {
     if (!name) return;
@@ -918,7 +970,8 @@ function ProvidersTab({ providers, reload, setError }) {
     }
   }
 
-  async function remove(id) {
+  async function remove(id, label) {
+    if (!confirmDelete(`هل أنت متأكد من حذف مزود "${label}"؟ لا يمكن التراجع عن هذا الإجراء.`)) return;
     try {
       await api(`/api/admin/visa/providers/${id}`, { method: 'DELETE' });
       reload();
@@ -956,7 +1009,9 @@ function ProvidersTab({ providers, reload, setError }) {
         </button>
       </div>
 
-      {providers.map((p) => (
+      <SearchBox value={search} onChange={setSearch} placeholder="ابحث عن مزود..." />
+
+      {providers.filter((p) => matchesSearch(search, p.name)).map((p) => (
         <div key={p.id} style={cardStyle}>
           <label style={labelStyle}>
             الاسم
@@ -978,7 +1033,7 @@ function ProvidersTab({ providers, reload, setError }) {
                   value={em.email}
                   onChange={(e) => updateEmail(p, i, 'email', e.target.value)}
                 />
-                <button style={btnStyle('danger')} onClick={() => removeEmail(p, i)}>
+                <button style={btnStyle('danger')} onClick={() => { if (confirmDelete('حذف هذا البريد الإلكتروني؟')) removeEmail(p, i); }}>
                   حذف
                 </button>
               </div>
@@ -987,7 +1042,7 @@ function ProvidersTab({ providers, reload, setError }) {
               + إضافة بريد
             </button>
           </div>
-          <button style={{ ...btnStyle('danger'), alignSelf: 'flex-start' }} onClick={() => remove(p.id)}>
+          <button style={{ ...btnStyle('danger'), alignSelf: 'flex-start' }} onClick={() => remove(p.id, p.name)}>
             حذف هذا المزود
           </button>
         </div>
@@ -1028,6 +1083,7 @@ function CardsTab({ cards, countries, types, providers, reload, setError }) {
   const [expanded, setExpanded] = useState(null);
   const [editing, setEditing] = useState(null);
   const [editDraft, setEditDraft] = useState(null);
+  const [search, setSearch] = useState('');
 
   async function add() {
     if (!draft.country_id || !draft.visa_type_id) {
@@ -1068,7 +1124,17 @@ function CardsTab({ cards, countries, types, providers, reload, setError }) {
     }
   }
 
-  async function remove(id) {
+  async function toggleActive(card) {
+    try {
+      await api(`/api/admin/visa/cards/${card.id}`, { method: 'PUT', body: JSON.stringify({ ...card, active: !card.active }) });
+      reload();
+    } catch (e) {
+      setError(e.message);
+    }
+  }
+
+  async function remove(id, label) {
+    if (!confirmDelete(`هل أنت متأكد من حذف بطاقة "${label}" نهائيًا؟ يُفضّل استخدام "إخفاء" إذا كنت تريد إيقافها مؤقتًا فقط. لا يمكن التراجع عن الحذف.`)) return;
     try {
       await api(`/api/admin/visa/cards/${id}`, { method: 'DELETE' });
       reload();
@@ -1181,13 +1247,25 @@ function CardsTab({ cards, countries, types, providers, reload, setError }) {
         </button>
       </div>
 
-      {cards.map((c) => (
-        <div key={c.id} style={cardStyle}>
+      <SearchBox value={search} onChange={setSearch} placeholder="ابحث عن دولة أو نوع تأشيرة..." />
+
+      {cards
+        .filter((c) => matchesSearch(search, c.country_name_ar, c.country_name_en, c.visa_type_name_ar, c.visa_type_name_en, c.provider_name))
+        .map((c) => (
+        <div key={c.id} style={{ ...cardStyle, opacity: c.active === false ? 0.6 : 1 }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 8 }}>
             <h4 style={{ margin: 0 }}>
               {c.country_name_ar} — {c.visa_type_name_ar}
+              {c.active === false && (
+                <span style={{ marginInlineStart: 10, fontSize: 12, fontWeight: 700, color: '#d2324f', background: '#fdecef', borderRadius: 999, padding: '2px 10px' }}>
+                  مخفية عن العملاء
+                </span>
+              )}
             </h4>
             <div style={{ display: 'flex', gap: 8 }}>
+              <button style={btnStyle('ghost')} onClick={() => toggleActive(c)}>
+                {c.active === false ? 'إظهار البطاقة' : 'إخفاء البطاقة'}
+              </button>
               <button style={btnStyle('ghost')} onClick={() => (editing === c.id ? setEditing(null) : startEdit(c))}>
                 {editing === c.id ? 'إلغاء التعديل' : 'تعديل البطاقة'}
               </button>
@@ -1309,8 +1387,8 @@ function CardsTab({ cards, countries, types, providers, reload, setError }) {
           )}
 
           {expanded === c.id && <DocumentsBuilder card={c} reload={reload} setError={setError} />}
-          <button style={{ ...btnStyle('danger'), alignSelf: 'flex-start' }} onClick={() => remove(c.id)}>
-            حذف هذه البطاقة
+          <button style={{ ...btnStyle('danger'), alignSelf: 'flex-start' }} onClick={() => remove(c.id, `${c.country_name_ar} — ${c.visa_type_name_ar}`)}>
+            حذف هذه البطاقة نهائيًا
           </button>
         </div>
       ))}

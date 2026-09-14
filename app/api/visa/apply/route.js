@@ -17,7 +17,7 @@ export async function POST(request) {
     FROM visa_cards vc
     LEFT JOIN countries c ON c.id = vc.country_id
     LEFT JOIN visa_types vt ON vt.id = vc.visa_type_id
-    WHERE vc.id = ${visa_card_id}
+    WHERE vc.id = ${visa_card_id} AND vc.active = true
   `;
   if (cards.length === 0) return NextResponse.json({ error: 'Visa not found' }, { status: 404 });
   const card = cards[0];
