@@ -48,6 +48,7 @@ function VisaApplications() {
   const [noteDrafts, setNoteDrafts] = useState({});
   const [fileUploading, setFileUploading] = useState({});
   const [paymentBusy, setPaymentBusy] = useState({});
+  const [emailInfo, setEmailInfo] = useState({});
 
   function load() {
     Promise.all([api('/api/admin/visa/applications'), api('/api/admin/visa/statuses')])
@@ -106,7 +107,8 @@ function VisaApplications() {
     if (action === 'reject' && !window.confirm('سيتم حذف هذا الطلب نهائيًا لأن الدفع غير مؤكد. متابعة؟')) return;
     setPaymentBusy((b) => ({ ...b, [id]: true }));
     try {
-      await api(`/api/admin/visa/applications/${id}/payment`, { method: 'POST', body: JSON.stringify({ action }) });
+      const data = await api(`/api/admin/visa/applications/${id}/payment`, { method: 'POST', body: JSON.stringify({ action }) });
+      if (data?.email) setEmailInfo((m) => ({ ...m, [id]: data.email }));
       load();
     } catch (e) {
       setError(e.message);
@@ -125,9 +127,17 @@ function VisaApplications() {
         <div key={a.id} style={cardStyle}>
           <div style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: 8 }}>
             <div>
-              <div style={{ fontWeight: 700 }}>
+              <div style={{ fontWeight: 700, display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
                 {a.customer_name} — {a.country_name_ar} · {a.visa_type_name_ar}
-                {a.is_delayed && <span style={{ marginInlineStart: 8, fontSize: 12, color: '#d2324f' }}>متأخر</span>}
+                {a.is_delayed && <span style={{ fontSize: 12, color: '#d2324f' }}>متأخر</span>}
+                {a.provider_email_missing && (
+                  <span
+                    style={{ fontSize: 12, fontWeight: 700, color: '#d2324f', background: '#fdecef', borderRadius: 999, padding: '2px 10px' }}
+                    title="طريقة الإرسال لهذه البطاقة تتطلب مزوّدًا، لكن لا يوجد بريد إلكتروني مسجّل"
+                  >
+                    ⚠ لا يوجد بريد للمزوّد
+                  </span>
+                )}
               </div>
               <div style={{ fontSize: 13, color: '#7b8087' }}>{new Date(a.submitted_at).toLocaleString('ar')}</div>
             </div>
@@ -224,7 +234,42 @@ function VisaApplications() {
                 </button>
               </div>
             )}
+            {a.payment_status === 'approved' && (
+              <button
+                disabled={!!paymentBusy[a.id]}
+                style={{ ...btnStyle('ghost'), padding: '6px 14px', fontSize: 12.5, opacity: paymentBusy[a.id] ? 0.6 : 1, marginInlineStart: 'auto' }}
+                onClick={() => decidePayment(a.id, 'resend')}
+                title="أعد إرسال البريد بإعدادات المزوّد الحالية — مفيد بعد تصحيح بريد المزوّد"
+              >
+                🔁 إعادة إرسال البريد
+              </button>
+            )}
           </div>
+
+          {a.provider_email_missing && (
+            <div style={{ fontSize: 12.5, color: '#d2324f', background: '#fdecef', border: '1px solid #f6c3cf', borderRadius: 8, padding: '8px 10px' }}>
+              ⚠ طريقة الإرسال المحددة لهذه البطاقة تتطلب مزوّدًا، لكن لا يوجد بريد إلكتروني مسجّل له — يرجى إبلاغ الإدارة لإضافة بريد المزوّد، ثم اضغط "إعادة إرسال البريد" إن كان الطلب قد تمت الموافقة عليه بالفعل.
+            </div>
+          )}
+
+          {emailInfo[a.id] && (
+            <div
+              style={{
+                fontSize: 12.5,
+                borderRadius: 8,
+                padding: '8px 10px',
+                background: emailInfo[a.id].providerReached ? '#eafaf1' : '#fdecef',
+                border: '1px solid ' + (emailInfo[a.id].providerReached ? '#b7e4c7' : '#f6c3cf'),
+                color: emailInfo[a.id].providerReached ? '#1e7d46' : '#d2324f',
+              }}
+            >
+              {emailInfo[a.id].error
+                ? '⚠ تعذّر إرسال البريد الإلكتروني.'
+                : emailInfo[a.id].providerReached
+                ? `✓ أُرسل البريد إلى: ${(emailInfo[a.id].recipients || []).join('، ')}`
+                : `⚠ لم يصل البريد إلى مزود الخدمة — أُرسل فقط إلى: ${(emailInfo[a.id].recipients || []).join('، ') || '—'}`}
+            </div>
+          )}
 
           {expanded === a.id && detail && (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12, borderTop: '1px dashed #ececed', paddingTop: 14 }}>

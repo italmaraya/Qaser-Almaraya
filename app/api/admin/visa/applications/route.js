@@ -24,8 +24,9 @@ export async function GET(request) {
   const apps = await sql`
     SELECT a.*, c.name_ar AS country_name_ar, vt.name_ar AS visa_type_name_ar,
            vc.issuing_time_days, vc.adult_cost, vc.child_cost, vc.cost_currency, vc.adult_price, vc.child_price,
+           vc.send_method, vc.provider_email AS card_provider_email,
            s.name_ar AS status_name_ar, s.name_en AS status_name_en, s.id AS status_id,
-           p.name AS provider_name,
+           p.name AS provider_name, p.emails AS provider_emails,
            latest_hist.note AS latest_note
     FROM visa_applications a
     LEFT JOIN visa_cards vc ON vc.id = a.visa_card_id
@@ -52,7 +53,18 @@ export async function GET(request) {
     // The admin may have entered this card's internal cost in USD — convert
     // to IQD here so the badge always reads in one consistent currency.
     if (a.cost_currency === 'USD') internal_cost_total *= IQD_PER_USD;
-    const row = { ...a, is_delayed: isDelayed, internal_cost_total };
+
+    // Surfaced so admin/staff can catch a card that's set to send to the
+    // provider but has no provider email resolvable — before approving
+    // payment, not after discovering the provider never got the request.
+    const wantsProvider = a.send_method === 'provider' || a.send_method === 'both';
+    const linkedProviderEmails = (a.provider_emails || []).map((e) => e.email).filter(Boolean);
+    const hasProviderEmail = !!a.card_provider_email || linkedProviderEmails.length > 0;
+    const provider_email_missing = wantsProvider && !hasProviderEmail;
+
+    const row = { ...a, is_delayed: isDelayed, internal_cost_total, provider_email_missing };
+    delete row.provider_emails;
+    delete row.card_provider_email;
     // Internal cost/margin is admin-only — a staff session (status board)
     // never receives these fields at all.
     if (role !== 'admin') {

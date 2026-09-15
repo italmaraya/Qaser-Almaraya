@@ -399,6 +399,7 @@ function ApplicationsTab({ applications, statuses, reload, setError }) {
   const [noteDrafts, setNoteDrafts] = useState({});
   const [fileUploading, setFileUploading] = useState({});
   const [paymentBusy, setPaymentBusy] = useState({});
+  const [emailInfo, setEmailInfo] = useState({});
 
   async function openDetail(id) {
     if (expanded === id) {
@@ -419,7 +420,8 @@ function ApplicationsTab({ applications, statuses, reload, setError }) {
     if (action === 'reject' && !window.confirm('سيتم حذف هذا الطلب نهائيًا لأن الدفع غير مؤكد. متابعة؟')) return;
     setPaymentBusy((b) => ({ ...b, [id]: true }));
     try {
-      await api(`/api/admin/visa/applications/${id}/payment`, { method: 'POST', body: JSON.stringify({ action }) });
+      const data = await api(`/api/admin/visa/applications/${id}/payment`, { method: 'POST', body: JSON.stringify({ action }) });
+      if (data?.email) setEmailInfo((m) => ({ ...m, [id]: data.email }));
       reload();
     } catch (e) {
       setError(e.message);
@@ -517,6 +519,21 @@ function ApplicationsTab({ applications, statuses, reload, setError }) {
                     }}
                   >
                     {a.provider_name}
+                  </span>
+                )}
+                {a.provider_email_missing && (
+                  <span
+                    style={{
+                      fontSize: 12,
+                      fontWeight: 700,
+                      color: '#d2324f',
+                      background: '#fdecef',
+                      borderRadius: 999,
+                      padding: '2px 10px',
+                    }}
+                    title="طريقة الإرسال لهذه البطاقة تتطلب مزوّدًا، لكن لا يوجد بريد إلكتروني مسجّل — أضف بريدًا في تبويب مزودو الخدمة قبل الموافقة على الدفع"
+                  >
+                    ⚠ لا يوجد بريد إلكتروني للمزوّد
                   </span>
                 )}
                 <span
@@ -640,7 +657,42 @@ function ApplicationsTab({ applications, statuses, reload, setError }) {
                 </button>
               </div>
             )}
+            {a.payment_status === 'approved' && (
+              <button
+                disabled={!!paymentBusy[a.id]}
+                style={{ ...btnStyle('ghost'), padding: '6px 14px', fontSize: 12.5, opacity: paymentBusy[a.id] ? 0.6 : 1, marginInlineStart: 'auto' }}
+                onClick={() => decidePayment(a.id, 'resend')}
+                title="أعد إرسال البريد بإعدادات المزوّد الحالية — مفيد بعد تصحيح بريد المزوّد"
+              >
+                🔁 إعادة إرسال البريد
+              </button>
+            )}
           </div>
+
+          {a.provider_email_missing && (
+            <div style={{ fontSize: 12.5, color: '#d2324f', background: '#fdecef', border: '1px solid #f6c3cf', borderRadius: 8, padding: '8px 10px' }}>
+              ⚠ طريقة الإرسال المحددة لهذه البطاقة تتطلب مزوّدًا، لكن لا يوجد بريد إلكتروني مسجّل له — أضف بريدًا في تبويب "مزودو الخدمة" ثم اضغط "إعادة إرسال البريد" إن كان الطلب قد تمت الموافقة عليه بالفعل.
+            </div>
+          )}
+
+          {emailInfo[a.id] && (
+            <div
+              style={{
+                fontSize: 12.5,
+                borderRadius: 8,
+                padding: '8px 10px',
+                background: emailInfo[a.id].providerReached ? '#eafaf1' : '#fdecef',
+                border: '1px solid ' + (emailInfo[a.id].providerReached ? '#b7e4c7' : '#f6c3cf'),
+                color: emailInfo[a.id].providerReached ? '#1e7d46' : '#d2324f',
+              }}
+            >
+              {emailInfo[a.id].error
+                ? '⚠ تعذّر إرسال البريد الإلكتروني — تحقق من إعدادات البريد.'
+                : emailInfo[a.id].providerReached
+                ? `✓ أُرسل البريد إلى: ${(emailInfo[a.id].recipients || []).join('، ')}`
+                : `⚠ لم يصل البريد إلى مزود الخدمة (لا يوجد بريد مسجّل له) — أُرسل فقط إلى: ${(emailInfo[a.id].recipients || []).join('، ') || '—'}`}
+            </div>
+          )}
 
           {expanded === a.id && detail && (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12, borderTop: '1px dashed #ececed', paddingTop: 14 }}>
