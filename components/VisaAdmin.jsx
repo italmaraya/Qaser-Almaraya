@@ -612,6 +612,13 @@ function ApplicationsTab({ applications, statuses, reload, setError }) {
             </div>
           )}
 
+          {a.customer_upload_url && (
+            <div style={{ fontSize: 12.5, color: '#1e7d46', background: '#eafaf1', border: '1px solid #b7e4c7', borderRadius: 8, padding: '6px 10px', display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
+              <span>📎 رفع العميل ملفاً بتاريخ {new Date(a.customer_upload_at).toLocaleString('ar')}:</span>
+              <a href={a.customer_upload_url} target="_blank" rel="noopener" style={{ color: '#036f8c', fontWeight: 700 }}>عرض الملف</a>
+            </div>
+          )}
+
           <div
             style={{
               display: 'flex',
@@ -1714,6 +1721,14 @@ function StatusesTab({ statuses, reload, setError }) {
       setError(e.message);
     }
   }
+  async function setUploadFlag(id, allows) {
+    try {
+      await api('/api/admin/visa/statuses', { method: 'POST', body: JSON.stringify({ action: 'set_upload_flag', id, allows_customer_upload: allows }) });
+      reload();
+    } catch (e) {
+      setError(e.message);
+    }
+  }
   async function removeInternal(id) {
     try {
       await api('/api/admin/visa/statuses', { method: 'POST', body: JSON.stringify({ action: 'delete_internal', id }) });
@@ -1763,6 +1778,14 @@ function StatusesTab({ statuses, reload, setError }) {
                   </option>
                 ))}
               </select>
+            </label>
+            <label style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 13, color: '#3d4650', cursor: 'pointer' }}>
+              <input
+                type="checkbox"
+                checked={!!s.allows_customer_upload}
+                onChange={(e) => setUploadFlag(s.id, e.target.checked)}
+              />
+              السماح للعميل برفع ملف في صفحة التتبع أثناء هذه الحالة (مثلاً: "مطلوب جواز/مستند")
             </label>
             <button style={{ ...btnStyle('danger'), alignSelf: 'flex-start' }} onClick={() => removeInternal(s.id)}>
               حذف

@@ -18,9 +18,11 @@ export async function GET(request) {
     const id = parseInt(orderMatch[1], 10);
     rows = await sql`
       SELECT a.id, a.customer_name, a.customer_phone, a.submitted_at, a.result_file_url,
+             a.customer_upload_url, a.customer_upload_at,
              c.name_ar AS country_name_ar, c.name_en AS country_name_en, vt.name_ar AS visa_type_name_ar, vt.name_en AS visa_type_name_en,
              cs.id AS customer_status_id,
              COALESCE(cs.name_ar, 'قيد المعالجة') AS status_name_ar,
+             COALESCE(ist.allows_customer_upload, false) AS can_upload,
              latest_hist.note AS latest_note
       FROM visa_applications a
       LEFT JOIN visa_cards vc ON vc.id = a.visa_card_id
@@ -41,9 +43,11 @@ export async function GET(request) {
     // formatting differences don't cause false negatives.
     rows = await sql`
       SELECT a.id, a.customer_name, a.customer_phone, a.submitted_at, a.result_file_url,
+             a.customer_upload_url, a.customer_upload_at,
              c.name_ar AS country_name_ar, c.name_en AS country_name_en, vt.name_ar AS visa_type_name_ar, vt.name_en AS visa_type_name_en,
              cs.id AS customer_status_id,
              COALESCE(cs.name_ar, 'قيد المعالجة') AS status_name_ar,
+             COALESCE(ist.allows_customer_upload, false) AS can_upload,
              latest_hist.note AS latest_note
       FROM visa_applications a
       LEFT JOIN visa_cards vc ON vc.id = a.visa_card_id

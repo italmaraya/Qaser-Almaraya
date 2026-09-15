@@ -43,5 +43,9 @@ export async function POST(request) {
     const rows = await sql`UPDATE internal_statuses SET customer_status_id = ${b.customer_status_id || null} WHERE id = ${b.internal_id} RETURNING *`;
     return NextResponse.json(rows[0] || {});
   }
+  if (b.action === 'set_upload_flag') {
+    const rows = await sql`UPDATE internal_statuses SET allows_customer_upload = ${!!b.allows_customer_upload} WHERE id = ${b.id} RETURNING *`;
+    return NextResponse.json(rows[0] || {});
+  }
   return NextResponse.json({ error: 'Unknown action' }, { status: 400 });
 }

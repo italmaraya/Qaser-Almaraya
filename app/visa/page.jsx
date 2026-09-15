@@ -22,6 +22,61 @@ const STEPS = [
   { n: '08', who: 'أنت', title: 'تحمّلها', hint: 'تصبح الحالة جاهزة للتحميل' },
 ];
 
+// Shown on the tracking card when the application's current status is
+// flagged (in "الحالات" → إعدادات الحالة الداخلية) to accept a customer
+// upload — e.g. "مطلوب جواز/مستند". Uploading here attaches the file
+// directly to the application, visible immediately in the dashboard.
+function ActionUpload({ application }) {
+  const [fileName, setFileName] = useState('');
+  const [uploading, setUploading] = useState(false);
+  const [error, setError] = useState('');
+  const [done, setDone] = useState(!!application.customer_upload_url);
+
+  async function handleFile(file) {
+    if (!file) return;
+    setError('');
+    setFileName(file.name);
+    setUploading(true);
+    try {
+      const fd = new FormData();
+      fd.append('file', file);
+      const res = await fetch('/api/visa/upload', { method: 'POST', body: fd });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error || 'تعذّر رفع الملف');
+      const attachRes = await fetch('/api/visa/track/upload', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ applicationId: application.id, phone: application.customer_phone, url: data.url }),
+      });
+      const attachData = await attachRes.json().catch(() => ({}));
+      if (!attachRes.ok) throw new Error(attachData.error || 'تعذّر إرسال الملف');
+      setDone(true);
+    } catch (e) {
+      setError(e.message || 'تعذّر رفع الملف — حاول مرة أخرى');
+      setFileName('');
+    } finally {
+      setUploading(false);
+    }
+  }
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 8, background: '#eaf8fd', border: '1px solid #bfe9f6', borderRadius: 10, padding: '12px 14px' }}>
+      <span style={{ fontSize: 13, fontWeight: 700, color: '#036f8c' }}>مطلوب منك رفع مستند أو ملف</span>
+      {done ? (
+        <span style={{ fontSize: 12.5, color: '#1e7d46' }}>✓ تم استلام ملفك، سيراجعه فريقنا قريباً.</span>
+      ) : (
+        <>
+          <label style={{ cursor: uploading ? 'not-allowed' : 'pointer', opacity: uploading ? 0.6 : 1, display: 'inline-flex', alignItems: 'center', gap: 8, alignSelf: 'flex-start', padding: '8px 16px', borderRadius: 999, background: '#fff', border: '1px solid #036f8c', color: '#036f8c', fontSize: 12.5, fontWeight: 700 }}>
+            {uploading ? 'جارٍ الرفع...' : fileName ? fileName : 'اختر ملفاً للرفع'}
+            <input type="file" accept="image/*,.pdf" disabled={uploading} style={{ display: 'none' }} onChange={(e) => handleFile(e.target.files && e.target.files[0])} />
+          </label>
+          {error && <span style={{ fontSize: 12, color: '#d2324f' }}>{error}</span>}
+        </>
+      )}
+    </div>
+  );
+}
+
 export default function VisaLandingPage() {
   const router = useRouter();
   const { lang } = useLangToggle();
@@ -608,6 +663,10 @@ export default function VisaLandingPage() {
                           <div style={{ fontSize: 13, color: '#a06a00', background: '#fef3dc', border: '1px solid #fdd27c', borderRadius: 8, padding: '10px 12px', lineHeight: 1.6 }}>
                             {a.latest_note}
                           </div>
+                        )}
+
+                        {a.can_upload && (
+                          <ActionUpload application={a} />
                         )}
 
                         {a.result_file_url && (

@@ -33,6 +33,7 @@ export async function POST(request, { params }) {
 
   const apps = await sql`
     SELECT a.*, vc.send_method, vc.provider_email, vc.provider_id,
+           vc.adult_cost, vc.child_cost, vc.cost_currency, vc.adult_price, vc.child_price,
            c.name_ar AS country_name_ar, c.name_en AS country_name_en,
            vt.name_ar AS visa_type_name_ar, vt.name_en AS visa_type_name_en,
            pr.name AS provider_name, pr.emails AS provider_emails

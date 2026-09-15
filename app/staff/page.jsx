@@ -195,6 +195,13 @@ function VisaApplications() {
             </div>
           )}
 
+          {a.customer_upload_url && (
+            <div style={{ fontSize: 12.5, color: '#1e7d46', background: '#eafaf1', border: '1px solid #b7e4c7', borderRadius: 8, padding: '6px 10px', display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
+              <span>📎 رفع العميل ملفاً بتاريخ {new Date(a.customer_upload_at).toLocaleString('ar')}:</span>
+              <a href={a.customer_upload_url} target="_blank" rel="noopener" style={{ color: '#036f8c', fontWeight: 700 }}>عرض الملف</a>
+            </div>
+          )}
+
           <div
             style={{
               display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: 10,
