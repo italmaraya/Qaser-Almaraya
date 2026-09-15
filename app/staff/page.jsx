@@ -43,6 +43,11 @@ function VisaApplications() {
   const [apps, setApps] = useState(null);
   const [statuses, setStatuses] = useState(null);
   const [error, setError] = useState('');
+  const [expanded, setExpanded] = useState(null);
+  const [detail, setDetail] = useState(null);
+  const [noteDrafts, setNoteDrafts] = useState({});
+  const [fileUploading, setFileUploading] = useState({});
+  const [paymentBusy, setPaymentBusy] = useState({});
 
   function load() {
     Promise.all([api('/api/admin/visa/applications'), api('/api/admin/visa/statuses')])
@@ -51,12 +56,62 @@ function VisaApplications() {
   }
   useEffect(load, []);
 
-  async function updateStatus(id, internal_status_id) {
+  async function openDetail(id) {
+    if (expanded === id) {
+      setExpanded(null);
+      setDetail(null);
+      return;
+    }
+    setExpanded(id);
     try {
-      await api(`/api/admin/visa/applications/${id}/status`, { method: 'POST', body: JSON.stringify({ internal_status_id: internal_status_id ? Number(internal_status_id) : null }) });
+      const data = await api(`/api/admin/visa/applications/${id}`);
+      setDetail(data);
+    } catch (e) {
+      setError(e.message);
+    }
+  }
+
+  async function changeStatus(id, statusId, note, resultFileUrl) {
+    try {
+      await api(`/api/admin/visa/applications/${id}/status`, {
+        method: 'POST',
+        body: JSON.stringify({ internal_status_id: statusId ? Number(statusId) : null, note: note || '', result_file_url: resultFileUrl ?? null }),
+      });
+      load();
+      if (expanded === id) openDetail(id);
+    } catch (e) {
+      setError(e.message);
+    }
+  }
+
+  async function uploadResultFile(id, statusId, file) {
+    if (!file) return;
+    setFileUploading((u) => ({ ...u, [id]: true }));
+    try {
+      const fd = new FormData();
+      fd.append('file', file);
+      const res = await fetch('/api/visa/upload', { method: 'POST', body: fd });
+      const data = await res.json();
+      if (res.ok) {
+        await changeStatus(id, statusId, undefined, data.url);
+      } else {
+        setError(data.error || 'تعذّر رفع الملف');
+      }
+    } finally {
+      setFileUploading((u) => ({ ...u, [id]: false }));
+    }
+  }
+
+  async function decidePayment(id, action) {
+    if (action === 'reject' && !window.confirm('سيتم حذف هذا الطلب نهائيًا لأن الدفع غير مؤكد. متابعة؟')) return;
+    setPaymentBusy((b) => ({ ...b, [id]: true }));
+    try {
+      await api(`/api/admin/visa/applications/${id}/payment`, { method: 'POST', body: JSON.stringify({ action }) });
       load();
     } catch (e) {
       setError(e.message);
+    } finally {
+      setPaymentBusy((b) => ({ ...b, [id]: false }));
     }
   }
 
@@ -76,20 +131,126 @@ function VisaApplications() {
               </div>
               <div style={{ fontSize: 13, color: '#7b8087' }}>{new Date(a.submitted_at).toLocaleString('ar')}</div>
             </div>
+            <button style={btnStyle('ghost')} onClick={() => openDetail(a.id)}>
+              {expanded === a.id ? 'إخفاء' : 'التفاصيل'}
+            </button>
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(160px,1fr))', gap: 10, fontSize: 13.5 }}>
             <div><b>الهاتف:</b> {a.customer_phone}</div>
             <div><b>البريد:</b> {a.customer_email || '—'}</div>
             <div><b>البالغون/الأطفال:</b> {a.adult_count} / {a.child_count}</div>
-            <div><b>حالة الدفع:</b> {a.payment_status === 'approved' ? 'تم التأكيد' : a.payment_status === 'rejected' ? 'مرفوض' : 'بانتظار المراجعة'}</div>
           </div>
-          <label style={{ ...labelStyle, maxWidth: 260 }}>
-            حالة الطلب
-            <select style={inputStyle} value={a.internal_status_id || ''} onChange={(e) => updateStatus(a.id, e.target.value)}>
-              <option value="">— بدون حالة —</option>
-              {(statuses || []).map((s) => <option key={s.id} value={s.id}>{s.name_ar}</option>)}
-            </select>
-          </label>
+
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
+            <label style={{ ...labelStyle, maxWidth: 260, flex: 1 }}>
+              حالة الطلب
+              <select style={inputStyle} value={a.internal_status_id || ''} onChange={(e) => changeStatus(a.id, e.target.value, noteDrafts[a.id])}>
+                <option value="">— بدون حالة —</option>
+                {(statuses || []).map((s) => <option key={s.id} value={s.id}>{s.name_ar}</option>)}
+              </select>
+            </label>
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+            <input
+              style={{ ...inputStyle, width: 220, fontSize: 12.5, padding: '6px 10px' }}
+              placeholder="ملاحظة للعميل (تظهر له عند التتبع)"
+              value={noteDrafts[a.id] ?? ''}
+              onChange={(e) => setNoteDrafts({ ...noteDrafts, [a.id]: e.target.value })}
+            />
+            <button
+              style={{ ...btnStyle('ghost'), padding: '6px 12px', fontSize: 12.5 }}
+              onClick={() => changeStatus(a.id, a.internal_status_id, noteDrafts[a.id])}
+            >
+              حفظ الملاحظة
+            </button>
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+            <label style={{ cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: 6, padding: '6px 12px', borderRadius: 999, border: '1px solid #036f8c', color: '#036f8c', fontSize: 12.5, fontWeight: 600 }}>
+              {a.result_file_url ? '📎 استبدال ملف التأشيرة' : '📎 رفع ملف التأشيرة الجاهز'}
+              <input
+                type="file"
+                style={{ display: 'none' }}
+                onChange={(e) => uploadResultFile(a.id, a.internal_status_id, e.target.files[0])}
+              />
+            </label>
+            {fileUploading[a.id] && <span style={{ fontSize: 12, color: '#7b8087' }}>...جارٍ الرفع</span>}
+            {a.result_file_url && !fileUploading[a.id] && (
+              <a href={a.result_file_url} target="_blank" rel="noopener" style={{ fontSize: 12, color: '#049dc5', fontWeight: 600 }}>✓ عرض الملف المرفوع</a>
+            )}
+          </div>
+
+          {a.latest_note && (
+            <div style={{ fontSize: 12.5, color: '#a06a00', background: '#fef3dc', border: '1px solid #fdd27c', borderRadius: 8, padding: '6px 10px' }}>
+              آخر ملاحظة للعميل: {a.latest_note}
+            </div>
+          )}
+
+          <div
+            style={{
+              display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: 10,
+              padding: '10px 12px', borderRadius: 10,
+              background: a.payment_status === 'approved' ? '#eafaf1' : '#fef3dc',
+              border: '1px solid ' + (a.payment_status === 'approved' ? '#b7e4c7' : '#fdd27c'),
+            }}
+          >
+            <span style={{ fontSize: 12.5, fontWeight: 700, color: a.payment_status === 'approved' ? '#1e7d46' : '#a06a00' }}>
+              {a.payment_status === 'approved' ? '✓ تمت الموافقة على الدفع — أُرسل إلى المزود' : '⏳ بانتظار مراجعة الدفع — لم يُرسَل إلى المزود بعد'}
+            </span>
+            <span style={{ fontSize: 12.5, color: '#3d4650' }}>
+              {a.payment_method === 'office' ? 'طريقة الدفع: الدفع في المكتب' : a.payment_method ? `طريقة الدفع: ${a.payment_method}` : ''}
+            </span>
+            {a.payment_proof_url ? (
+              <a href={a.payment_proof_url} target="_blank" rel="noopener" style={{ fontSize: 12.5, fontWeight: 700, color: '#036f8c' }}>
+                📎 عرض إشعار الدفع
+              </a>
+            ) : a.payment_method !== 'office' ? (
+              <span style={{ fontSize: 12.5, fontWeight: 700, color: '#d2324f' }}>⚠ لم يُرفَق إشعار دفع</span>
+            ) : null}
+            {a.payment_status !== 'approved' && (
+              <div style={{ display: 'flex', gap: 8, marginInlineStart: 'auto' }}>
+                <button
+                  disabled={!!paymentBusy[a.id]}
+                  style={{ ...btnStyle('primary'), padding: '6px 14px', fontSize: 12.5, opacity: paymentBusy[a.id] ? 0.6 : 1 }}
+                  onClick={() => decidePayment(a.id, 'approve')}
+                >
+                  ✓ قبول الدفع وإرسال للمزود
+                </button>
+                <button
+                  disabled={!!paymentBusy[a.id]}
+                  style={{ ...btnStyle('danger'), padding: '6px 14px', fontSize: 12.5, opacity: paymentBusy[a.id] ? 0.6 : 1 }}
+                  onClick={() => decidePayment(a.id, 'reject')}
+                >
+                  ✕ رفض وحذف
+                </button>
+              </div>
+            )}
+          </div>
+
+          {expanded === a.id && detail && (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 12, borderTop: '1px dashed #ececed', paddingTop: 14 }}>
+              {detail.travelers.map((t) => (
+                <div key={t.id} style={{ border: '1px solid #ececed', borderRadius: 10, padding: 12, display: 'flex', flexDirection: 'column', gap: 6 }}>
+                  <span style={{ fontWeight: 700, fontSize: 14 }}>
+                    {t.traveler_type === 'adult' ? 'بالغ' : 'طفل'} — {t.full_name || '—'}
+                  </span>
+                  {t.answers.length === 0 && <span style={{ fontSize: 13, color: '#7b8087' }}>لا توجد إجابات</span>}
+                  {t.answers.map((ans) => {
+                    const doc = detail.documents.find((d) => d.id === ans.visa_document_id);
+                    return (
+                      <div key={ans.id} style={{ fontSize: 13.5, display: 'flex', gap: 6 }}>
+                        <span style={{ color: '#7b8087', minWidth: 160 }}>{doc ? doc.name_ar : 'مستند'}:</span>
+                        {ans.file_url ? (
+                          <a href={ans.file_url} target="_blank" rel="noopener" style={{ color: '#049dc5' }}>عرض الملف</a>
+                        ) : (
+                          <span>{ans.value_text || '—'}</span>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       ))}
     </div>
@@ -127,13 +288,25 @@ function PackageBookings() {
               <div style={{ fontWeight: 700 }}>QP-{String(b.id).padStart(6, '0')} — {b.package_title_ar || 'باقة محذوفة'}</div>
               <div style={{ fontSize: 13, color: '#7b8087' }}>{b.package_dest_ar} · {new Date(b.submitted_at).toLocaleString('ar')}</div>
             </div>
+            <div style={{ fontSize: 18, fontWeight: 700, color: '#049dc5' }}>{Number(b.total_price).toLocaleString()} IQD</div>
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(160px,1fr))', gap: 10, fontSize: 13.5 }}>
             <div><b>الهاتف:</b> {b.customer_phone}</div>
+            <div><b>البريد:</b> {b.customer_email || '—'}</div>
+            <div><b>الجنسية:</b> {b.nationality || '—'}</div>
             <div><b>البالغون/الأطفال:</b> {b.adult_count} / {b.child_count}</div>
             <div><b>الفندق:</b> {b.hotel_choice || '—'}</div>
             <div><b>الرحلة:</b> {b.flight_choice || '—'}</div>
+            <div><b>طريقة الدفع:</b> {b.payment_method || '—'}</div>
+            {b.payment_proof_url && (
+              <div><a href={b.payment_proof_url} target="_blank" rel="noreferrer" style={{ color: '#036f8c' }}>إشعار الدفع ↗</a></div>
+            )}
           </div>
+          {b.travelers?.length > 0 && (
+            <div style={{ fontSize: 13.5, borderTop: '1px solid #ececed', paddingTop: 10 }}>
+              <b>المسافرون:</b> {b.travelers.map((t) => `${t.full_name} (${t.traveler_type === 'adult' ? 'بالغ' : 'طفل'}${t.passport_number ? ' — ' + t.passport_number : ''})`).join('، ')}
+            </div>
+          )}
           <div style={{ display: 'flex', gap: 14, flexWrap: 'wrap' }}>
             <label style={labelStyle}>حالة الدفع
               <select style={inputStyle} value={b.payment_status} onChange={(e) => updateStatus(b.id, 'payment_status', e.target.value)}>

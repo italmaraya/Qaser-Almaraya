@@ -1,10 +1,14 @@
 import { NextResponse } from 'next/server';
 import { sql, ensureSchema } from '../../../../../../../lib/db';
-import { requireAdmin } from '../../../../../../../lib/session';
+import { requireAuth } from '../../../../../../../lib/session';
 import { sendApplicationEmail } from '../../../../../../../lib/mailer';
 
+// Both admin and staff can decide payment now (approve → sends to provider,
+// reject → deletes). Staff never sees internal cost/margin fields (those are
+// stripped in the applications list route), but they do need to be able to
+// confirm a payment came in and act on it.
 export async function POST(request, { params }) {
-  if (!(await requireAdmin(request))) return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
+  if (!(await requireAuth(request))) return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
   await ensureSchema();
   const { id } = await params;
   const { action } = await request.json().catch(() => ({}));
