@@ -44,7 +44,7 @@ export async function POST(request) {
     return NextResponse.json(rows[0] || {});
   }
   if (b.action === 'set_upload_flag') {
-    const rows = await sql`UPDATE internal_statuses SET allows_customer_upload = ${!!b.allows_customer_upload} WHERE id = ${b.id} RETURNING *`;
+    const rows = await sql`UPDATE customer_statuses SET allows_customer_upload = ${!!b.allows_customer_upload} WHERE id = ${b.id} RETURNING *`;
     return NextResponse.json(rows[0] || {});
   }
   return NextResponse.json({ error: 'Unknown action' }, { status: 400 });

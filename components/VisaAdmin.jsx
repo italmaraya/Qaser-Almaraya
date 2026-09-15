@@ -1779,14 +1779,6 @@ function StatusesTab({ statuses, reload, setError }) {
                 ))}
               </select>
             </label>
-            <label style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 13, color: '#3d4650', cursor: 'pointer' }}>
-              <input
-                type="checkbox"
-                checked={!!s.allows_customer_upload}
-                onChange={(e) => setUploadFlag(s.id, e.target.checked)}
-              />
-              السماح للعميل برفع ملف في صفحة التتبع أثناء هذه الحالة (مثلاً: "مطلوب جواز/مستند")
-            </label>
             <button style={{ ...btnStyle('danger'), alignSelf: 'flex-start' }} onClick={() => removeInternal(s.id)}>
               حذف
             </button>
@@ -1804,22 +1796,32 @@ function StatusesTab({ statuses, reload, setError }) {
       <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
         <h4 style={{ margin: 0 }}>حالات العميل (ما يظهر له)</h4>
         {statuses.customer.map((s) => (
-          <div key={s.id} style={{ ...cardStyle, padding: 14, flexDirection: 'row', alignItems: 'flex-end', flexWrap: 'wrap', justifyContent: 'space-between' }}>
-            <input
-              style={{ ...inputStyle, flex: 1, minWidth: 120 }}
-              value={s.name_ar}
-              placeholder="الاسم بالعربية"
-              onChange={(e) => updateCustomer(s.id, e.target.value, s.name_en)}
-            />
-            <input
-              style={{ ...inputStyle, flex: 1, minWidth: 120 }}
-              value={s.name_en || ''}
-              placeholder="Name in English"
-              onChange={(e) => updateCustomer(s.id, s.name_ar, e.target.value)}
-            />
-            <button style={btnStyle('danger')} onClick={() => removeCustomer(s.id)}>
-              حذف
-            </button>
+          <div key={s.id} style={{ ...cardStyle, padding: 14, gap: 10 }}>
+            <div style={{ display: 'flex', alignItems: 'flex-end', flexWrap: 'wrap', justifyContent: 'space-between', gap: 10 }}>
+              <input
+                style={{ ...inputStyle, flex: 1, minWidth: 120 }}
+                value={s.name_ar}
+                placeholder="الاسم بالعربية"
+                onChange={(e) => updateCustomer(s.id, e.target.value, s.name_en)}
+              />
+              <input
+                style={{ ...inputStyle, flex: 1, minWidth: 120 }}
+                value={s.name_en || ''}
+                placeholder="Name in English"
+                onChange={(e) => updateCustomer(s.id, s.name_ar, e.target.value)}
+              />
+              <button style={btnStyle('danger')} onClick={() => removeCustomer(s.id)}>
+                حذف
+              </button>
+            </div>
+            <label style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 13, color: '#3d4650', cursor: 'pointer' }}>
+              <input
+                type="checkbox"
+                checked={!!s.allows_customer_upload}
+                onChange={(e) => setUploadFlag(s.id, e.target.checked)}
+              />
+              السماح للعميل برفع ملف في صفحة التتبع أثناء هذه الحالة (مثلاً: "مطلوب إجراء من الزبون")
+            </label>
           </div>
         ))}
         <div style={{ ...cardStyle, flexDirection: 'row', alignItems: 'flex-end', flexWrap: 'wrap' }}>

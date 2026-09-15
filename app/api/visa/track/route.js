@@ -22,7 +22,7 @@ export async function GET(request) {
              c.name_ar AS country_name_ar, c.name_en AS country_name_en, vt.name_ar AS visa_type_name_ar, vt.name_en AS visa_type_name_en,
              cs.id AS customer_status_id,
              COALESCE(cs.name_ar, 'قيد المعالجة') AS status_name_ar,
-             COALESCE(ist.allows_customer_upload, false) AS can_upload,
+             COALESCE(cs.allows_customer_upload, false) AS can_upload,
              latest_hist.note AS latest_note
       FROM visa_applications a
       LEFT JOIN visa_cards vc ON vc.id = a.visa_card_id
@@ -47,7 +47,7 @@ export async function GET(request) {
              c.name_ar AS country_name_ar, c.name_en AS country_name_en, vt.name_ar AS visa_type_name_ar, vt.name_en AS visa_type_name_en,
              cs.id AS customer_status_id,
              COALESCE(cs.name_ar, 'قيد المعالجة') AS status_name_ar,
-             COALESCE(ist.allows_customer_upload, false) AS can_upload,
+             COALESCE(cs.allows_customer_upload, false) AS can_upload,
              latest_hist.note AS latest_note
       FROM visa_applications a
       LEFT JOIN visa_cards vc ON vc.id = a.visa_card_id

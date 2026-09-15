@@ -14,9 +14,10 @@ export async function POST(request) {
   }
 
   const apps = await sql`
-    SELECT a.id, a.customer_phone, a.internal_status_id, ist.allows_customer_upload
+    SELECT a.id, a.customer_phone, a.internal_status_id, cs.allows_customer_upload
     FROM visa_applications a
     LEFT JOIN internal_statuses ist ON ist.id = a.internal_status_id
+    LEFT JOIN customer_statuses cs ON cs.id = ist.customer_status_id
     WHERE a.id = ${applicationId}
   `;
   if (apps.length === 0) return NextResponse.json({ error: 'الطلب غير موجود' }, { status: 404 });
