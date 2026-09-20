@@ -134,7 +134,7 @@ export default function PackageDetailPage() {
 
   if (error) {
     return (
-      <div dir="rtl" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+      <div dir={lang === 'en' ? 'ltr' : 'rtl'} style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
         <SiteHeader active="المجموعات والباقات" />
         <main style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 40 }}>
           <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', gap: 12, alignItems: 'center' }}>
@@ -148,7 +148,7 @@ export default function PackageDetailPage() {
   }
   if (!pkg) {
     return (
-      <div dir="rtl" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+      <div dir={lang === 'en' ? 'ltr' : 'rtl'} style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
         <SiteHeader active="المجموعات والباقات" />
         <main style={{ flex: 1 }} />
         <SiteFooter />
@@ -158,7 +158,7 @@ export default function PackageDetailPage() {
   }
 
   return (
-    <div dir="rtl" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+    <div dir={lang === 'en' ? 'ltr' : 'rtl'} style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
       <SiteHeader active="المجموعات والباقات" />
       <main style={{ flex: 1 }}>
         <div className="qa-page">

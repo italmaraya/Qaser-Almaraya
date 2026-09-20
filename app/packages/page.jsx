@@ -146,7 +146,7 @@ export default function PackagesPage() {
   }, [packages, cat, prefs, query]);
 
   return (
-    <div dir="rtl" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+    <div dir={lang === 'en' ? 'ltr' : 'rtl'} style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
       <SiteHeader active="المجموعات والباقات" />
       <main style={{ flex: 1 }}>
         <div className="qa-page">
