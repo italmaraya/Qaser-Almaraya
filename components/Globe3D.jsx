@@ -2,6 +2,8 @@
 import { useEffect, useRef } from 'react';
 import * as THREE from 'three';
 
+const TEX_BASE = '/assets/globe';
+
 function latLngToVector3(lat, lng, radius) {
   const phi = (90 - lat) * (Math.PI / 180);
   const theta = (lng + 180) * (Math.PI / 180);
@@ -10,63 +12,6 @@ function latLngToVector3(lat, lng, radius) {
     radius * Math.cos(phi),
     radius * Math.sin(phi) * Math.sin(theta)
   );
-}
-
-// Builds a stylized ocean+landmass+grid equirectangular texture on a canvas,
-// so the globe needs no external image asset.
-function buildGlobeTexture() {
-  const w = 1024;
-  const h = 512;
-  const canvas = document.createElement('canvas');
-  canvas.width = w;
-  canvas.height = h;
-  const ctx = canvas.getContext('2d');
-
-  const ocean = ctx.createLinearGradient(0, 0, 0, h);
-  ocean.addColorStop(0, '#0c4f6e');
-  ocean.addColorStop(0.5, '#0a6b8f');
-  ocean.addColorStop(1, '#0c4f6e');
-  ctx.fillStyle = ocean;
-  ctx.fillRect(0, 0, w, h);
-
-  // Rough, stylized landmass blobs (not geographically precise — decorative).
-  const blobs = [
-    [[120, 130], [200, 110], [260, 160], [230, 230], [150, 240], [90, 190]], // Europe/Africa-ish
-    [[280, 120], [420, 100], [520, 150], [480, 220], [380, 240], [300, 190]], // Asia-ish
-    [[560, 260], [640, 250], [660, 320], [600, 360], [540, 320]], // SE Asia-ish
-    [[700, 130], [800, 120], [830, 190], [760, 220], [700, 190]], // Australia-ish
-    [[850, 90], [920, 80], [950, 140], [900, 170], [850, 140]], // extra island
-    [[60, 260], [140, 250], [170, 340], [120, 420], [50, 380]], // Africa lower
-    [[810, 300], [880, 290], [900, 360], [850, 400], [800, 360]],
-  ];
-  ctx.fillStyle = '#1c8a5e';
-  blobs.forEach((pts) => {
-    ctx.beginPath();
-    ctx.moveTo(pts[0][0], pts[0][1]);
-    pts.slice(1).forEach((p) => ctx.lineTo(p[0], p[1]));
-    ctx.closePath();
-    ctx.fill();
-  });
-
-  // Lat/long grid
-  ctx.strokeStyle = 'rgba(255,255,255,.16)';
-  ctx.lineWidth = 1;
-  for (let x = 0; x <= w; x += w / 12) {
-    ctx.beginPath();
-    ctx.moveTo(x, 0);
-    ctx.lineTo(x, h);
-    ctx.stroke();
-  }
-  for (let y = 0; y <= h; y += h / 6) {
-    ctx.beginPath();
-    ctx.moveTo(0, y);
-    ctx.lineTo(w, y);
-    ctx.stroke();
-  }
-
-  const texture = new THREE.CanvasTexture(canvas);
-  texture.needsUpdate = true;
-  return texture;
 }
 
 function buildPinSprite(color) {
@@ -87,8 +32,7 @@ function buildPinSprite(color) {
   ctx.beginPath();
   ctx.arc(size / 2, size / 2, size * 0.13, 0, Math.PI * 2);
   ctx.fill();
-  const texture = new THREE.CanvasTexture(canvas);
-  return texture;
+  return new THREE.CanvasTexture(canvas);
 }
 
 export default function Globe3D({ pins = [], onSelectPin, height = 340 }) {
@@ -115,19 +59,43 @@ export default function Globe3D({ pins = [], onSelectPin, height = 340 }) {
     const globeGroup = new THREE.Group();
     scene.add(globeGroup);
 
-    const texture = buildGlobeTexture();
-    const sphereGeo = new THREE.SphereGeometry(2.4, 48, 48);
-    const sphereMat = new THREE.MeshPhongMaterial({ map: texture, shininess: 6, specular: 0x1a4a5c });
+    const loader = new THREE.TextureLoader();
+    const albedoTex = loader.load(`${TEX_BASE}/earth-albedo.jpg`);
+    const nightTex = loader.load(`${TEX_BASE}/earth-night.jpg`);
+    const bumpTex = loader.load(`${TEX_BASE}/earth-bump.jpg`);
+    const cloudsTex = loader.load(`${TEX_BASE}/earth-clouds.png`);
+    if ('colorSpace' in albedoTex) {
+      albedoTex.colorSpace = THREE.SRGBColorSpace;
+      nightTex.colorSpace = THREE.SRGBColorSpace;
+    }
+
+    const sphereGeo = new THREE.SphereGeometry(2.4, 64, 64);
+    const sphereMat = new THREE.MeshPhongMaterial({
+      map: albedoTex,
+      bumpMap: bumpTex,
+      bumpScale: 0.04,
+      emissiveMap: nightTex,
+      emissive: new THREE.Color(0xffe9b0),
+      emissiveIntensity: 0.9,
+      shininess: 5,
+      specular: 0x223344,
+    });
     const sphere = new THREE.Mesh(sphereGeo, sphereMat);
     globeGroup.add(sphere);
 
-    // subtle atmosphere glow
-    const glowGeo = new THREE.SphereGeometry(2.5, 48, 48);
-    const glowMat = new THREE.MeshBasicMaterial({ color: 0x4fc7e8, transparent: true, opacity: 0.12, side: THREE.BackSide });
+    // Cloud layer, slightly larger, rotates independently for parallax.
+    const cloudsGeo = new THREE.SphereGeometry(2.428, 64, 64);
+    const cloudsMat = new THREE.MeshLambertMaterial({ map: cloudsTex, transparent: true, opacity: 0.55, depthWrite: false });
+    const cloudsMesh = new THREE.Mesh(cloudsGeo, cloudsMat);
+    globeGroup.add(cloudsMesh);
+
+    // Subtle atmosphere glow
+    const glowGeo = new THREE.SphereGeometry(2.52, 48, 48);
+    const glowMat = new THREE.MeshBasicMaterial({ color: 0x4fc7e8, transparent: true, opacity: 0.1, side: THREE.BackSide });
     globeGroup.add(new THREE.Mesh(glowGeo, glowMat));
 
-    scene.add(new THREE.AmbientLight(0xffffff, 0.65));
-    const dir = new THREE.DirectionalLight(0xffffff, 0.9);
+    scene.add(new THREE.AmbientLight(0xffffff, 0.55));
+    const dir = new THREE.DirectionalLight(0xffffff, 1.1);
     dir.position.set(4, 3, 5);
     scene.add(dir);
 
@@ -135,7 +103,7 @@ export default function Globe3D({ pins = [], onSelectPin, height = 340 }) {
     const pinTexture = buildPinSprite('#faab18');
     pins.forEach((p) => {
       if (typeof p.lat !== 'number' || typeof p.lng !== 'number') return;
-      const pos = latLngToVector3(p.lat, p.lng, 2.46);
+      const pos = latLngToVector3(p.lat, p.lng, 2.5);
       const mat = new THREE.SpriteMaterial({ map: pinTexture, depthTest: false, transparent: true });
       const sprite = new THREE.Sprite(mat);
       sprite.position.copy(pos);
@@ -206,6 +174,7 @@ export default function Globe3D({ pins = [], onSelectPin, height = 340 }) {
         rotY += 0.0016;
         applyRotation();
       }
+      cloudsMesh.rotation.y += 0.00035;
       t += 0.045;
       pinMeshes.forEach((sprite, i) => {
         const s = sprite.userData.baseScale * (1 + Math.sin(t + i) * 0.12);
@@ -226,8 +195,6 @@ export default function Globe3D({ pins = [], onSelectPin, height = 340 }) {
     window.addEventListener('resize', handleResize);
     const ro = new ResizeObserver(handleResize);
     ro.observe(container);
-    // In case the container had zero width at mount time (e.g. grid not
-    // laid out yet), re-measure shortly after mount too.
     const settleTimer = setTimeout(handleResize, 50);
 
     return () => {
@@ -240,9 +207,14 @@ export default function Globe3D({ pins = [], onSelectPin, height = 340 }) {
       renderer.domElement.removeEventListener('pointerdown', onPointerDown);
       sphereGeo.dispose();
       sphereMat.dispose();
+      cloudsGeo.dispose();
+      cloudsMat.dispose();
       glowGeo.dispose();
       glowMat.dispose();
-      texture.dispose();
+      albedoTex.dispose();
+      nightTex.dispose();
+      bumpTex.dispose();
+      cloudsTex.dispose();
       pinTexture.dispose();
       renderer.dispose();
       if (container.contains(renderer.domElement)) container.removeChild(renderer.domElement);
