@@ -120,7 +120,7 @@ function HotelRow({ h, lang, selected, onSelect }) {
   );
 }
 
-export default function PackageCard({ title, destination, image, nights, groupType, departs, price, includes = [], badge, onDetails, hotels = [], flights = [], lang = 'ar', rating = 4.8, style }) {
+export default function PackageCard({ title, destination, image, nights, groupType, departs, price, includes = [], badge, onDetails, onPreview, hotels = [], flights = [], lang = 'ar', rating = 4.8, style }) {
   const [open, setOpen] = useState(false);
   const [tab, setTab] = useState('flights');
   const [flightIdx, setFlightIdx] = useState(0);
@@ -132,7 +132,11 @@ export default function PackageCard({ title, destination, image, nights, groupTy
 
   return (
     <div dir="rtl" className="qa-pkg-card qa-hover-lift" style={{ background: '#fff', border: badge ? '3px solid #049dc5' : '1px solid #ececed', borderRadius: 24, boxShadow: badge ? '0 8px 26px rgba(4,157,197,.22)' : '0 2px 10px rgba(29,39,51,.06)', overflow: 'hidden', display: 'flex', flexDirection: 'column', ...style }}>
-      <div className="qa-pkg-hero" style={{ position: 'relative', background: '#0d2b36' }}>
+      <div
+        className="qa-pkg-hero"
+        onClick={onPreview}
+        style={{ position: 'relative', background: '#0d2b36', cursor: onPreview ? 'pointer' : 'default' }}
+      >
         {image ? (
           <img src={image} alt={title} style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }} />
         ) : (

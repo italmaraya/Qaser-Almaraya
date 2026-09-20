@@ -5,6 +5,7 @@ import SiteHeader from '../../components/SiteHeader';
 import SiteFooter from '../../components/SiteFooter';
 import MascotLoader from '../../components/MascotLoader';
 import PackageCard from '../../components/PackageCard';
+import DestinationShowcase from '../../components/DestinationShowcase';
 import Icon from '../../components/Icon';
 import { useLangToggle } from '../../lib/i18n';
 import { CATS, PREFS, T } from '../../lib/packagesData';
@@ -32,6 +33,7 @@ export default function PackagesPage() {
   const [travelers, setTravelers] = useState({ adults: 2, children: 0, infants: 0, singleRooms: 1, doubleRooms: 0 });
   const [preferredDates, setPreferredDates] = useState('');
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [showcase, setShowcase] = useState(null);
 
   useEffect(() => {
     fetch('/api/packages')
@@ -151,7 +153,7 @@ export default function PackagesPage() {
           </section>
 
           {/* Floating search bar — overlaps the hero's bottom edge */}
-          <div style={{ maxWidth: 1080, margin: 'clamp(-64px,-8vw,-46px) auto 0', padding: '0 20px', position: 'relative', zIndex: 6 }}>
+          <div style={{ maxWidth: 1080, margin: 'clamp(-64px,-8vw,-46px) auto 0', padding: '0 20px', position: 'relative', zIndex: 30 }}>
             <div className="qa-search-bar" style={{ background: '#fff', borderRadius: 24, boxShadow: '0 22px 54px rgba(1,42,55,.28)', display: 'flex', flexWrap: 'wrap', alignItems: 'stretch' }}>
               <div className="qa-search-field" style={{ position: 'relative', flex: '1 1 220px', padding: '14px 20px', display: 'flex', flexDirection: 'column', gap: 3, minWidth: 200 }}>
                 <span style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 11, fontWeight: 700, color: '#7b8087', textTransform: 'uppercase', letterSpacing: '.03em' }}>
@@ -227,11 +229,10 @@ export default function PackagesPage() {
                   <Icon name="calendar-days" size={12} style={{ color: '#049dc5' }} />{t.filter_dates_label}
                 </span>
                 <input
-                  type="text"
+                  type="date"
                   value={preferredDates}
                   onChange={(e) => setPreferredDates(e.target.value)}
-                  placeholder={t.filter_dates_ph}
-                  style={{ width: '100%', boxSizing: 'border-box', border: 'none', outline: 'none', fontSize: 15, fontWeight: 600, fontFamily: 'inherit', color: '#1d2733', padding: 0, background: 'transparent' }}
+                  style={{ width: '100%', boxSizing: 'border-box', border: 'none', outline: 'none', fontSize: 15, fontWeight: 600, fontFamily: 'inherit', color: preferredDates ? '#1d2733' : '#9aa0a6', padding: 0, background: 'transparent', colorScheme: 'light' }}
                 />
               </div>
 
@@ -425,6 +426,12 @@ export default function PackagesPage() {
             <h2 style={{ fontSize: 22, marginBottom: 4 }}>{t.packages_title}</h2>
             <p style={{ color: '#7b8087', marginBottom: 24 }}>{t.packages_sub}</p>
 
+            {showcase ? (
+              <div className="qa-showcase-wrap" style={{ marginBottom: 24, position: 'sticky', top: 74, zIndex: 8 }}>
+                <DestinationShowcase destinationName={showcase.name} lang={lang} fallbackImage={showcase.image} fallbackLabel={showcase.name} />
+              </div>
+            ) : null}
+
             {error && <p style={{ color: '#d2324f', background: '#fdecef', border: '1px solid #f7c3cc', borderRadius: 10, padding: '14px 20px' }}>{error}</p>}
 
             {!packages && !error && <div style={{ padding: 40 }}><MascotLoader assetBase="/assets" /></div>}
@@ -452,6 +459,7 @@ export default function PackagesPage() {
                     lang={lang}
                     rating={p.rating || 4.8}
                     onDetails={() => router.push(`/packages/${p.id}`)}
+                    onPreview={() => setShowcase({ name: nm(p.dest_ar, p.dest_en) || nm(p.title_ar, p.title_en), image: p.image_url || null })}
                   />
                 ))}
               </div>
