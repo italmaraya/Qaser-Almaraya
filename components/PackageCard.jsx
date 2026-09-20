@@ -131,7 +131,7 @@ export default function PackageCard({ title, destination, image, nights, groupTy
   const roundedRating = Math.round(rating);
 
   return (
-    <div dir="rtl" className="qa-pkg-card" style={{ background: '#fff', border: badge ? '3px solid #049dc5' : '1px solid #ececed', borderRadius: 20, boxShadow: badge ? '0 8px 26px rgba(4,157,197,.22)' : '0 2px 8px rgba(29,39,51,.07)', overflow: 'hidden', display: 'flex', flexDirection: 'column', ...style }}>
+    <div dir="rtl" className="qa-pkg-card qa-hover-lift" style={{ background: '#fff', border: badge ? '3px solid #049dc5' : '1px solid #ececed', borderRadius: 24, boxShadow: badge ? '0 8px 26px rgba(4,157,197,.22)' : '0 2px 10px rgba(29,39,51,.06)', overflow: 'hidden', display: 'flex', flexDirection: 'column', ...style }}>
       <div className="qa-pkg-hero" style={{ position: 'relative', background: '#0d2b36' }}>
         {image ? (
           <img src={image} alt={title} style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }} />
@@ -275,6 +275,8 @@ export default function PackageCard({ title, destination, image, nights, groupTy
       </div>
 
       <style jsx>{`
+        .qa-pkg-card { transition: transform .22s ease, box-shadow .22s ease; }
+        .qa-hover-lift:hover { transform: translateY(-5px); box-shadow: 0 16px 34px rgba(29,39,51,.14); }
         .qa-pkg-hero { aspect-ratio: 3 / 4; }
         .qa-pkg-badge { padding: 5px 11px; font-size: 12.5px; }
         .qa-pkg-arrow-btn { width: 34px; height: 34px; }

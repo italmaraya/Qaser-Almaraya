@@ -9,7 +9,6 @@ import Icon from '../../components/Icon';
 import { useLangToggle } from '../../lib/i18n';
 import { CATS, PREFS, T } from '../../lib/packagesData';
 import { formatPrice } from '../../lib/currency';
-import { flagSrc } from '../../lib/flags';
 
 export default function PackagesPage() {
   const router = useRouter();
@@ -25,10 +24,14 @@ export default function PackagesPage() {
   const [destinations, setDestinations] = useState([]);
   const [showDestDropdown, setShowDestDropdown] = useState(false);
   const [countries, setCountries] = useState([]);
+  const [regions, setRegions] = useState([]);
   const [showAllCountries, setShowAllCountries] = useState(false);
   const [reviews, setReviews] = useState([]);
+  const [reviewIndex, setReviewIndex] = useState(0);
   const [showTravelers, setShowTravelers] = useState(false);
   const [travelers, setTravelers] = useState({ adults: 2, children: 0, infants: 0, singleRooms: 1, doubleRooms: 0 });
+  const [preferredDates, setPreferredDates] = useState('');
+  const [drawerOpen, setDrawerOpen] = useState(false);
 
   useEffect(() => {
     fetch('/api/packages')
@@ -52,6 +55,13 @@ export default function PackagesPage() {
   }, []);
 
   useEffect(() => {
+    fetch('/api/packages/regions')
+      .then((r) => r.json())
+      .then((data) => setRegions(Array.isArray(data) ? data : []))
+      .catch(() => setRegions([]));
+  }, []);
+
+  useEffect(() => {
     fetch('/api/packages/reviews')
       .then((r) => r.json())
       .then((data) => setReviews(Array.isArray(data) ? data : []))
@@ -64,12 +74,22 @@ export default function PackagesPage() {
   const countryGroups = useMemo(() => {
     const map = new Map();
     countries.forEach((c) => {
-      const key = nm(c.region_ar, c.region_en) || (lang === 'en' ? 'Other destinations' : 'وجهات أخرى');
-      if (!map.has(key)) map.set(key, []);
-      map.get(key).push(c);
+      const key = c.region_ar || '__other__';
+      if (!map.has(key)) map.set(key, { region_ar: c.region_ar, region_en: c.region_en, list: [] });
+      map.get(key).list.push(c);
     });
-    return Array.from(map.entries());
-  }, [countries, lang]);
+    return Array.from(map.values());
+  }, [countries]);
+
+  const currentReview = reviews[reviewIndex] || reviews[0] || null;
+
+  const CAT_EMOJI = { family: '👨‍👩‍👧', couples: '❤️', group: '🎉', beach: '🌴', event: '🎫', umrah: '🕌', adventure: '🏔️' };
+
+  const heroImage = useMemo(() => {
+    if (!packages || !packages.length) return null;
+    const featured = packages.find((p) => (p.badge_ar || p.badge_en) && p.image_url);
+    return (featured || packages.find((p) => p.image_url))?.image_url || null;
+  }, [packages]);
 
   function setTravelerCount(key, delta, min = 0) {
     setTravelers((t) => ({ ...t, [key]: Math.max(min, t[key] + delta) }));
@@ -106,225 +126,297 @@ export default function PackagesPage() {
       <SiteHeader active="المجموعات والباقات" />
       <main style={{ flex: 1 }}>
         <div className="qa-page">
-          {/* Hero */}
-          <section style={{ background: 'linear-gradient(135deg,#34bbe1 0%,#049dc5 100%)', color: '#fff', padding: 'clamp(48px,7vw,88px) clamp(16px,4vw,32px)', overflow: 'hidden' }}>
-            <div style={{ maxWidth: 1240, margin: '0 auto', display: 'flex', alignItems: 'center', gap: 32, flexWrap: 'wrap-reverse' }}>
-              <div style={{ flex: '1 1 420px', display: 'flex', flexDirection: 'column', gap: 14, alignItems: 'flex-start', minWidth: 280 }}>
-                <span style={{ fontSize: 13, fontWeight: 700, letterSpacing: '.08em', color: 'rgba(255,255,255,.85)' }}>{t.hero_eyebrow}</span>
-                <h1 style={{ margin: 0, fontSize: 'clamp(26px,4vw,40px)', color: '#fff', maxWidth: 640 }}>{t.hero_title}</h1>
-                <p style={{ margin: 0, fontSize: 16, lineHeight: 1.7, color: 'rgba(255,255,255,.92)', maxWidth: 620 }}>{t.hero_sub}</p>
-                <a
-                  href="#qa-pkg-results"
-                  onClick={(e) => { e.preventDefault(); document.getElementById('qa-pkg-results')?.scrollIntoView({ behavior: 'smooth' }); }}
-                  className="qa-btn qa-amber"
-                  style={{ marginTop: 8, textDecoration: 'none' }}
-                >
-                  {t.hero_cta2}
-                </a>
-              </div>
-              <div style={{ flex: '0 0 auto', width: 'clamp(240px,32vw,400px)', position: 'relative', display: 'grid', placeItems: 'center', margin: '18px auto 0' }}>
-                <div style={{ position: 'absolute', inset: '-14%', borderRadius: '50%', background: 'radial-gradient(circle, rgba(250,171,24,.4) 0%, rgba(250,171,24,0) 70%)', filter: 'blur(6px)', zIndex: 0 }} />
-                <div className="qa-hero-ring" style={{ position: 'absolute', inset: '-7%', borderRadius: '50%', border: '2px dashed rgba(255,255,255,.55)', zIndex: 1 }} />
-                <div style={{ position: 'absolute', inset: '1.5%', borderRadius: '50%', border: '3px solid rgba(255,255,255,.25)', zIndex: 1 }} />
-                <img
-                  src="/assets/mascot-skylo-packages-hero.png"
-                  alt=""
-                  style={{ position: 'relative', zIndex: 2, width: '100%', aspectRatio: '1 / 1', objectFit: 'cover', borderRadius: '50%', border: '6px solid rgba(255,255,255,.55)', boxShadow: '0 24px 60px rgba(1,42,55,.4)' }}
-                />
-                <div style={{ position: 'absolute', top: '-4%', insetInlineEnd: '-2%', width: 'clamp(42px,9%,58px)', height: 'clamp(42px,9%,58px)', borderRadius: '50%', background: '#faab18', display: 'grid', placeItems: 'center', boxShadow: '0 10px 22px rgba(1,42,55,.35)', zIndex: 3 }}>
-                  <Icon name="plane" size={22} style={{ color: '#012a37', transform: 'rotate(45deg)' }} />
-                </div>
-                <div style={{ position: 'absolute', bottom: '4%', insetInlineStart: '-6%', width: 'clamp(34px,7%,46px)', height: 'clamp(34px,7%,46px)', borderRadius: '50%', background: '#fff', display: 'grid', placeItems: 'center', boxShadow: '0 10px 22px rgba(1,42,55,.25)', zIndex: 3 }}>
-                  <Icon name="map-pin" size={18} style={{ color: '#049dc5' }} />
-                </div>
-                <style jsx>{`
-                  .qa-hero-ring { animation: qa-hero-spin 18s linear infinite; }
-                  @keyframes qa-hero-spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-                `}</style>
-              </div>
+          {/* Hero — full-bleed photo, big search bar */}
+          <section
+            className="qa-hero-photo"
+            style={{
+              position: 'relative', minHeight: 'clamp(400px,54vh,580px)', display: 'flex', alignItems: 'center',
+              overflow: 'hidden', paddingBottom: 84, paddingTop: 40,
+            }}
+          >
+            {heroImage ? (
+              <img src={heroImage} alt="" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }} />
+            ) : (
+              <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(135deg,#34bbe1,#049dc5)' }} />
+            )}
+            <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(1,20,28,.82) 0%, rgba(1,20,28,.42) 55%, rgba(1,20,28,.18) 100%)' }} />
+
+            <div style={{ position: 'relative', zIndex: 1, maxWidth: 860, margin: '0 auto', textAlign: 'center', padding: '0 24px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16 }}>
+              <span style={{ fontSize: 12.5, fontWeight: 700, letterSpacing: '.08em', color: '#fff', background: 'rgba(255,255,255,.16)', border: '1px solid rgba(255,255,255,.35)', borderRadius: 999, padding: '7px 18px', backdropFilter: 'blur(6px)' }}>
+                {t.hero_eyebrow}
+              </span>
+              <h1 style={{ margin: 0, fontSize: 'clamp(32px,6vw,58px)', fontWeight: 800, color: '#fff', lineHeight: 1.08, maxWidth: 760 }}>{t.hero_title}</h1>
+              <p style={{ margin: 0, fontSize: 'clamp(14.5px,1.6vw,17px)', lineHeight: 1.7, color: 'rgba(255,255,255,.92)', maxWidth: 620 }}>{t.hero_sub}</p>
             </div>
           </section>
 
-          {/* Filter panel */}
-          <section className="qa-sec" style={{ maxWidth: 1240, margin: '0 auto', padding: '40px 24px 8px' }}>
-            <div style={{ background: '#fff', border: '1px solid #ececed', borderRadius: 20, boxShadow: '0 8px 24px rgba(29,39,51,.08)', padding: 24, display: 'flex', flexDirection: 'column', gap: 18 }}>
-              <h3 style={{ margin: 0, fontSize: 17 }}>{t.filter_panel_title}</h3>
-              <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
-                <div style={{ position: 'relative', flex: '1 1 260px', minWidth: 220 }}>
-                  <input
-                    type="text"
-                    value={query}
-                    onChange={(e) => setQuery(e.target.value)}
-                    onFocus={() => setShowDestDropdown(true)}
-                    onBlur={() => setTimeout(() => setShowDestDropdown(false), 150)}
-                    placeholder={t.filter_destination_ph}
-                    style={{ width: '100%', boxSizing: 'border-box', padding: '12px 16px', borderRadius: 10, border: '1px solid #cacbcc', fontSize: 15, fontFamily: 'inherit' }}
-                  />
-                  {showDestDropdown && (mostSearched.length > 0 || popularCities.length > 0) && (
-                    <div
-                      style={{
-                        position: 'absolute', insetInlineStart: 0, insetInlineEnd: 0, top: 'calc(100% + 8px)', zIndex: 20,
-                        background: '#fff', border: '1px solid #ececed', borderRadius: 14, boxShadow: '0 14px 34px rgba(29,39,51,.14)',
-                        padding: 18, display: 'flex', flexDirection: 'column', gap: 16, maxHeight: 340, overflowY: 'auto',
-                      }}
-                    >
-                      {mostSearched.length > 0 && (
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-                          <span style={{ fontSize: 12.5, fontWeight: 700, color: '#7b8087' }}>{lang === 'en' ? 'Most searched cities' : 'الأكثر بحثاً'}</span>
-                          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
-                            {mostSearched.map((d) => (
-                              <button
-                                key={d.id}
-                                type="button"
-                                onMouseDown={(e) => e.preventDefault()}
-                                onClick={() => pickCity(d)}
-                                style={{
-                                  cursor: 'pointer', fontFamily: 'inherit', padding: '8px 16px', borderRadius: 999,
-                                  border: '1px solid #049dc5', background: '#049dc5', color: '#fff', fontSize: 13.5, fontWeight: 700,
-                                }}
-                              >
-                                {nm(d.name_ar, d.name_en)}
-                              </button>
-                            ))}
-                          </div>
-                        </div>
-                      )}
-                      {popularCities.length > 0 && (
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-                          <span style={{ fontSize: 12.5, fontWeight: 700, color: '#7b8087' }}>{lang === 'en' ? 'Popular cities' : 'مدن شائعة'}</span>
-                          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(120px,1fr))', gap: 6 }}>
-                            {popularCities.map((d) => (
-                              <button
-                                key={d.id}
-                                type="button"
-                                onMouseDown={(e) => e.preventDefault()}
-                                onClick={() => pickCity(d)}
-                                style={{
-                                  cursor: 'pointer', fontFamily: 'inherit', textAlign: 'start', padding: '6px 4px', borderRadius: 8,
-                                  border: 'none', background: 'transparent', color: '#3d4650', fontSize: 13.5,
-                                }}
-                              >
-                                {nm(d.name_ar, d.name_en)}
-                              </button>
-                            ))}
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  )}
-                </div>
-
-                {/* Travelers picker */}
-                <div style={{ position: 'relative', flex: '0 0 auto', minWidth: 190 }}>
-                  <button
-                    type="button"
-                    onClick={() => setShowTravelers((s) => !s)}
+          {/* Floating search bar — overlaps the hero's bottom edge */}
+          <div style={{ maxWidth: 1080, margin: 'clamp(-64px,-8vw,-46px) auto 0', padding: '0 20px', position: 'relative', zIndex: 6 }}>
+            <div className="qa-search-bar" style={{ background: '#fff', borderRadius: 24, boxShadow: '0 22px 54px rgba(1,42,55,.28)', display: 'flex', flexWrap: 'wrap', alignItems: 'stretch' }}>
+              <div className="qa-search-field" style={{ position: 'relative', flex: '1 1 220px', padding: '14px 20px', display: 'flex', flexDirection: 'column', gap: 3, minWidth: 200 }}>
+                <span style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 11, fontWeight: 700, color: '#7b8087', textTransform: 'uppercase', letterSpacing: '.03em' }}>
+                  <Icon name="map-pin" size={12} style={{ color: '#049dc5' }} />{lang === 'en' ? 'Destination' : 'الوجهة'}
+                </span>
+                <input
+                  type="text"
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                  onFocus={() => setShowDestDropdown(true)}
+                  onBlur={() => setTimeout(() => setShowDestDropdown(false), 150)}
+                  placeholder={t.filter_destination_ph}
+                  style={{ width: '100%', boxSizing: 'border-box', border: 'none', outline: 'none', fontSize: 15, fontWeight: 600, fontFamily: 'inherit', color: '#1d2733', padding: 0, background: 'transparent' }}
+                />
+                {showDestDropdown && (mostSearched.length > 0 || popularCities.length > 0) && (
+                  <div
                     style={{
-                      width: '100%', boxSizing: 'border-box', cursor: 'pointer', fontFamily: 'inherit', textAlign: 'start',
-                      padding: '10px 16px', borderRadius: 10, border: `1px solid ${showTravelers ? '#049dc5' : '#cacbcc'}`, background: '#fff',
-                      display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8,
+                      position: 'absolute', insetInlineStart: 0, insetInlineEnd: 0, top: 'calc(100% + 12px)', zIndex: 20,
+                      background: '#fff', border: '1px solid #ececed', borderRadius: 18, boxShadow: '0 14px 34px rgba(29,39,51,.16)',
+                      padding: 18, display: 'flex', flexDirection: 'column', gap: 16, maxHeight: 340, overflowY: 'auto', textAlign: 'start',
                     }}
                   >
-                    <span style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                      <span style={{ fontSize: 11, color: '#7b8087' }}>{lang === 'en' ? 'Travelers' : 'المسافرون'}</span>
-                      <span style={{ fontSize: 14.5, fontWeight: 700, color: '#1d2733' }}>
-                        {travelersTotal} {lang === 'en' ? 'traveler(s)' : 'مسافر'}
-                      </span>
-                    </span>
-                    <Icon name="users" size={17} style={{ color: '#049dc5' }} />
-                  </button>
-
-                  {showTravelers && (
-                    <div
-                      style={{
-                        position: 'absolute', insetInlineStart: 0, insetInlineEnd: 0, top: 'calc(100% + 8px)', zIndex: 20, minWidth: 260,
-                        background: '#fff', border: '1px solid #ececed', borderRadius: 14, boxShadow: '0 14px 34px rgba(29,39,51,.14)',
-                        padding: 18, display: 'flex', flexDirection: 'column', gap: 12,
-                      }}
-                    >
-                      {[
-                        ['adults', lang === 'en' ? 'Adults' : 'بالغون', lang === 'en' ? '12+ yrs' : 'أكبر من ١٢ سنة', 1],
-                        ['children', lang === 'en' ? 'Children' : 'أطفال', lang === 'en' ? 'under 12 yrs' : 'أقل من ١٢ سنة', 0],
-                        ['infants', lang === 'en' ? 'Infants' : 'رضّع', lang === 'en' ? 'under 2 yrs' : 'أقل من سنتين', 0],
-                        ['singleRooms', lang === 'en' ? 'Single rooms' : 'غرفة مفردة', '', 0],
-                        ['doubleRooms', lang === 'en' ? 'Double rooms' : 'غرفة مزدوجة', '', 0],
-                      ].map(([key, label, sub, min]) => (
-                        <div key={key} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10 }}>
-                          <span style={{ display: 'flex', flexDirection: 'column' }}>
-                            <span style={{ fontSize: 13.5, fontWeight: 600, color: '#1d2733' }}>{label}</span>
-                            {sub ? <span style={{ fontSize: 11, color: '#7b8087' }}>{sub}</span> : null}
-                          </span>
-                          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                            <button type="button" onClick={() => setTravelerCount(key, -1, min)} style={{ width: 26, height: 26, borderRadius: '50%', border: '1px solid #cacbcc', background: '#fff', cursor: 'pointer' }}>−</button>
-                            <span style={{ minWidth: 16, textAlign: 'center', fontWeight: 700 }}>{travelers[key]}</span>
-                            <button type="button" onClick={() => setTravelerCount(key, 1)} style={{ width: 26, height: 26, borderRadius: '50%', border: '1px solid #cacbcc', background: '#fff', cursor: 'pointer' }}>+</button>
-                          </div>
+                    {mostSearched.length > 0 && (
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                        <span style={{ fontSize: 12.5, fontWeight: 700, color: '#7b8087' }}>{lang === 'en' ? 'Most searched cities' : 'الأكثر بحثاً'}</span>
+                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+                          {mostSearched.map((d) => (
+                            <button
+                              key={d.id}
+                              type="button"
+                              onMouseDown={(e) => e.preventDefault()}
+                              onClick={() => pickCity(d)}
+                              style={{
+                                cursor: 'pointer', fontFamily: 'inherit', padding: '8px 16px', borderRadius: 999,
+                                border: '1px solid #049dc5', background: '#049dc5', color: '#fff', fontSize: 13.5, fontWeight: 700,
+                              }}
+                            >
+                              {nm(d.name_ar, d.name_en)}
+                            </button>
+                          ))}
                         </div>
-                      ))}
-                      <button type="button" onClick={() => setShowTravelers(false)} className="qa-btn qa-cyan" style={{ marginTop: 4 }}>{lang === 'en' ? 'Done' : 'تم'}</button>
-                    </div>
-                  )}
-                </div>
+                      </div>
+                    )}
+                    {popularCities.length > 0 && (
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                        <span style={{ fontSize: 12.5, fontWeight: 700, color: '#7b8087' }}>{lang === 'en' ? 'Popular cities' : 'مدن شائعة'}</span>
+                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(120px,1fr))', gap: 6 }}>
+                          {popularCities.map((d) => (
+                            <button
+                              key={d.id}
+                              type="button"
+                              onMouseDown={(e) => e.preventDefault()}
+                              onClick={() => pickCity(d)}
+                              style={{
+                                cursor: 'pointer', fontFamily: 'inherit', textAlign: 'start', padding: '6px 4px', borderRadius: 8,
+                                border: 'none', background: 'transparent', color: '#3d4650', fontSize: 13.5,
+                              }}
+                            >
+                              {nm(d.name_ar, d.name_en)}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
-              <div>
-                <div style={{ fontSize: 13, fontWeight: 700, color: '#3d4650', marginBottom: 8 }}>{t.filter_pref_label}</div>
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10 }}>
-                  {PREFS.map((p) => {
-                    const on = prefs.includes(p.id);
-                    return (
-                      <button
-                        key={p.id}
-                        type="button"
-                        onClick={() => togglePref(p.id)}
-                        style={{
-                          padding: '8px 16px', borderRadius: 999, fontSize: 13.5, fontWeight: 500, cursor: 'pointer', fontFamily: 'inherit',
-                          background: on ? '#049dc5' : '#fff', color: on ? '#fff' : '#3d4650', border: `1px solid ${on ? '#049dc5' : '#cacbcc'}`,
-                        }}
-                      >
-                        {nm(p.ar, p.en)}
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-            </div>
-          </section>
 
-          {/* Categories */}
-          <section className="qa-sec" style={{ maxWidth: 1240, margin: '0 auto', padding: '32px 24px 8px' }}>
-            <h2 style={{ fontSize: 24, marginBottom: 4 }}>{t.categories_title}</h2>
-            <p style={{ color: '#7b8087', marginBottom: 24 }}>{t.categories_sub}</p>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(200px,1fr))', gap: 18 }}>
-              <button
-                type="button"
-                onClick={() => { setCat('all'); document.getElementById('qa-pkg-results')?.scrollIntoView({ behavior: 'smooth' }); }}
-                style={{
-                  textAlign: 'start', cursor: 'pointer', background: cat === 'all' ? '#eaf8fd' : '#fff',
-                  border: `1.5px solid ${cat === 'all' ? '#049dc5' : '#ececed'}`, borderRadius: 16, padding: 18,
-                  display: 'flex', flexDirection: 'column', gap: 8, fontFamily: 'inherit',
-                }}
-              >
-                <Icon name="layout-grid" size={22} style={{ color: '#049dc5' }} />
-                <span style={{ fontSize: 16, fontWeight: 700, color: '#1d2733' }}>{t.all_categories}</span>
-              </button>
-              {CATS.map((c) => (
+              <div className="qa-search-divider" />
+
+              <div className="qa-search-field" style={{ flex: '1 1 180px', padding: '14px 20px', display: 'flex', flexDirection: 'column', gap: 3, minWidth: 160 }}>
+                <span style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 11, fontWeight: 700, color: '#7b8087', textTransform: 'uppercase', letterSpacing: '.03em' }}>
+                  <Icon name="calendar-days" size={12} style={{ color: '#049dc5' }} />{t.filter_dates_label}
+                </span>
+                <input
+                  type="text"
+                  value={preferredDates}
+                  onChange={(e) => setPreferredDates(e.target.value)}
+                  placeholder={t.filter_dates_ph}
+                  style={{ width: '100%', boxSizing: 'border-box', border: 'none', outline: 'none', fontSize: 15, fontWeight: 600, fontFamily: 'inherit', color: '#1d2733', padding: 0, background: 'transparent' }}
+                />
+              </div>
+
+              <div className="qa-search-divider" />
+
+              <div className="qa-search-field" style={{ position: 'relative', flex: '1 1 160px', padding: '14px 20px', minWidth: 150 }}>
                 <button
-                  key={c.id}
                   type="button"
-                  onClick={() => { setCat(c.id); document.getElementById('qa-pkg-results')?.scrollIntoView({ behavior: 'smooth' }); }}
+                  onClick={() => setShowTravelers((s) => !s)}
+                  style={{ width: '100%', height: '100%', cursor: 'pointer', fontFamily: 'inherit', background: 'none', border: 'none', padding: 0, display: 'flex', flexDirection: 'column', gap: 3, textAlign: 'start' }}
+                >
+                  <span style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 11, fontWeight: 700, color: '#7b8087', textTransform: 'uppercase', letterSpacing: '.03em' }}>
+                    <Icon name="users" size={12} style={{ color: '#049dc5' }} />{lang === 'en' ? 'Guests' : 'المسافرون'}
+                  </span>
+                  <span style={{ fontSize: 15, fontWeight: 600, color: '#1d2733' }}>{travelersTotal} {lang === 'en' ? 'traveler(s)' : 'مسافر'}</span>
+                </button>
+
+                {showTravelers && (
+                  <div
+                    style={{
+                      position: 'absolute', insetInlineStart: 0, insetInlineEnd: 0, top: 'calc(100% + 12px)', zIndex: 20, minWidth: 260,
+                      background: '#fff', border: '1px solid #ececed', borderRadius: 18, boxShadow: '0 14px 34px rgba(29,39,51,.16)',
+                      padding: 18, display: 'flex', flexDirection: 'column', gap: 12, textAlign: 'start',
+                    }}
+                  >
+                    {[
+                      ['adults', lang === 'en' ? 'Adults' : 'بالغون', lang === 'en' ? '12+ yrs' : 'أكبر من ١٢ سنة', 1],
+                      ['children', lang === 'en' ? 'Children' : 'أطفال', lang === 'en' ? 'under 12 yrs' : 'أقل من ١٢ سنة', 0],
+                      ['infants', lang === 'en' ? 'Infants' : 'رضّع', lang === 'en' ? 'under 2 yrs' : 'أقل من سنتين', 0],
+                      ['singleRooms', lang === 'en' ? 'Single rooms' : 'غرفة مفردة', '', 0],
+                      ['doubleRooms', lang === 'en' ? 'Double rooms' : 'غرفة مزدوجة', '', 0],
+                    ].map(([key, label, sub, min]) => (
+                      <div key={key} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10 }}>
+                        <span style={{ display: 'flex', flexDirection: 'column' }}>
+                          <span style={{ fontSize: 13.5, fontWeight: 600, color: '#1d2733' }}>{label}</span>
+                          {sub ? <span style={{ fontSize: 11, color: '#7b8087' }}>{sub}</span> : null}
+                        </span>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                          <button type="button" onClick={() => setTravelerCount(key, -1, min)} style={{ width: 26, height: 26, borderRadius: '50%', border: '1px solid #cacbcc', background: '#fff', cursor: 'pointer' }}>−</button>
+                          <span style={{ minWidth: 16, textAlign: 'center', fontWeight: 700 }}>{travelers[key]}</span>
+                          <button type="button" onClick={() => setTravelerCount(key, 1)} style={{ width: 26, height: 26, borderRadius: '50%', border: '1px solid #cacbcc', background: '#fff', cursor: 'pointer' }}>+</button>
+                        </div>
+                      </div>
+                    ))}
+                    <button type="button" onClick={() => setShowTravelers(false)} className="qa-btn qa-cyan" style={{ marginTop: 4 }}>{lang === 'en' ? 'Done' : 'تم'}</button>
+                  </div>
+                )}
+              </div>
+
+              <div style={{ padding: 10, display: 'flex', alignItems: 'center' }}>
+                <button
+                  type="button"
+                  onClick={() => document.getElementById('qa-pkg-results')?.scrollIntoView({ behavior: 'smooth' })}
+                  className="qa-search-cta"
+                  aria-label={lang === 'en' ? 'Search' : 'بحث'}
                   style={{
-                    textAlign: 'start', cursor: 'pointer', background: cat === c.id ? '#eaf8fd' : '#fff',
-                    border: `1.5px solid ${cat === c.id ? '#049dc5' : '#ececed'}`, borderRadius: 16, padding: 18,
-                    display: 'flex', flexDirection: 'column', gap: 8, fontFamily: 'inherit',
+                    width: 52, height: 52, borderRadius: 18, border: 'none', cursor: 'pointer', background: '#049dc5', color: '#fff',
+                    display: 'grid', placeItems: 'center', flex: 'none',
                   }}
                 >
-                  <Icon name={c.icon} size={22} style={{ color: '#049dc5' }} />
-                  <span style={{ fontSize: 16, fontWeight: 700, color: '#1d2733' }}>{nm(c.ar, c.en)}</span>
-                  <span style={{ fontSize: 13, color: '#7b8087', lineHeight: 1.5 }}>{nm(c.blurbAr, c.blurbEn)}</span>
+                  <Icon name="search" size={20} />
                 </button>
-              ))}
+              </div>
             </div>
-          </section>
+          </div>
+
+          {/* Horizontal filter pills + Filters drawer trigger */}
+          <div className="qa-filter-sticky" style={{ position: 'sticky', top: 0, zIndex: 12, background: '#fff', borderBottom: '1px solid #ececed', marginTop: 'clamp(28px,5vw,44px)' }}>
+            <div style={{ maxWidth: 1240, margin: '0 auto', padding: '14px 20px', display: 'flex', alignItems: 'center', gap: 12 }}>
+              <div className="qa-pill-scroll" style={{ display: 'flex', gap: 8, overflowX: 'auto', flex: 1 }}>
+                <button type="button" onClick={() => setCat('all')} className={`qa-pill${cat === 'all' ? ' qa-pill-active' : ''}`}>
+                  {lang === 'en' ? 'All' : 'الكل'}
+                </button>
+                {CATS.map((c) => (
+                  <button key={c.id} type="button" onClick={() => setCat(c.id)} className={`qa-pill${cat === c.id ? ' qa-pill-active' : ''}`}>
+                    <span style={{ marginInlineEnd: 5 }}>{CAT_EMOJI[c.id] || ''}</span>{nm(c.ar, c.en)}
+                  </button>
+                ))}
+              </div>
+              <button type="button" onClick={() => setDrawerOpen(true)} className="qa-filters-btn">
+                <Icon name="layout-grid" size={15} />
+                {lang === 'en' ? 'Filters' : 'الفلاتر'}
+                {prefs.length > 0 ? <span className="qa-filters-badge">{prefs.length}</span> : null}
+              </button>
+            </div>
+          </div>
+
+          {/* Filters side drawer */}
+          {drawerOpen ? (
+            <div style={{ position: 'fixed', inset: 0, zIndex: 60, display: 'flex', justifyContent: 'flex-end' }}>
+              <div onClick={() => setDrawerOpen(false)} style={{ position: 'absolute', inset: 0, background: 'rgba(1,20,28,.45)' }} />
+              <div className="qa-drawer" style={{ position: 'relative', width: 'min(360px,88vw)', height: '100%', background: '#fff', boxShadow: '-12px 0 40px rgba(1,42,55,.2)', display: 'flex', flexDirection: 'column', overflowY: 'auto' }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '20px 22px', borderBottom: '1px solid #ececed' }}>
+                  <h3 style={{ margin: 0, fontSize: 18 }}>{lang === 'en' ? 'Filters' : 'الفلاتر'}</h3>
+                  <button type="button" onClick={() => setDrawerOpen(false)} style={{ border: 'none', background: '#f4f4f4', borderRadius: '50%', width: 34, height: 34, cursor: 'pointer', display: 'grid', placeItems: 'center' }}>
+                    <Icon name="x" size={16} />
+                  </button>
+                </div>
+                <div style={{ padding: 22, display: 'flex', flexDirection: 'column', gap: 22, flex: 1 }}>
+                  <div>
+                    <div style={{ fontSize: 13, fontWeight: 700, color: '#3d4650', marginBottom: 10 }}>{t.filter_pref_label}</div>
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10 }}>
+                      {PREFS.map((p) => {
+                        const on = prefs.includes(p.id);
+                        return (
+                          <button
+                            key={p.id}
+                            type="button"
+                            onClick={() => togglePref(p.id)}
+                            style={{
+                              padding: '8px 16px', borderRadius: 999, fontSize: 13.5, fontWeight: 500, cursor: 'pointer', fontFamily: 'inherit',
+                              background: on ? '#049dc5' : '#fff', color: on ? '#fff' : '#3d4650', border: `1px solid ${on ? '#049dc5' : '#cacbcc'}`,
+                            }}
+                          >
+                            {nm(p.ar, p.en)}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                  <div>
+                    <div style={{ fontSize: 13, fontWeight: 700, color: '#3d4650', marginBottom: 10 }}>{t.filter_destination_ph}</div>
+                    <input
+                      type="text"
+                      value={query}
+                      onChange={(e) => setQuery(e.target.value)}
+                      placeholder={t.filter_destination_ph}
+                      style={{ width: '100%', boxSizing: 'border-box', padding: '12px 16px', borderRadius: 12, border: '1px solid #cacbcc', fontSize: 15, fontFamily: 'inherit' }}
+                    />
+                  </div>
+                </div>
+                <div style={{ padding: 22, borderTop: '1px solid #ececed', display: 'flex', gap: 10 }}>
+                  <button
+                    type="button"
+                    onClick={() => { setPrefs([]); setQuery(''); }}
+                    style={{ flex: 1, padding: '11px 16px', borderRadius: 999, border: '1px solid #cacbcc', background: '#fff', color: '#3d4650', fontSize: 13.5, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}
+                  >
+                    {lang === 'en' ? 'Reset' : 'إعادة تعيين'}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => { setDrawerOpen(false); document.getElementById('qa-pkg-results')?.scrollIntoView({ behavior: 'smooth' }); }}
+                    className="qa-btn qa-cyan"
+                    style={{ flex: 1 }}
+                  >
+                    {lang === 'en' ? 'Show results' : 'عرض النتائج'}
+                  </button>
+                </div>
+              </div>
+            </div>
+          ) : null}
+
+          <style jsx>{`
+            .qa-hover-lift-sm { transition: transform .2s ease, box-shadow .2s ease; border-radius: 22px; }
+            .qa-hover-lift-sm:hover { transform: translateY(-4px); }
+            .qa-hover-lift-sm:hover .qa-region-banner { box-shadow: 0 14px 30px rgba(1,42,55,.22); }
+            .qa-region-pill { transition: background .15s ease, transform .15s ease; }
+            .qa-region-pill:hover { background: rgba(255,255,255,.28) !important; transform: translateY(-1px); }
+            .qa-search-divider { width: 1px; background: #ececed; margin: 10px 0; }
+            .qa-pill {
+              flex: none; cursor: pointer; font-family: inherit; white-space: nowrap; padding: 9px 16px; border-radius: 999px;
+              border: 1px solid #ececed; background: #fff; color: #3d4650; font-size: 13.5px; font-weight: 600;
+              transition: background .15s ease, border-color .15s ease, color .15s ease, transform .15s ease;
+            }
+            .qa-pill:hover { border-color: #049dc5; transform: translateY(-1px); }
+            .qa-pill-active { background: #049dc5; border-color: #049dc5; color: #fff; }
+            .qa-pill-scroll::-webkit-scrollbar { display: none; }
+            .qa-filters-btn {
+              flex: none; display: inline-flex; align-items: center; gap: 8px; cursor: pointer; font-family: inherit;
+              padding: 10px 18px; border-radius: 999px; border: 1px solid #cacbcc; background: #fff; color: #1d2733;
+              font-size: 13.5px; font-weight: 700; position: relative; transition: border-color .15s ease, transform .15s ease;
+            }
+            .qa-filters-btn:hover { border-color: #049dc5; transform: translateY(-1px); }
+            .qa-filters-badge {
+              display: inline-grid; place-items: center; min-width: 18px; height: 18px; border-radius: 999px;
+              background: #d2324f; color: #fff; font-size: 10.5px; font-weight: 800; padding: 0 4px;
+            }
+            .qa-search-cta { transition: transform .15s ease, box-shadow .15s ease; }
+            .qa-search-cta:hover { transform: translateY(-2px); box-shadow: 0 10px 24px rgba(4,157,197,.35); }
+            @media (max-width: 720px) {
+              .qa-search-divider { display: none; }
+              .qa-search-field { border-bottom: 1px solid #f0f0f0; }
+            }
+          `}</style>
+
 
           {/* Results */}
           <section id="qa-pkg-results" className="qa-sec" style={{ maxWidth: 1240, margin: '0 auto', padding: '40px 24px 88px' }}>
@@ -366,9 +458,9 @@ export default function PackagesPage() {
 
           {/* Tour countries */}
           {countryGroups.length > 0 && (
-            <section className="qa-sec" style={{ maxWidth: 1240, margin: '0 auto', padding: '8px 24px 48px' }}>
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 18 }}>
-                <h2 style={{ fontSize: 22, margin: 0 }}>{lang === 'en' ? 'All tour countries' : 'كل دول الرحلات'}</h2>
+            <section className="qa-sec" style={{ maxWidth: 1240, margin: '0 auto', padding: '8px 24px 56px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 22 }}>
+                <h2 style={{ fontSize: 'clamp(20px,3vw,26px)', margin: 0 }}>{lang === 'en' ? 'All tour countries' : 'كل دول الرحلات'}</h2>
                 <button
                   type="button"
                   onClick={() => setShowAllCountries((s) => !s)}
@@ -378,56 +470,129 @@ export default function PackagesPage() {
                   <Icon name={showAllCountries ? 'chevron-up' : 'chevron-down'} size={14} />
                 </button>
               </div>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(220px,1fr))', gap: 28 }}>
-                {(showAllCountries ? countryGroups : countryGroups.slice(0, 3)).map(([region, list]) => (
-                  <div key={region} style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-                    <span style={{ fontSize: 13.5, fontWeight: 700, color: '#7b8087' }}>{region}</span>
-                    {list.map((c) => (
-                      <div key={c.id} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '9px 12px', borderRadius: 10, border: '1px solid #ececed', background: '#fff' }}>
-                        {c.flag_code ? (
-                          <img src={flagSrc(c.flag_code)} alt="" style={{ width: 22, height: 22, borderRadius: '50%', objectFit: 'cover', flex: 'none' }} />
-                        ) : (
-                          <span style={{ width: 22, height: 22, borderRadius: '50%', background: '#eaf8fd', flex: 'none' }} />
-                        )}
-                        <span style={{ fontSize: 13.5, color: '#1d2733' }}>{nm(c.name_ar, c.name_en)}</span>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(340px,1fr))', gap: 32 }}>
+                {(showAllCountries ? countryGroups : countryGroups.slice(0, 4)).map((group) => {
+                  const banner = regions.find((r) => r.region_ar === group.region_ar);
+                  const regionLabel = nm(group.region_ar, group.region_en) || (lang === 'en' ? 'Other destinations' : 'وجهات أخرى');
+                  return (
+                    <div key={group.region_ar || 'other'} className="qa-region-card qa-hover-lift-sm">
+                      <div
+                        className="qa-region-banner"
+                        style={{
+                          position: 'relative', borderRadius: 22, overflow: 'hidden', height: 132,
+                          background: banner?.image_url ? '#0d2b36' : 'linear-gradient(135deg,#34bbe1,#049dc5)',
+                        }}
+                      >
+                        {banner?.image_url ? (
+                          <img src={banner.image_url} alt="" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }} />
+                        ) : null}
+                        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(1,20,28,.55) 0%, rgba(1,20,28,.15) 60%)' }} />
+                        {(banner?.deal_text_ar || banner?.deal_text_en) ? (
+                          <span style={{ position: 'absolute', top: 14, insetInlineEnd: 14, background: '#d2324f', color: '#fff', fontSize: 11.5, fontWeight: 700, padding: '5px 12px', borderRadius: 999 }}>
+                            {nm(banner.deal_text_ar, banner.deal_text_en)}
+                          </span>
+                        ) : null}
+                        <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 18px' }}>
+                          <span style={{ fontSize: 21, fontWeight: 800, color: '#fff' }}>{regionLabel}</span>
+                          <button
+                            type="button"
+                            onClick={() => { setQuery(regionLabel); document.getElementById('qa-pkg-results')?.scrollIntoView({ behavior: 'smooth' }); }}
+                            className="qa-region-pill"
+                            style={{ padding: '9px 16px', borderRadius: 999, border: '1.5px solid rgba(255,255,255,.75)', background: 'rgba(255,255,255,.14)', color: '#fff', fontSize: 12.5, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit', whiteSpace: 'nowrap' }}
+                          >
+                            {lang === 'en' ? 'All Adventures' : 'كل الرحلات'}
+                          </button>
+                        </div>
                       </div>
-                    ))}
-                  </div>
-                ))}
+                      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(110px,1fr))', gap: '11px 16px', padding: '18px 4px 4px' }}>
+                        <button
+                          type="button"
+                          onClick={() => { setQuery(regionLabel); document.getElementById('qa-pkg-results')?.scrollIntoView({ behavior: 'smooth' }); }}
+                          style={{ gridColumn: '1 / -1', textAlign: 'start', background: 'none', border: 'none', padding: 0, cursor: 'pointer', color: '#d2324f', fontWeight: 700, fontSize: 13.5, fontFamily: 'inherit' }}
+                        >
+                          {lang === 'en' ? 'See all deals' : 'عرض كل العروض'}
+                        </button>
+                        {group.list.map((c) => (
+                          <span key={c.id} style={{ fontSize: 13.5, color: '#3d4650' }}>{nm(c.name_ar, c.name_en)}</span>
+                        ))}
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
             </section>
           )}
 
           {/* Customer reviews */}
-          {reviews.length > 0 && (
+          {reviews.length > 0 && currentReview && (
             <section style={{ background: '#f8f7f8', padding: '48px clamp(16px,4vw,32px)' }}>
-              <div style={{ maxWidth: 1240, margin: '0 auto' }}>
-                <h2 style={{ fontSize: 22, marginBottom: 24, textAlign: 'center' }}>{lang === 'en' ? 'What our customers say' : 'آراء عملائنا'}</h2>
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(260px,1fr))', gap: 24 }}>
-                  {reviews.map((r) => (
-                    <div key={r.id} style={{ background: '#fff', border: '1px solid #ececed', borderRadius: 18, padding: 22, display: 'flex', flexDirection: 'column', gap: 14 }}>
-                      <div style={{ display: 'flex', gap: 2 }}>
-                        {Array.from({ length: 5 }).map((_, i) => (
-                          <Icon key={i} name="star" size={14} style={{ color: i < (r.rating || 5) ? '#faab18' : '#e3e3e3' }} />
-                        ))}
-                      </div>
-                      <p style={{ margin: 0, fontSize: 14, lineHeight: 1.8, color: '#3d4650' }}>{nm(r.text_ar, r.text_en)}</p>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginTop: 'auto', paddingTop: 6 }}>
-                        {r.image_url ? (
-                          <img src={r.image_url} alt="" style={{ width: 40, height: 40, borderRadius: '50%', objectFit: 'cover', flex: 'none' }} />
-                        ) : (
-                          <span style={{ width: 40, height: 40, borderRadius: '50%', background: '#eaf8fd', flex: 'none', display: 'grid', placeItems: 'center', color: '#049dc5', fontWeight: 700 }}>
-                            {(nm(r.name_ar, r.name_en) || '?').charAt(0)}
-                          </span>
-                        )}
-                        <span style={{ fontSize: 13.5, fontWeight: 700, color: '#1d2733' }}>{nm(r.name_ar, r.name_en)}</span>
-                      </div>
+              <div style={{ maxWidth: 1240, margin: '0 auto', display: 'grid', gridTemplateColumns: 'minmax(280px,1fr) minmax(260px,1fr)', gap: 24, alignItems: 'stretch' }}>
+                <div style={{ background: '#eaf8fd', borderRadius: 24, padding: 'clamp(28px,4vw,44px)', display: 'flex', flexDirection: 'column', gap: 16, position: 'relative', overflow: 'hidden' }}>
+                  <span style={{ fontSize: 12, fontWeight: 700, color: '#7b8087' }}>{lang === 'en' ? 'Our testimonials' : 'آراء عملائنا'}</span>
+                  <h2 style={{ margin: 0, fontSize: 'clamp(20px,3vw,28px)', color: '#1d2733' }}>{lang === 'en' ? 'What our customers say' : 'ماذا يقول عملاؤنا عنا'}</h2>
+                  <div style={{ display: 'flex', gap: 2 }}>
+                    {Array.from({ length: 5 }).map((_, i) => (
+                      <Icon key={i} name="star" size={16} style={{ color: i < Math.round(currentReview.rating || 5) ? '#faab18' : '#dcdfe2' }} />
+                    ))}
+                  </div>
+                  <p style={{ margin: 0, fontSize: 15, lineHeight: 1.8, color: '#3d4650' }}>{nm(currentReview.text_ar, currentReview.text_en)}</p>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginTop: 'auto', position: 'relative', zIndex: 1 }}>
+                    {currentReview.image_url ? (
+                      <img src={currentReview.image_url} alt="" style={{ width: 44, height: 44, borderRadius: '50%', objectFit: 'cover', flex: 'none' }} />
+                    ) : (
+                      <span style={{ width: 44, height: 44, borderRadius: '50%', background: '#fff', display: 'grid', placeItems: 'center', color: '#049dc5', fontWeight: 700, flex: 'none' }}>
+                        {(nm(currentReview.name_ar, currentReview.name_en) || '?').charAt(0)}
+                      </span>
+                    )}
+                    <span style={{ fontSize: 14, fontWeight: 700, color: '#1d2733' }}>{nm(currentReview.name_ar, currentReview.name_en)}</span>
+                  </div>
+                  {reviews.length > 1 && (
+                    <div style={{ display: 'flex', gap: 6 }}>
+                      {reviews.map((_, i) => (
+                        <button
+                          key={i}
+                          type="button"
+                          onClick={() => setReviewIndex(i)}
+                          aria-label={`review-${i}`}
+                          style={{ width: 8, height: 8, padding: 0, borderRadius: '50%', border: 'none', cursor: 'pointer', background: i === reviewIndex ? '#049dc5' : '#c7dee6' }}
+                        />
+                      ))}
                     </div>
-                  ))}
+                  )}
+                  <span style={{ position: 'absolute', bottom: 14, insetInlineEnd: 28, fontSize: 56, fontWeight: 800, color: 'rgba(4,157,197,.15)', lineHeight: 1, fontFamily: 'Georgia, serif' }}>”</span>
+                </div>
+                <div style={{ borderRadius: 24, overflow: 'hidden', minHeight: 260, background: '#eaf8fd' }}>
+                  {currentReview.photo_url ? (
+                    <img src={currentReview.photo_url} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                  ) : (
+                    <div style={{ width: '100%', height: '100%', display: 'grid', placeItems: 'center', color: '#7fd4ee' }}>
+                      <Icon name="image" size={40} />
+                    </div>
+                  )}
                 </div>
               </div>
             </section>
           )}
+
+          {/* Highlights: inventory numbers */}
+          <section style={{ background: '#eaf8fd', padding: 'clamp(28px,4vw,40px) clamp(16px,4vw,32px)' }}>
+            <div style={{ maxWidth: 1240, margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(240px,1fr))', gap: 28 }}>
+              {[
+                { icon: 'building-2', value: lang === 'en' ? '+1,000,000' : '+١٬٠٠٠٬٠٠٠', label: lang === 'en' ? 'Hotels' : 'فندق', sub: lang === 'en' ? 'In our booking inventory, across every destination' : 'ضمن مخزوننا من الفنادق حول العالم' },
+                { icon: 'plane', value: lang === 'en' ? '+150' : '+١٥٠', label: lang === 'en' ? 'Tours & package types' : 'جولة ونوع باقة', sub: lang === 'en' ? 'For every kind of traveller and group' : 'تناسب كل أنواع المسافرين والمجموعات' },
+              ].map((s) => (
+                <div key={s.label} style={{ display: 'flex', alignItems: 'flex-start', gap: 14 }}>
+                  <span style={{ width: 48, height: 48, borderRadius: '50%', background: '#fff', display: 'grid', placeItems: 'center', flex: 'none', boxShadow: '0 4px 12px rgba(4,157,197,.18)' }}>
+                    <Icon name={s.icon} size={22} style={{ color: '#049dc5' }} />
+                  </span>
+                  <div>
+                    <div style={{ fontSize: 17, fontWeight: 800, color: '#1d2733' }}>{s.value} <span style={{ fontWeight: 600, fontSize: 14, color: '#3d4650' }}>{s.label}</span></div>
+                    <div style={{ fontSize: 12.5, color: '#7b8087', marginTop: 3 }}>{s.sub}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
 
           {/* Custom package CTA */}
           <section style={{ background: '#f8f7f8', padding: '56px clamp(16px,4vw,32px)' }}>

@@ -202,7 +202,7 @@ function PackageForm({ initial, onSave, onCancel, saving }) {
       <div>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
           <span style={{ fontSize: 13.5, fontWeight: 700 }}>خيارات الفنادق</span>
-          <button type="button" style={btnStyle('ghost')} onClick={() => addRow('hotels', { nameAr: '', nameEn: '', diff: 0, imageUrl: '', location: '', amenitiesAr: [], amenitiesEn: [] })}>+ إضافة فندق</button>
+          <button type="button" style={btnStyle('ghost')} onClick={() => addRow('hotels', { nameAr: '', nameEn: '', diff: 0, imageUrl: '', location: '', amenitiesAr: [], amenitiesEn: [], lat: '', lng: '' })}>+ إضافة فندق</button>
         </div>
         {(form.hotels || []).map((h, idx) => (
           <div key={idx} style={{ border: '1px solid #ececed', borderRadius: 10, padding: 10, marginBottom: 8, display: 'flex', flexDirection: 'column', gap: 8 }}>
@@ -217,6 +217,13 @@ function PackageForm({ initial, onSave, onCancel, saving }) {
               <input style={inputStyle} placeholder="المرافق (عربي) — مفصولة بفاصلة، مثال: إفطار، واي فاي مجاني، مرشد سياحي" value={(h.amenitiesAr || []).join('، ')} onChange={(e) => updateRow('hotels', idx, 'amenitiesAr', e.target.value.split(/[,،]/).map((s) => s.trim()).filter(Boolean))} />
               <input style={inputStyle} placeholder="Amenities (English), comma separated: Breakfast, Free WiFi, Gym" value={(h.amenitiesEn || []).join(', ')} onChange={(e) => updateRow('hotels', idx, 'amenitiesEn', e.target.value.split(',').map((s) => s.trim()).filter(Boolean))} />
             </div>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
+              <input type="number" step="any" style={inputStyle} placeholder="خط العرض Latitude، مثال: 33.3152" value={h.lat || ''} onChange={(e) => updateRow('hotels', idx, 'lat', e.target.value)} />
+              <input type="number" step="any" style={inputStyle} placeholder="خط الطول Longitude، مثال: 44.3661" value={h.lng || ''} onChange={(e) => updateRow('hotels', idx, 'lng', e.target.value)} />
+            </div>
+            <span style={{ fontSize: 11.5, color: '#7b8087' }}>
+              أدخلوا الإحداثيات لعرض موقع الفندق على الخريطة في صفحة الباقة. يمكن نسخها من خرائط جوجل: افتحوا موقع الفندق في خرائط جوجل، ثم انسخوا الرقمين من شريط العنوان أو من "مشاركة" ← "نسخ الإحداثيات".
+            </span>
             <ImageUploadField label="صورة الفندق" value={h.imageUrl || ''} onChange={(url) => updateRow('hotels', idx, 'imageUrl', url)} />
           </div>
         ))}
@@ -591,6 +598,99 @@ function CountryRow({ item, onSave, onDelete }) {
   );
 }
 
+function blankRegionBanner() {
+  return { region_ar: '', region_en: '', image_url: '', deal_text_ar: '', deal_text_en: '', sort_order: 0 };
+}
+
+function RegionBannerRow({ item, onSave, onDelete }) {
+  const [form, setForm] = useState(item);
+  const [saving, setSaving] = useState(false);
+  const set = (k, v) => setForm((f) => ({ ...f, [k]: v }));
+  const dirty = JSON.stringify(form) !== JSON.stringify(item);
+
+  async function save() {
+    setSaving(true);
+    try {
+      await onSave(form);
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  return (
+    <div style={{ border: '1px solid #ececed', borderRadius: 10, padding: 10, display: 'flex', flexDirection: 'column', gap: 8 }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(140px,1fr))', gap: 8 }}>
+        <input style={inputStyle} placeholder="اسم المنطقة (عربي) — يجب أن يطابق حرفياً منطقة الدول أدناه" value={form.region_ar} onChange={(e) => set('region_ar', e.target.value)} />
+        <input style={inputStyle} placeholder="Region name (English)" value={form.region_en} onChange={(e) => set('region_en', e.target.value)} />
+        <input style={inputStyle} placeholder="شارة الخصم (عربي)، مثال: خصومات حتى ٥٣٪" value={form.deal_text_ar} onChange={(e) => set('deal_text_ar', e.target.value)} />
+        <input style={inputStyle} placeholder="Deal badge (English), e.g. Deals up to 53%" value={form.deal_text_en} onChange={(e) => set('deal_text_en', e.target.value)} />
+        <input type="number" style={inputStyle} placeholder="الترتيب" value={form.sort_order} onChange={(e) => set('sort_order', Number(e.target.value))} />
+      </div>
+      <ImageUploadField label="صورة غلاف المنطقة" value={form.image_url} onChange={(url) => set('image_url', url)} />
+      <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end' }}>
+        <button type="button" style={btnStyle(dirty ? 'primary' : 'ghost')} disabled={!dirty || saving} onClick={save}>{saving ? '...' : 'حفظ'}</button>
+        <button type="button" style={btnStyle('danger')} onClick={() => onDelete(item.id)}>حذف</button>
+      </div>
+    </div>
+  );
+}
+
+function RegionBannersEditor() {
+  const [items, setItems] = useState(null);
+  const [error, setError] = useState('');
+
+  function load() {
+    api('/api/admin/regions').then(setItems).catch((e) => setError(e.message));
+  }
+  useEffect(load, []);
+
+  async function handleAdd() {
+    try {
+      const created = await api('/api/admin/regions', { method: 'POST', body: JSON.stringify(blankRegionBanner()) });
+      setItems((list) => [...(list || []), created]);
+    } catch (e) {
+      setError(e.message);
+    }
+  }
+  async function handleSave(form) {
+    try {
+      const updated = await api(`/api/admin/regions/${form.id}`, { method: 'PUT', body: JSON.stringify(form) });
+      setItems((list) => list.map((it) => (it.id === updated.id ? updated : it)));
+    } catch (e) {
+      setError(e.message);
+    }
+  }
+  async function handleDelete(id) {
+    if (!confirm('حذف صورة غلاف هذه المنطقة؟')) return;
+    try {
+      await api(`/api/admin/regions/${id}`, { method: 'DELETE' });
+      setItems((list) => list.filter((it) => it.id !== id));
+    } catch (e) {
+      setError(e.message);
+    }
+  }
+
+  if (error) return <p style={{ color: '#d2324f' }}>{error}</p>;
+  if (!items) return <p>جارٍ التحميل...</p>;
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+      <p style={{ margin: 0, fontSize: 13, color: '#7b8087' }}>
+        صورة غلاف وشارة خصم تظهر أعلى قائمة كل منطقة في قسم "كل دول الرحلات". اكتبوا اسم المنطقة بنفس الشكل الذي تكتبونه في حقل "المنطقة" لدول تلك المجموعة أدناه حتى تتطابق.
+      </p>
+      <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+        <button type="button" style={btnStyle('primary')} onClick={handleAdd}>+ إضافة غلاف منطقة</button>
+      </div>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+        {items.length === 0 && <p style={{ color: '#7b8087' }}>لا توجد أغلفة مناطق بعد.</p>}
+        {items.map((it) => (
+          <RegionBannerRow key={it.id} item={it} onSave={handleSave} onDelete={handleDelete} />
+        ))}
+      </div>
+    </div>
+  );
+}
+
 function CountriesTab() {
   const [items, setItems] = useState(null);
   const [error, setError] = useState('');
@@ -634,6 +734,10 @@ function CountriesTab() {
       <p style={{ margin: 0, fontSize: 13.5, color: '#7b8087' }}>
         هذه الدول تظهر في قسم "كل دول الرحلات" بصفحة الباقات، مجمّعة حسب المنطقة التي تكتبونها لكل دولة.
       </p>
+      <div style={{ background: '#f8f7f8', border: '1px solid #ececed', borderRadius: 14, padding: 16 }}>
+        <h4 style={{ margin: '0 0 10px', fontSize: 14 }}>أغلفة المناطق وشارات الخصم</h4>
+        <RegionBannersEditor />
+      </div>
       <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
         <button type="button" style={btnStyle('primary')} onClick={handleAdd}>+ إضافة دولة</button>
       </div>
@@ -648,7 +752,7 @@ function CountriesTab() {
 }
 
 function blankReview() {
-  return { name_ar: '', name_en: '', text_ar: '', text_en: '', image_url: '', rating: 5, sort_order: 0, active: true };
+  return { name_ar: '', name_en: '', text_ar: '', text_en: '', image_url: '', photo_url: '', rating: 5, sort_order: 0, active: true };
 }
 
 function ReviewRow({ item, onSave, onDelete }) {
@@ -690,7 +794,8 @@ function ReviewRow({ item, onSave, onDelete }) {
       <label style={labelStyle}>Review text (English)
         <textarea style={{ ...inputStyle, minHeight: 70 }} value={form.text_en} onChange={(e) => set('text_en', e.target.value)} />
       </label>
-      <ImageUploadField label="صورة العميل (اختياري)" value={form.image_url} onChange={(url) => set('image_url', url)} />
+      <ImageUploadField label="صورة العميل (اختياري، أفاتار صغير)" value={form.image_url} onChange={(url) => set('image_url', url)} />
+      <ImageUploadField label="صورة الرحلة (اختياري) — صورة توضح المسافرين الذين سافروا معنا، تظهر بجانب الرأي" value={form.photo_url} onChange={(url) => set('photo_url', url)} />
       <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end' }}>
         <button type="button" style={btnStyle(dirty ? 'primary' : 'ghost')} disabled={!dirty || saving} onClick={save}>{saving ? '...' : 'حفظ'}</button>
         <button type="button" style={btnStyle('danger')} onClick={() => onDelete(item.id)}>حذف</button>

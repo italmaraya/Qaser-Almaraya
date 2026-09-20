@@ -48,6 +48,14 @@ export default function PackageDetailPage() {
 
   const hotelDiff = hotels[hotelIdx]?.diff || 0;
   const flightDiff = flights[flightIdx]?.diff || 0;
+  const selectedHotelCoords = useMemo(() => {
+    const h = hotels[hotelIdx];
+    if (!h || h.lat === undefined || h.lat === '' || h.lng === undefined || h.lng === '') return null;
+    const lat = Number(h.lat);
+    const lng = Number(h.lng);
+    if (Number.isNaN(lat) || Number.isNaN(lng)) return null;
+    return { lat, lng };
+  }, [hotels, hotelIdx]);
   const upgrade = hotelDiff + flightDiff;
   const basePrice = Number(pkg?.price) || 0;
   const baseChildPrice = Number(pkg?.child_price) || 0;
@@ -298,6 +306,34 @@ export default function PackageDetailPage() {
                       </div>
                     ))}
                   </div>
+
+                  {selectedHotelCoords ? (
+                    <div style={{ marginTop: 16, borderRadius: 16, overflow: 'hidden', border: '1px solid #ececed' }}>
+                      <iframe
+                        key={`${selectedHotelCoords.lat},${selectedHotelCoords.lng}`}
+                        title={lang === 'en' ? 'Hotel location' : 'موقع الفندق'}
+                        width="100%"
+                        height="260"
+                        style={{ border: 0, display: 'block' }}
+                        loading="lazy"
+                        src={`https://www.openstreetmap.org/export/embed.html?bbox=${selectedHotelCoords.lng - 0.01}%2C${selectedHotelCoords.lat - 0.01}%2C${selectedHotelCoords.lng + 0.01}%2C${selectedHotelCoords.lat + 0.01}&layer=mapnik&marker=${selectedHotelCoords.lat}%2C${selectedHotelCoords.lng}`}
+                      />
+                      <div style={{ padding: '10px 14px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10, background: '#f8fbfc' }}>
+                        <span style={{ fontSize: 12.5, color: '#7b8087', display: 'flex', alignItems: 'center', gap: 5 }}>
+                          <Icon name="map-pin" size={13} style={{ color: '#049dc5' }} />
+                          {nm(hotels[hotelIdx]?.nameAr, hotels[hotelIdx]?.nameEn)}
+                        </span>
+                        <a
+                          href={`https://www.openstreetmap.org/?mlat=${selectedHotelCoords.lat}&mlon=${selectedHotelCoords.lng}#map=16/${selectedHotelCoords.lat}/${selectedHotelCoords.lng}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          style={{ fontSize: 12.5, fontWeight: 700, color: '#036f8c', textDecoration: 'none' }}
+                        >
+                          {lang === 'en' ? 'Get directions ↗' : 'الاتجاهات ↗'}
+                        </a>
+                      </div>
+                    </div>
+                  ) : null}
                 </div>
               )}
 
