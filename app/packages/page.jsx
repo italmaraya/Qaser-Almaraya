@@ -5,6 +5,7 @@ import SiteHeader from '../../components/SiteHeader';
 import SiteFooter from '../../components/SiteFooter';
 import MascotLoader from '../../components/MascotLoader';
 import PackageCard from '../../components/PackageCard';
+import DestinationShowcase from '../../components/DestinationShowcase';
 import Icon from '../../components/Icon';
 import { useLangToggle } from '../../lib/i18n';
 import { CATS, PREFS, T } from '../../lib/packagesData';
@@ -32,6 +33,7 @@ export default function PackagesPage() {
   const [travelers, setTravelers] = useState({ adults: 2, children: 0, infants: 0, singleRooms: 1, doubleRooms: 0 });
   const [preferredDates, setPreferredDates] = useState('');
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [showcaseDest, setShowcaseDest] = useState('');
 
   useEffect(() => {
     fetch('/api/packages')
@@ -99,6 +101,7 @@ export default function PackagesPage() {
 
   function pickCity(d) {
     setQuery(nm(d.name_ar, d.name_en));
+    setShowcaseDest(nm(d.name_ar, d.name_en));
     setShowDestDropdown(false);
     document.getElementById('qa-pkg-results')?.scrollIntoView({ behavior: 'smooth' });
   }
@@ -298,6 +301,13 @@ export default function PackagesPage() {
             </div>
           </div>
 
+          {/* Destination showcase — smooth animated landmark scene for the picked city/country */}
+          {showcaseDest ? (
+            <div className="qa-showcase-wrap" style={{ maxWidth: 1080, margin: 'clamp(20px,3vw,28px) auto 0', padding: '0 20px' }}>
+              <DestinationShowcase destinationName={showcaseDest} lang={lang} />
+            </div>
+          ) : null}
+
           {/* Horizontal filter pills + Filters drawer trigger */}
           <div className="qa-filter-sticky" style={{ position: 'sticky', top: 0, zIndex: 12, background: '#fff', borderBottom: '1px solid #ececed', marginTop: 'clamp(28px,5vw,44px)' }}>
             <div style={{ maxWidth: 1240, margin: '0 auto', padding: '14px 20px', display: 'flex', alignItems: 'center', gap: 12 }}>
@@ -385,6 +395,8 @@ export default function PackagesPage() {
           ) : null}
 
           <style jsx>{`
+            .qa-showcase-wrap { animation: qa-showcase-reveal .45s ease; }
+            @keyframes qa-showcase-reveal { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
             .qa-hover-lift-sm { transition: transform .2s ease, box-shadow .2s ease; border-radius: 22px; }
             .qa-hover-lift-sm:hover { transform: translateY(-4px); }
             .qa-hover-lift-sm:hover .qa-region-banner { box-shadow: 0 14px 30px rgba(1,42,55,.22); }
@@ -513,7 +525,14 @@ export default function PackagesPage() {
                           {lang === 'en' ? 'See all deals' : 'عرض كل العروض'}
                         </button>
                         {group.list.map((c) => (
-                          <span key={c.id} style={{ fontSize: 13.5, color: '#3d4650' }}>{nm(c.name_ar, c.name_en)}</span>
+                          <button
+                            key={c.id}
+                            type="button"
+                            onClick={() => { const name = nm(c.name_ar, c.name_en); setQuery(name); setShowcaseDest(name); document.getElementById('qa-pkg-results')?.scrollIntoView({ behavior: 'smooth' }); }}
+                            style={{ textAlign: 'start', background: 'none', border: 'none', padding: 0, cursor: 'pointer', color: '#3d4650', fontSize: 13.5, fontFamily: 'inherit' }}
+                          >
+                            {nm(c.name_ar, c.name_en)}
+                          </button>
                         ))}
                       </div>
                     </div>

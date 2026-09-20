@@ -1,5 +1,5 @@
 'use client';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { CATS } from '../lib/packagesData';
 
 const inputStyle = {
@@ -620,7 +620,7 @@ function RegionBannerRow({ item, onSave, onDelete }) {
   return (
     <div style={{ border: '1px solid #ececed', borderRadius: 10, padding: 10, display: 'flex', flexDirection: 'column', gap: 8 }}>
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(140px,1fr))', gap: 8 }}>
-        <input style={inputStyle} placeholder="اسم المنطقة (عربي) — يجب أن يطابق حرفياً منطقة الدول أدناه" value={form.region_ar} onChange={(e) => set('region_ar', e.target.value)} />
+        <input style={inputStyle} placeholder="اسم المنطقة (عربي) — طابقوه مع حقل المنطقة في الدول أدناه" value={form.region_ar} onChange={(e) => set('region_ar', e.target.value)} />
         <input style={inputStyle} placeholder="Region name (English)" value={form.region_en} onChange={(e) => set('region_en', e.target.value)} />
         <input style={inputStyle} placeholder="شارة الخصم (عربي)، مثال: خصومات حتى ٥٣٪" value={form.deal_text_ar} onChange={(e) => set('deal_text_ar', e.target.value)} />
         <input style={inputStyle} placeholder="Deal badge (English), e.g. Deals up to 53%" value={form.deal_text_en} onChange={(e) => set('deal_text_en', e.target.value)} />
@@ -635,7 +635,7 @@ function RegionBannerRow({ item, onSave, onDelete }) {
   );
 }
 
-function RegionBannersEditor() {
+function RegionBannersEditor({ countries }) {
   const [items, setItems] = useState(null);
   const [error, setError] = useState('');
 
@@ -644,6 +644,25 @@ function RegionBannersEditor() {
   }
   useEffect(load, []);
 
+  const usedRegions = useMemo(() => {
+    const map = new Map();
+    (countries || []).forEach((c) => {
+      if (c.region_ar && !map.has(c.region_ar)) map.set(c.region_ar, c.region_en || '');
+    });
+    return Array.from(map.entries());
+  }, [countries]);
+
+  const coveredSet = new Set((items || []).map((it) => it.region_ar));
+  const missing = usedRegions.filter(([ar]) => !coveredSet.has(ar));
+
+  async function handleAddFor(regionAr, regionEn) {
+    try {
+      const created = await api('/api/admin/regions', { method: 'POST', body: JSON.stringify({ ...blankRegionBanner(), region_ar: regionAr, region_en: regionEn }) });
+      setItems((list) => [...(list || []), created]);
+    } catch (e) {
+      setError(e.message);
+    }
+  }
   async function handleAdd() {
     try {
       const created = await api('/api/admin/regions', { method: 'POST', body: JSON.stringify(blankRegionBanner()) });
@@ -676,10 +695,24 @@ function RegionBannersEditor() {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
       <p style={{ margin: 0, fontSize: 13, color: '#7b8087' }}>
-        صورة غلاف وشارة خصم تظهر أعلى قائمة كل منطقة في قسم "كل دول الرحلات". اكتبوا اسم المنطقة بنفس الشكل الذي تكتبونه في حقل "المنطقة" لدول تلك المجموعة أدناه حتى تتطابق.
+        صورة غلاف وشارة خصم تظهر أعلى قائمة كل منطقة في قسم "كل دول الرحلات".
       </p>
+
+      {missing.length > 0 && (
+        <div style={{ background: '#eaf8fd', border: '1px solid #bfe9f6', borderRadius: 12, padding: 12, display: 'flex', flexDirection: 'column', gap: 8 }}>
+          <span style={{ fontSize: 13, fontWeight: 700, color: '#036f8c' }}>مناطق بلا صورة غلاف بعد — اضغطوا للإضافة مباشرة:</span>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+            {missing.map(([ar, en]) => (
+              <button key={ar} type="button" style={btnStyle('primary')} onClick={() => handleAddFor(ar, en)}>
+                + صورة لـ «{ar}»
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
       <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-        <button type="button" style={btnStyle('primary')} onClick={handleAdd}>+ إضافة غلاف منطقة</button>
+        <button type="button" style={btnStyle('ghost')} onClick={handleAdd}>+ إضافة غلاف منطقة يدوياً</button>
       </div>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
         {items.length === 0 && <p style={{ color: '#7b8087' }}>لا توجد أغلفة مناطق بعد.</p>}
@@ -736,7 +769,7 @@ function CountriesTab() {
       </p>
       <div style={{ background: '#f8f7f8', border: '1px solid #ececed', borderRadius: 14, padding: 16 }}>
         <h4 style={{ margin: '0 0 10px', fontSize: 14 }}>أغلفة المناطق وشارات الخصم</h4>
-        <RegionBannersEditor />
+        <RegionBannersEditor countries={items} />
       </div>
       <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
         <button type="button" style={btnStyle('primary')} onClick={handleAdd}>+ إضافة دولة</button>
