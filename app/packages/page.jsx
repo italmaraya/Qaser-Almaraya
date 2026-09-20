@@ -5,7 +5,6 @@ import SiteHeader from '../../components/SiteHeader';
 import SiteFooter from '../../components/SiteFooter';
 import MascotLoader from '../../components/MascotLoader';
 import PackageCard from '../../components/PackageCard';
-import DestinationShowcase from '../../components/DestinationShowcase';
 import Icon from '../../components/Icon';
 import { useLangToggle } from '../../lib/i18n';
 import { CATS, PREFS, T } from '../../lib/packagesData';
@@ -33,7 +32,6 @@ export default function PackagesPage() {
   const [travelers, setTravelers] = useState({ adults: 2, children: 0, infants: 0, singleRooms: 1, doubleRooms: 0 });
   const [preferredDates, setPreferredDates] = useState('');
   const [drawerOpen, setDrawerOpen] = useState(false);
-  const [showcaseDest, setShowcaseDest] = useState('');
 
   useEffect(() => {
     fetch('/api/packages')
@@ -101,7 +99,6 @@ export default function PackagesPage() {
 
   function pickCity(d) {
     setQuery(nm(d.name_ar, d.name_en));
-    setShowcaseDest(nm(d.name_ar, d.name_en));
     setShowDestDropdown(false);
     document.getElementById('qa-pkg-results')?.scrollIntoView({ behavior: 'smooth' });
   }
@@ -300,13 +297,6 @@ export default function PackagesPage() {
               </div>
             </div>
           </div>
-
-          {/* Destination showcase — smooth animated landmark scene for the picked city/country */}
-          {showcaseDest ? (
-            <div className="qa-showcase-wrap" style={{ maxWidth: 1080, margin: 'clamp(20px,3vw,28px) auto 0', padding: '0 20px' }}>
-              <DestinationShowcase destinationName={showcaseDest} lang={lang} />
-            </div>
-          ) : null}
 
           {/* Horizontal filter pills + Filters drawer trigger */}
           <div className="qa-filter-sticky" style={{ position: 'sticky', top: 0, zIndex: 12, background: '#fff', borderBottom: '1px solid #ececed', marginTop: 'clamp(28px,5vw,44px)' }}>
@@ -528,7 +518,7 @@ export default function PackagesPage() {
                           <button
                             key={c.id}
                             type="button"
-                            onClick={() => { const name = nm(c.name_ar, c.name_en); setQuery(name); setShowcaseDest(name); document.getElementById('qa-pkg-results')?.scrollIntoView({ behavior: 'smooth' }); }}
+                            onClick={() => { const name = nm(c.name_ar, c.name_en); setQuery(name); document.getElementById('qa-pkg-results')?.scrollIntoView({ behavior: 'smooth' }); }}
                             style={{ textAlign: 'start', background: 'none', border: 'none', padding: 0, cursor: 'pointer', color: '#3d4650', fontSize: 13.5, fontFamily: 'inherit' }}
                           >
                             {nm(c.name_ar, c.name_en)}

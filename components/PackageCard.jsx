@@ -148,7 +148,7 @@ export default function PackageCard({ title, destination, image, nights, groupTy
 
         <button
           type="button"
-          onClick={onDetails}
+          onClick={(e) => { e.stopPropagation(); onDetails?.(); }}
           aria-label={lang === 'en' ? 'Package details' : 'تفاصيل الباقة'}
           className="qa-pkg-arrow-btn"
           style={{
