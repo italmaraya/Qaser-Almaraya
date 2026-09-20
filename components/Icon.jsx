@@ -3,6 +3,8 @@ import React from 'react';
 
 // Lucide geometry (MIT) for the glyphs this site uses.
 const PATHS = {
+  plane: ['M17.8 19.2 16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2Z'],
+  copy: ['M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2'],
   'plane-takeoff': ['M2 22h20', 'M6.36 17.4 4 17l-2-4 1.1-.55a2 2 0 0 1 1.8 0l.7.35 2.1-4.2a2 2 0 0 1 1.5-1.08l4.9-.7a2 2 0 0 1 1.6.5l1.4 1.3a2 2 0 0 1-.2 3l-9.6 5.6a2 2 0 0 1-1.34.27Z'],
   'plane-landing': ['M2 22h20', 'M3.77 10.77 2 9l2-4.5 1.1.55a2 2 0 0 1 1 1.8v.5l3.6 1.4 2.3-5.3a2 2 0 0 1 1.4-1.2l1.9-.5a2 2 0 0 1 2.4 1.4l.5 1.9a2 2 0 0 1-.6 2l-1.8 1.5 6.1 2.4a2 2 0 0 1 1.2 2.5l-.4 1.2a2 2 0 0 1-2.5 1.2L3.77 10.77Z'],
   handshake: ['m11 17 2 2a1 1 0 1 0 3-3', 'm14 14 2.5 2.5a1 1 0 1 0 3-3l-3.88-3.88a3 3 0 0 0-4.24 0l-.88.88a1 1 0 1 1-3-3l2.81-2.81a5.79 5.79 0 0 1 7.06-.87l.47.28a2 2 0 0 0 1.42.25L21 4', 'm21 3 1 11h-2', 'm3 3 8 8', 'M3 4h8', 'm2 16 6 6', 'M3 10h7'],
@@ -46,7 +48,7 @@ const PATHS = {
   'shield-check': ['M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.79 17 5 19 5a1 1 0 0 1 1 1z', 'm9 12 2 2 4-4'],
 };
 const CIRCLES = { instagram: [{ cx: 12, cy: 12, r: 10 }], search: [{ cx: 11, cy: 11, r: 8 }] };
-const RECTS = { instagram: [{ x: 2, y: 2, width: 20, height: 20, rx: 5 }] };
+const RECTS = { instagram: [{ x: 2, y: 2, width: 20, height: 20, rx: 5 }], copy: [{ x: 8, y: 8, width: 14, height: 14, rx: 2, ry: 2 }] };
 
 export default function Icon({ name, size = 20, strokeWidth = 2, style, ...rest }) {
   const paths = PATHS[name] || [];

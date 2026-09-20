@@ -21,6 +21,8 @@ export default function PackagesPage() {
   const [query, setQuery] = useState('');
   const [cat, setCat] = useState('all');
   const [prefs, setPrefs] = useState([]);
+  const [destinations, setDestinations] = useState([]);
+  const [showDestDropdown, setShowDestDropdown] = useState(false);
 
   useEffect(() => {
     fetch('/api/packages')
@@ -28,6 +30,22 @@ export default function PackagesPage() {
       .then((data) => setPackages(Array.isArray(data) ? data : []))
       .catch(() => setError('تعذّر تحميل الباقات'));
   }, []);
+
+  useEffect(() => {
+    fetch('/api/packages/destinations')
+      .then((r) => r.json())
+      .then((data) => setDestinations(Array.isArray(data) ? data : []))
+      .catch(() => setDestinations([]));
+  }, []);
+
+  const mostSearched = destinations.filter((d) => d.kind === 'most_searched');
+  const popularCities = destinations.filter((d) => d.kind !== 'most_searched');
+
+  function pickCity(d) {
+    setQuery(nm(d.name_ar, d.name_en));
+    setShowDestDropdown(false);
+    document.getElementById('qa-pkg-results')?.scrollIntoView({ behavior: 'smooth' });
+  }
 
   function togglePref(id) {
     setPrefs((p) => (p.includes(id) ? p.filter((x) => x !== id) : [...p, id]));
@@ -118,13 +136,69 @@ export default function PackagesPage() {
           <section className="qa-sec" style={{ maxWidth: 1240, margin: '0 auto', padding: '32px 24px 0' }}>
             <div style={{ background: '#fff', border: '1px solid #ececed', borderRadius: 20, boxShadow: '0 8px 24px rgba(29,39,51,.08)', padding: 24, display: 'flex', flexDirection: 'column', gap: 18 }}>
               <h3 style={{ margin: 0, fontSize: 17 }}>{t.filter_panel_title}</h3>
-              <input
-                type="text"
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                placeholder={t.filter_destination_ph}
-                style={{ width: '100%', boxSizing: 'border-box', padding: '12px 16px', borderRadius: 10, border: '1px solid #cacbcc', fontSize: 15, fontFamily: 'inherit' }}
-              />
+              <div style={{ position: 'relative' }}>
+                <input
+                  type="text"
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                  onFocus={() => setShowDestDropdown(true)}
+                  onBlur={() => setTimeout(() => setShowDestDropdown(false), 150)}
+                  placeholder={t.filter_destination_ph}
+                  style={{ width: '100%', boxSizing: 'border-box', padding: '12px 16px', borderRadius: 10, border: '1px solid #cacbcc', fontSize: 15, fontFamily: 'inherit' }}
+                />
+                {showDestDropdown && (mostSearched.length > 0 || popularCities.length > 0) && (
+                  <div
+                    style={{
+                      position: 'absolute', insetInlineStart: 0, insetInlineEnd: 0, top: 'calc(100% + 8px)', zIndex: 20,
+                      background: '#fff', border: '1px solid #ececed', borderRadius: 14, boxShadow: '0 14px 34px rgba(29,39,51,.14)',
+                      padding: 18, display: 'flex', flexDirection: 'column', gap: 16, maxHeight: 340, overflowY: 'auto',
+                    }}
+                  >
+                    {mostSearched.length > 0 && (
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                        <span style={{ fontSize: 12.5, fontWeight: 700, color: '#7b8087' }}>{lang === 'en' ? 'Most searched cities' : 'الأكثر بحثاً'}</span>
+                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+                          {mostSearched.map((d) => (
+                            <button
+                              key={d.id}
+                              type="button"
+                              onMouseDown={(e) => e.preventDefault()}
+                              onClick={() => pickCity(d)}
+                              style={{
+                                cursor: 'pointer', fontFamily: 'inherit', padding: '8px 16px', borderRadius: 999,
+                                border: '1px solid #049dc5', background: '#049dc5', color: '#fff', fontSize: 13.5, fontWeight: 700,
+                              }}
+                            >
+                              {nm(d.name_ar, d.name_en)}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                    {popularCities.length > 0 && (
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                        <span style={{ fontSize: 12.5, fontWeight: 700, color: '#7b8087' }}>{lang === 'en' ? 'Popular cities' : 'مدن شائعة'}</span>
+                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(120px,1fr))', gap: 6 }}>
+                          {popularCities.map((d) => (
+                            <button
+                              key={d.id}
+                              type="button"
+                              onMouseDown={(e) => e.preventDefault()}
+                              onClick={() => pickCity(d)}
+                              style={{
+                                cursor: 'pointer', fontFamily: 'inherit', textAlign: 'start', padding: '6px 4px', borderRadius: 8,
+                                border: 'none', background: 'transparent', color: '#3d4650', fontSize: 13.5,
+                              }}
+                            >
+                              {nm(d.name_ar, d.name_en)}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
               <div>
                 <div style={{ fontSize: 13, fontWeight: 700, color: '#3d4650', marginBottom: 8 }}>{t.filter_pref_label}</div>
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10 }}>
@@ -176,6 +250,9 @@ export default function PackagesPage() {
                     price={t.starts_from + ' ' + formatPrice(p.price, 'IQD', lang)}
                     includes={(lang === 'en' && p.includes_en?.length ? p.includes_en : p.includes_ar) || []}
                     badge={nm(p.badge_ar, p.badge_en) || undefined}
+                    hotels={p.hotels || []}
+                    flights={p.flights || []}
+                    lang={lang}
                     onDetails={() => router.push(`/packages/${p.id}`)}
                   />
                 ))}

@@ -9,6 +9,7 @@ import Icon from '../../../components/Icon';
 import { useLangToggle } from '../../../lib/i18n';
 import { T, catLabel } from '../../../lib/packagesData';
 import { formatPrice, formatSignedPrice } from '../../../lib/currency';
+import { printDoc, esc, copyText } from '../../../lib/printDoc';
 
 const optStyle = (on) => ({
   display: 'flex', alignItems: 'center', gap: 14, padding: '14px 16px', borderRadius: 14,
@@ -28,6 +29,7 @@ export default function PackageDetailPage() {
   const [flightIdx, setFlightIdx] = useState(0);
   const [adults, setAdults] = useState(2);
   const [children, setChildren] = useState(0);
+  const [toast, setToast] = useState('');
 
   useEffect(() => {
     fetch(`/api/packages/${id}`)
@@ -61,6 +63,65 @@ export default function PackageDetailPage() {
       children: String(children),
     });
     router.push(`/packages/${id}/book?${params.toString()}`);
+  }
+
+  function flashToast(msg) {
+    setToast(msg);
+    setTimeout(() => setToast(''), 2400);
+  }
+
+  function packageSummaryLines() {
+    const en = lang === 'en';
+    const lines = [
+      nm(pkg.title_ar, pkg.title_en) + ' — ' + nm(pkg.dest_ar, pkg.dest_en),
+      (en ? 'Duration: ' : 'المدة: ') + nm(pkg.nights_ar, pkg.nights_en),
+      (en ? 'Departures: ' : 'الانطلاق: ') + nm(pkg.departs_ar, pkg.departs_en),
+    ];
+    if (hotels[hotelIdx]) lines.push((en ? 'Hotel: ' : 'الفندق: ') + nm(hotels[hotelIdx].nameAr, hotels[hotelIdx].nameEn));
+    if (flights[flightIdx]) lines.push((en ? 'Flight: ' : 'الرحلة: ') + nm(flights[flightIdx].nameAr, flights[flightIdx].nameEn));
+    lines.push((en ? 'Price per adult: ' : 'السعر للبالغ: ') + formatPrice(totalPerAdult, 'IQD', lang));
+    if (children > 0) lines.push((en ? 'Price per child: ' : 'سعر الطفل: ') + formatPrice(totalPerChild, 'IQD', lang));
+    lines.push((en ? 'Travellers: ' : 'عدد المسافرين: ') + adults + (en ? ' adult(s)' : ' بالغ') + (children ? ', ' + children + (en ? ' child(ren)' : ' طفل') : ''));
+    lines.push((en ? 'Grand total: ' : 'الإجمالي الكلي: ') + formatPrice(grandTotal, 'IQD', lang));
+    if (includes.length) {
+      lines.push('');
+      lines.push(en ? "What's included:" : 'تشمل الباقة:');
+      includes.forEach((i) => lines.push('• ' + i));
+    }
+    lines.push('');
+    lines.push('قصر المرايا للسفر والسياحة');
+    return lines;
+  }
+
+  function handleCopy() {
+    copyText(packageSummaryLines().join('\n'), () => flashToast(t.copied_msg));
+  }
+
+  function handleDownloadPdf() {
+    const en = lang === 'en';
+    const rows = [
+      [en ? 'Destination' : 'الوجهة', nm(pkg.dest_ar, pkg.dest_en)],
+      [en ? 'Duration' : 'المدة', nm(pkg.nights_ar, pkg.nights_en)],
+      [en ? 'Departures' : 'الانطلاق', nm(pkg.departs_ar, pkg.departs_en)],
+    ];
+    if (hotels[hotelIdx]) rows.push([en ? 'Hotel' : 'الفندق', nm(hotels[hotelIdx].nameAr, hotels[hotelIdx].nameEn)]);
+    if (flights[flightIdx]) rows.push([en ? 'Flight' : 'الرحلة', nm(flights[flightIdx].nameAr, flights[flightIdx].nameEn)]);
+    rows.push([en ? 'Price per adult' : 'السعر للبالغ', formatPrice(totalPerAdult, 'IQD', lang)]);
+    if (children > 0) rows.push([en ? 'Price per child' : 'سعر الطفل', formatPrice(totalPerChild, 'IQD', lang)]);
+    rows.push([en ? 'Travellers' : 'عدد المسافرين', adults + (en ? ' adult(s)' : ' بالغ') + (children ? ', ' + children + (en ? ' child(ren)' : ' طفل') : '')]);
+    rows.push([en ? 'Grand total' : 'الإجمالي الكلي', formatPrice(grandTotal, 'IQD', lang)]);
+
+    const bodyHtml =
+      '<h1>' + esc(nm(pkg.title_ar, pkg.title_en)) + '</h1>' +
+      '<div class="sub">' + esc(nm(pkg.dest_ar, pkg.dest_en)) + '</div>' +
+      '<h2>' + (en ? 'Details' : 'التفاصيل') + '</h2>' +
+      '<table>' + rows.map((r) => '<tr><td>' + esc(r[0]) + '</td><td>' + esc(r[1]) + '</td></tr>').join('') + '</table>' +
+      (includes.length
+        ? '<h2>' + (en ? "What's included" : 'تشمل الباقة') + '</h2><ul>' + includes.map((i) => '<li>' + esc(i) + '</li>').join('') + '</ul>'
+        : '') +
+      '<p class="docs">' + (en ? 'Prices are per person and subject to availability at time of booking.' : 'الأسعار للفرد وقابلة للتغيير حسب التوفر عند الحجز.') + '</p>';
+
+    printDoc(nm(pkg.title_ar, pkg.title_en) + ' — ' + nm(pkg.dest_ar, pkg.dest_en), bodyHtml, lang);
   }
 
   if (error) {
@@ -135,6 +196,29 @@ export default function PackageDetailPage() {
               </div>
 
               <button type="button" onClick={goBook} className="qa-btn qa-cyan" style={{ textAlign: 'center' }}>{t.detail_cta}</button>
+
+              <div style={{ display: 'flex', gap: 8 }}>
+                <button
+                  type="button"
+                  onClick={handleDownloadPdf}
+                  style={{ flex: 1, cursor: 'pointer', border: '1px solid #ececed', borderRadius: 999, padding: '10px 14px', fontSize: 13, fontWeight: 700, fontFamily: 'inherit', background: '#fff', color: '#036f8c', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}
+                >
+                  <Icon name="file-text" size={15} />
+                  {t.pdf_btn}
+                </button>
+                <button
+                  type="button"
+                  onClick={handleCopy}
+                  style={{ flex: 1, cursor: 'pointer', border: '1px solid #bfe9f6', borderRadius: 999, padding: '10px 14px', fontSize: 13, fontWeight: 700, fontFamily: 'inherit', background: '#eaf8fd', color: '#036f8c', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}
+                >
+                  <Icon name="copy" size={15} />
+                  {t.copy_btn}
+                </button>
+              </div>
+              {toast && (
+                <span style={{ fontSize: 12.5, fontWeight: 700, color: '#036f8c', background: '#eaf8fd', border: '1px solid #bfe9f6', borderRadius: 8, padding: '6px 10px', textAlign: 'center' }}>{toast}</span>
+              )}
+
               <span style={{ fontSize: 12, color: '#7b8087', textAlign: 'center' }}>{t.detail_note}</span>
             </div>
 

@@ -1,8 +1,106 @@
 'use client';
-import React from 'react';
+import React, { useState } from 'react';
 import Icon from './Icon';
 
-export default function PackageCard({ title, destination, image, nights, groupType, departs, price, includes = [], badge, onDetails, style }) {
+function FlightRow({ f, lang, selected, onSelect }) {
+  const nm = (ar, en) => (lang === 'en' && en ? en : ar);
+  const airline = nm(f.nameAr, f.nameEn);
+  const tripLabel = nm(f.tripLabelAr, f.tripLabelEn);
+  const hasRoute = f.fromCity || f.toCity || f.departTime || f.arriveTime;
+  return (
+    <div
+      onClick={onSelect}
+      style={{
+        cursor: 'pointer', border: `1.5px solid ${selected ? '#049dc5' : '#ececed'}`,
+        background: selected ? '#eaf8fd' : '#fff', borderRadius: 14, padding: 14,
+        display: 'flex', flexDirection: 'column', gap: 10,
+      }}
+    >
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8 }}>
+        <span style={{ fontSize: 13, fontWeight: 700, color: '#1d2733' }}>
+          {airline || (lang === 'en' ? 'Airline' : 'شركة الطيران')}
+          {f.flightNo ? <span style={{ color: '#7b8087', fontWeight: 500 }}> · {f.flightNo}</span> : null}
+        </span>
+        <span style={{ fontSize: 12.5, fontWeight: 700, color: f.diff ? '#049dc5' : '#7b8087' }}>
+          {f.diff ? (f.diff > 0 ? '+' : '') + f.diff.toLocaleString() + ' ' + (lang === 'en' ? 'IQD' : 'د.ع') : (lang === 'en' ? 'Included' : 'مشمول')}
+        </span>
+      </div>
+
+      {hasRoute ? (
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+          <div style={{ flex: '0 0 auto', minWidth: 70, textAlign: 'center' }}>
+            <div style={{ fontSize: 16, fontWeight: 700, color: '#1d2733' }}>{f.departTime || '--:--'}</div>
+            <div style={{ fontSize: 11.5, color: '#7b8087' }}>{f.fromCity || (lang === 'en' ? 'Origin' : 'الانطلاق')}</div>
+          </div>
+          <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 }}>
+            {tripLabel ? (
+              <span style={{ fontSize: 10.5, fontWeight: 700, color: '#049dc5', background: '#eaf8fd', borderRadius: 999, padding: '2px 10px', marginBottom: 2 }}>{tripLabel}</span>
+            ) : null}
+            <div style={{ position: 'relative', width: '100%', height: 1, background: '#cfe9f2', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <Icon name="plane" size={16} style={{ color: '#049dc5', background: '#fff', transform: 'rotate(90deg)' }} />
+            </div>
+            {f.duration ? <span style={{ fontSize: 10.5, color: '#7b8087' }}>{f.duration}</span> : null}
+          </div>
+          <div style={{ flex: '0 0 auto', minWidth: 70, textAlign: 'center' }}>
+            <div style={{ fontSize: 16, fontWeight: 700, color: '#1d2733' }}>{f.arriveTime || '--:--'}</div>
+            <div style={{ fontSize: 11.5, color: '#7b8087' }}>{f.toCity || (lang === 'en' ? 'Destination' : 'الوصول')}</div>
+          </div>
+        </div>
+      ) : null}
+    </div>
+  );
+}
+
+function HotelRow({ h, lang, selected, onSelect }) {
+  const nm = (ar, en) => (lang === 'en' && en ? en : ar);
+  const amenities = (lang === 'en' && h.amenitiesEn?.length ? h.amenitiesEn : h.amenitiesAr) || [];
+  return (
+    <div
+      onClick={onSelect}
+      style={{
+        cursor: 'pointer', border: `1.5px solid ${selected ? '#049dc5' : '#ececed'}`,
+        background: selected ? '#eaf8fd' : '#fff', borderRadius: 14, padding: 12,
+        display: 'flex', alignItems: 'center', gap: 12,
+      }}
+    >
+      {h.imageUrl ? (
+        <img src={h.imageUrl} alt="" style={{ width: 56, height: 56, borderRadius: 10, objectFit: 'cover', flex: 'none' }} />
+      ) : (
+        <div style={{ width: 56, height: 56, borderRadius: 10, background: '#eaf8fd', display: 'grid', placeItems: 'center', flex: 'none' }}>
+          <Icon name="building-2" size={20} style={{ color: '#049dc5' }} />
+        </div>
+      )}
+      <div style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', gap: 4 }}>
+        <span style={{ fontSize: 14, fontWeight: 700, color: '#1d2733' }}>{nm(h.nameAr, h.nameEn)}</span>
+        {h.location ? (
+          <span style={{ fontSize: 12, color: '#7b8087', display: 'flex', alignItems: 'center', gap: 4 }}>
+            <Icon name="map-pin" size={12} />{h.location}
+          </span>
+        ) : null}
+        {amenities.length ? (
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginTop: 2 }}>
+            {amenities.slice(0, 4).map((a) => (
+              <span key={a} style={{ fontSize: 10.5, color: '#3d4650', background: '#f4f4f4', borderRadius: 999, padding: '2px 9px' }}>{a}</span>
+            ))}
+          </div>
+        ) : null}
+      </div>
+      <span style={{ fontSize: 12.5, fontWeight: 700, color: h.diff ? '#049dc5' : '#7b8087', flex: 'none' }}>
+        {h.diff ? (h.diff > 0 ? '+' : '') + h.diff.toLocaleString() + ' ' + (lang === 'en' ? 'IQD' : 'د.ع') : (lang === 'en' ? 'Included' : 'مشمول')}
+      </span>
+    </div>
+  );
+}
+
+export default function PackageCard({ title, destination, image, nights, groupType, departs, price, includes = [], badge, onDetails, hotels = [], flights = [], lang = 'ar', style }) {
+  const [open, setOpen] = useState(false);
+  const [tab, setTab] = useState('flights');
+  const [flightIdx, setFlightIdx] = useState(0);
+  const [hotelIdx, setHotelIdx] = useState(0);
+  const hasFlights = flights.length > 0;
+  const hasHotels = hotels.length > 0;
+  const canToggle = hasFlights || hasHotels;
+
   return (
     <div dir="rtl" style={{ background: '#fff', border: '1px solid #ececed', borderRadius: 18, boxShadow: '0 2px 8px rgba(29,39,51,.07)', overflow: 'hidden', display: 'flex', flexDirection: 'column', ...style }}>
       <div style={{ position: 'relative', aspectRatio: '16/9', background: '#eaf8fd' }}>
@@ -39,6 +137,68 @@ export default function PackageCard({ title, destination, image, nights, groupTy
           <span style={{ fontSize: 13, color: '#7b8087' }}>يبدأ من <b style={{ fontSize: 18, color: '#036f8c' }}>{price}</b></span>
           <button onClick={onDetails} className="qa-btn qa-cyan" style={{ padding: '9px 18px', fontSize: 13.5 }}>تفاصيل الباقة</button>
         </div>
+
+        {canToggle ? (
+          <button
+            type="button"
+            onClick={() => setOpen((o) => !o)}
+            style={{
+              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
+              width: '100%', padding: '10px 14px', borderRadius: 10, cursor: 'pointer', fontFamily: 'inherit',
+              border: '1px solid #cfe9f2', background: open ? '#eaf8fd' : '#fff', color: '#036f8c', fontSize: 13.5, fontWeight: 700,
+            }}
+          >
+            <Icon name="plane" size={15} style={{ transform: 'rotate(90deg)' }} />
+            {lang === 'en' ? 'Check flights & hotels' : 'تحقق من الطيران والفنادق'}
+            <Icon name={open ? 'chevron-up' : 'chevron-down'} size={15} />
+          </button>
+        ) : null}
+
+        {open && canToggle ? (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 12, borderTop: '1px solid #ececed', paddingTop: 14 }}>
+            <div style={{ display: 'flex', gap: 8 }}>
+              {hasFlights ? (
+                <button
+                  type="button"
+                  onClick={() => setTab('flights')}
+                  style={{
+                    flex: 1, cursor: 'pointer', fontFamily: 'inherit', padding: '8px 10px', borderRadius: 999,
+                    border: `1px solid ${tab === 'flights' ? '#049dc5' : '#ececed'}`,
+                    background: tab === 'flights' ? '#049dc5' : '#fff', color: tab === 'flights' ? '#fff' : '#3d4650', fontSize: 13, fontWeight: 700,
+                  }}
+                >
+                  {lang === 'en' ? 'Flights' : 'الرحلات'}
+                </button>
+              ) : null}
+              {hasHotels ? (
+                <button
+                  type="button"
+                  onClick={() => setTab('hotels')}
+                  style={{
+                    flex: 1, cursor: 'pointer', fontFamily: 'inherit', padding: '8px 10px', borderRadius: 999,
+                    border: `1px solid ${tab === 'hotels' ? '#049dc5' : '#ececed'}`,
+                    background: tab === 'hotels' ? '#049dc5' : '#fff', color: tab === 'hotels' ? '#fff' : '#3d4650', fontSize: 13, fontWeight: 700,
+                  }}
+                >
+                  {lang === 'en' ? 'Hotels' : 'الفنادق'}
+                </button>
+              ) : null}
+            </div>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+              {tab === 'flights' && hasFlights && flights.map((f, idx) => (
+                <FlightRow key={idx} f={f} lang={lang} selected={flightIdx === idx} onSelect={() => setFlightIdx(idx)} />
+              ))}
+              {tab === 'hotels' && hasHotels && hotels.map((h, idx) => (
+                <HotelRow key={idx} h={h} lang={lang} selected={hotelIdx === idx} onSelect={() => setHotelIdx(idx)} />
+              ))}
+            </div>
+
+            <button onClick={onDetails} className="qa-btn qa-cyan" style={{ padding: '9px 18px', fontSize: 13.5 }}>
+              {lang === 'en' ? 'Continue with this choice' : 'المتابعة بهذا الاختيار'}
+            </button>
+          </div>
+        ) : null}
       </div>
     </div>
   );

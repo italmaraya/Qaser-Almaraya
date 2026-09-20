@@ -21,6 +21,7 @@ const btnStyle = (variant) => ({
 const SUBTABS = [
   { id: 'packages', label: 'الباقات' },
   { id: 'bookings', label: 'الحجوزات' },
+  { id: 'destinations', label: 'المدن الشائعة' },
 ];
 
 async function api(path, options) {
@@ -198,7 +199,7 @@ function PackageForm({ initial, onSave, onCancel, saving }) {
       <div>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
           <span style={{ fontSize: 13.5, fontWeight: 700 }}>خيارات الفنادق</span>
-          <button type="button" style={btnStyle('ghost')} onClick={() => addRow('hotels', { nameAr: '', nameEn: '', diff: 0, imageUrl: '' })}>+ إضافة فندق</button>
+          <button type="button" style={btnStyle('ghost')} onClick={() => addRow('hotels', { nameAr: '', nameEn: '', diff: 0, imageUrl: '', location: '', amenitiesAr: [], amenitiesEn: [] })}>+ إضافة فندق</button>
         </div>
         {(form.hotels || []).map((h, idx) => (
           <div key={idx} style={{ border: '1px solid #ececed', borderRadius: 10, padding: 10, marginBottom: 8, display: 'flex', flexDirection: 'column', gap: 8 }}>
@@ -208,6 +209,11 @@ function PackageForm({ initial, onSave, onCancel, saving }) {
               <input type="number" style={inputStyle} placeholder="فرق السعر (IQD)" value={h.diff} onChange={(e) => updateRow('hotels', idx, 'diff', Number(e.target.value))} />
               <button type="button" style={btnStyle('danger')} onClick={() => removeRow('hotels', idx)}>حذف</button>
             </div>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: 8 }}>
+              <input style={inputStyle} placeholder="الموقع، مثال: لندن، المملكة المتحدة" value={h.location || ''} onChange={(e) => updateRow('hotels', idx, 'location', e.target.value)} />
+              <input style={inputStyle} placeholder="المرافق (عربي) — مفصولة بفاصلة، مثال: إفطار، واي فاي مجاني، مرشد سياحي" value={(h.amenitiesAr || []).join('، ')} onChange={(e) => updateRow('hotels', idx, 'amenitiesAr', e.target.value.split(/[,،]/).map((s) => s.trim()).filter(Boolean))} />
+              <input style={inputStyle} placeholder="Amenities (English), comma separated: Breakfast, Free WiFi, Gym" value={(h.amenitiesEn || []).join(', ')} onChange={(e) => updateRow('hotels', idx, 'amenitiesEn', e.target.value.split(',').map((s) => s.trim()).filter(Boolean))} />
+            </div>
             <ImageUploadField label="صورة الفندق" value={h.imageUrl || ''} onChange={(url) => updateRow('hotels', idx, 'imageUrl', url)} />
           </div>
         ))}
@@ -216,14 +222,26 @@ function PackageForm({ initial, onSave, onCancel, saving }) {
       <div>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
           <span style={{ fontSize: 13.5, fontWeight: 700 }}>خيارات الرحلات</span>
-          <button type="button" style={btnStyle('ghost')} onClick={() => addRow('flights', { nameAr: '', nameEn: '', diff: 0 })}>+ إضافة رحلة</button>
+          <button type="button" style={btnStyle('ghost')} onClick={() => addRow('flights', { nameAr: '', nameEn: '', diff: 0, flightNo: '', fromCity: '', toCity: '', departTime: '', arriveTime: '', duration: '', tripLabelAr: '', tripLabelEn: '' })}>+ إضافة رحلة</button>
         </div>
         {(form.flights || []).map((f, idx) => (
-          <div key={idx} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 120px auto', gap: 8, marginBottom: 8 }}>
-            <input style={inputStyle} placeholder="اسم شركة الطيران (عربي)" value={f.nameAr} onChange={(e) => updateRow('flights', idx, 'nameAr', e.target.value)} />
-            <input style={inputStyle} placeholder="Airline (English)" value={f.nameEn} onChange={(e) => updateRow('flights', idx, 'nameEn', e.target.value)} />
-            <input type="number" style={inputStyle} placeholder="فرق السعر (IQD)" value={f.diff} onChange={(e) => updateRow('flights', idx, 'diff', Number(e.target.value))} />
-            <button type="button" style={btnStyle('danger')} onClick={() => removeRow('flights', idx)}>حذف</button>
+          <div key={idx} style={{ border: '1px solid #ececed', borderRadius: 10, padding: 10, marginBottom: 8, display: 'flex', flexDirection: 'column', gap: 8 }}>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 120px auto', gap: 8 }}>
+              <input style={inputStyle} placeholder="اسم شركة الطيران (عربي)" value={f.nameAr} onChange={(e) => updateRow('flights', idx, 'nameAr', e.target.value)} />
+              <input style={inputStyle} placeholder="Airline (English)" value={f.nameEn} onChange={(e) => updateRow('flights', idx, 'nameEn', e.target.value)} />
+              <input type="number" style={inputStyle} placeholder="فرق السعر (IQD)" value={f.diff} onChange={(e) => updateRow('flights', idx, 'diff', Number(e.target.value))} />
+              <button type="button" style={btnStyle('danger')} onClick={() => removeRow('flights', idx)}>حذف</button>
+            </div>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(120px,1fr))', gap: 8 }}>
+              <input style={inputStyle} placeholder="رقم الرحلة" value={f.flightNo || ''} onChange={(e) => updateRow('flights', idx, 'flightNo', e.target.value)} />
+              <input style={inputStyle} placeholder="مدينة الانطلاق" value={f.fromCity || ''} onChange={(e) => updateRow('flights', idx, 'fromCity', e.target.value)} />
+              <input style={inputStyle} placeholder="مدينة الوصول" value={f.toCity || ''} onChange={(e) => updateRow('flights', idx, 'toCity', e.target.value)} />
+              <input style={inputStyle} placeholder="وقت المغادرة، مثال 15:00" value={f.departTime || ''} onChange={(e) => updateRow('flights', idx, 'departTime', e.target.value)} />
+              <input style={inputStyle} placeholder="وقت الوصول، مثال 17:05" value={f.arriveTime || ''} onChange={(e) => updateRow('flights', idx, 'arriveTime', e.target.value)} />
+              <input style={inputStyle} placeholder="المدة، مثال 2h 05m" value={f.duration || ''} onChange={(e) => updateRow('flights', idx, 'duration', e.target.value)} />
+              <input style={inputStyle} placeholder="نوع الرحلة (عربي)، مثال: رحلة ذهاب" value={f.tripLabelAr || ''} onChange={(e) => updateRow('flights', idx, 'tripLabelAr', e.target.value)} />
+              <input style={inputStyle} placeholder="Trip label (English), e.g. Return Flight" value={f.tripLabelEn || ''} onChange={(e) => updateRow('flights', idx, 'tripLabelEn', e.target.value)} />
+            </div>
           </div>
         ))}
       </div>
@@ -419,6 +437,104 @@ function BookingsTab() {
   );
 }
 
+function blankDestination(kind) {
+  return { name_ar: '', name_en: '', kind, sort_order: 0 };
+}
+
+function DestinationRow({ item, onSave, onDelete }) {
+  const [form, setForm] = useState(item);
+  const [saving, setSaving] = useState(false);
+  const dirty = form.name_ar !== item.name_ar || form.name_en !== item.name_en || form.sort_order !== item.sort_order;
+
+  async function save() {
+    setSaving(true);
+    try {
+      await onSave(form);
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  return (
+    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 90px auto auto', gap: 8, alignItems: 'center' }}>
+      <input style={inputStyle} placeholder="اسم المدينة (عربي)" value={form.name_ar} onChange={(e) => setForm((f) => ({ ...f, name_ar: e.target.value }))} />
+      <input style={inputStyle} placeholder="City name (English)" value={form.name_en} onChange={(e) => setForm((f) => ({ ...f, name_en: e.target.value }))} />
+      <input type="number" style={inputStyle} placeholder="الترتيب" value={form.sort_order} onChange={(e) => setForm((f) => ({ ...f, sort_order: Number(e.target.value) }))} />
+      <button type="button" style={btnStyle(dirty ? 'primary' : 'ghost')} disabled={!dirty || saving} onClick={save}>{saving ? '...' : 'حفظ'}</button>
+      <button type="button" style={btnStyle('danger')} onClick={() => onDelete(item.id)}>حذف</button>
+    </div>
+  );
+}
+
+function DestinationsGroup({ title, kind, items, onAdd, onSave, onDelete }) {
+  return (
+    <div style={cardStyle}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <h4 style={{ margin: 0, fontSize: 15 }}>{title}</h4>
+        <button type="button" style={btnStyle('ghost')} onClick={() => onAdd(kind)}>+ إضافة مدينة</button>
+      </div>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+        {items.length === 0 && <span style={{ fontSize: 13, color: '#7b8087' }}>لا توجد مدن مضافة بعد.</span>}
+        {items.map((it) => (
+          <DestinationRow key={it.id} item={it} onSave={onSave} onDelete={onDelete} />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function DestinationsTab() {
+  const [items, setItems] = useState(null);
+  const [error, setError] = useState('');
+
+  function load() {
+    api('/api/admin/destinations').then(setItems).catch((e) => setError(e.message));
+  }
+  useEffect(load, []);
+
+  async function handleAdd(kind) {
+    try {
+      const created = await api('/api/admin/destinations', { method: 'POST', body: JSON.stringify(blankDestination(kind)) });
+      setItems((list) => [...(list || []), created]);
+    } catch (e) {
+      setError(e.message);
+    }
+  }
+  async function handleSave(form) {
+    try {
+      const updated = await api(`/api/admin/destinations/${form.id}`, { method: 'PUT', body: JSON.stringify(form) });
+      setItems((list) => list.map((it) => (it.id === updated.id ? updated : it)));
+    } catch (e) {
+      setError(e.message);
+    }
+  }
+  async function handleDelete(id) {
+    if (!confirm('حذف هذه المدينة؟')) return;
+    try {
+      await api(`/api/admin/destinations/${id}`, { method: 'DELETE' });
+      setItems((list) => list.filter((it) => it.id !== id));
+    } catch (e) {
+      setError(e.message);
+    }
+  }
+
+  if (error) return <p style={{ color: '#d2324f' }}>{error}</p>;
+  if (!items) return <p>جارٍ التحميل...</p>;
+
+  const mostSearched = items.filter((it) => it.kind === 'most_searched');
+  const popular = items.filter((it) => it.kind !== 'most_searched');
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+      <p style={{ margin: 0, fontSize: 13.5, color: '#7b8087' }}>
+        هذه المدن تظهر كاقتراحات عند الضغط على مربع البحث عن الوجهة في صفحة الباقات — "الأكثر بحثاً" تظهر كأزرار، و"مدن شائعة" تظهر كقائمة.
+      </p>
+      <DestinationsGroup title="الأكثر بحثاً" kind="most_searched" items={mostSearched} onAdd={handleAdd} onSave={handleSave} onDelete={handleDelete} />
+      <DestinationsGroup title="مدن شائعة" kind="popular" items={popular} onAdd={handleAdd} onSave={handleSave} onDelete={handleDelete} />
+    </div>
+  );
+}
+
 export default function PackagesAdmin() {
   const [tab, setTab] = useState('packages');
   return (
@@ -428,7 +544,7 @@ export default function PackagesAdmin() {
           <button key={s.id} type="button" style={btnStyle(tab === s.id ? 'primary' : 'ghost')} onClick={() => setTab(s.id)}>{s.label}</button>
         ))}
       </div>
-      {tab === 'packages' ? <PackagesTab /> : <BookingsTab />}
+      {tab === 'packages' ? <PackagesTab /> : tab === 'bookings' ? <BookingsTab /> : <DestinationsTab />}
     </div>
   );
 }
