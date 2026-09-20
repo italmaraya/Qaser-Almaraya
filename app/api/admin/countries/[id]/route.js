@@ -14,6 +14,8 @@ export async function PUT(request, { params }) {
       flag_code = ${b.flag_code || ''},
       region_ar = ${b.region_ar || ''},
       region_en = ${b.region_en || ''},
+      lat = ${b.lat || null},
+      lng = ${b.lng || null},
       sort_order = ${b.sort_order || 0}
     WHERE id = ${id}
     RETURNING *

@@ -562,7 +562,7 @@ function DestinationsTab() {
 }
 
 function blankCountry() {
-  return { name_ar: '', name_en: '', flag_code: '', region_ar: '', region_en: '', sort_order: 0 };
+  return { name_ar: '', name_en: '', flag_code: '', region_ar: '', region_en: '', sort_order: 0, lat: '', lng: '' };
 }
 
 function CountryRow({ item, onSave, onDelete }) {
@@ -589,6 +589,13 @@ function CountryRow({ item, onSave, onDelete }) {
         <input style={inputStyle} placeholder="Region (English), e.g. Middle east countries" value={form.region_en} onChange={(e) => set('region_en', e.target.value)} />
         <input type="number" style={inputStyle} placeholder="الترتيب" value={form.sort_order} onChange={(e) => set('sort_order', Number(e.target.value))} />
       </div>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(140px,1fr))', gap: 8 }}>
+        <input type="number" step="any" style={inputStyle} placeholder="خط العرض Latitude (للكرة الأرضية)، مثال: 25.276987" value={form.lat ?? ''} onChange={(e) => set('lat', e.target.value)} />
+        <input type="number" step="any" style={inputStyle} placeholder="خط الطول Longitude، مثال: 55.296249" value={form.lng ?? ''} onChange={(e) => set('lng', e.target.value)} />
+      </div>
+      <span style={{ fontSize: 11.5, color: '#7b8087' }}>
+        الإحداثيات اختيارية — إن وُجدت، تظهر الدولة كنقطة قابلة للضغط على الكرة الأرضية ثلاثية الأبعاد بصفحة الباقات.
+      </span>
       <ImageUploadField label="علم الدولة" value={form.flag_code} onChange={(url) => set('flag_code', url)} />
       <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end' }}>
         <button type="button" style={btnStyle(dirty ? 'primary' : 'ghost')} disabled={!dirty || saving} onClick={save}>{saving ? '...' : 'حفظ'}</button>

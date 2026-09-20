@@ -1,11 +1,21 @@
 'use client';
 import { useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import dynamic from 'next/dynamic';
 import SiteHeader from '../../components/SiteHeader';
 import SiteFooter from '../../components/SiteFooter';
 import MascotLoader from '../../components/MascotLoader';
 import PackageCard from '../../components/PackageCard';
-import DestinationShowcase from '../../components/DestinationShowcase';
+import DubaiJourney from '../../components/DubaiJourney';
+
+const Globe3D = dynamic(() => import('../../components/Globe3D'), {
+  ssr: false,
+  loading: () => (
+    <div style={{ height: 340, display: 'grid', placeItems: 'center', color: 'rgba(255,255,255,.6)', fontSize: 13 }}>
+      جارٍ تحميل الكرة الأرضية...
+    </div>
+  ),
+});
 import Icon from '../../components/Icon';
 import { useLangToggle } from '../../lib/i18n';
 import { CATS, PREFS, T } from '../../lib/packagesData';
@@ -33,7 +43,6 @@ export default function PackagesPage() {
   const [travelers, setTravelers] = useState({ adults: 2, children: 0, infants: 0, singleRooms: 1, doubleRooms: 0 });
   const [preferredDates, setPreferredDates] = useState('');
   const [drawerOpen, setDrawerOpen] = useState(false);
-  const [showcase, setShowcase] = useState(null);
 
   useEffect(() => {
     fetch('/api/packages')
@@ -253,7 +262,7 @@ export default function PackagesPage() {
                 {showTravelers && (
                   <div
                     style={{
-                      position: 'absolute', insetInlineStart: 0, insetInlineEnd: 0, top: 'calc(100% + 12px)', zIndex: 20, minWidth: 260,
+                      position: 'absolute', insetInlineEnd: 0, top: 'calc(100% + 12px)', zIndex: 20, width: 280, maxWidth: '90vw',
                       background: '#fff', border: '1px solid #ececed', borderRadius: 18, boxShadow: '0 14px 34px rgba(29,39,51,.16)',
                       padding: 18, display: 'flex', flexDirection: 'column', gap: 12, textAlign: 'start',
                     }}
@@ -426,12 +435,6 @@ export default function PackagesPage() {
             <h2 style={{ fontSize: 22, marginBottom: 4 }}>{t.packages_title}</h2>
             <p style={{ color: '#7b8087', marginBottom: 24 }}>{t.packages_sub}</p>
 
-            {showcase ? (
-              <div className="qa-showcase-wrap" style={{ marginBottom: 24, position: 'sticky', top: 74, zIndex: 8 }}>
-                <DestinationShowcase destinationName={showcase.name} lang={lang} fallbackImage={showcase.image} fallbackLabel={showcase.name} />
-              </div>
-            ) : null}
-
             {error && <p style={{ color: '#d2324f', background: '#fdecef', border: '1px solid #f7c3cc', borderRadius: 10, padding: '14px 20px' }}>{error}</p>}
 
             {!packages && !error && <div style={{ padding: 40 }}><MascotLoader assetBase="/assets" /></div>}
@@ -459,12 +462,53 @@ export default function PackagesPage() {
                     lang={lang}
                     rating={p.rating || 4.8}
                     onDetails={() => router.push(`/packages/${p.id}`)}
-                    onPreview={() => setShowcase({ name: nm(p.dest_ar, p.dest_en) || nm(p.title_ar, p.title_en), image: p.image_url || null })}
                   />
                 ))}
               </div>
             )}
           </section>
+
+          {/* Discover all destinations — interactive 3D globe */}
+          <section className="qa-sec" style={{ maxWidth: 1240, margin: '0 auto', padding: '8px 24px 8px' }}>
+            <div style={{ background: 'linear-gradient(135deg,#0a2530,#0d4a5c)', borderRadius: 28, overflow: 'hidden', display: 'grid', gridTemplateColumns: 'minmax(260px,1fr) minmax(280px,1.1fr)', alignItems: 'center', gap: 8 }}>
+              <div style={{ padding: 'clamp(28px,4vw,44px)', display: 'flex', flexDirection: 'column', gap: 14, color: '#fff' }}>
+                <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: '.08em', color: 'rgba(255,255,255,.7)' }}>
+                  {lang === 'en' ? 'EXPLORE THE WORLD' : 'استكشف العالم'}
+                </span>
+                <h2 style={{ margin: 0, fontSize: 'clamp(22px,3vw,30px)', color: '#fff' }}>
+                  {lang === 'en' ? 'Discover all destinations' : 'اكتشف كل الوجهات'}
+                </h2>
+                <p style={{ margin: 0, fontSize: 14, lineHeight: 1.8, color: 'rgba(255,255,255,.78)', maxWidth: 420 }}>
+                  {lang === 'en'
+                    ? 'Spin the globe and tap a pin to jump straight to that destination — every country we travel to, in one view.'
+                    : 'أدر الكرة الأرضية واضغط على أي نقطة للانتقال مباشرة إلى تلك الوجهة — كل الدول التي نسافر إليها في مكان واحد.'}
+                </p>
+                <button
+                  type="button"
+                  onClick={() => { setQuery(''); setCat('all'); document.getElementById('qa-pkg-results')?.scrollIntoView({ behavior: 'smooth' }); }}
+                  className="qa-btn qa-amber"
+                  style={{ alignSelf: 'flex-start', marginTop: 6 }}
+                >
+                  {lang === 'en' ? 'Discover all' : 'استكشاف الكل'}
+                </button>
+              </div>
+              <div style={{ position: 'relative' }}>
+                <Globe3D
+                  pins={countries
+                    .filter((c) => c.lat !== null && c.lat !== undefined && c.lng !== null && c.lng !== undefined)
+                    .map((c) => ({ lat: Number(c.lat), lng: Number(c.lng), name: nm(c.name_ar, c.name_en) }))}
+                  onSelectPin={(p) => { setQuery(p.name); document.getElementById('qa-pkg-results')?.scrollIntoView({ behavior: 'smooth' }); }}
+                  height={340}
+                />
+              </div>
+            </div>
+          </section>
+
+          {/* Dubai cinematic scroll journey — real photos, 2.5D scroll parallax */}
+          <DubaiJourney
+            lang={lang}
+            onExplore={() => { setQuery(lang === 'en' ? 'Dubai' : 'دبي'); document.getElementById('qa-pkg-results')?.scrollIntoView({ behavior: 'smooth' }); }}
+          />
 
           {/* Tour countries */}
           {countryGroups.length > 0 && (

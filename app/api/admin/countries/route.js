@@ -14,8 +14,8 @@ export async function POST(request) {
   await ensureSchema();
   const b = await request.json();
   const rows = await sql`
-    INSERT INTO tour_countries (name_ar, name_en, flag_code, region_ar, region_en, sort_order)
-    VALUES (${b.name_ar || ''}, ${b.name_en || ''}, ${b.flag_code || ''}, ${b.region_ar || ''}, ${b.region_en || ''}, ${b.sort_order || 0})
+    INSERT INTO tour_countries (name_ar, name_en, flag_code, region_ar, region_en, sort_order, lat, lng)
+    VALUES (${b.name_ar || ''}, ${b.name_en || ''}, ${b.flag_code || ''}, ${b.region_ar || ''}, ${b.region_en || ''}, ${b.sort_order || 0}, ${b.lat || null}, ${b.lng || null})
     RETURNING *
   `;
   return NextResponse.json(rows[0]);
