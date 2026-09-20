@@ -120,7 +120,7 @@ function HotelRow({ h, lang, selected, onSelect }) {
   );
 }
 
-export default function PackageCard({ title, destination, image, nights, groupType, departs, price, includes = [], badge, onDetails, hotels = [], flights = [], lang = 'ar', style }) {
+export default function PackageCard({ title, destination, image, nights, groupType, departs, price, includes = [], badge, onDetails, hotels = [], flights = [], lang = 'ar', rating = 4.8, style }) {
   const [open, setOpen] = useState(false);
   const [tab, setTab] = useState('flights');
   const [flightIdx, setFlightIdx] = useState(0);
@@ -128,27 +128,53 @@ export default function PackageCard({ title, destination, image, nights, groupTy
   const hasFlights = flights.length > 0;
   const hasHotels = hotels.length > 0;
   const canToggle = hasFlights || hasHotels;
+  const roundedRating = Math.round(rating);
 
   return (
-    <div dir="rtl" style={{ background: '#fff', border: '1px solid #ececed', borderRadius: 18, boxShadow: '0 2px 8px rgba(29,39,51,.07)', overflow: 'hidden', display: 'flex', flexDirection: 'column', ...style }}>
-      <div style={{ position: 'relative', aspectRatio: '16/9', background: '#eaf8fd' }}>
+    <div dir="rtl" style={{ background: '#fff', border: badge ? '3px solid #049dc5' : '1px solid #ececed', borderRadius: 20, boxShadow: badge ? '0 8px 26px rgba(4,157,197,.22)' : '0 2px 8px rgba(29,39,51,.07)', overflow: 'hidden', display: 'flex', flexDirection: 'column', ...style }}>
+      <div style={{ position: 'relative', aspectRatio: '3/4', background: '#0d2b36' }}>
         {image ? (
-          <img src={image} alt={title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+          <img src={image} alt={title} style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }} />
         ) : (
-          <span style={{ position: 'absolute', inset: 0, display: 'grid', placeItems: 'center', gap: 6, color: '#049dc5', fontSize: 13 }}>
+          <span style={{ position: 'absolute', inset: 0, display: 'grid', placeItems: 'center', gap: 6, color: '#7fd4ee', fontSize: 13 }}>
             <Icon name="image" size={26} />صورة الوجهة
           </span>
         )}
-        {image ? <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(1,42,55,.55), transparent 60%)' }} /> : null}
-        <div style={{ position: 'absolute', bottom: 16, insetInline: 16, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8 }}>
-          <span style={{ color: image ? '#fff' : '#036f8c', fontSize: 19, fontWeight: 700 }}>{destination}</span>
-          {badge ? <span style={{ padding: '4px 12px', borderRadius: 999, background: '#faab18', color: '#012a37', fontSize: 12, fontWeight: 700 }}>{badge}</span> : null}
+        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(1,20,28,.9) 0%, rgba(1,20,28,.35) 42%, transparent 68%)' }} />
+
+        <span style={{ position: 'absolute', top: 14, insetInlineEnd: 14, display: 'inline-flex', alignItems: 'center', gap: 5, background: '#fff', borderRadius: 999, padding: '5px 11px', fontSize: 12.5, fontWeight: 700, color: '#1d2733', boxShadow: '0 4px 12px rgba(1,42,55,.25)' }}>
+          <Icon name="star" size={12} style={{ color: '#faab18' }} />{rating}
+        </span>
+
+        <button
+          type="button"
+          onClick={onDetails}
+          aria-label={lang === 'en' ? 'Package details' : 'تفاصيل الباقة'}
+          style={{
+            position: 'absolute', bottom: 16, insetInlineEnd: 16, width: 34, height: 34, borderRadius: '50%',
+            background: '#fff', border: 'none', cursor: 'pointer', display: 'grid', placeItems: 'center', boxShadow: '0 4px 12px rgba(1,42,55,.3)',
+          }}
+        >
+          <Icon name="arrow-up-right" size={16} style={{ color: '#036f8c' }} />
+        </button>
+
+        <div style={{ position: 'absolute', bottom: 16, insetInlineStart: 16, insetInlineEnd: 60, display: 'flex', flexDirection: 'column', gap: 4, color: '#fff' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+            <span style={{ display: 'flex', gap: 1 }}>
+              {Array.from({ length: 5 }).map((_, i) => (
+                <Icon key={i} name="star" size={11} style={{ color: i < roundedRating ? '#faab18' : 'rgba(255,255,255,.35)' }} />
+              ))}
+            </span>
+            <span style={{ fontSize: 11, color: 'rgba(255,255,255,.75)' }}>{rating} {lang === 'en' ? 'Out of 5' : 'من ٥'}</span>
+          </div>
+          <h4 style={{ margin: 0, fontSize: 17, fontWeight: 700, color: '#fff', lineHeight: 1.3 }}>{title}</h4>
+          {nights ? <span style={{ fontSize: 12.5, color: 'rgba(255,255,255,.8)' }}>{destination}{destination && nights ? ' · ' : ''}{nights}</span> : (
+            <span style={{ fontSize: 12.5, color: 'rgba(255,255,255,.8)' }}>{destination}</span>
+          )}
         </div>
       </div>
       <div style={{ padding: 20, display: 'flex', flexDirection: 'column', gap: 12, flex: 1 }}>
-        <h4 style={{ margin: 0, fontSize: 18, fontWeight: 700, color: '#1d2733' }}>{title}</h4>
         <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap', fontSize: 13, color: '#7b8087' }}>
-          {nights ? <span style={{ display: 'inline-flex', alignItems: 'center', gap: 5 }}><Icon name="moon" size={15} />{nights}</span> : null}
           {groupType ? <span style={{ display: 'inline-flex', alignItems: 'center', gap: 5 }}><Icon name="users" size={15} />{groupType}</span> : null}
           {departs ? <span style={{ display: 'inline-flex', alignItems: 'center', gap: 5 }}><Icon name="calendar-days" size={15} />{departs}</span> : null}
         </div>

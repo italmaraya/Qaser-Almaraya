@@ -122,12 +122,25 @@ export default function PackagesPage() {
                   {t.hero_cta2}
                 </a>
               </div>
-              <div style={{ flex: '0 0 220px', display: 'flex', justifyContent: 'center' }}>
+              <div style={{ flex: '0 0 auto', width: 'clamp(240px,32vw,400px)', position: 'relative', display: 'grid', placeItems: 'center', margin: '18px auto 0' }}>
+                <div style={{ position: 'absolute', inset: '-14%', borderRadius: '50%', background: 'radial-gradient(circle, rgba(250,171,24,.4) 0%, rgba(250,171,24,0) 70%)', filter: 'blur(6px)', zIndex: 0 }} />
+                <div className="qa-hero-ring" style={{ position: 'absolute', inset: '-7%', borderRadius: '50%', border: '2px dashed rgba(255,255,255,.55)', zIndex: 1 }} />
+                <div style={{ position: 'absolute', inset: '1.5%', borderRadius: '50%', border: '3px solid rgba(255,255,255,.25)', zIndex: 1 }} />
                 <img
                   src="/assets/mascot-skylo-packages-hero.png"
                   alt=""
-                  style={{ width: 220, height: 220, objectFit: 'cover', borderRadius: '50%', border: '4px solid rgba(255,255,255,.35)', boxShadow: '0 16px 40px rgba(1,42,55,.3)' }}
+                  style={{ position: 'relative', zIndex: 2, width: '100%', aspectRatio: '1 / 1', objectFit: 'cover', borderRadius: '50%', border: '6px solid rgba(255,255,255,.55)', boxShadow: '0 24px 60px rgba(1,42,55,.4)' }}
                 />
+                <div style={{ position: 'absolute', top: '-4%', insetInlineEnd: '-2%', width: 'clamp(42px,9%,58px)', height: 'clamp(42px,9%,58px)', borderRadius: '50%', background: '#faab18', display: 'grid', placeItems: 'center', boxShadow: '0 10px 22px rgba(1,42,55,.35)', zIndex: 3 }}>
+                  <Icon name="plane" size={22} style={{ color: '#012a37', transform: 'rotate(45deg)' }} />
+                </div>
+                <div style={{ position: 'absolute', bottom: '4%', insetInlineStart: '-6%', width: 'clamp(34px,7%,46px)', height: 'clamp(34px,7%,46px)', borderRadius: '50%', background: '#fff', display: 'grid', placeItems: 'center', boxShadow: '0 10px 22px rgba(1,42,55,.25)', zIndex: 3 }}>
+                  <Icon name="map-pin" size={18} style={{ color: '#049dc5' }} />
+                </div>
+                <style jsx>{`
+                  .qa-hero-ring { animation: qa-hero-spin 18s linear infinite; }
+                  @keyframes qa-hero-spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+                `}</style>
               </div>
             </div>
           </section>
@@ -343,6 +356,7 @@ export default function PackagesPage() {
                     hotels={p.hotels || []}
                     flights={p.flights || []}
                     lang={lang}
+                    rating={p.rating || 4.8}
                     onDetails={() => router.push(`/packages/${p.id}`)}
                   />
                 ))}

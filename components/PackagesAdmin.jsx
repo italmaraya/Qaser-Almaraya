@@ -117,7 +117,7 @@ function blankPackage() {
     nights_ar: '', nights_en: '', departs_ar: '', departs_en: '', price: 0, child_price: 0,
     adult_cost: 0, child_cost: 0, cost_currency: 'IQD',
     badge_ar: '', badge_en: '', prefs: [], includes_ar: [], includes_en: [],
-    hotels: [], flights: [], days: [], image_url: '', active: true, sort_order: 0,
+    hotels: [], flights: [], days: [], image_url: '', active: true, sort_order: 0, rating: 4.8,
   };
 }
 
@@ -176,6 +176,7 @@ function PackageForm({ initial, onSave, onCancel, saving }) {
         <label style={labelStyle}>سعر الطفل (IQD)<input type="number" style={inputStyle} value={form.child_price} onChange={(e) => set('child_price', Number(e.target.value))} /></label>
         <label style={labelStyle}>شارة (عربي، اختياري)<input style={inputStyle} value={form.badge_ar} onChange={(e) => set('badge_ar', e.target.value)} placeholder="مثال: الأكثر طلباً" /></label>
         <label style={labelStyle}>Badge (English, optional)<input style={inputStyle} value={form.badge_en} onChange={(e) => set('badge_en', e.target.value)} /></label>
+        <label style={labelStyle}>التقييم (من ٥)<input type="number" step="0.1" min="0" max="5" style={inputStyle} value={form.rating ?? 4.8} onChange={(e) => set('rating', Number(e.target.value))} /></label>
       </div>
 
       <div style={{ borderTop: '1px solid #ececed', paddingTop: 14, display: 'flex', flexDirection: 'column', gap: 12 }}>

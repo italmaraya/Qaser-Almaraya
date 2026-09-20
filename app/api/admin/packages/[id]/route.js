@@ -22,7 +22,7 @@ export async function PUT(request, { params }) {
       includes_ar = ${JSON.stringify(b.includes_ar || [])}, includes_en = ${JSON.stringify(b.includes_en || [])},
       hotels = ${JSON.stringify(b.hotels || [])}, flights = ${JSON.stringify(b.flights || [])},
       days = ${JSON.stringify(b.days || [])}, image_url = ${b.image_url || ''},
-      active = ${b.active !== false}, sort_order = ${b.sort_order || 0}, iqd_migrated = true
+      active = ${b.active !== false}, sort_order = ${b.sort_order || 0}, iqd_migrated = true, rating = ${b.rating || 4.8}
     WHERE id = ${id} RETURNING *
   `;
   return NextResponse.json(rows[0] || {});
