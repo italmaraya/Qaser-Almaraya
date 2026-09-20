@@ -5,45 +5,73 @@ import Icon from './Icon';
 function FlightRow({ f, lang, selected, onSelect }) {
   const nm = (ar, en) => (lang === 'en' && en ? en : ar);
   const airline = nm(f.nameAr, f.nameEn);
-  const tripLabel = nm(f.tripLabelAr, f.tripLabelEn);
-  const hasRoute = f.fromCity || f.toCity || f.departTime || f.arriveTime;
+  const hasReturn = !!(f.retFromCity || f.retToCity || f.retDepartTime || f.retArriveTime);
+  const [leg, setLeg] = useState('out');
+  const active = leg === 'ret' && hasReturn ? 'ret' : 'out';
+
+  const legData = active === 'ret'
+    ? { from: f.retFromCity, to: f.retToCity, depart: f.retDepartTime, arrive: f.retArriveTime, duration: f.retDuration, flightNo: f.retFlightNo }
+    : { from: f.outFromCity, to: f.outToCity, depart: f.outDepartTime, arrive: f.outArriveTime, duration: f.outDuration, flightNo: f.outFlightNo };
+  const hasRoute = legData.from || legData.to || legData.depart || legData.arrive;
+
   return (
     <div
-      onClick={onSelect}
       style={{
-        cursor: 'pointer', border: `1.5px solid ${selected ? '#049dc5' : '#ececed'}`,
+        border: `1.5px solid ${selected ? '#049dc5' : '#ececed'}`,
         background: selected ? '#eaf8fd' : '#fff', borderRadius: 14, padding: 14,
         display: 'flex', flexDirection: 'column', gap: 10,
       }}
     >
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8 }}>
+      <div onClick={onSelect} style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8 }}>
         <span style={{ fontSize: 13, fontWeight: 700, color: '#1d2733' }}>
           {airline || (lang === 'en' ? 'Airline' : 'شركة الطيران')}
-          {f.flightNo ? <span style={{ color: '#7b8087', fontWeight: 500 }}> · {f.flightNo}</span> : null}
+          {legData.flightNo ? <span style={{ color: '#7b8087', fontWeight: 500 }}> · {legData.flightNo}</span> : null}
         </span>
         <span style={{ fontSize: 12.5, fontWeight: 700, color: f.diff ? '#049dc5' : '#7b8087' }}>
           {f.diff ? (f.diff > 0 ? '+' : '') + f.diff.toLocaleString() + ' ' + (lang === 'en' ? 'IQD' : 'د.ع') : (lang === 'en' ? 'Included' : 'مشمول')}
         </span>
       </div>
 
+      {hasReturn ? (
+        <div style={{ display: 'flex', gap: 6 }}>
+          <button
+            type="button"
+            onClick={(e) => { e.stopPropagation(); setLeg('out'); }}
+            style={{
+              flex: 1, cursor: 'pointer', fontFamily: 'inherit', padding: '5px 8px', borderRadius: 999, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 5,
+              border: `1px solid ${active === 'out' ? '#049dc5' : '#ececed'}`, background: active === 'out' ? '#049dc5' : '#fff', color: active === 'out' ? '#fff' : '#3d4650', fontSize: 11.5, fontWeight: 700,
+            }}
+          >
+            <Icon name="plane-takeoff" size={12} />{lang === 'en' ? 'Departure' : 'ذهاب'}
+          </button>
+          <button
+            type="button"
+            onClick={(e) => { e.stopPropagation(); setLeg('ret'); }}
+            style={{
+              flex: 1, cursor: 'pointer', fontFamily: 'inherit', padding: '5px 8px', borderRadius: 999, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 5,
+              border: `1px solid ${active === 'ret' ? '#049dc5' : '#ececed'}`, background: active === 'ret' ? '#049dc5' : '#fff', color: active === 'ret' ? '#fff' : '#3d4650', fontSize: 11.5, fontWeight: 700,
+            }}
+          >
+            <Icon name="plane-landing" size={12} />{lang === 'en' ? 'Return' : 'عودة'}
+          </button>
+        </div>
+      ) : null}
+
       {hasRoute ? (
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+        <div onClick={onSelect} style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 10 }}>
           <div style={{ flex: '0 0 auto', minWidth: 70, textAlign: 'center' }}>
-            <div style={{ fontSize: 16, fontWeight: 700, color: '#1d2733' }}>{f.departTime || '--:--'}</div>
-            <div style={{ fontSize: 11.5, color: '#7b8087' }}>{f.fromCity || (lang === 'en' ? 'Origin' : 'الانطلاق')}</div>
+            <div style={{ fontSize: 16, fontWeight: 700, color: '#1d2733' }}>{legData.depart || '--:--'}</div>
+            <div style={{ fontSize: 11.5, color: '#7b8087' }}>{legData.from || (lang === 'en' ? 'Origin' : 'الانطلاق')}</div>
           </div>
           <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 }}>
-            {tripLabel ? (
-              <span style={{ fontSize: 10.5, fontWeight: 700, color: '#049dc5', background: '#eaf8fd', borderRadius: 999, padding: '2px 10px', marginBottom: 2 }}>{tripLabel}</span>
-            ) : null}
             <div style={{ position: 'relative', width: '100%', height: 1, background: '#cfe9f2', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <Icon name="plane" size={16} style={{ color: '#049dc5', background: '#fff', transform: 'rotate(90deg)' }} />
+              <Icon name="plane" size={16} style={{ color: '#049dc5', background: '#fff', transform: active === 'ret' ? 'rotate(-90deg)' : 'rotate(90deg)' }} />
             </div>
-            {f.duration ? <span style={{ fontSize: 10.5, color: '#7b8087' }}>{f.duration}</span> : null}
+            {legData.duration ? <span style={{ fontSize: 10.5, color: '#7b8087' }}>{legData.duration}</span> : null}
           </div>
           <div style={{ flex: '0 0 auto', minWidth: 70, textAlign: 'center' }}>
-            <div style={{ fontSize: 16, fontWeight: 700, color: '#1d2733' }}>{f.arriveTime || '--:--'}</div>
-            <div style={{ fontSize: 11.5, color: '#7b8087' }}>{f.toCity || (lang === 'en' ? 'Destination' : 'الوصول')}</div>
+            <div style={{ fontSize: 16, fontWeight: 700, color: '#1d2733' }}>{legData.arrive || '--:--'}</div>
+            <div style={{ fontSize: 11.5, color: '#7b8087' }}>{legData.to || (lang === 'en' ? 'Destination' : 'الوصول')}</div>
           </div>
         </div>
       ) : null}

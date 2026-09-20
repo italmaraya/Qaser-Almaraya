@@ -22,6 +22,8 @@ const SUBTABS = [
   { id: 'packages', label: 'الباقات' },
   { id: 'bookings', label: 'الحجوزات' },
   { id: 'destinations', label: 'المدن الشائعة' },
+  { id: 'countries', label: 'الدول السياحية' },
+  { id: 'reviews', label: 'آراء العملاء' },
 ];
 
 async function api(path, options) {
@@ -222,7 +224,11 @@ function PackageForm({ initial, onSave, onCancel, saving }) {
       <div>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
           <span style={{ fontSize: 13.5, fontWeight: 700 }}>خيارات الرحلات</span>
-          <button type="button" style={btnStyle('ghost')} onClick={() => addRow('flights', { nameAr: '', nameEn: '', diff: 0, flightNo: '', fromCity: '', toCity: '', departTime: '', arriveTime: '', duration: '', tripLabelAr: '', tripLabelEn: '' })}>+ إضافة رحلة</button>
+          <button type="button" style={btnStyle('ghost')} onClick={() => addRow('flights', {
+            nameAr: '', nameEn: '', diff: 0,
+            outFlightNo: '', outFromCity: '', outToCity: '', outDepartTime: '', outArriveTime: '', outDuration: '',
+            retFlightNo: '', retFromCity: '', retToCity: '', retDepartTime: '', retArriveTime: '', retDuration: '',
+          })}>+ إضافة رحلة</button>
         </div>
         {(form.flights || []).map((f, idx) => (
           <div key={idx} style={{ border: '1px solid #ececed', borderRadius: 10, padding: 10, marginBottom: 8, display: 'flex', flexDirection: 'column', gap: 8 }}>
@@ -232,15 +238,27 @@ function PackageForm({ initial, onSave, onCancel, saving }) {
               <input type="number" style={inputStyle} placeholder="فرق السعر (IQD)" value={f.diff} onChange={(e) => updateRow('flights', idx, 'diff', Number(e.target.value))} />
               <button type="button" style={btnStyle('danger')} onClick={() => removeRow('flights', idx)}>حذف</button>
             </div>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(120px,1fr))', gap: 8 }}>
-              <input style={inputStyle} placeholder="رقم الرحلة" value={f.flightNo || ''} onChange={(e) => updateRow('flights', idx, 'flightNo', e.target.value)} />
-              <input style={inputStyle} placeholder="مدينة الانطلاق" value={f.fromCity || ''} onChange={(e) => updateRow('flights', idx, 'fromCity', e.target.value)} />
-              <input style={inputStyle} placeholder="مدينة الوصول" value={f.toCity || ''} onChange={(e) => updateRow('flights', idx, 'toCity', e.target.value)} />
-              <input style={inputStyle} placeholder="وقت المغادرة، مثال 15:00" value={f.departTime || ''} onChange={(e) => updateRow('flights', idx, 'departTime', e.target.value)} />
-              <input style={inputStyle} placeholder="وقت الوصول، مثال 17:05" value={f.arriveTime || ''} onChange={(e) => updateRow('flights', idx, 'arriveTime', e.target.value)} />
-              <input style={inputStyle} placeholder="المدة، مثال 2h 05m" value={f.duration || ''} onChange={(e) => updateRow('flights', idx, 'duration', e.target.value)} />
-              <input style={inputStyle} placeholder="نوع الرحلة (عربي)، مثال: رحلة ذهاب" value={f.tripLabelAr || ''} onChange={(e) => updateRow('flights', idx, 'tripLabelAr', e.target.value)} />
-              <input style={inputStyle} placeholder="Trip label (English), e.g. Return Flight" value={f.tripLabelEn || ''} onChange={(e) => updateRow('flights', idx, 'tripLabelEn', e.target.value)} />
+            <div style={{ borderTop: '1px dashed #ececed', paddingTop: 8 }}>
+              <span style={{ fontSize: 12.5, fontWeight: 700, color: '#036f8c' }}>✈ رحلة الذهاب</span>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(110px,1fr))', gap: 8, marginTop: 6 }}>
+                <input style={inputStyle} placeholder="رقم الرحلة" value={f.outFlightNo || ''} onChange={(e) => updateRow('flights', idx, 'outFlightNo', e.target.value)} />
+                <input style={inputStyle} placeholder="مدينة الانطلاق" value={f.outFromCity || ''} onChange={(e) => updateRow('flights', idx, 'outFromCity', e.target.value)} />
+                <input style={inputStyle} placeholder="مدينة الوصول" value={f.outToCity || ''} onChange={(e) => updateRow('flights', idx, 'outToCity', e.target.value)} />
+                <input style={inputStyle} placeholder="وقت المغادرة، مثال 15:00" value={f.outDepartTime || ''} onChange={(e) => updateRow('flights', idx, 'outDepartTime', e.target.value)} />
+                <input style={inputStyle} placeholder="وقت الوصول، مثال 17:05" value={f.outArriveTime || ''} onChange={(e) => updateRow('flights', idx, 'outArriveTime', e.target.value)} />
+                <input style={inputStyle} placeholder="المدة، مثال 2h 05m" value={f.outDuration || ''} onChange={(e) => updateRow('flights', idx, 'outDuration', e.target.value)} />
+              </div>
+            </div>
+            <div style={{ borderTop: '1px dashed #ececed', paddingTop: 8 }}>
+              <span style={{ fontSize: 12.5, fontWeight: 700, color: '#036f8c' }}>✈ رحلة العودة</span>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(110px,1fr))', gap: 8, marginTop: 6 }}>
+                <input style={inputStyle} placeholder="رقم الرحلة" value={f.retFlightNo || ''} onChange={(e) => updateRow('flights', idx, 'retFlightNo', e.target.value)} />
+                <input style={inputStyle} placeholder="مدينة الانطلاق" value={f.retFromCity || ''} onChange={(e) => updateRow('flights', idx, 'retFromCity', e.target.value)} />
+                <input style={inputStyle} placeholder="مدينة الوصول" value={f.retToCity || ''} onChange={(e) => updateRow('flights', idx, 'retToCity', e.target.value)} />
+                <input style={inputStyle} placeholder="وقت المغادرة، مثال 15:00" value={f.retDepartTime || ''} onChange={(e) => updateRow('flights', idx, 'retDepartTime', e.target.value)} />
+                <input style={inputStyle} placeholder="وقت الوصول، مثال 17:05" value={f.retArriveTime || ''} onChange={(e) => updateRow('flights', idx, 'retArriveTime', e.target.value)} />
+                <input style={inputStyle} placeholder="المدة، مثال 2h 05m" value={f.retDuration || ''} onChange={(e) => updateRow('flights', idx, 'retDuration', e.target.value)} />
+              </div>
             </div>
           </div>
         ))}
@@ -535,6 +553,207 @@ function DestinationsTab() {
   );
 }
 
+function blankCountry() {
+  return { name_ar: '', name_en: '', flag_code: '', region_ar: '', region_en: '', sort_order: 0 };
+}
+
+function CountryRow({ item, onSave, onDelete }) {
+  const [form, setForm] = useState(item);
+  const [saving, setSaving] = useState(false);
+  const set = (k, v) => setForm((f) => ({ ...f, [k]: v }));
+  const dirty = JSON.stringify(form) !== JSON.stringify(item);
+
+  async function save() {
+    setSaving(true);
+    try {
+      await onSave(form);
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  return (
+    <div style={{ border: '1px solid #ececed', borderRadius: 10, padding: 10, display: 'flex', flexDirection: 'column', gap: 8 }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(140px,1fr))', gap: 8 }}>
+        <input style={inputStyle} placeholder="اسم الدولة (عربي)" value={form.name_ar} onChange={(e) => set('name_ar', e.target.value)} />
+        <input style={inputStyle} placeholder="Country name (English)" value={form.name_en} onChange={(e) => set('name_en', e.target.value)} />
+        <input style={inputStyle} placeholder="المنطقة (عربي)، مثال: دول الشرق الأوسط" value={form.region_ar} onChange={(e) => set('region_ar', e.target.value)} />
+        <input style={inputStyle} placeholder="Region (English), e.g. Middle east countries" value={form.region_en} onChange={(e) => set('region_en', e.target.value)} />
+        <input type="number" style={inputStyle} placeholder="الترتيب" value={form.sort_order} onChange={(e) => set('sort_order', Number(e.target.value))} />
+      </div>
+      <ImageUploadField label="علم الدولة" value={form.flag_code} onChange={(url) => set('flag_code', url)} />
+      <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end' }}>
+        <button type="button" style={btnStyle(dirty ? 'primary' : 'ghost')} disabled={!dirty || saving} onClick={save}>{saving ? '...' : 'حفظ'}</button>
+        <button type="button" style={btnStyle('danger')} onClick={() => onDelete(item.id)}>حذف</button>
+      </div>
+    </div>
+  );
+}
+
+function CountriesTab() {
+  const [items, setItems] = useState(null);
+  const [error, setError] = useState('');
+
+  function load() {
+    api('/api/admin/countries').then(setItems).catch((e) => setError(e.message));
+  }
+  useEffect(load, []);
+
+  async function handleAdd() {
+    try {
+      const created = await api('/api/admin/countries', { method: 'POST', body: JSON.stringify(blankCountry()) });
+      setItems((list) => [...(list || []), created]);
+    } catch (e) {
+      setError(e.message);
+    }
+  }
+  async function handleSave(form) {
+    try {
+      const updated = await api(`/api/admin/countries/${form.id}`, { method: 'PUT', body: JSON.stringify(form) });
+      setItems((list) => list.map((it) => (it.id === updated.id ? updated : it)));
+    } catch (e) {
+      setError(e.message);
+    }
+  }
+  async function handleDelete(id) {
+    if (!confirm('حذف هذه الدولة؟')) return;
+    try {
+      await api(`/api/admin/countries/${id}`, { method: 'DELETE' });
+      setItems((list) => list.filter((it) => it.id !== id));
+    } catch (e) {
+      setError(e.message);
+    }
+  }
+
+  if (error) return <p style={{ color: '#d2324f' }}>{error}</p>;
+  if (!items) return <p>جارٍ التحميل...</p>;
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+      <p style={{ margin: 0, fontSize: 13.5, color: '#7b8087' }}>
+        هذه الدول تظهر في قسم "كل دول الرحلات" بصفحة الباقات، مجمّعة حسب المنطقة التي تكتبونها لكل دولة.
+      </p>
+      <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+        <button type="button" style={btnStyle('primary')} onClick={handleAdd}>+ إضافة دولة</button>
+      </div>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+        {items.length === 0 && <p style={{ color: '#7b8087' }}>لا توجد دول بعد.</p>}
+        {items.map((it) => (
+          <CountryRow key={it.id} item={it} onSave={handleSave} onDelete={handleDelete} />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function blankReview() {
+  return { name_ar: '', name_en: '', text_ar: '', text_en: '', image_url: '', rating: 5, sort_order: 0, active: true };
+}
+
+function ReviewRow({ item, onSave, onDelete }) {
+  const [form, setForm] = useState(item);
+  const [saving, setSaving] = useState(false);
+  const set = (k, v) => setForm((f) => ({ ...f, [k]: v }));
+  const dirty = JSON.stringify(form) !== JSON.stringify(item);
+
+  async function save() {
+    setSaving(true);
+    try {
+      await onSave(form);
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  return (
+    <div style={{ border: '1px solid #ececed', borderRadius: 10, padding: 10, display: 'flex', flexDirection: 'column', gap: 8 }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(140px,1fr))', gap: 8 }}>
+        <input style={inputStyle} placeholder="اسم العميل (عربي)" value={form.name_ar} onChange={(e) => set('name_ar', e.target.value)} />
+        <input style={inputStyle} placeholder="Customer name (English)" value={form.name_en} onChange={(e) => set('name_en', e.target.value)} />
+        <label style={labelStyle}>التقييم (١-٥)
+          <input type="number" min="1" max="5" style={inputStyle} value={form.rating} onChange={(e) => set('rating', Math.min(5, Math.max(1, Number(e.target.value))))} />
+        </label>
+        <label style={labelStyle}>الترتيب
+          <input type="number" style={inputStyle} value={form.sort_order} onChange={(e) => set('sort_order', Number(e.target.value))} />
+        </label>
+        <label style={labelStyle}>نشطة
+          <select style={inputStyle} value={form.active ? '1' : '0'} onChange={(e) => set('active', e.target.value === '1')}>
+            <option value="1">نعم — تظهر على الموقع</option>
+            <option value="0">لا — مخفية</option>
+          </select>
+        </label>
+      </div>
+      <label style={labelStyle}>نص الرأي (عربي)
+        <textarea style={{ ...inputStyle, minHeight: 70 }} value={form.text_ar} onChange={(e) => set('text_ar', e.target.value)} />
+      </label>
+      <label style={labelStyle}>Review text (English)
+        <textarea style={{ ...inputStyle, minHeight: 70 }} value={form.text_en} onChange={(e) => set('text_en', e.target.value)} />
+      </label>
+      <ImageUploadField label="صورة العميل (اختياري)" value={form.image_url} onChange={(url) => set('image_url', url)} />
+      <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end' }}>
+        <button type="button" style={btnStyle(dirty ? 'primary' : 'ghost')} disabled={!dirty || saving} onClick={save}>{saving ? '...' : 'حفظ'}</button>
+        <button type="button" style={btnStyle('danger')} onClick={() => onDelete(item.id)}>حذف</button>
+      </div>
+    </div>
+  );
+}
+
+function ReviewsTab() {
+  const [items, setItems] = useState(null);
+  const [error, setError] = useState('');
+
+  function load() {
+    api('/api/admin/reviews').then(setItems).catch((e) => setError(e.message));
+  }
+  useEffect(load, []);
+
+  async function handleAdd() {
+    try {
+      const created = await api('/api/admin/reviews', { method: 'POST', body: JSON.stringify(blankReview()) });
+      setItems((list) => [...(list || []), created]);
+    } catch (e) {
+      setError(e.message);
+    }
+  }
+  async function handleSave(form) {
+    try {
+      const updated = await api(`/api/admin/reviews/${form.id}`, { method: 'PUT', body: JSON.stringify(form) });
+      setItems((list) => list.map((it) => (it.id === updated.id ? updated : it)));
+    } catch (e) {
+      setError(e.message);
+    }
+  }
+  async function handleDelete(id) {
+    if (!confirm('حذف هذا الرأي؟')) return;
+    try {
+      await api(`/api/admin/reviews/${id}`, { method: 'DELETE' });
+      setItems((list) => list.filter((it) => it.id !== id));
+    } catch (e) {
+      setError(e.message);
+    }
+  }
+
+  if (error) return <p style={{ color: '#d2324f' }}>{error}</p>;
+  if (!items) return <p>جارٍ التحميل...</p>;
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+      <p style={{ margin: 0, fontSize: 13.5, color: '#7b8087' }}>
+        هذه الآراء تظهر في قسم "آراء عملائنا" بصفحة الباقات — اكتبوا النص وأضيفوا صورة العميل (اختياري).
+      </p>
+      <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+        <button type="button" style={btnStyle('primary')} onClick={handleAdd}>+ إضافة رأي</button>
+      </div>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+        {items.length === 0 && <p style={{ color: '#7b8087' }}>لا توجد آراء بعد.</p>}
+        {items.map((it) => (
+          <ReviewRow key={it.id} item={it} onSave={handleSave} onDelete={handleDelete} />
+        ))}
+      </div>
+    </div>
+  );
+}
+
 export default function PackagesAdmin() {
   const [tab, setTab] = useState('packages');
   return (
@@ -544,7 +763,11 @@ export default function PackagesAdmin() {
           <button key={s.id} type="button" style={btnStyle(tab === s.id ? 'primary' : 'ghost')} onClick={() => setTab(s.id)}>{s.label}</button>
         ))}
       </div>
-      {tab === 'packages' ? <PackagesTab /> : tab === 'bookings' ? <BookingsTab /> : <DestinationsTab />}
+      {tab === 'packages' ? <PackagesTab />
+        : tab === 'bookings' ? <BookingsTab />
+        : tab === 'destinations' ? <DestinationsTab />
+        : tab === 'countries' ? <CountriesTab />
+        : <ReviewsTab />}
     </div>
   );
 }
