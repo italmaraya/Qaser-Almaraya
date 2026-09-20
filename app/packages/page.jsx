@@ -96,11 +96,7 @@ export default function PackagesPage() {
 
   const CAT_EMOJI = { family: '👨‍👩‍👧', couples: '❤️', group: '🎉', beach: '🌴', event: '🎫', umrah: '🕌', adventure: '🏔️' };
 
-  const heroImage = useMemo(() => {
-    if (!packages || !packages.length) return null;
-    const featured = packages.find((p) => (p.badge_ar || p.badge_en) && p.image_url);
-    return (featured || packages.find((p) => p.image_url))?.image_url || null;
-  }, [packages]);
+  const heroImage = '/assets/packages-hero-cliffs.jpg';
 
   function setTravelerCount(key, delta, min = 0) {
     setTravelers((t) => ({ ...t, [key]: Math.max(min, t[key] + delta) }));
