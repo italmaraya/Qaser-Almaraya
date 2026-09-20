@@ -6,7 +6,6 @@ import SiteHeader from '../../components/SiteHeader';
 import SiteFooter from '../../components/SiteFooter';
 import MascotLoader from '../../components/MascotLoader';
 import PackageCard from '../../components/PackageCard';
-import DubaiJourney from '../../components/DubaiJourney';
 
 const Globe3D = dynamic(() => import('../../components/Globe3D'), {
   ssr: false,
@@ -20,6 +19,7 @@ import Icon from '../../components/Icon';
 import { useLangToggle } from '../../lib/i18n';
 import { CATS, PREFS, T } from '../../lib/packagesData';
 import { formatPrice } from '../../lib/currency';
+import { lookupDestinationCoords } from '../../lib/destinationCoords';
 
 export default function PackagesPage() {
   const router = useRouter();
@@ -97,6 +97,23 @@ export default function PackagesPage() {
   const CAT_EMOJI = { family: '👨‍👩‍👧', couples: '❤️', group: '🎉', beach: '🌴', event: '🎫', umrah: '🕌', adventure: '🏔️' };
 
   const heroImage = '/assets/packages-hero-cliffs.jpg';
+
+  const globePins = useMemo(() => {
+    const map = new Map();
+    (packages || []).forEach((p) => {
+      const name = nm(p.dest_ar, p.dest_en);
+      if (!name || map.has(name)) return;
+      const coords = lookupDestinationCoords(p.dest_ar) || lookupDestinationCoords(p.dest_en);
+      if (coords) map.set(name, { ...coords, name });
+    });
+    countries.forEach((c) => {
+      if (c.lat === null || c.lat === undefined || c.lng === null || c.lng === undefined) return;
+      const name = nm(c.name_ar, c.name_en);
+      if (!name || map.has(name)) return;
+      map.set(name, { lat: Number(c.lat), lng: Number(c.lng), name });
+    });
+    return Array.from(map.values());
+  }, [packages, countries, lang]);
 
   function setTravelerCount(key, delta, min = 0) {
     setTravelers((t) => ({ ...t, [key]: Math.max(min, t[key] + delta) }));
@@ -490,21 +507,13 @@ export default function PackagesPage() {
               </div>
               <div style={{ position: 'relative' }}>
                 <Globe3D
-                  pins={countries
-                    .filter((c) => c.lat !== null && c.lat !== undefined && c.lng !== null && c.lng !== undefined)
-                    .map((c) => ({ lat: Number(c.lat), lng: Number(c.lng), name: nm(c.name_ar, c.name_en) }))}
+                  pins={globePins}
                   onSelectPin={(p) => { setQuery(p.name); document.getElementById('qa-pkg-results')?.scrollIntoView({ behavior: 'smooth' }); }}
                   height={340}
                 />
               </div>
             </div>
           </section>
-
-          {/* Dubai cinematic scroll journey — real photos, 2.5D scroll parallax */}
-          <DubaiJourney
-            lang={lang}
-            onExplore={() => { setQuery(lang === 'en' ? 'Dubai' : 'دبي'); document.getElementById('qa-pkg-results')?.scrollIntoView({ behavior: 'smooth' }); }}
-          />
 
           {/* Tour countries */}
           {countryGroups.length > 0 && (

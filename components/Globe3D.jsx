@@ -139,8 +139,9 @@ export default function Globe3D({ pins = [], onSelectPin, height = 340 }) {
       const mat = new THREE.SpriteMaterial({ map: pinTexture, depthTest: false, transparent: true });
       const sprite = new THREE.Sprite(mat);
       sprite.position.copy(pos);
-      sprite.scale.set(0.34, 0.34, 0.34);
+      sprite.scale.set(0.42, 0.42, 0.42);
       sprite.userData.pin = p;
+      sprite.userData.baseScale = 0.42;
       globeGroup.add(sprite);
       pinMeshes.push(sprite);
     });
@@ -199,11 +200,17 @@ export default function Globe3D({ pins = [], onSelectPin, height = 340 }) {
     window.addEventListener('pointerup', onPointerUp);
 
     let raf;
+    let t = 0;
     function tick() {
       if (autoRotate && !dragging) {
         rotY += 0.0016;
         applyRotation();
       }
+      t += 0.045;
+      pinMeshes.forEach((sprite, i) => {
+        const s = sprite.userData.baseScale * (1 + Math.sin(t + i) * 0.12);
+        sprite.scale.set(s, s, s);
+      });
       renderer.render(scene, camera);
       raf = requestAnimationFrame(tick);
     }
@@ -211,14 +218,22 @@ export default function Globe3D({ pins = [], onSelectPin, height = 340 }) {
 
     function handleResize() {
       const w = container.clientWidth || 320;
+      if (w === 0) return;
       camera.aspect = w / heightPx;
       camera.updateProjectionMatrix();
       renderer.setSize(w, heightPx);
     }
     window.addEventListener('resize', handleResize);
+    const ro = new ResizeObserver(handleResize);
+    ro.observe(container);
+    // In case the container had zero width at mount time (e.g. grid not
+    // laid out yet), re-measure shortly after mount too.
+    const settleTimer = setTimeout(handleResize, 50);
 
     return () => {
       cancelAnimationFrame(raf);
+      clearTimeout(settleTimer);
+      ro.disconnect();
       window.removeEventListener('resize', handleResize);
       window.removeEventListener('pointermove', onPointerMove);
       window.removeEventListener('pointerup', onPointerUp);
