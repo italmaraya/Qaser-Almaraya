@@ -350,7 +350,7 @@ export default function PackagesPage() {
                     nights={nm(p.nights_ar, p.nights_en)}
                     groupType={CATS.find((c) => c.id === p.cat) ? nm(CATS.find((c) => c.id === p.cat).ar, CATS.find((c) => c.id === p.cat).en) : undefined}
                     departs={nm(p.departs_ar, p.departs_en)}
-                    price={t.starts_from + ' ' + formatPrice(p.price, 'IQD', lang)}
+                    price={formatPrice(p.price, 'IQD', lang)}
                     includes={(lang === 'en' && p.includes_en?.length ? p.includes_en : p.includes_ar) || []}
                     badge={nm(p.badge_ar, p.badge_en) || undefined}
                     hotels={p.hotels || []}

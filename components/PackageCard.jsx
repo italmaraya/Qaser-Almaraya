@@ -131,8 +131,8 @@ export default function PackageCard({ title, destination, image, nights, groupTy
   const roundedRating = Math.round(rating);
 
   return (
-    <div dir="rtl" style={{ background: '#fff', border: badge ? '3px solid #049dc5' : '1px solid #ececed', borderRadius: 20, boxShadow: badge ? '0 8px 26px rgba(4,157,197,.22)' : '0 2px 8px rgba(29,39,51,.07)', overflow: 'hidden', display: 'flex', flexDirection: 'column', ...style }}>
-      <div style={{ position: 'relative', aspectRatio: '3/4', background: '#0d2b36' }}>
+    <div dir="rtl" className="qa-pkg-card" style={{ background: '#fff', border: badge ? '3px solid #049dc5' : '1px solid #ececed', borderRadius: 20, boxShadow: badge ? '0 8px 26px rgba(4,157,197,.22)' : '0 2px 8px rgba(29,39,51,.07)', overflow: 'hidden', display: 'flex', flexDirection: 'column', ...style }}>
+      <div className="qa-pkg-hero" style={{ position: 'relative', background: '#0d2b36' }}>
         {image ? (
           <img src={image} alt={title} style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }} />
         ) : (
@@ -142,7 +142,7 @@ export default function PackageCard({ title, destination, image, nights, groupTy
         )}
         <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(1,20,28,.9) 0%, rgba(1,20,28,.35) 42%, transparent 68%)' }} />
 
-        <span style={{ position: 'absolute', top: 14, insetInlineEnd: 14, display: 'inline-flex', alignItems: 'center', gap: 5, background: '#fff', borderRadius: 999, padding: '5px 11px', fontSize: 12.5, fontWeight: 700, color: '#1d2733', boxShadow: '0 4px 12px rgba(1,42,55,.25)' }}>
+        <span className="qa-pkg-badge" style={{ position: 'absolute', top: 14, insetInlineEnd: 14, display: 'inline-flex', alignItems: 'center', gap: 5, background: '#fff', borderRadius: 999, fontWeight: 700, color: '#1d2733', boxShadow: '0 4px 12px rgba(1,42,55,.25)' }}>
           <Icon name="star" size={12} style={{ color: '#faab18' }} />{rating}
         </span>
 
@@ -150,63 +150,82 @@ export default function PackageCard({ title, destination, image, nights, groupTy
           type="button"
           onClick={onDetails}
           aria-label={lang === 'en' ? 'Package details' : 'تفاصيل الباقة'}
+          className="qa-pkg-arrow-btn"
           style={{
-            position: 'absolute', bottom: 16, insetInlineEnd: 16, width: 34, height: 34, borderRadius: '50%',
+            position: 'absolute', bottom: 16, insetInlineEnd: 16, borderRadius: '50%',
             background: '#fff', border: 'none', cursor: 'pointer', display: 'grid', placeItems: 'center', boxShadow: '0 4px 12px rgba(1,42,55,.3)',
           }}
         >
           <Icon name="arrow-up-right" size={16} style={{ color: '#036f8c' }} />
         </button>
 
-        <div style={{ position: 'absolute', bottom: 16, insetInlineStart: 16, insetInlineEnd: 60, display: 'flex', flexDirection: 'column', gap: 4, color: '#fff' }}>
+        <div className="qa-pkg-hero-text" style={{ position: 'absolute', bottom: 14, insetInlineStart: 14, insetInlineEnd: 56, display: 'flex', flexDirection: 'column', gap: 3, color: '#fff' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
             <span style={{ display: 'flex', gap: 1 }}>
               {Array.from({ length: 5 }).map((_, i) => (
-                <Icon key={i} name="star" size={11} style={{ color: i < roundedRating ? '#faab18' : 'rgba(255,255,255,.35)' }} />
+                <Icon key={i} name="star" size={10} style={{ color: i < roundedRating ? '#faab18' : 'rgba(255,255,255,.35)' }} />
               ))}
             </span>
-            <span style={{ fontSize: 11, color: 'rgba(255,255,255,.75)' }}>{rating} {lang === 'en' ? 'Out of 5' : 'من ٥'}</span>
+            <span style={{ fontSize: 10.5, color: 'rgba(255,255,255,.75)' }}>{rating} {lang === 'en' ? 'Out of 5' : 'من ٥'}</span>
           </div>
-          <h4 style={{ margin: 0, fontSize: 17, fontWeight: 700, color: '#fff', lineHeight: 1.3 }}>{title}</h4>
-          {nights ? <span style={{ fontSize: 12.5, color: 'rgba(255,255,255,.8)' }}>{destination}{destination && nights ? ' · ' : ''}{nights}</span> : (
-            <span style={{ fontSize: 12.5, color: 'rgba(255,255,255,.8)' }}>{destination}</span>
+          <h4 className="qa-pkg-title" style={{ margin: 0, fontWeight: 700, color: '#fff', lineHeight: 1.3 }}>{title}</h4>
+          {nights ? <span className="qa-pkg-subtitle" style={{ color: 'rgba(255,255,255,.8)' }}>{destination}{destination && nights ? ' · ' : ''}{nights}</span> : (
+            <span className="qa-pkg-subtitle" style={{ color: 'rgba(255,255,255,.8)' }}>{destination}</span>
           )}
         </div>
       </div>
-      <div style={{ padding: 20, display: 'flex', flexDirection: 'column', gap: 12, flex: 1 }}>
-        <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap', fontSize: 13, color: '#7b8087' }}>
-          {groupType ? <span style={{ display: 'inline-flex', alignItems: 'center', gap: 5 }}><Icon name="users" size={15} />{groupType}</span> : null}
-          {departs ? <span style={{ display: 'inline-flex', alignItems: 'center', gap: 5 }}><Icon name="calendar-days" size={15} />{departs}</span> : null}
+      <div className="qa-pkg-body" style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
+        <div className="qa-pkg-meta" style={{ display: 'flex', flexWrap: 'wrap', color: '#7b8087' }}>
+          {groupType ? <span style={{ display: 'inline-flex', alignItems: 'center', gap: 5 }}><Icon name="users" size={14} />{groupType}</span> : null}
+          {departs ? <span style={{ display: 'inline-flex', alignItems: 'center', gap: 5 }}><Icon name="calendar-days" size={14} />{departs}</span> : null}
         </div>
         {includes.length ? (
-          <ul style={{ margin: 0, padding: 0, listStyle: 'none', display: 'flex', flexDirection: 'column', gap: 6 }}>
+          <ul className="qa-pkg-includes" style={{ margin: 0, padding: 0, listStyle: 'none', display: 'flex', flexDirection: 'column' }}>
             {includes.map((i) => (
-              <li key={i} style={{ display: 'flex', gap: 8, fontSize: 13, color: '#3d4650' }}>
-                <Icon name="check" size={16} style={{ color: '#049dc5', flex: 'none' }} />{i}
+              <li key={i} style={{ display: 'flex', gap: 8, color: '#3d4650' }}>
+                <Icon name="check" size={15} style={{ color: '#049dc5', flex: 'none' }} />{i}
               </li>
             ))}
           </ul>
         ) : null}
-        <div style={{ marginTop: 'auto', paddingTop: 12, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
-          <span style={{ fontSize: 13, color: '#7b8087' }}>يبدأ من <b style={{ fontSize: 18, color: '#036f8c' }}>{price}</b></span>
-          <button onClick={onDetails} className="qa-btn qa-cyan" style={{ padding: '9px 18px', fontSize: 13.5 }}>تفاصيل الباقة</button>
-        </div>
+        <div className="qa-pkg-footer" style={{ marginTop: 'auto', borderTop: '1px solid #f0f0f0', display: 'flex', flexDirection: 'column' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 1, minWidth: 0 }}>
+              <span className="qa-pkg-price-label" style={{ color: '#9aa0a6' }}>{lang === 'en' ? 'Starting from' : 'يبدأ من'}</span>
+              <span className="qa-pkg-price" style={{ fontWeight: 800, color: '#036f8c', whiteSpace: 'nowrap' }}>{price}</span>
+            </div>
+            <button
+              onClick={onDetails}
+              className="qa-btn qa-cyan qa-pkg-cta"
+              style={{ fontWeight: 700, whiteSpace: 'nowrap', flex: 'none', borderRadius: 999 }}
+            >
+              تفاصيل الباقة
+            </button>
+          </div>
 
-        {canToggle ? (
-          <button
-            type="button"
-            onClick={() => setOpen((o) => !o)}
-            style={{
-              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
-              width: '100%', padding: '10px 14px', borderRadius: 10, cursor: 'pointer', fontFamily: 'inherit',
-              border: '1px solid #cfe9f2', background: open ? '#eaf8fd' : '#fff', color: '#036f8c', fontSize: 13.5, fontWeight: 700,
-            }}
-          >
-            <Icon name="plane" size={15} style={{ transform: 'rotate(90deg)' }} />
-            {lang === 'en' ? 'Check flights & hotels' : 'تحقق من الطيران والفنادق'}
-            <Icon name={open ? 'chevron-up' : 'chevron-down'} size={15} />
-          </button>
-        ) : null}
+          {canToggle ? (
+            <button
+              type="button"
+              onClick={() => setOpen((o) => !o)}
+              className="qa-pkg-toggle"
+              style={{
+                display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10,
+                width: '100%', borderRadius: 12, cursor: 'pointer', fontFamily: 'inherit',
+                border: `1px solid ${open ? '#049dc5' : '#e7eef1'}`, background: open ? '#eaf8fd' : '#f8fbfc',
+              }}
+            >
+              <span style={{ display: 'flex', alignItems: 'center', gap: 9 }}>
+                <span style={{ width: 26, height: 26, borderRadius: '50%', background: '#fff', display: 'grid', placeItems: 'center', flex: 'none', boxShadow: '0 1px 3px rgba(29,39,51,.12)' }}>
+                  <Icon name="plane" size={13} style={{ color: '#049dc5', transform: 'rotate(90deg)' }} />
+                </span>
+                <span style={{ fontSize: 13, fontWeight: 700, color: '#036f8c' }}>
+                  {lang === 'en' ? 'Check flights & hotels' : 'تحقق من الطيران والفنادق'}
+                </span>
+              </span>
+              <Icon name={open ? 'chevron-up' : 'chevron-down'} size={16} style={{ color: '#036f8c', flex: 'none' }} />
+            </button>
+          ) : null}
+        </div>
 
         {open && canToggle ? (
           <div style={{ display: 'flex', flexDirection: 'column', gap: 12, borderTop: '1px solid #ececed', paddingTop: 14 }}>
@@ -254,6 +273,40 @@ export default function PackageCard({ title, destination, image, nights, groupTy
           </div>
         ) : null}
       </div>
+
+      <style jsx>{`
+        .qa-pkg-hero { aspect-ratio: 3 / 4; }
+        .qa-pkg-badge { padding: 5px 11px; font-size: 12.5px; }
+        .qa-pkg-arrow-btn { width: 34px; height: 34px; }
+        .qa-pkg-title { font-size: 17px; }
+        .qa-pkg-subtitle { font-size: 12.5px; }
+        .qa-pkg-body { padding: 20px; gap: 12px; }
+        .qa-pkg-meta { gap: 16px; font-size: 13px; }
+        .qa-pkg-includes { gap: 6px; }
+        .qa-pkg-includes li { font-size: 13px; }
+        .qa-pkg-footer { gap: 12px; padding-top: 14px; }
+        .qa-pkg-price-label { font-size: 11.5px; }
+        .qa-pkg-price { font-size: 18.5px; }
+        .qa-pkg-cta { padding: 12px 22px; font-size: 14px; }
+        .qa-pkg-toggle { padding: 10px 12px; }
+
+        @media (max-width: 640px) {
+          .qa-pkg-hero { aspect-ratio: 4 / 3; }
+          .qa-pkg-badge { padding: 4px 9px; font-size: 11px; }
+          .qa-pkg-arrow-btn { width: 28px; height: 28px; }
+          .qa-pkg-title { font-size: 14.5px; }
+          .qa-pkg-subtitle { font-size: 11px; }
+          .qa-pkg-body { padding: 14px; gap: 9px; }
+          .qa-pkg-meta { gap: 10px; font-size: 12px; }
+          .qa-pkg-includes { gap: 4px; }
+          .qa-pkg-includes li { font-size: 12px; }
+          .qa-pkg-footer { gap: 9px; padding-top: 10px; }
+          .qa-pkg-price-label { font-size: 10.5px; }
+          .qa-pkg-price { font-size: 16px; }
+          .qa-pkg-cta { padding: 10px 16px; font-size: 13px; }
+          .qa-pkg-toggle { padding: 8px 10px; }
+        }
+      `}</style>
     </div>
   );
 }
