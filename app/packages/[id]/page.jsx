@@ -107,27 +107,84 @@ export default function PackageDetailPage() {
 
   function handleDownloadPdf() {
     const en = lang === 'en';
-    const rows = [
+    const nmv = (ar, en2) => (en && en2 ? en2 : ar);
+    const selHotel = hotels[hotelIdx];
+    const selFlight = flights[flightIdx];
+
+    const overviewRows = [
       [en ? 'Destination' : 'الوجهة', nm(pkg.dest_ar, pkg.dest_en)],
       [en ? 'Duration' : 'المدة', nm(pkg.nights_ar, pkg.nights_en)],
       [en ? 'Departures' : 'الانطلاق', nm(pkg.departs_ar, pkg.departs_en)],
+      [en ? 'Price per adult' : 'السعر للبالغ', formatPrice(totalPerAdult, 'IQD', lang)],
     ];
-    if (hotels[hotelIdx]) rows.push([en ? 'Hotel' : 'الفندق', nm(hotels[hotelIdx].nameAr, hotels[hotelIdx].nameEn)]);
-    if (flights[flightIdx]) rows.push([en ? 'Flight' : 'الرحلة', nm(flights[flightIdx].nameAr, flights[flightIdx].nameEn)]);
-    rows.push([en ? 'Price per adult' : 'السعر للبالغ', formatPrice(totalPerAdult, 'IQD', lang)]);
-    if (children > 0) rows.push([en ? 'Price per child' : 'سعر الطفل', formatPrice(totalPerChild, 'IQD', lang)]);
-    rows.push([en ? 'Travellers' : 'عدد المسافرين', adults + (en ? ' adult(s)' : ' بالغ') + (children ? ', ' + children + (en ? ' child(ren)' : ' طفل') : '')]);
-    rows.push([en ? 'Grand total' : 'الإجمالي الكلي', formatPrice(grandTotal, 'IQD', lang)]);
+    if (children > 0) overviewRows.push([en ? 'Price per child' : 'سعر الطفل', formatPrice(totalPerChild, 'IQD', lang)]);
+    overviewRows.push([en ? 'Travellers' : 'عدد المسافرين', adults + (en ? ' adult(s)' : ' بالغ') + (children ? ', ' + children + (en ? ' child(ren)' : ' طفل') : '')]);
+    overviewRows.push([en ? 'Grand total' : 'الإجمالي الكلي', formatPrice(grandTotal, 'IQD', lang)]);
 
-    const bodyHtml =
+    let bodyHtml =
+      '<style>' +
+      '.hotel-block{display:flex;gap:14px;align-items:flex-start;border:1px solid #ececed;border-radius:10px;padding:10px;margin-top:4px}' +
+      '.hotel-photo{width:150px;height:112px;object-fit:cover;border-radius:8px;flex:none}' +
+      '.hotel-info{display:flex;flex-direction:column;gap:6px;text-align:' + (en ? 'left' : 'right') + '}' +
+      '.hotel-name{font-size:15px;font-weight:700}' +
+      '.hotel-loc{font-size:12.5px;color:#7b8087}' +
+      '.hotel-amenities{display:flex;flex-wrap:wrap;gap:6px}' +
+      '.hotel-amenities span{font-size:11px;background:#eaf8fd;color:#036f8c;border-radius:999px;padding:3px 9px}' +
+      '</style>' +
       '<h1>' + esc(nm(pkg.title_ar, pkg.title_en)) + '</h1>' +
       '<div class="sub">' + esc(nm(pkg.dest_ar, pkg.dest_en)) + '</div>' +
-      '<h2>' + (en ? 'Details' : 'التفاصيل') + '</h2>' +
-      '<table>' + rows.map((r) => '<tr><td>' + esc(r[0]) + '</td><td>' + esc(r[1]) + '</td></tr>').join('') + '</table>' +
-      (includes.length
-        ? '<h2>' + (en ? "What's included" : 'تشمل الباقة') + '</h2><ul>' + includes.map((i) => '<li>' + esc(i) + '</li>').join('') + '</ul>'
-        : '') +
-      '<p class="docs">' + (en ? 'Prices are per person and subject to availability at time of booking.' : 'الأسعار للفرد وقابلة للتغيير حسب التوفر عند الحجز.') + '</p>';
+      '<h2>' + (en ? 'Overview' : 'نظرة عامة') + '</h2>' +
+      '<table>' + overviewRows.map((r) => '<tr><td>' + esc(r[0]) + '</td><td>' + esc(r[1]) + '</td></tr>').join('') + '</table>';
+
+    // Day-by-day itinerary
+    if (days.length) {
+      bodyHtml += '<h2>' + (en ? 'Day-by-day itinerary' : 'برنامج الرحلة يوماً بيوم') + '</h2>' +
+        '<table><tr><th>' + (en ? 'Day' : 'اليوم') + '</th><th>' + (en ? 'Details' : 'التفاصيل') + '</th></tr>' +
+        days.map((d, i) => (
+          '<tr><td style="white-space:nowrap;font-weight:700;">' + esc(nmv(d.titleAr, d.titleEn) || ((en ? 'Day ' : 'اليوم ') + (i + 1))) + '</td>' +
+          '<td style="text-align:' + (en ? 'left' : 'right') + ';">' + esc(nmv(d.descAr, d.descEn)) + '</td></tr>'
+        )).join('') + '</table>';
+    }
+
+    // Flight route (outbound + return)
+    if (selFlight) {
+      const airline = nmv(selFlight.nameAr, selFlight.nameEn);
+      const legRows = [];
+      const hasOut = selFlight.outFromCity || selFlight.outToCity || selFlight.outDepartTime;
+      const hasRet = selFlight.retFromCity || selFlight.retToCity || selFlight.retDepartTime;
+      if (hasOut) legRows.push([en ? 'Departure' : 'ذهاب', selFlight.outFlightNo, selFlight.outFromCity, selFlight.outDepartTime, selFlight.outToCity, selFlight.outArriveTime, selFlight.outDuration]);
+      if (hasRet) legRows.push([en ? 'Return' : 'عودة', selFlight.retFlightNo, selFlight.retFromCity, selFlight.retDepartTime, selFlight.retToCity, selFlight.retArriveTime, selFlight.retDuration]);
+
+      bodyHtml += '<h2>' + (en ? 'Flight route' : 'خط سير الرحلة الجوية') + '</h2>' +
+        '<p class="docs" style="margin:0 0 6px;">' + (en ? 'Airline: ' : 'شركة الطيران: ') + esc(airline || '—') + '</p>';
+
+      if (legRows.length) {
+        bodyHtml += '<table><tr><th>' + (en ? 'Leg' : 'الرحلة') + '</th><th>' + (en ? 'Flight no.' : 'رقم الرحلة') +
+          '</th><th>' + (en ? 'From' : 'من') + '</th><th>' + (en ? 'Departs' : 'المغادرة') + '</th><th>' + (en ? 'To' : 'إلى') +
+          '</th><th>' + (en ? 'Arrives' : 'الوصول') + '</th><th>' + (en ? 'Duration' : 'المدة') + '</th></tr>' +
+          legRows.map((r) => '<tr>' + r.map((c) => '<td>' + esc(c || '—') + '</td>').join('') + '</tr>').join('') +
+          '</table>';
+      }
+    }
+
+    // Hotel details + photo
+    if (selHotel) {
+      const amenities = (en && selHotel.amenitiesEn?.length ? selHotel.amenitiesEn : selHotel.amenitiesAr) || [];
+      bodyHtml += '<h2>' + (en ? 'Hotel' : 'الفندق') + '</h2>' +
+        '<div class="hotel-block">' +
+        (selHotel.imageUrl ? '<img class="hotel-photo" src="' + esc(selHotel.imageUrl) + '" alt="" />' : '') +
+        '<div class="hotel-info">' +
+        '<div class="hotel-name">' + esc(nmv(selHotel.nameAr, selHotel.nameEn)) + '</div>' +
+        (selHotel.location ? '<div class="hotel-loc">' + esc(selHotel.location) + '</div>' : '') +
+        (amenities.length ? '<div class="hotel-amenities">' + amenities.map((a) => '<span>' + esc(a) + '</span>').join('') + '</div>' : '') +
+        '</div></div>';
+    }
+
+    if (includes.length) {
+      bodyHtml += '<h2>' + (en ? "What's included" : 'تشمل الباقة') + '</h2><ul>' + includes.map((i) => '<li>' + esc(i) + '</li>').join('') + '</ul>';
+    }
+
+    bodyHtml += '<p class="docs">' + (en ? 'Prices are per person and subject to availability at time of booking.' : 'الأسعار للفرد وقابلة للتغيير حسب التوفر عند الحجز.') + '</p>';
 
     printDoc(nm(pkg.title_ar, pkg.title_en) + ' — ' + nm(pkg.dest_ar, pkg.dest_en), bodyHtml, lang);
   }
@@ -306,6 +363,19 @@ export default function PackageDetailPage() {
                       </div>
                     ))}
                   </div>
+
+                  {hotels[hotelIdx] && ((hotels[hotelIdx].extraImages || []).length > 0 || hotels[hotelIdx].imageUrl) ? (
+                    <div style={{ marginTop: 16, display: 'flex', gap: 8, overflowX: 'auto', paddingBottom: 4 }}>
+                      {[hotels[hotelIdx].imageUrl, ...(hotels[hotelIdx].extraImages || [])].filter(Boolean).map((src, i) => (
+                        <img
+                          key={i}
+                          src={src}
+                          alt=""
+                          style={{ width: 130, height: 96, borderRadius: 12, objectFit: 'cover', flex: 'none', border: '1px solid #ececed' }}
+                        />
+                      ))}
+                    </div>
+                  ) : null}
 
                   {selectedHotelCoords ? (
                     <div style={{ marginTop: 16, borderRadius: 16, overflow: 'hidden', border: '1px solid #ececed' }}>

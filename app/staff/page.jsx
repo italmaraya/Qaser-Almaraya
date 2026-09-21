@@ -377,6 +377,113 @@ function PackageBookings() {
   );
 }
 
+function fmt(n, currency) {
+  const num = Number(n) || 0;
+  return num.toLocaleString('en-US') + ' ' + (currency || 'IQD');
+}
+
+function CostsTab() {
+  const [visaCosts, setVisaCosts] = useState(null);
+  const [pkgCosts, setPkgCosts] = useState(null);
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    Promise.all([api('/api/staff/visa-costs'), api('/api/staff/package-costs')])
+      .then(([v, p]) => { setVisaCosts(v); setPkgCosts(p); })
+      .catch((e) => setError(e.message));
+  }, []);
+
+  if (error) return <p style={{ color: '#d2324f' }}>{error}</p>;
+  if (!visaCosts || !pkgCosts) return <p>جارٍ التحميل...</p>;
+
+  const thStyle = { textAlign: 'start', padding: '9px 10px', fontSize: 12.5, color: '#7b8087', borderBottom: '1px solid #ececed', whiteSpace: 'nowrap' };
+  const tdStyle = { padding: '9px 10px', fontSize: 13.5, borderBottom: '1px solid #f4f4f4', whiteSpace: 'nowrap' };
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 28 }}>
+      <div style={{ background: '#eaf8fd', border: '1px solid #bfe9f6', borderRadius: 10, padding: '12px 16px', fontSize: 13.5, color: '#036f8c' }}>
+        هذه الصفحة للعرض فقط — تُظهر التكاليف كما أدخلها المدير من لوحة التحكم الرئيسية، ولا يمكن تعديلها من هنا، ولا تؤثر على الموقع أو أي بيانات حية.
+      </div>
+
+      <div>
+        <h3 style={{ fontSize: 17, marginBottom: 12 }}>تكاليف التأشيرات</h3>
+        <div style={{ overflowX: 'auto', border: '1px solid #ececed', borderRadius: 12 }}>
+          <table style={{ borderCollapse: 'collapse', width: '100%', minWidth: 720 }}>
+            <thead>
+              <tr>
+                <th style={thStyle}>الدولة</th>
+                <th style={thStyle}>نوع التأشيرة</th>
+                <th style={thStyle}>المزوّد</th>
+                <th style={thStyle}>سعر البالغ</th>
+                <th style={thStyle}>تكلفة البالغ</th>
+                <th style={thStyle}>سعر الطفل</th>
+                <th style={thStyle}>تكلفة الطفل</th>
+                <th style={thStyle}>هامش البالغ</th>
+                <th style={thStyle}>الحالة</th>
+              </tr>
+            </thead>
+            <tbody>
+              {visaCosts.length === 0 && (
+                <tr><td style={tdStyle} colSpan={9}>لا توجد بطاقات تأشيرات بعد.</td></tr>
+              )}
+              {visaCosts.map((v) => (
+                <tr key={v.id}>
+                  <td style={tdStyle}>{v.country_ar || '—'}</td>
+                  <td style={tdStyle}>{v.visa_type_ar || '—'}</td>
+                  <td style={tdStyle}>{v.provider_name || '—'}</td>
+                  <td style={tdStyle}>{fmt(v.adult_price, v.cost_currency)}</td>
+                  <td style={tdStyle}>{fmt(v.adult_cost, v.cost_currency)}</td>
+                  <td style={tdStyle}>{fmt(v.child_price, v.cost_currency)}</td>
+                  <td style={tdStyle}>{fmt(v.child_cost, v.cost_currency)}</td>
+                  <td style={{ ...tdStyle, fontWeight: 700, color: '#049dc5' }}>{fmt((Number(v.adult_price) || 0) - (Number(v.adult_cost) || 0), v.cost_currency)}</td>
+                  <td style={tdStyle}>{v.active ? 'مفعّلة' : 'متوقفة'}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div>
+        <h3 style={{ fontSize: 17, marginBottom: 12 }}>تكاليف الباقات</h3>
+        <div style={{ overflowX: 'auto', border: '1px solid #ececed', borderRadius: 12 }}>
+          <table style={{ borderCollapse: 'collapse', width: '100%', minWidth: 640 }}>
+            <thead>
+              <tr>
+                <th style={thStyle}>الباقة</th>
+                <th style={thStyle}>الوجهة</th>
+                <th style={thStyle}>سعر البالغ</th>
+                <th style={thStyle}>تكلفة البالغ</th>
+                <th style={thStyle}>سعر الطفل</th>
+                <th style={thStyle}>تكلفة الطفل</th>
+                <th style={thStyle}>هامش البالغ</th>
+                <th style={thStyle}>الحالة</th>
+              </tr>
+            </thead>
+            <tbody>
+              {pkgCosts.length === 0 && (
+                <tr><td style={tdStyle} colSpan={8}>لا توجد باقات بعد.</td></tr>
+              )}
+              {pkgCosts.map((p) => (
+                <tr key={p.id}>
+                  <td style={tdStyle}>{p.title_ar || '—'}</td>
+                  <td style={tdStyle}>{p.dest_ar || '—'}</td>
+                  <td style={tdStyle}>{fmt(p.price, p.cost_currency)}</td>
+                  <td style={tdStyle}>{fmt(p.adult_cost, p.cost_currency)}</td>
+                  <td style={tdStyle}>{fmt(p.child_price, p.cost_currency)}</td>
+                  <td style={tdStyle}>{fmt(p.child_cost, p.cost_currency)}</td>
+                  <td style={{ ...tdStyle, fontWeight: 700, color: '#049dc5' }}>{fmt((Number(p.price) || 0) - (Number(p.adult_cost) || 0), p.cost_currency)}</td>
+                  <td style={tdStyle}>{p.active ? 'مفعّلة' : 'متوقفة'}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function StaffPage() {
   const [checkingSession, setCheckingSession] = useState(true);
   const [authenticated, setAuthenticated] = useState(false);
@@ -445,9 +552,10 @@ export default function StaffPage() {
         <div style={{ display: 'flex', gap: 8, borderBottom: '1px solid #ececed', paddingBottom: 12 }}>
           <button type="button" style={btnStyle(tab === 'visa' ? 'primary' : 'ghost')} onClick={() => setTab('visa')}>طلبات التأشيرات</button>
           <button type="button" style={btnStyle(tab === 'packages' ? 'primary' : 'ghost')} onClick={() => setTab('packages')}>حجوزات الباقات</button>
+          <button type="button" style={btnStyle(tab === 'costs' ? 'primary' : 'ghost')} onClick={() => setTab('costs')}>التكاليف (للعرض فقط)</button>
         </div>
 
-        {tab === 'visa' ? <VisaApplications /> : <PackageBookings />}
+        {tab === 'visa' ? <VisaApplications /> : tab === 'packages' ? <PackageBookings /> : <CostsTab />}
       </div>
     </div>
   );

@@ -202,7 +202,7 @@ function PackageForm({ initial, onSave, onCancel, saving }) {
       <div>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
           <span style={{ fontSize: 13.5, fontWeight: 700 }}>خيارات الفنادق</span>
-          <button type="button" style={btnStyle('ghost')} onClick={() => addRow('hotels', { nameAr: '', nameEn: '', diff: 0, imageUrl: '', location: '', amenitiesAr: [], amenitiesEn: [], lat: '', lng: '' })}>+ إضافة فندق</button>
+          <button type="button" style={btnStyle('ghost')} onClick={() => addRow('hotels', { nameAr: '', nameEn: '', diff: 0, imageUrl: '', extraImages: [], location: '', amenitiesAr: [], amenitiesEn: [], lat: '', lng: '' })}>+ إضافة فندق</button>
         </div>
         {(form.hotels || []).map((h, idx) => (
           <div key={idx} style={{ border: '1px solid #ececed', borderRadius: 10, padding: 10, marginBottom: 8, display: 'flex', flexDirection: 'column', gap: 8 }}>
@@ -224,7 +224,45 @@ function PackageForm({ initial, onSave, onCancel, saving }) {
             <span style={{ fontSize: 11.5, color: '#7b8087' }}>
               أدخلوا الإحداثيات لعرض موقع الفندق على الخريطة في صفحة الباقة. يمكن نسخها من خرائط جوجل: افتحوا موقع الفندق في خرائط جوجل، ثم انسخوا الرقمين من شريط العنوان أو من "مشاركة" ← "نسخ الإحداثيات".
             </span>
-            <ImageUploadField label="صورة الفندق" value={h.imageUrl || ''} onChange={(url) => updateRow('hotels', idx, 'imageUrl', url)} />
+            <ImageUploadField label="الصورة الرئيسية للفندق" value={h.imageUrl || ''} onChange={(url) => updateRow('hotels', idx, 'imageUrl', url)} />
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 8, borderTop: '1px dashed #ececed', paddingTop: 8 }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <span style={{ fontSize: 12.5, fontWeight: 700, color: '#036f8c' }}>صور إضافية للفندق ({(h.extraImages || []).length})</span>
+                <button
+                  type="button"
+                  style={btnStyle('ghost')}
+                  onClick={() => updateRow('hotels', idx, 'extraImages', [...(h.extraImages || []), ''])}
+                >
+                  + إضافة صورة
+                </button>
+              </div>
+              {(h.extraImages || []).map((imgUrl, imgIdx) => (
+                <div key={imgIdx} style={{ display: 'flex', alignItems: 'flex-end', gap: 8 }}>
+                  <div style={{ flex: 1 }}>
+                    <ImageUploadField
+                      label={`صورة إضافية ${imgIdx + 1}`}
+                      value={imgUrl}
+                      onChange={(url) => {
+                        const next = [...(h.extraImages || [])];
+                        next[imgIdx] = url;
+                        updateRow('hotels', idx, 'extraImages', next);
+                      }}
+                    />
+                  </div>
+                  <button
+                    type="button"
+                    style={btnStyle('danger')}
+                    onClick={() => {
+                      const next = [...(h.extraImages || [])];
+                      next.splice(imgIdx, 1);
+                      updateRow('hotels', idx, 'extraImages', next);
+                    }}
+                  >
+                    حذف
+                  </button>
+                </div>
+              ))}
+            </div>
           </div>
         ))}
       </div>

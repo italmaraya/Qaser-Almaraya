@@ -138,70 +138,100 @@ export default function CountryVisaListPage() {
 
               <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
                 {filtered.map((c) => {
+                  const photo = c.image_url || c.card_image_url || '';
                   const theme = getVisaTheme(c.visa_type_name_ar);
                   return (
-                  <div key={c.id} className="qa-card qa-visa-card" style={{ padding: 0, overflow: 'hidden', position: 'relative', display: 'grid', gridTemplateColumns: '200px 1fr', minHeight: 160 }}>
-                    <div style={{ position: 'relative', height: 160, background: theme.gradient, display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
-                      {/* subtle diagonal texture so the panel isn't a flat fill */}
-                      <div style={{ position: 'absolute', inset: 0, backgroundImage: 'repeating-linear-gradient(135deg, rgba(255,255,255,.07) 0 2px, transparent 2px 16px)' }} />
-                      {/* oversized ghost icon for depth, cropped by the panel's own overflow:hidden */}
-                      <Icon name={theme.icon} size={130} strokeWidth={1} style={{ position: 'absolute', insetInlineStart: -26, bottom: -30, color: 'rgba(255,255,255,.16)' }} />
-
+                  <div key={c.id} className="qa-card qa-visa-card" style={{ padding: 0, overflow: 'hidden', position: 'relative', display: 'grid', gridTemplateColumns: '200px 1fr', minHeight: 180 }}>
+                    <div style={{ position: 'relative', height: '100%', minHeight: 180, background: theme.gradient, overflow: 'hidden' }}>
+                      {photo ? (
+                        <img src={photo} alt="" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }} />
+                      ) : (
+                        <>
+                          <div style={{ position: 'absolute', inset: 0, backgroundImage: 'repeating-linear-gradient(135deg, rgba(255,255,255,.07) 0 2px, transparent 2px 16px)' }} />
+                          <Icon name={theme.icon} size={130} strokeWidth={1} style={{ position: 'absolute', insetInlineStart: -26, bottom: -30, color: 'rgba(255,255,255,.16)' }} />
+                          <span style={{ position: 'absolute', inset: 0, display: 'grid', placeItems: 'center' }}>
+                            <span style={{ width: 68, height: 68, borderRadius: '50%', background: 'rgba(255,255,255,.14)', border: '2px solid rgba(255,255,255,.55)', display: 'grid', placeItems: 'center', boxShadow: '0 12px 26px rgba(1,42,55,.35)' }}>
+                              {c.flag_code ? (
+                                <img src={flagSrc(c.flag_code)} alt="" style={{ width: 50, height: 50, borderRadius: '50%', objectFit: 'cover' }} onError={(e) => { e.currentTarget.style.display = 'none'; }} />
+                              ) : (
+                                <span style={{ fontSize: 22, fontWeight: 700, color: '#fff' }}>{(c.country_name_en || '').slice(0, 2).toUpperCase()}</span>
+                              )}
+                            </span>
+                          </span>
+                        </>
+                      )}
+                      <button
+                        type="button"
+                        aria-label={lang === 'en' ? 'Save' : 'حفظ'}
+                        style={{ position: 'absolute', top: 10, insetInlineStart: 10, width: 30, height: 30, borderRadius: '50%', border: 'none', cursor: 'pointer', background: 'rgba(1,20,28,.4)', display: 'grid', placeItems: 'center', backdropFilter: 'blur(3px)' }}
+                      >
+                        <Icon name="heart" size={15} style={{ color: '#fff' }} />
+                      </button>
                       {providerHints && providerHints[c.id] && (
                         <span
                           style={{
-                            position: 'absolute',
-                            top: 8,
-                            insetInlineStart: 8,
-                            zIndex: 2,
-                            fontSize: 10.5,
-                            fontWeight: 700,
-                            color: '#036f8c',
-                            background: 'rgba(255,255,255,.96)',
-                            borderRadius: 999,
-                            padding: '3px 9px',
-                            boxShadow: '0 4px 10px rgba(1,42,55,.25)',
-                            whiteSpace: 'nowrap',
+                            position: 'absolute', bottom: 8, insetInlineStart: 8, zIndex: 2, fontSize: 10.5, fontWeight: 700, color: '#036f8c',
+                            background: 'rgba(255,255,255,.96)', borderRadius: 999, padding: '3px 9px', boxShadow: '0 4px 10px rgba(1,42,55,.25)', whiteSpace: 'nowrap',
                           }}
                           title="مزود الخدمة — يظهر لفريق العمل فقط"
                         >
                           {providerHints[c.id]}
                         </span>
                       )}
-
-                      <span style={{ position: 'relative', zIndex: 1, width: 68, height: 68, borderRadius: '50%', background: 'rgba(255,255,255,.14)', border: '2px solid rgba(255,255,255,.55)', display: 'grid', placeItems: 'center', boxShadow: '0 12px 26px rgba(1,42,55,.35)' }}>
-                        {c.flag_code ? (
-                          <img src={flagSrc(c.flag_code)} alt="" style={{ width: 50, height: 50, borderRadius: '50%', objectFit: 'cover' }} onError={(e) => { e.currentTarget.style.display = 'none'; }} />
-                        ) : (
-                          <span style={{ fontSize: 22, fontWeight: 700, color: '#fff' }}>{(c.country_name_en || '').slice(0, 2).toUpperCase()}</span>
-                        )}
-                        {/* type-icon chip, badge-style, overlapping the flag */}
-                        <span style={{ position: 'absolute', bottom: -3, insetInlineEnd: -3, width: 28, height: 28, borderRadius: '50%', background: '#fff', display: 'grid', placeItems: 'center', boxShadow: '0 4px 10px rgba(1,42,55,.3)' }}>
-                          <Icon name={theme.icon} size={15} style={{ color: theme.iconColor }} />
-                        </span>
-                      </span>
                     </div>
 
-                    {/* ticket-stub perforation where the colored panel meets the white content */}
-                    <span className="qa-visa-notch" style={{ position: 'absolute', insetInlineStart: 200, top: -10, width: 20, height: 20, borderRadius: '50%', background: '#f8f7f8', transform: 'translateX(-50%)' }} />
-                    <span className="qa-visa-notch" style={{ position: 'absolute', insetInlineStart: 200, bottom: -10, width: 20, height: 20, borderRadius: '50%', background: '#f8f7f8', transform: 'translateX(-50%)' }} />
+                    <div style={{ padding: '18px 22px', display: 'flex', flexDirection: 'column', gap: 10 }}>
+                      <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 16, flexWrap: 'wrap' }}>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: 8, flex: '1 1 260px', minWidth: 0 }}>
+                          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+                            <span style={pillStyle}>{nm(c.visa_type_name_ar, c.visa_type_name_en)}</span>
+                            {c.stay_duration ? <span style={pillStyleOutline}>{nm(c.country_name_ar, c.country_name_en)}</span> : null}
+                          </div>
+                          <h3 style={{ margin: 0, fontSize: 18, fontWeight: 700, color: '#1d2733' }}>
+                            {lang === 'en'
+                              ? `${nm(c.country_name_ar, c.country_name_en)} visa${c.stay_duration ? ' for ' + c.stay_duration + ' stay' : ''}`
+                              : `تأشيرة ${nm(c.country_name_ar, c.country_name_en)}${c.stay_duration ? ' لمدة ' + c.stay_duration : ''}`}
+                          </h3>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: 7, fontSize: 12.5, color: '#3d4650' }}>
+                            <span style={{ width: 16, height: 16, borderRadius: '50%', background: '#d2324f', color: '#fff', display: 'grid', placeItems: 'center', flex: 'none', fontSize: 11, fontWeight: 800 }}>!</span>
+                            {lang === 'en'
+                              ? `Iraqi passport — you need a visa for ${nm(c.country_name_ar, c.country_name_en)}.`
+                              : `بجواز عراقي! تحتاجون تأشيرة لدخول ${nm(c.country_name_ar, c.country_name_en)}.`}
+                          </div>
+                          <Link href={`/visa/${c.id}`} style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12.5, color: '#7b8087', textDecoration: 'none' }}>
+                            <Icon name="info" size={13} />
+                            {lang === 'en' ? 'Click to see requirements' : 'اضغط لمعرفة المتطلبات'}
+                          </Link>
 
-                    <div style={{ padding: '20px 24px', display: 'flex', flexDirection: 'column', gap: 12 }}>
-                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
-                        <span style={pillStyle}>{nm(c.visa_type_name_ar, c.visa_type_name_en)}</span>
-                        {c.stay_duration ? <span style={pillStyle}>إقامة {c.stay_duration}</span> : null}
-                      </div>
-                      <h3 style={{ margin: 0, fontSize: 19, color: '#1d2733' }}>{nm(c.visa_type_name_ar, c.visa_type_name_en)} — {nm(c.country_name_ar, c.country_name_en)}</h3>
-                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 20, fontSize: 13.5, color: '#3d4650' }}>
-                        <span>مدة الإصدار: {c.issuing_time_days || '—'} أيام عمل</span>
-                        {c.validity_before_travel ? <span>صلاحية قبل السفر: {c.validity_before_travel}</span> : null}
-                      </div>
-                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12, marginTop: 4 }}>
-                        <div>
-                          <div style={{ fontSize: 20, fontWeight: 700, color: '#049dc5' }}>{formatPrice(c.adult_price, 'IQD', lang)}</div>
-                          <div style={{ fontSize: 12.5, color: '#7b8087' }}>للبالغ · {formatPrice(c.child_price, 'IQD', lang)} للطفل</div>
+                          <div style={{ display: 'flex', flexDirection: 'column', gap: 3, marginTop: 4, fontSize: 12.5 }}>
+                            <span><b style={{ color: '#049dc5' }}>{lang === 'en' ? 'Type: ' : 'النوع: '}</b><span style={{ color: '#3d4650' }}>{nm(c.visa_type_name_ar, c.visa_type_name_en)}</span></span>
+                            <span><b style={{ color: '#049dc5' }}>{lang === 'en' ? 'Duration: ' : 'مدة الإصدار: '}</b><span style={{ color: '#3d4650' }}>{c.issuing_time_days ? c.issuing_time_days + (lang === 'en' ? ' working days' : ' أيام عمل') : '—'}</span></span>
+                            {c.validity_before_travel ? (
+                              <span><b style={{ color: '#049dc5' }}>{lang === 'en' ? 'Validity: ' : 'الصلاحية: '}</b><span style={{ color: '#3d4650' }}>{c.validity_before_travel}</span></span>
+                            ) : null}
+                          </div>
                         </div>
-                        <Link href={`/visa/${c.id}`} className="qa-btn qa-cyan" style={{ textDecoration: 'none' }}>عرض التفاصيل</Link>
+
+                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 4, flex: 'none' }}>
+                          <span style={{ fontSize: 11.5, color: '#7b8087' }}>{lang === 'en' ? 'Travel visa provided' : 'التأشيرة السياحية متوفرة'}</span>
+                          <span style={{ fontSize: 13.5, color: '#3d4650' }}>{formatPrice(c.child_price, 'IQD', lang)} <span style={{ color: '#7b8087', fontSize: 11.5 }}>{lang === 'en' ? '/ per child' : '/ للطفل'}</span></span>
+                          <span style={{ fontSize: 20, fontWeight: 800, color: '#1d2733' }}>{formatPrice(c.adult_price, 'IQD', lang)} <span style={{ fontSize: 12, fontWeight: 600, color: '#7b8087' }}>{lang === 'en' ? '/ Total' : '/ الإجمالي'}</span></span>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 6 }}>
+                            <span title={lang === 'en' ? 'Requirements & info' : 'المتطلبات والمعلومات'} style={{ width: 26, height: 26, borderRadius: '50%', border: '1.5px solid #1d2733', display: 'grid', placeItems: 'center', flex: 'none' }}>
+                              <Icon name="info" size={13} style={{ color: '#1d2733' }} />
+                            </span>
+                            <Link
+                              href={`/visa/${c.id}`}
+                              className="qa-btn qa-cyan"
+                              style={{ textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: 8, padding: '9px 20px' }}
+                            >
+                              {lang === 'en' ? 'View deal' : 'عرض العرض'}
+                              <span style={{ width: 18, height: 18, borderRadius: '50%', background: 'rgba(255,255,255,.3)', display: 'grid', placeItems: 'center' }}>
+                                <Icon name="check" size={11} />
+                              </span>
+                            </Link>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -233,6 +263,15 @@ const pillStyle = {
   fontWeight: 700,
   color: '#036f8c',
   background: '#eaf8fd',
+  borderRadius: 999,
+  padding: '4px 12px',
+};
+const pillStyleOutline = {
+  fontSize: 12,
+  fontWeight: 600,
+  color: '#3d4650',
+  background: '#fff',
+  border: '1px solid #dbe1e6',
   borderRadius: 999,
   padding: '4px 12px',
 };
