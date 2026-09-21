@@ -2184,14 +2184,13 @@ function   visaVals(country){
 </span>
 
 <img
-  src="/assets/mascot-skylo-questions.png"
+  src="/assets/mascot-skylo-questions-cut.png"
   alt="سكايلو يفكّر في أسئلتك"
   className="qa-hero-mascot"
   style={{
-    position: "absolute", zIndex: "2", left: "-6%", top: "4%", bottom: "6%", display: "block",
-    width: "clamp(220px,58%,380px)", height: "auto", maxHeight: "none", objectFit: "cover",
-    WebkitMaskImage: "radial-gradient(ellipse 70% 76% at 50% 50%, #000 58%, rgba(0,0,0,0) 100%)",
-    maskImage: "radial-gradient(ellipse 70% 76% at 50% 50%, #000 58%, rgba(0,0,0,0) 100%)",
+    position: "absolute", zIndex: "2", left: "-6%", bottom: "-24px", display: "block",
+    width: "clamp(220px,58%,380px)", height: "auto", objectFit: "contain",
+    filter: "drop-shadow(0 26px 38px rgba(1,42,55,.32))",
   }}
 />
 

@@ -154,12 +154,12 @@ export default function PackagesPage() {
           <section
             className="qa-hero-photo"
             style={{
-              position: 'relative', minHeight: 'clamp(400px,54vh,580px)', display: 'flex', alignItems: 'center',
-              overflow: 'hidden', paddingBottom: 84, paddingTop: 40,
+              position: 'relative', height: 'clamp(400px,54vh,580px)', display: 'flex', alignItems: 'center',
+              overflow: 'visible', paddingBottom: 84, paddingTop: 40,
             }}
           >
             {heroImage ? (
-              <img src={heroImage} alt="" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }} />
+              <img src={heroImage} alt="" className="qa-hero-bg-img" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }} />
             ) : (
               <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(135deg,#34bbe1,#049dc5)' }} />
             )}
@@ -254,7 +254,7 @@ export default function PackagesPage() {
                   type="date"
                   value={preferredDates}
                   onChange={(e) => setPreferredDates(e.target.value)}
-                  style={{ width: '100%', boxSizing: 'border-box', border: 'none', outline: 'none', fontSize: 15, fontWeight: 600, fontFamily: 'inherit', color: preferredDates ? '#1d2733' : '#9aa0a6', padding: 0, background: 'transparent', colorScheme: 'light' }}
+                  style={{ width: '100%', boxSizing: 'border-box', border: 'none', outline: 'none', fontSize: 15, fontWeight: 600, fontFamily: 'inherit', color: preferredDates ? '#1d2733' : '#9aa0a6', padding: 0, background: 'transparent', colorScheme: 'light', textAlign: lang === 'en' ? 'left' : 'right' }}
                 />
               </div>
 
@@ -304,7 +304,7 @@ export default function PackagesPage() {
                 )}
               </div>
 
-              <div style={{ padding: 10, display: 'flex', alignItems: 'center' }}>
+              <div className="qa-search-cta-wrap" style={{ padding: 10, display: 'flex', alignItems: 'center' }}>
                 <button
                   type="button"
                   onClick={() => document.getElementById('qa-pkg-results')?.scrollIntoView({ behavior: 'smooth' })}
@@ -312,10 +312,11 @@ export default function PackagesPage() {
                   aria-label={lang === 'en' ? 'Search' : 'بحث'}
                   style={{
                     width: 52, height: 52, borderRadius: 18, border: 'none', cursor: 'pointer', background: '#049dc5', color: '#fff',
-                    display: 'grid', placeItems: 'center', flex: 'none',
+                    display: 'grid', placeItems: 'center', flex: 'none', gap: 8,
                   }}
                 >
                   <Icon name="search" size={20} />
+                  <span className="qa-search-cta-label" style={{ display: 'none', fontSize: 14.5, fontWeight: 700 }}>{lang === 'en' ? 'Search' : 'بحث'}</span>
                 </button>
               </div>
             </div>
@@ -439,6 +440,9 @@ export default function PackagesPage() {
             @media (max-width: 720px) {
               .qa-search-divider { display: none; }
               .qa-search-field { border-bottom: 1px solid #f0f0f0; }
+              .qa-search-cta-wrap { width: 100%; padding: 6px 10px 14px !important; }
+              .qa-search-cta { width: 100% !important; border-radius: 14px !important; display: flex !important; flex-direction: row !important; gap: 8px !important; }
+              .qa-search-cta-label { display: inline !important; }
             }
           `}</style>
 
