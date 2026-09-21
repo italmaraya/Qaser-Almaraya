@@ -2081,7 +2081,7 @@ function   visaVals(country){
 <span style={{ position: "absolute", bottom: "-4px", left: "50%", width: "7px", height: "7px", marginLeft: "-3.5px", borderRadius: "50%", background: "rgba(255,255,255,.9)" }}></span>
 </span>
 
-<img src="/assets/jobs-recruit-cutout.png" alt="سكايلو يستقبل طلبات التوظيف" style={{ position: "absolute", zIndex: "2", left: "-11%", bottom: "-30px", display: "block", width: "clamp(210px,62%,460px)", height: "auto", objectFit: "contain", filter: "drop-shadow(0 26px 38px rgba(1,42,55,.34))" }} />
+<img src="/assets/mascot-skylo-recruit-phone-cut.png" alt="سكايلو يستقبل طلبات التوظيف" style={{ position: "absolute", zIndex: "2", left: "-11%", bottom: "-30px", display: "block", width: "clamp(210px,62%,460px)", height: "auto", objectFit: "contain", filter: "drop-shadow(0 26px 38px rgba(1,42,55,.34))" }} />
 
 <div aria-hidden="true" style={{ position: "absolute", zIndex: "4", top: "50%", right: "-18px", width: "clamp(186px,44%,246px)", transform: "translateY(-50%)", display: "flex", flexDirection: "column", alignItems: "stretch", gap: "14px", pointerEvents: "none" }}>
 <div style={{ alignSelf: "stretch", display: "flex", flexDirection: "column", alignItems: "center", transformOrigin: "50% 0", animation: "qa-swing 5.6s ease-in-out infinite" }}>
@@ -2183,7 +2183,9 @@ function   visaVals(country){
 <span style={{ position: "absolute", bottom: "-4px", left: "50%", width: "7px", height: "7px", marginLeft: "-3.5px", borderRadius: "50%", background: "rgba(255,255,255,.9)" }}></span>
 </span>
 
-<img src="/assets/faq-skylo-cutout.png" alt="سكايلو يفكّر في أسئلتك" style={{ position: "absolute", zIndex: "2", left: "-11%", top: "-18px", bottom: "-24px", display: "block", width: "auto", height: "calc(100% + 42px)", maxWidth: "none", objectFit: "contain", objectPosition: "left bottom", filter: "drop-shadow(0 26px 38px rgba(1,42,55,.32))" }} />
+<span style={{ position: "absolute", zIndex: "2", left: "-6%", top: "6%", bottom: "10%", display: "block", width: "clamp(220px,58%,380px)", borderRadius: "24px", overflow: "hidden", boxShadow: "0 26px 38px rgba(1,42,55,.32)" }}>
+<img src="/assets/mascot-skylo-questions.png" alt="سكايلو يفكّر في أسئلتك" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+</span>
 
 <div aria-hidden="true" style={{ position: "absolute", zIndex: "4", top: "50%", right: "-18px", width: "clamp(186px,44%,246px)", transform: "translateY(-50%)", display: "flex", flexDirection: "column", alignItems: "stretch", gap: "14px", pointerEvents: "none" }}>
 <div style={{ position: "relative", alignSelf: "stretch", padding: "13px 15px 15px", background: "#fff", borderRadius: "14px 14px 14px 4px", boxShadow: "0 18px 34px rgba(1,42,55,.3)", animation: "qa-pop 6.4s ease-in-out infinite" }}>
