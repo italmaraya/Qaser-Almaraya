@@ -34,6 +34,8 @@ export default function CountryVisaListPage() {
   const [cards, setCards] = useState(null);
   const [error, setError] = useState('');
   const [typeFilter, setTypeFilter] = useState('الكل');
+  const [speedFilter, setSpeedFilter] = useState('all');
+  const [maxPrice, setMaxPrice] = useState(null);
   const [downloading, setDownloading] = useState(false);
 
   useEffect(() => {
@@ -54,7 +56,23 @@ export default function CountryVisaListPage() {
     countryCards.forEach((c) => { m[c.visa_type_name_ar] = c.visa_type_name_en; });
     return m;
   }, [countryCards]);
-  const filtered = countryCards.filter((c) => typeFilter === 'الكل' || c.visa_type_name_ar === typeFilter);
+  const priceBounds = useMemo(() => {
+    const prices = countryCards.map((c) => Number(c.adult_price) || 0);
+    return { min: prices.length ? Math.min(...prices) : 0, max: prices.length ? Math.max(...prices) : 0 };
+  }, [countryCards]);
+  const effectiveMaxPrice = maxPrice === null ? priceBounds.max : maxPrice;
+  function speedBucket(days) {
+    const n = Number(days) || 0;
+    if (n <= 3) return 'fast';
+    if (n <= 7) return 'normal';
+    return 'slow';
+  }
+  const filtered = countryCards.filter((c) => {
+    if (typeFilter !== 'الكل' && c.visa_type_name_ar !== typeFilter) return false;
+    if (speedFilter !== 'all' && speedBucket(c.issuing_time_days) !== speedFilter) return false;
+    if (Number(c.adult_price) > effectiveMaxPrice) return false;
+    return true;
+  });
   const country = countryCards[0];
 
   async function downloadCountryPdf() {
@@ -112,37 +130,14 @@ export default function CountryVisaListPage() {
                 </button>
               </div>
 
-              {typeOptions.length > 2 && (
-                <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
-                  {typeOptions.map((t) => (
-                    <button
-                      key={t}
-                      onClick={() => setTypeFilter(t)}
-                      style={{
-                        cursor: 'pointer',
-                        border: '1px solid ' + (typeFilter === t ? '#049dc5' : '#ececed'),
-                        background: typeFilter === t ? '#049dc5' : '#fff',
-                        color: typeFilter === t ? '#fff' : '#3d4650',
-                        borderRadius: 999,
-                        padding: '8px 18px',
-                        fontSize: 14,
-                        fontWeight: 600,
-                        fontFamily: 'inherit',
-                      }}
-                    >
-                      {t === 'الكل' ? nm('الكل', 'All') : nm(t, typeNameMap[t])}
-                    </button>
-                  ))}
-                </div>
-              )}
-
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-                {filtered.map((c) => {
+              <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr) 260px', gap: 24, alignItems: 'start' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+                  {filtered.map((c) => {
                   const photo = c.image_url || c.card_image_url || '';
                   const theme = getVisaTheme(c.visa_type_name_ar);
                   return (
-                  <div key={c.id} className="qa-card qa-visa-card" style={{ padding: 0, overflow: 'hidden', position: 'relative', display: 'grid', gridTemplateColumns: '200px 1fr', minHeight: 180 }}>
-                    <div style={{ position: 'relative', height: '100%', minHeight: 180, background: theme.gradient, overflow: 'hidden' }}>
+                  <div key={c.id} className="qa-card qa-visa-card" style={{ padding: 0, overflow: 'hidden', position: 'relative', display: 'grid', gridTemplateColumns: '140px 1fr', minHeight: 140 }}>
+                    <div style={{ position: 'relative', height: '100%', minHeight: 140, background: theme.gradient, overflow: 'hidden' }}>
                       {photo ? (
                         <img src={photo} alt="" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }} />
                       ) : (
@@ -180,66 +175,66 @@ export default function CountryVisaListPage() {
                       )}
                     </div>
 
-                    <div style={{ padding: '22px 26px', display: 'flex', flexDirection: 'column', gap: 16 }}>
-                      <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 24, flexWrap: 'wrap' }}>
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: 10, flex: '1 1 280px', minWidth: 0 }}>
-                          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
-                            <span style={pillStyle}>{nm(c.visa_type_name_ar, c.visa_type_name_en)}</span>
-                            {c.stay_duration ? <span style={pillStyleOutline}>{nm(c.country_name_ar, c.country_name_en)}</span> : null}
+                    <div style={{ padding: '14px 18px', display: 'flex', flexDirection: 'column', gap: 10 }}>
+                      <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 18, flexWrap: 'wrap' }}>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: 6, flex: '1 1 240px', minWidth: 0 }}>
+                          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+                            <span style={{ ...pillStyle, fontSize: 11, padding: '3px 10px' }}>{nm(c.visa_type_name_ar, c.visa_type_name_en)}</span>
+                            {c.stay_duration ? <span style={{ ...pillStyleOutline, fontSize: 11, padding: '3px 10px' }}>{nm(c.country_name_ar, c.country_name_en)}</span> : null}
                           </div>
-                          <h3 style={{ margin: 0, fontSize: 19, fontWeight: 700, color: '#1d2733' }}>
+                          <h3 style={{ margin: 0, fontSize: 15.5, fontWeight: 700, color: '#1d2733' }}>
                             {lang === 'en'
                               ? `${nm(c.country_name_ar, c.country_name_en)} visa${c.stay_duration ? ' for ' + c.stay_duration + ' stay' : ''}`
                               : `تأشيرة ${nm(c.country_name_ar, c.country_name_en)}${c.stay_duration ? ' لمدة ' + c.stay_duration : ''}`}
                           </h3>
-                          <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 13, color: '#3d4650' }}>
-                            <span style={{ width: 17, height: 17, borderRadius: '50%', background: '#d2324f', color: '#fff', display: 'grid', placeItems: 'center', flex: 'none', fontSize: 11, fontWeight: 800 }}>!</span>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: 7, fontSize: 12, color: '#3d4650' }}>
+                            <span style={{ width: 15, height: 15, borderRadius: '50%', background: '#d2324f', color: '#fff', display: 'grid', placeItems: 'center', flex: 'none', fontSize: 10, fontWeight: 800 }}>!</span>
                             {lang === 'en'
                               ? `Iraqi passport — you need a visa for ${nm(c.country_name_ar, c.country_name_en)}.`
                               : `بجواز عراقي! تحتاجون تأشيرة لدخول ${nm(c.country_name_ar, c.country_name_en)}.`}
                           </div>
-                          <Link href={`/visa/${c.id}`} style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12.5, color: '#049dc5', fontWeight: 600, textDecoration: 'none' }}>
-                            <Icon name="info" size={13} />
+                          <Link href={`/visa/${c.id}`} style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 11.5, color: '#049dc5', fontWeight: 600, textDecoration: 'none' }}>
+                            <Icon name="info" size={12} />
                             {lang === 'en' ? 'Click to see requirements' : 'اضغط لمعرفة المتطلبات'}
                           </Link>
                         </div>
 
-                        <div style={{ background: '#f8fbfc', border: '1px solid #ececed', borderRadius: 16, padding: '16px 20px', display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 6, flex: 'none', minWidth: 190 }}>
-                          <span style={{ fontSize: 11, color: '#7b8087' }}>{lang === 'en' ? 'Travel visa provided' : 'التأشيرة السياحية متوفرة'}</span>
-                          <span style={{ fontSize: 13.5, color: '#3d4650' }}>{formatPrice(c.child_price, 'IQD', lang)} <span style={{ color: '#7b8087', fontSize: 11.5 }}>{lang === 'en' ? '/ per child' : '/ للطفل'}</span></span>
-                          <span style={{ fontSize: 22, fontWeight: 800, color: '#1d2733' }}>{formatPrice(c.adult_price, 'IQD', lang)}</span>
-                          <span style={{ fontSize: 11.5, color: '#7b8087', marginTop: -4 }}>{lang === 'en' ? 'Total per adult' : 'الإجمالي للبالغ'}</span>
-                          <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 10, width: '100%', justifyContent: 'flex-end' }}>
-                            <span title={lang === 'en' ? 'Requirements & info' : 'المتطلبات والمعلومات'} style={{ width: 30, height: 30, borderRadius: '50%', border: '1.5px solid #1d2733', display: 'grid', placeItems: 'center', flex: 'none' }}>
-                              <Icon name="info" size={14} style={{ color: '#1d2733' }} />
+                        <div style={{ background: '#f8fbfc', border: '1px solid #ececed', borderRadius: 14, padding: '12px 16px', display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 4, flex: 'none', minWidth: 168 }}>
+                          <span style={{ fontSize: 10, color: '#7b8087' }}>{lang === 'en' ? 'Travel visa provided' : 'التأشيرة السياحية متوفرة'}</span>
+                          <span style={{ fontSize: 12, color: '#3d4650' }}>{formatPrice(c.child_price, 'IQD', lang)} <span style={{ color: '#7b8087', fontSize: 10.5 }}>{lang === 'en' ? '/ per child' : '/ للطفل'}</span></span>
+                          <span style={{ fontSize: 18, fontWeight: 800, color: '#1d2733' }}>{formatPrice(c.adult_price, 'IQD', lang)}</span>
+                          <span style={{ fontSize: 10.5, color: '#7b8087', marginTop: -4 }}>{lang === 'en' ? 'Total per adult' : 'الإجمالي للبالغ'}</span>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 8, width: '100%', justifyContent: 'flex-end' }}>
+                            <span title={lang === 'en' ? 'Requirements & info' : 'المتطلبات والمعلومات'} style={{ width: 26, height: 26, borderRadius: '50%', border: '1.5px solid #1d2733', display: 'grid', placeItems: 'center', flex: 'none' }}>
+                              <Icon name="info" size={13} style={{ color: '#1d2733' }} />
                             </span>
                             <Link
                               href={`/visa/${c.id}`}
                               className="qa-btn qa-cyan"
-                              style={{ textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: 8, padding: '10px 22px', flex: 1, justifyContent: 'center' }}
+                              style={{ textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: 6, padding: '8px 16px', fontSize: 13, flex: 1, justifyContent: 'center' }}
                             >
                               {lang === 'en' ? 'View deal' : 'عرض العرض'}
-                              <span style={{ width: 18, height: 18, borderRadius: '50%', background: 'rgba(255,255,255,.3)', display: 'grid', placeItems: 'center', flex: 'none' }}>
-                                <Icon name="check" size={11} />
+                              <span style={{ width: 15, height: 15, borderRadius: '50%', background: 'rgba(255,255,255,.3)', display: 'grid', placeItems: 'center', flex: 'none' }}>
+                                <Icon name="check" size={9} />
                               </span>
                             </Link>
                           </div>
                         </div>
                       </div>
 
-                      <div style={{ display: 'flex', gap: 0, borderTop: '1px solid #f0f0f0', paddingTop: 14, flexWrap: 'wrap' }}>
+                      <div style={{ display: 'flex', gap: 0, borderTop: '1px solid #f0f0f0', paddingTop: 10, flexWrap: 'wrap' }}>
                         {[
                           { icon: 'shield-check', label: lang === 'en' ? 'Type' : 'النوع', value: nm(c.visa_type_name_ar, c.visa_type_name_en) },
                           { icon: 'clock', label: lang === 'en' ? 'Issuance' : 'مدة الإصدار', value: c.issuing_time_days ? c.issuing_time_days + (lang === 'en' ? ' working days' : ' أيام عمل') : '—' },
                           { icon: 'calendar-check', label: lang === 'en' ? 'Validity' : 'الصلاحية', value: c.validity_before_travel || '—' },
-                        ].map((s, i, arr) => (
-                          <div key={s.label} style={{ display: 'flex', alignItems: 'center', gap: 10, flex: '1 1 180px', padding: '4px 18px', borderInlineStart: i > 0 ? '1px solid #f0f0f0' : 'none' }}>
-                            <span style={{ width: 34, height: 34, borderRadius: 10, background: '#eaf8fd', display: 'grid', placeItems: 'center', flex: 'none' }}>
-                              <Icon name={s.icon} size={16} style={{ color: '#049dc5' }} />
+                        ].map((s, i) => (
+                          <div key={s.label} style={{ display: 'flex', alignItems: 'center', gap: 8, flex: '1 1 150px', padding: '2px 14px', borderInlineStart: i > 0 ? '1px solid #f0f0f0' : 'none' }}>
+                            <span style={{ width: 27, height: 27, borderRadius: 8, background: '#eaf8fd', display: 'grid', placeItems: 'center', flex: 'none' }}>
+                              <Icon name={s.icon} size={13} style={{ color: '#049dc5' }} />
                             </span>
-                            <span style={{ display: 'flex', flexDirection: 'column', gap: 1, minWidth: 0 }}>
-                              <span style={{ fontSize: 11, color: '#7b8087' }}>{s.label}</span>
-                              <span style={{ fontSize: 13.5, fontWeight: 700, color: '#1d2733', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{s.value}</span>
+                            <span style={{ display: 'flex', flexDirection: 'column', gap: 0, minWidth: 0 }}>
+                              <span style={{ fontSize: 10, color: '#7b8087' }}>{s.label}</span>
+                              <span style={{ fontSize: 12, fontWeight: 700, color: '#1d2733', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{s.value}</span>
                             </span>
                           </div>
                         ))}
@@ -248,6 +243,87 @@ export default function CountryVisaListPage() {
                   </div>
                   );
                 })}
+                </div>
+
+                <aside style={{ background: '#fff', border: '1px solid #ececed', borderRadius: 16, padding: 18, display: 'flex', flexDirection: 'column', gap: 20, position: 'sticky', top: 90 }}>
+                  <h4 style={{ margin: 0, fontSize: 15, display: 'flex', alignItems: 'center', gap: 7 }}>
+                    <Icon name="layout-grid" size={15} style={{ color: '#049dc5' }} />
+                    {nm('الفلاتر', 'Filters')}
+                  </h4>
+
+                  {typeOptions.length > 2 && (
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                      <span style={{ fontSize: 12.5, fontWeight: 700, color: '#7b8087' }}>{nm('نوع التأشيرة', 'Visa type')}</span>
+                      {typeOptions.map((t) => (
+                        <button
+                          key={t}
+                          onClick={() => setTypeFilter(t)}
+                          style={{
+                            cursor: 'pointer', textAlign: 'start', display: 'flex', alignItems: 'center', gap: 8,
+                            border: 'none', background: 'none', padding: '5px 2px', fontFamily: 'inherit',
+                            fontSize: 13.5, fontWeight: typeFilter === t ? 700 : 500, color: typeFilter === t ? '#049dc5' : '#3d4650',
+                          }}
+                        >
+                          <span style={{ width: 14, height: 14, borderRadius: '50%', border: '1.5px solid ' + (typeFilter === t ? '#049dc5' : '#cacbcc'), display: 'grid', placeItems: 'center', flex: 'none' }}>
+                            {typeFilter === t ? <span style={{ width: 7, height: 7, borderRadius: '50%', background: '#049dc5' }} /> : null}
+                          </span>
+                          {t === 'الكل' ? nm('الكل', 'All') : nm(t, typeNameMap[t])}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                    <span style={{ fontSize: 12.5, fontWeight: 700, color: '#7b8087' }}>{nm('سرعة الإصدار', 'Issuance speed')}</span>
+                    {[
+                      ['all', nm('الكل', 'All')],
+                      ['fast', nm('سريعة (٣ أيام أو أقل)', 'Fast (≤3 days)')],
+                      ['normal', nm('متوسطة (٤-٧ أيام)', 'Normal (4-7 days)')],
+                      ['slow', nm('طويلة (٨ أيام فأكثر)', 'Slow (8+ days)')],
+                    ].map(([key, label]) => (
+                      <button
+                        key={key}
+                        onClick={() => setSpeedFilter(key)}
+                        style={{
+                          cursor: 'pointer', textAlign: 'start', display: 'flex', alignItems: 'center', gap: 8,
+                          border: 'none', background: 'none', padding: '5px 2px', fontFamily: 'inherit',
+                          fontSize: 13.5, fontWeight: speedFilter === key ? 700 : 500, color: speedFilter === key ? '#049dc5' : '#3d4650',
+                        }}
+                      >
+                        <span style={{ width: 14, height: 14, borderRadius: '50%', border: '1.5px solid ' + (speedFilter === key ? '#049dc5' : '#cacbcc'), display: 'grid', placeItems: 'center', flex: 'none' }}>
+                          {speedFilter === key ? <span style={{ width: 7, height: 7, borderRadius: '50%', background: '#049dc5' }} /> : null}
+                        </span>
+                        {label}
+                      </button>
+                    ))}
+                  </div>
+
+                  {priceBounds.max > priceBounds.min && (
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                      <span style={{ fontSize: 12.5, fontWeight: 700, color: '#7b8087' }}>{nm('الحد الأقصى للسعر', 'Max price')}</span>
+                      <input
+                        type="range"
+                        min={priceBounds.min}
+                        max={priceBounds.max}
+                        step={Math.max(1, Math.round((priceBounds.max - priceBounds.min) / 20))}
+                        value={effectiveMaxPrice}
+                        onChange={(e) => setMaxPrice(Number(e.target.value))}
+                        style={{ width: '100%' }}
+                      />
+                      <span style={{ fontSize: 13, fontWeight: 700, color: '#1d2733' }}>{formatPrice(effectiveMaxPrice, 'IQD', lang)}</span>
+                    </div>
+                  )}
+
+                  {(typeFilter !== 'الكل' || speedFilter !== 'all' || maxPrice !== null) && (
+                    <button
+                      type="button"
+                      onClick={() => { setTypeFilter('الكل'); setSpeedFilter('all'); setMaxPrice(null); }}
+                      style={{ cursor: 'pointer', border: '1px solid #ececed', borderRadius: 999, padding: '8px 14px', fontSize: 13, fontWeight: 700, fontFamily: 'inherit', background: '#fff', color: '#7b8087' }}
+                    >
+                      {nm('إعادة تعيين الفلاتر', 'Reset filters')}
+                    </button>
+                  )}
+                </aside>
               </div>
             </>
           )}
