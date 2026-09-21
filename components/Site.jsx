@@ -2188,8 +2188,8 @@ function   visaVals(country){
   alt="سكايلو يفكّر في أسئلتك"
   className="qa-hero-mascot"
   style={{
-    position: "absolute", zIndex: "2", left: "-6%", bottom: "-24px", display: "block",
-    width: "clamp(220px,58%,380px)", height: "auto", objectFit: "contain",
+    position: "absolute", zIndex: "2", left: "-11%", bottom: "-30px", display: "block",
+    width: "clamp(240px,64%,420px)", height: "auto", objectFit: "contain",
     filter: "drop-shadow(0 26px 38px rgba(1,42,55,.32))",
   }}
 />
