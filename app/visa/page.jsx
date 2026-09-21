@@ -89,6 +89,7 @@ export default function VisaLandingPage() {
   const [adultCount, setAdultCount] = useState(1);
   const [childCount, setChildCount] = useState(0);
   const [nationality, setNationality] = useState('');
+  const [travelDate, setTravelDate] = useState('');
   const [nationalities, setNationalities] = useState([]);
   const [travelersOpen, setTravelersOpen] = useState(false);
   const [trackOpen, setTrackOpen] = useState(false);
@@ -189,7 +190,10 @@ export default function VisaLandingPage() {
 
   function goSearch(e) {
     e.preventDefault();
-    if (selectedCountry) router.push(`/visa/country/${selectedCountry.country_id}`);
+    if (selectedCountry) {
+      const qs = travelDate ? `?date=${encodeURIComponent(travelDate)}` : '';
+      router.push(`/visa/country/${selectedCountry.country_id}${qs}`);
+    }
   }
 
   async function submitTrack(e) {
@@ -336,7 +340,12 @@ export default function VisaLandingPage() {
 
                   <label style={segmentStyle}>
                     <span style={segmentLabel}>تاريخ السفر</span>
-                    <input type="date" style={{ ...segmentSelect, appearance: 'auto', WebkitAppearance: 'auto' }} />
+                    <input
+                      type="date"
+                      value={travelDate}
+                      onChange={(e) => setTravelDate(e.target.value)}
+                      style={{ ...segmentSelect, appearance: 'auto', WebkitAppearance: 'auto' }}
+                    />
                   </label>
 
                   <div style={{ ...segmentStyle, position: 'relative' }}>
@@ -515,7 +524,7 @@ export default function VisaLandingPage() {
                 </div>
                 <div className="qa-grid">
                   {list.map((c) => (
-                    <Link key={c.country_id} href={`/visa/country/${c.country_id}`} className="qa-card" style={{ padding: 0, overflow: 'hidden', textDecoration: 'none', color: 'inherit', display: 'flex', flexDirection: 'column' }}>
+                    <Link key={c.country_id} href={`/visa/country/${c.country_id}${travelDate ? `?date=${encodeURIComponent(travelDate)}` : ''}`} className="qa-card" style={{ padding: 0, overflow: 'hidden', textDecoration: 'none', color: 'inherit', display: 'flex', flexDirection: 'column' }}>
                       <div
                         style={{
                           position: 'relative', height: 96, display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', padding: 16,

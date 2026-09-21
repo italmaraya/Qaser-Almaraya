@@ -1,6 +1,6 @@
 'use client';
 import { useEffect, useMemo, useState } from 'react';
-import { useParams } from 'next/navigation';
+import { useParams, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import SiteHeader from '../../../../components/SiteHeader';
 import SiteFooter from '../../../../components/SiteFooter';
@@ -31,13 +31,14 @@ export default function CountryVisaListPage() {
   const { providers: providerHints, denied: providerDenied } = useProviderReveal();
   const nm = (ar, en) => (lang === 'en' && en ? en : ar);
   const { countryId } = useParams();
+  const searchParams = useSearchParams();
+  const travelDate = searchParams.get('date') || '';
   const [cards, setCards] = useState(null);
   const [error, setError] = useState('');
   const [typeFilter, setTypeFilter] = useState('الكل');
   const [speedFilter, setSpeedFilter] = useState('all');
   const [maxPrice, setMaxPrice] = useState(null);
   const [downloading, setDownloading] = useState(false);
-  const [travelDate, setTravelDate] = useState('');
   const [expanded, setExpanded] = useState({});
   const [detailsCache, setDetailsCache] = useState({});
   const [detailsLoading, setDetailsLoading] = useState({});
@@ -158,26 +159,14 @@ export default function CountryVisaListPage() {
                 </button>
               </div>
 
-              <div style={{ background: '#fff', border: '1px solid #ececed', borderRadius: 14, padding: '14px 18px', display: 'flex', alignItems: 'center', gap: 14, flexWrap: 'wrap' }}>
-                <label style={{ display: 'flex', flexDirection: 'column', gap: 4, fontSize: 12.5, fontWeight: 700, color: '#3d4650' }}>
-                  {nm('متى تريدون السفر؟', 'When do you want to travel?')}
-                  <input
-                    type="date"
-                    value={travelDate}
-                    onChange={(e) => setTravelDate(e.target.value)}
-                    style={{ padding: '8px 12px', borderRadius: 8, border: '1px solid #cacbcc', fontFamily: 'inherit', fontSize: 13.5 }}
-                  />
-                </label>
-                {travelDate ? (
-                  <button
-                    type="button"
-                    onClick={() => setTravelDate('')}
-                    style={{ cursor: 'pointer', border: 'none', background: 'none', color: '#7b8087', fontSize: 12.5, fontWeight: 600, fontFamily: 'inherit', alignSelf: 'flex-end', marginBottom: 2 }}
-                  >
-                    {nm('إلغاء', 'Clear')}
-                  </button>
-                ) : null}
-              </div>
+              {travelDate && (
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 12.5, color: '#7b8087' }}>
+                  <Icon name="calendar-days" size={14} />
+                  {nm('جاهزية التأشيرة محسوبة بناءً على تاريخ السفر: ', 'Visa readiness is checked against your travel date: ')}
+                  <b style={{ color: '#3d4650' }}>{travelDate}</b>
+                  <Link href="/visa" style={{ color: '#049dc5', fontWeight: 700, textDecoration: 'none' }}>{nm('(تغيير)', '(change)')}</Link>
+                </div>
+              )}
 
               {noneFeasible && (
                 <div style={{ background: '#fdecef', border: '1px solid #f7c3cc', borderRadius: 12, padding: '14px 18px', display: 'flex', alignItems: 'center', gap: 10, color: '#8a1f34' }}>
