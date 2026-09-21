@@ -13,7 +13,7 @@ export async function GET(request) {
   await ensureSchema();
 
   const rows = await sql`
-    SELECT vc.id, p.name AS provider_name
+    SELECT vc.id, p.name AS provider_name, vc.adult_cost, vc.child_cost, vc.cost_currency
     FROM visa_cards vc
     LEFT JOIN providers p ON p.id = vc.provider_id
     WHERE vc.active = true
@@ -21,7 +21,12 @@ export async function GET(request) {
 
   const out = {};
   rows.forEach((r) => {
-    out[r.id] = r.provider_name || null;
+    out[r.id] = {
+      provider_name: r.provider_name || null,
+      adult_cost: r.adult_cost,
+      child_cost: r.child_cost,
+      cost_currency: r.cost_currency,
+    };
   });
   return NextResponse.json(out);
 }

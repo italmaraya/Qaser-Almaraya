@@ -134,18 +134,29 @@ export default function VisaDetailPage() {
                       position: 'absolute',
                       top: 20,
                       insetInlineStart: 20,
+                      insetInlineEnd: 90,
                       zIndex: 2,
                       fontSize: 11.5,
                       fontWeight: 700,
                       color: '#036f8c',
                       background: 'rgba(255,255,255,.96)',
-                      borderRadius: 999,
-                      padding: '4px 12px',
+                      borderRadius: 12,
+                      padding: '6px 12px',
                       boxShadow: '0 4px 10px rgba(1,42,55,.25)',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      gap: 2,
                     }}
-                    title="مزود الخدمة — يظهر لفريق العمل فقط"
+                    title="معلومات داخلية — تظهر لفريق العمل فقط"
                   >
-                    {providerHints[card.id]}
+                    {providerHints[card.id].provider_name ? <span>{providerHints[card.id].provider_name}</span> : null}
+                    <span style={{ color: '#7b8087', fontWeight: 600 }}>
+                      {lang === 'en' ? 'Cost: ' : 'التكلفة: '}
+                      {formatPrice(providerHints[card.id].adult_cost, providerHints[card.id].cost_currency || 'IQD', lang)}
+                      {lang === 'en' ? ' / adult, ' : ' للبالغ، '}
+                      {formatPrice(providerHints[card.id].child_cost, providerHints[card.id].cost_currency || 'IQD', lang)}
+                      {lang === 'en' ? ' / child' : ' للطفل'}
+                    </span>
                   </span>
                 )}
                 {card.flag_code ? (

@@ -37,6 +37,25 @@ export default function CountryVisaListPage() {
   const [speedFilter, setSpeedFilter] = useState('all');
   const [maxPrice, setMaxPrice] = useState(null);
   const [downloading, setDownloading] = useState(false);
+  const [travelDate, setTravelDate] = useState('');
+  const [expanded, setExpanded] = useState({});
+  const [detailsCache, setDetailsCache] = useState({});
+  const [detailsLoading, setDetailsLoading] = useState({});
+
+  async function toggleRequirements(id) {
+    setExpanded((e) => ({ ...e, [id]: !e[id] }));
+    if (!detailsCache[id]) {
+      setDetailsLoading((l) => ({ ...l, [id]: true }));
+      try {
+        const res = await fetch(`/api/visa/cards/${id}`);
+        const data = await res.json();
+        setDetailsCache((c) => ({ ...c, [id]: data }));
+      } catch {
+        /* ignore — the panel just shows nothing extra */
+      }
+      setDetailsLoading((l) => ({ ...l, [id]: false }));
+    }
+  }
 
   useEffect(() => {
     fetch('/api/visa/cards')
@@ -74,6 +93,15 @@ export default function CountryVisaListPage() {
     return true;
   });
   const country = countryCards[0];
+
+  const daysUntilTravel = travelDate
+    ? Math.ceil((new Date(travelDate + 'T00:00:00') - new Date(new Date().toDateString())) / 86400000)
+    : null;
+  function isFeasible(c) {
+    if (daysUntilTravel === null || c.issuing_time_days === null || c.issuing_time_days === undefined) return true;
+    return daysUntilTravel >= Number(c.issuing_time_days);
+  }
+  const noneFeasible = daysUntilTravel !== null && countryCards.length > 0 && !countryCards.some(isFeasible);
 
   async function downloadCountryPdf() {
     setDownloading(true);
@@ -130,6 +158,39 @@ export default function CountryVisaListPage() {
                 </button>
               </div>
 
+              <div style={{ background: '#fff', border: '1px solid #ececed', borderRadius: 14, padding: '14px 18px', display: 'flex', alignItems: 'center', gap: 14, flexWrap: 'wrap' }}>
+                <label style={{ display: 'flex', flexDirection: 'column', gap: 4, fontSize: 12.5, fontWeight: 700, color: '#3d4650' }}>
+                  {nm('متى تريدون السفر؟', 'When do you want to travel?')}
+                  <input
+                    type="date"
+                    value={travelDate}
+                    onChange={(e) => setTravelDate(e.target.value)}
+                    style={{ padding: '8px 12px', borderRadius: 8, border: '1px solid #cacbcc', fontFamily: 'inherit', fontSize: 13.5 }}
+                  />
+                </label>
+                {travelDate ? (
+                  <button
+                    type="button"
+                    onClick={() => setTravelDate('')}
+                    style={{ cursor: 'pointer', border: 'none', background: 'none', color: '#7b8087', fontSize: 12.5, fontWeight: 600, fontFamily: 'inherit', alignSelf: 'flex-end', marginBottom: 2 }}
+                  >
+                    {nm('إلغاء', 'Clear')}
+                  </button>
+                ) : null}
+              </div>
+
+              {noneFeasible && (
+                <div style={{ background: '#fdecef', border: '1px solid #f7c3cc', borderRadius: 12, padding: '14px 18px', display: 'flex', alignItems: 'center', gap: 10, color: '#8a1f34' }}>
+                  <Icon name="alert-triangle" size={18} style={{ flex: 'none' }} />
+                  <span style={{ fontSize: 13.5 }}>
+                    {nm(
+                      'يبدو أن التأشيرة لن تكون جاهزة في الوقت المحدد لسفركم. تواصلوا معنا لمزيد من المعلومات.',
+                      "Looks like the visa won't be ready in time for your travel date. Contact us for further information."
+                    )}
+                  </span>
+                </div>
+              )}
+
               <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr) 260px', gap: 24, alignItems: 'start' }}>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
                   {filtered.map((c) => {
@@ -165,12 +226,19 @@ export default function CountryVisaListPage() {
                       {providerHints && providerHints[c.id] && (
                         <span
                           style={{
-                            position: 'absolute', bottom: 8, insetInlineStart: 8, zIndex: 2, fontSize: 10.5, fontWeight: 700, color: '#036f8c',
-                            background: 'rgba(255,255,255,.96)', borderRadius: 999, padding: '3px 9px', boxShadow: '0 4px 10px rgba(1,42,55,.25)', whiteSpace: 'nowrap',
+                            position: 'absolute', bottom: 8, insetInlineStart: 8, insetInlineEnd: 8, zIndex: 2, fontSize: 10, fontWeight: 700, color: '#036f8c',
+                            background: 'rgba(255,255,255,.96)', borderRadius: 10, padding: '4px 8px', boxShadow: '0 4px 10px rgba(1,42,55,.25)',
+                            display: 'flex', flexDirection: 'column', gap: 1, overflow: 'hidden',
                           }}
-                          title="مزود الخدمة — يظهر لفريق العمل فقط"
+                          title="معلومات داخلية — تظهر لفريق العمل فقط"
                         >
-                          {providerHints[c.id]}
+                          {providerHints[c.id].provider_name ? (
+                            <span style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{providerHints[c.id].provider_name}</span>
+                          ) : null}
+                          <span style={{ color: '#7b8087', fontWeight: 600, fontSize: 9.5, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                            {nm('التكلفة: ', 'Cost: ')}
+                            {formatPrice(providerHints[c.id].adult_cost, providerHints[c.id].cost_currency || 'IQD', lang)}
+                          </span>
                         </span>
                       )}
                     </div>
@@ -187,16 +255,32 @@ export default function CountryVisaListPage() {
                               ? `${nm(c.country_name_ar, c.country_name_en)} visa${c.stay_duration ? ' for ' + c.stay_duration + ' stay' : ''}`
                               : `تأشيرة ${nm(c.country_name_ar, c.country_name_en)}${c.stay_duration ? ' لمدة ' + c.stay_duration : ''}`}
                           </h3>
-                          <div style={{ display: 'flex', alignItems: 'center', gap: 7, fontSize: 12, color: '#3d4650' }}>
+                          <button
+                            type="button"
+                            onClick={() => toggleRequirements(c.id)}
+                            style={{ display: 'flex', alignItems: 'center', gap: 7, fontSize: 12, color: '#3d4650', border: 'none', background: 'none', padding: 0, cursor: 'pointer', fontFamily: 'inherit', textAlign: 'start' }}
+                          >
                             <span style={{ width: 15, height: 15, borderRadius: '50%', background: '#d2324f', color: '#fff', display: 'grid', placeItems: 'center', flex: 'none', fontSize: 10, fontWeight: 800 }}>!</span>
                             {lang === 'en'
                               ? `Iraqi passport — you need a visa for ${nm(c.country_name_ar, c.country_name_en)}.`
                               : `بجواز عراقي! تحتاجون تأشيرة لدخول ${nm(c.country_name_ar, c.country_name_en)}.`}
-                          </div>
-                          <Link href={`/visa/${c.id}`} style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 11.5, color: '#049dc5', fontWeight: 600, textDecoration: 'none' }}>
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => toggleRequirements(c.id)}
+                            style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 11.5, color: '#049dc5', fontWeight: 600, border: 'none', background: 'none', padding: 0, cursor: 'pointer', fontFamily: 'inherit' }}
+                          >
                             <Icon name="info" size={12} />
-                            {lang === 'en' ? 'Click to see requirements' : 'اضغط لمعرفة المتطلبات'}
-                          </Link>
+                            {expanded[c.id]
+                              ? nm('إخفاء المتطلبات', 'Hide requirements')
+                              : nm('اضغط لمعرفة المتطلبات', 'Click to see requirements')}
+                          </button>
+                          {!isFeasible(c) ? (
+                            <span style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 11.5, color: '#8a1f34', background: '#fdecef', borderRadius: 8, padding: '5px 9px' }}>
+                              <Icon name="alert-triangle" size={12} />
+                              {nm('قد لا تكون جاهزة في موعد سفركم', "May not be ready by your travel date")}
+                            </span>
+                          ) : null}
                         </div>
 
                         <div style={{ background: '#f8fbfc', border: '1px solid #ececed', borderRadius: 14, padding: '12px 16px', display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 4, flex: 'none', minWidth: 168 }}>
@@ -239,6 +323,40 @@ export default function CountryVisaListPage() {
                           </div>
                         ))}
                       </div>
+
+                      {expanded[c.id] && (
+                        <div style={{ borderTop: '1px solid #f0f0f0', paddingTop: 10, display: 'flex', flexDirection: 'column', gap: 8 }}>
+                          {detailsLoading[c.id] ? (
+                            <span style={{ fontSize: 12, color: '#7b8087' }}>{nm('جارٍ التحميل...', 'Loading...')}</span>
+                          ) : detailsCache[c.id] ? (
+                            <>
+                              {(detailsCache[c.id].documents || []).length > 0 && (
+                                <div style={{ display: 'flex', alignItems: 'flex-start', gap: 8, fontSize: 12, color: '#3d4650' }}>
+                                  <Icon name="upload" size={14} style={{ color: '#049dc5', flex: 'none', marginTop: 1 }} />
+                                  <span>
+                                    <b>{nm('المتطلبات: ', 'Needs: ')}</b>
+                                    {detailsCache[c.id].documents.map((d) => nm(d.name_ar, d.name_en)).join(' + ')}
+                                  </span>
+                                </div>
+                              )}
+                              {nm(detailsCache[c.id].booking_notes, detailsCache[c.id].booking_notes_en) ? (
+                                <div style={{ display: 'flex', alignItems: 'flex-start', gap: 8, fontSize: 12, color: '#3d4650' }}>
+                                  <Icon name="file-text" size={14} style={{ color: '#049dc5', flex: 'none', marginTop: 1 }} />
+                                  <span>
+                                    <b>{nm('ملاحظة: ', 'Note: ')}</b>
+                                    {nm(detailsCache[c.id].booking_notes, detailsCache[c.id].booking_notes_en)}
+                                  </span>
+                                </div>
+                              ) : null}
+                              {(detailsCache[c.id].documents || []).length === 0 && !nm(detailsCache[c.id].booking_notes, detailsCache[c.id].booking_notes_en) && (
+                                <span style={{ fontSize: 12, color: '#7b8087' }}>{nm('لا توجد متطلبات إضافية مسجلة لهذه التأشيرة.', 'No extra requirements recorded for this visa.')}</span>
+                              )}
+                            </>
+                          ) : (
+                            <span style={{ fontSize: 12, color: '#d2324f' }}>{nm('تعذّر تحميل المتطلبات.', 'Could not load requirements.')}</span>
+                          )}
+                        </div>
+                      )}
                     </div>
                   </div>
                   );
