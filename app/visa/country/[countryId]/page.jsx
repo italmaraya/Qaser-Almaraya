@@ -7,7 +7,7 @@ import SiteFooter from '../../../../components/SiteFooter';
 import MascotLoader from '../../../../components/MascotLoader';
 import { printDoc, visaTableHtml, combinedDocsLine, esc } from '../../../../lib/printDoc';
 import { useLangToggle } from '../../../../lib/i18n';
-import { formatPrice } from '../../../../lib/currency';
+import { formatPrice, formatRawAmount } from '../../../../lib/currency';
 import { flagSrc } from '../../../../lib/flags';
 import { useProviderReveal } from '../../../../lib/useProviderReveal';
 import Icon from '../../../../components/Icon';
@@ -208,25 +208,26 @@ export default function CountryVisaListPage() {
                       <button
                         type="button"
                         aria-label={lang === 'en' ? 'Save' : 'حفظ'}
-                        style={{ position: 'absolute', top: 10, insetInlineStart: 10, width: 30, height: 30, borderRadius: '50%', border: 'none', cursor: 'pointer', background: 'rgba(1,20,28,.4)', display: 'grid', placeItems: 'center', backdropFilter: 'blur(3px)' }}
+                        style={{ position: 'absolute', top: 10, insetInlineStart: 10, width: 28, height: 28, borderRadius: '50%', border: 'none', cursor: 'pointer', background: '#fff', display: 'grid', placeItems: 'center', boxShadow: '0 3px 8px rgba(1,42,55,.25)' }}
                       >
-                        <Icon name="heart" size={15} style={{ color: '#fff' }} />
+                        <Icon name="heart" size={14} style={{ color: '#1d2733' }} />
                       </button>
                       {providerHints && providerHints[c.id] && (
                         <span
+                          dir="ltr"
                           style={{
                             position: 'absolute', bottom: 8, insetInlineStart: 8, insetInlineEnd: 8, zIndex: 2, fontSize: 10, fontWeight: 700, color: '#036f8c',
                             background: 'rgba(255,255,255,.96)', borderRadius: 10, padding: '4px 8px', boxShadow: '0 4px 10px rgba(1,42,55,.25)',
-                            display: 'flex', flexDirection: 'column', gap: 1, overflow: 'hidden',
+                            display: 'flex', flexDirection: 'column', gap: 1, textAlign: 'start',
                           }}
                           title="معلومات داخلية — تظهر لفريق العمل فقط"
                         >
                           {providerHints[c.id].provider_name ? (
-                            <span style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{providerHints[c.id].provider_name}</span>
+                            <span style={{ wordBreak: 'break-word' }}>{providerHints[c.id].provider_name}</span>
                           ) : null}
-                          <span style={{ color: '#7b8087', fontWeight: 600, fontSize: 9.5, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                          <span style={{ color: '#7b8087', fontWeight: 600, fontSize: 9.5, wordBreak: 'break-word' }}>
                             {nm('التكلفة: ', 'Cost: ')}
-                            {formatPrice(providerHints[c.id].adult_cost, providerHints[c.id].cost_currency || 'IQD', lang)}
+                            {formatRawAmount(providerHints[c.id].adult_cost, providerHints[c.id].cost_currency || 'IQD', lang)}
                           </span>
                         </span>
                       )}
@@ -272,7 +273,7 @@ export default function CountryVisaListPage() {
                           ) : null}
                         </div>
 
-                        <div style={{ background: '#f8fbfc', border: '1px solid #ececed', borderRadius: 14, padding: '12px 16px', display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 4, flex: 'none', minWidth: 168 }}>
+                        <div style={{ background: '#f8fbfc', borderRadius: 14, padding: '12px 16px', display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 4, flex: 'none', minWidth: 168 }}>
                           <span style={{ fontSize: 10, color: '#7b8087' }}>{lang === 'en' ? 'Travel visa provided' : 'التأشيرة السياحية متوفرة'}</span>
                           <span style={{ fontSize: 12, color: '#3d4650' }}>{formatPrice(c.child_price, 'IQD', lang)} <span style={{ color: '#7b8087', fontSize: 10.5 }}>{lang === 'en' ? '/ per child' : '/ للطفل'}</span></span>
                           <span style={{ fontSize: 18, fontWeight: 800, color: '#1d2733' }}>{formatPrice(c.adult_price, 'IQD', lang)}</span>

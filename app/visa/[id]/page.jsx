@@ -7,7 +7,7 @@ import SiteFooter from '../../../components/SiteFooter';
 import MascotLoader from '../../../components/MascotLoader';
 import { printDoc, visaTableHtml, combinedDocsLine, esc } from '../../../lib/printDoc';
 import { useLangToggle } from '../../../lib/i18n';
-import { formatPrice } from '../../../lib/currency';
+import { formatPrice, formatRawAmount } from '../../../lib/currency';
 import { flagSrc } from '../../../lib/flags';
 import { useProviderReveal } from '../../../lib/useProviderReveal';
 
@@ -152,9 +152,9 @@ export default function VisaDetailPage() {
                     {providerHints[card.id].provider_name ? <span>{providerHints[card.id].provider_name}</span> : null}
                     <span style={{ color: '#7b8087', fontWeight: 600 }}>
                       {lang === 'en' ? 'Cost: ' : 'التكلفة: '}
-                      {formatPrice(providerHints[card.id].adult_cost, providerHints[card.id].cost_currency || 'IQD', lang)}
+                      {formatRawAmount(providerHints[card.id].adult_cost, providerHints[card.id].cost_currency || 'IQD', lang)}
                       {lang === 'en' ? ' / adult, ' : ' للبالغ، '}
-                      {formatPrice(providerHints[card.id].child_cost, providerHints[card.id].cost_currency || 'IQD', lang)}
+                      {formatRawAmount(providerHints[card.id].child_cost, providerHints[card.id].cost_currency || 'IQD', lang)}
                       {lang === 'en' ? ' / child' : ' للطفل'}
                     </span>
                   </span>
