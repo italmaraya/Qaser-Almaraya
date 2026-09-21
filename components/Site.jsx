@@ -2071,19 +2071,19 @@ function   visaVals(country){
 </div>
 </div>
 <div data-jobs-art="" style={{ position: "relative", alignSelf: "stretch", minHeight: "430px" }}>
-<span aria-hidden="true" style={{ position: "absolute", left: "-42%", bottom: "-96px", width: "400px", height: "400px", borderRadius: "50%", background: "radial-gradient(circle at 50% 42%,rgba(255,255,255,.32),rgba(255,255,255,0) 70%)" }}></span>
-<span aria-hidden="true" style={{ position: "absolute", left: "-36%", bottom: "-84px", width: "360px", height: "360px", animation: "qa-orbit 26s linear infinite" }}>
+<span aria-hidden="true" className="qa-hero-decor" style={{ position: "absolute", left: "-42%", bottom: "-96px", width: "400px", height: "400px", borderRadius: "50%", background: "radial-gradient(circle at 50% 42%,rgba(255,255,255,.32),rgba(255,255,255,0) 70%)" }}></span>
+<span aria-hidden="true" className="qa-hero-decor" style={{ position: "absolute", left: "-36%", bottom: "-84px", width: "360px", height: "360px", animation: "qa-orbit 26s linear infinite" }}>
 <span style={{ position: "absolute", inset: "0", borderRadius: "50%", border: "1px dashed rgba(255,255,255,.42)" }}></span>
 <span style={{ position: "absolute", top: "-5px", left: "50%", width: "10px", height: "10px", marginLeft: "-5px", borderRadius: "50%", background: "#faab18", boxShadow: "0 0 0 5px rgba(250,171,24,.25)" }}></span>
 </span>
-<span aria-hidden="true" style={{ position: "absolute", left: "-27%", bottom: "-42px", width: "266px", height: "266px", animation: "qa-orbit-rev 34s linear infinite" }}>
+<span aria-hidden="true" className="qa-hero-decor" style={{ position: "absolute", left: "-27%", bottom: "-42px", width: "266px", height: "266px", animation: "qa-orbit-rev 34s linear infinite" }}>
 <span style={{ position: "absolute", inset: "0", borderRadius: "50%", border: "1px solid rgba(255,255,255,.26)" }}></span>
 <span style={{ position: "absolute", bottom: "-4px", left: "50%", width: "7px", height: "7px", marginLeft: "-3.5px", borderRadius: "50%", background: "rgba(255,255,255,.9)" }}></span>
 </span>
 
-<img src="/assets/mascot-skylo-recruit-phone-cut.png" alt="سكايلو يستقبل طلبات التوظيف" style={{ position: "absolute", zIndex: "2", left: "-11%", bottom: "-30px", display: "block", width: "clamp(210px,62%,460px)", height: "auto", objectFit: "contain", filter: "drop-shadow(0 26px 38px rgba(1,42,55,.34))" }} />
+<img src="/assets/mascot-skylo-recruit-phone-cut.png" alt="سكايلو يستقبل طلبات التوظيف" className="qa-hero-mascot" style={{ position: "absolute", zIndex: "2", left: "-11%", bottom: "-30px", display: "block", width: "clamp(210px,62%,460px)", height: "auto", objectFit: "contain", filter: "drop-shadow(0 26px 38px rgba(1,42,55,.34))" }} />
 
-<div aria-hidden="true" style={{ position: "absolute", zIndex: "4", top: "50%", right: "-18px", width: "clamp(186px,44%,246px)", transform: "translateY(-50%)", display: "flex", flexDirection: "column", alignItems: "stretch", gap: "14px", pointerEvents: "none" }}>
+<div aria-hidden="true" className="qa-hero-float" style={{ position: "absolute", zIndex: "4", top: "50%", right: "-18px", width: "clamp(186px,44%,246px)", transform: "translateY(-50%)", display: "flex", flexDirection: "column", alignItems: "stretch", gap: "14px", pointerEvents: "none" }}>
 <div style={{ alignSelf: "stretch", display: "flex", flexDirection: "column", alignItems: "center", transformOrigin: "50% 0", animation: "qa-swing 5.6s ease-in-out infinite" }}>
 <span style={{ width: "2px", height: "30px", background: "rgba(255,255,255,.6)" }}></span>
 <span style={{ width: "26px", height: "8px", borderRadius: "3px", background: "rgba(255,255,255,.85)" }}></span>
@@ -2173,21 +2173,29 @@ function   visaVals(country){
 </div>
 </div>
 <div data-faq-art="" style={{ position: "relative", alignSelf: "stretch", minHeight: "430px" }}>
-<span aria-hidden="true" style={{ position: "absolute", left: "-40%", bottom: "-70px", width: "380px", height: "380px", borderRadius: "50%", background: "radial-gradient(circle at 50% 42%,rgba(255,255,255,.32),rgba(255,255,255,0) 70%)" }}></span>
-<span aria-hidden="true" style={{ position: "absolute", left: "-34%", bottom: "-64px", width: "344px", height: "344px", animation: "qa-orbit 28s linear infinite" }}>
+<span aria-hidden="true" className="qa-hero-decor" style={{ position: "absolute", left: "-40%", bottom: "-70px", width: "380px", height: "380px", borderRadius: "50%", background: "radial-gradient(circle at 50% 42%,rgba(255,255,255,.32),rgba(255,255,255,0) 70%)" }}></span>
+<span aria-hidden="true" className="qa-hero-decor" style={{ position: "absolute", left: "-34%", bottom: "-64px", width: "344px", height: "344px", animation: "qa-orbit 28s linear infinite" }}>
 <span style={{ position: "absolute", inset: "0", borderRadius: "50%", border: "1px dashed rgba(255,255,255,.42)" }}></span>
 <span style={{ position: "absolute", top: "-5px", left: "50%", width: "10px", height: "10px", marginLeft: "-5px", borderRadius: "50%", background: "#faab18", boxShadow: "0 0 0 5px rgba(250,171,24,.25)" }}></span>
 </span>
-<span aria-hidden="true" style={{ position: "absolute", left: "-25%", bottom: "-28px", width: "256px", height: "256px", animation: "qa-orbit-rev 36s linear infinite" }}>
+<span aria-hidden="true" className="qa-hero-decor" style={{ position: "absolute", left: "-25%", bottom: "-28px", width: "256px", height: "256px", animation: "qa-orbit-rev 36s linear infinite" }}>
 <span style={{ position: "absolute", inset: "0", borderRadius: "50%", border: "1px solid rgba(255,255,255,.26)" }}></span>
 <span style={{ position: "absolute", bottom: "-4px", left: "50%", width: "7px", height: "7px", marginLeft: "-3.5px", borderRadius: "50%", background: "rgba(255,255,255,.9)" }}></span>
 </span>
 
-<span style={{ position: "absolute", zIndex: "2", left: "-6%", top: "6%", bottom: "10%", display: "block", width: "clamp(220px,58%,380px)", borderRadius: "24px", overflow: "hidden", boxShadow: "0 26px 38px rgba(1,42,55,.32)" }}>
-<img src="/assets/mascot-skylo-questions.png" alt="سكايلو يفكّر في أسئلتك" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-</span>
+<img
+  src="/assets/mascot-skylo-questions.png"
+  alt="سكايلو يفكّر في أسئلتك"
+  className="qa-hero-mascot"
+  style={{
+    position: "absolute", zIndex: "2", left: "-6%", top: "4%", bottom: "6%", display: "block",
+    width: "clamp(220px,58%,380px)", height: "auto", maxHeight: "none", objectFit: "cover",
+    WebkitMaskImage: "radial-gradient(ellipse 70% 76% at 50% 50%, #000 58%, rgba(0,0,0,0) 100%)",
+    maskImage: "radial-gradient(ellipse 70% 76% at 50% 50%, #000 58%, rgba(0,0,0,0) 100%)",
+  }}
+/>
 
-<div aria-hidden="true" style={{ position: "absolute", zIndex: "4", top: "50%", right: "-18px", width: "clamp(186px,44%,246px)", transform: "translateY(-50%)", display: "flex", flexDirection: "column", alignItems: "stretch", gap: "14px", pointerEvents: "none" }}>
+<div aria-hidden="true" className="qa-hero-float" style={{ position: "absolute", zIndex: "4", top: "50%", right: "-18px", width: "clamp(186px,44%,246px)", transform: "translateY(-50%)", display: "flex", flexDirection: "column", alignItems: "stretch", gap: "14px", pointerEvents: "none" }}>
 <div style={{ position: "relative", alignSelf: "stretch", padding: "13px 15px 15px", background: "#fff", borderRadius: "14px 14px 14px 4px", boxShadow: "0 18px 34px rgba(1,42,55,.3)", animation: "qa-pop 6.4s ease-in-out infinite" }}>
 <span style={{ display: "flex", flexDirection: "column", gap: "7px" }}>
 <span style={{ fontSize: "13.5px", fontWeight: "700", color: "#1d2733", textWrap: "pretty" }}>كيف أحجز تذكرتي؟</span>
