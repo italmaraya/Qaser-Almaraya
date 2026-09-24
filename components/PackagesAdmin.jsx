@@ -1,6 +1,6 @@
 'use client';
 import React, { useEffect, useMemo, useState } from 'react';
-import { CATS } from '../lib/packagesData';
+import { CATS, MEAL_PLANS } from '../lib/packagesData';
 
 const inputStyle = {
   width: '100%', boxSizing: 'border-box', padding: '10px 12px', borderRadius: 8,
@@ -117,7 +117,7 @@ function blankPackage() {
     nights_ar: '', nights_en: '', departs_ar: '', departs_en: '', price: 0, child_price: 0,
     adult_cost: 0, child_cost: 0, cost_currency: 'IQD',
     badge_ar: '', badge_en: '', prefs: [], includes_ar: [], includes_en: [],
-    hotels: [], flights: [], days: [], image_url: '', active: true, sort_order: 0, rating: 4.8,
+    hotels: [], flights: [], days: [], image_url: '', pdf_banner_url: '', active: true, sort_order: 0, rating: 4.8,
   };
 }
 
@@ -191,6 +191,7 @@ function PackageForm({ initial, onSave, onCancel, saving }) {
       </div>
 
       <ImageUploadField label="صورة الغلاف" value={form.image_url} onChange={(url) => set('image_url', url)} />
+      <ImageUploadField label="بانر ملف PDF (صورة عريضة للدولة/الوجهة — إذا تُركت فارغة تُستخدم صورة الغلاف)" value={form.pdf_banner_url || ''} onChange={(url) => set('pdf_banner_url', url)} />
 
       <label style={labelStyle}>ما تشمله الباقة — سطر لكل بند (عربي)
         <textarea style={{ ...inputStyle, minHeight: 80 }} value={(form.includes_ar || []).join('\n')} onChange={(e) => set('includes_ar', linesToArr(e.target.value))} />
@@ -224,6 +225,47 @@ function PackageForm({ initial, onSave, onCancel, saving }) {
             <span style={{ fontSize: 11.5, color: '#7b8087' }}>
               أدخلوا الإحداثيات لعرض موقع الفندق على الخريطة في صفحة الباقة. يمكن نسخها من خرائط جوجل: افتحوا موقع الفندق في خرائط جوجل، ثم انسخوا الرقمين من شريط العنوان أو من "مشاركة" ← "نسخ الإحداثيات".
             </span>
+            <div style={{ borderTop: '1px dashed #ececed', paddingTop: 8, display: 'flex', flexDirection: 'column', gap: 8 }}>
+              <span style={{ fontSize: 12.5, fontWeight: 700, color: '#036f8c' }}>تفاصيل الفندق في ملف PDF</span>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(150px,1fr))', gap: 8 }}>
+                <label style={labelStyle}>عدد النجوم
+                  <select style={inputStyle} value={h.stars || ''} onChange={(e) => updateRow('hotels', idx, 'stars', e.target.value ? Number(e.target.value) : '')}>
+                    <option value="">—</option>{[1, 2, 3, 4, 5].map((n) => <option key={n} value={n}>{'★'.repeat(n)}</option>)}
+                  </select>
+                </label>
+                <label style={labelStyle}>تقييم الفندق من 100
+                  <input type="number" min="0" max="100" style={inputStyle} placeholder="مثال 88" value={h.reviewScore || ''} onChange={(e) => updateRow('hotels', idx, 'reviewScore', e.target.value)} />
+                </label>
+                <label style={labelStyle}>نظام الوجبات
+                  <select style={inputStyle} value={h.meal || ''} onChange={(e) => updateRow('hotels', idx, 'meal', e.target.value)}>
+                    <option value="">—</option>
+                    {Object.entries(MEAL_PLANS).map(([k, v]) => <option key={k} value={k}>{v.ar}</option>)}
+                  </select>
+                </label>
+                <label style={labelStyle}>سياسة الإلغاء
+                  <select style={inputStyle} value={h.refundable || ''} onChange={(e) => updateRow('hotels', idx, 'refundable', e.target.value)}>
+                    <option value="">—</option><option value="yes">قابل للاسترداد</option><option value="no">غير قابل للاسترداد</option>
+                  </select>
+                </label>
+              </div>
+              <input style={inputStyle} placeholder="العنوان الكامل للفندق" value={h.address || ''} onChange={(e) => updateRow('hotels', idx, 'address', e.target.value)} />
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
+                <input style={inputStyle} placeholder="نوع الغرفة (عربي)، مثال: غرفة قياسية" value={h.roomAr || ''} onChange={(e) => updateRow('hotels', idx, 'roomAr', e.target.value)} />
+                <input style={inputStyle} placeholder="Room type (English), e.g. Standard Room" value={h.roomEn || ''} onChange={(e) => updateRow('hotels', idx, 'roomEn', e.target.value)} />
+                <input style={inputStyle} placeholder="السرير (عربي)، مثال: سرير كينغ" value={h.bedAr || ''} onChange={(e) => updateRow('hotels', idx, 'bedAr', e.target.value)} />
+                <input style={inputStyle} placeholder="Bed (English), e.g. 1 King Bed" value={h.bedEn || ''} onChange={(e) => updateRow('hotels', idx, 'bedEn', e.target.value)} />
+                <input style={inputStyle} placeholder="الإطلالة (عربي)، مثال: إطلالة على المدينة" value={h.viewAr || ''} onChange={(e) => updateRow('hotels', idx, 'viewAr', e.target.value)} />
+                <input style={inputStyle} placeholder="View (English), e.g. City view" value={h.viewEn || ''} onChange={(e) => updateRow('hotels', idx, 'viewEn', e.target.value)} />
+              </div>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
+                <textarea style={{ ...inputStyle, minHeight: 70 }} placeholder="نبذة عن الفندق (عربي)" value={h.overviewAr || ''} onChange={(e) => updateRow('hotels', idx, 'overviewAr', e.target.value)} />
+                <textarea style={{ ...inputStyle, minHeight: 70 }} placeholder="Hotel overview (English)" value={h.overviewEn || ''} onChange={(e) => updateRow('hotels', idx, 'overviewEn', e.target.value)} />
+                <textarea style={{ ...inputStyle, minHeight: 70 }} placeholder="أماكن قريبة — سطر لكل مكان (عربي)" value={(h.nearbyAr || []).join('\n')} onChange={(e) => updateRow('hotels', idx, 'nearbyAr', e.target.value.split('\n'))} />
+                <textarea style={{ ...inputStyle, minHeight: 70 }} placeholder="Nearby places — one per line (English)" value={(h.nearbyEn || []).join('\n')} onChange={(e) => updateRow('hotels', idx, 'nearbyEn', e.target.value.split('\n'))} />
+                <textarea style={{ ...inputStyle, minHeight: 70 }} placeholder="سياسات وتعليمات الدخول — سطر لكل بند (عربي)" value={(h.policiesAr || []).join('\n')} onChange={(e) => updateRow('hotels', idx, 'policiesAr', e.target.value.split('\n'))} />
+                <textarea style={{ ...inputStyle, minHeight: 70 }} placeholder="Policies & check-in — one per line (English)" value={(h.policiesEn || []).join('\n')} onChange={(e) => updateRow('hotels', idx, 'policiesEn', e.target.value.split('\n'))} />
+              </div>
+            </div>
             <ImageUploadField label="الصورة الرئيسية للفندق" value={h.imageUrl || ''} onChange={(url) => updateRow('hotels', idx, 'imageUrl', url)} />
             <div style={{ display: 'flex', flexDirection: 'column', gap: 8, borderTop: '1px dashed #ececed', paddingTop: 8 }}>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
@@ -284,6 +326,12 @@ function PackageForm({ initial, onSave, onCancel, saving }) {
               <input type="number" style={inputStyle} placeholder="فرق السعر (IQD)" value={f.diff} onChange={(e) => updateRow('flights', idx, 'diff', Number(e.target.value))} />
               <button type="button" style={btnStyle('danger')} onClick={() => removeRow('flights', idx)}>حذف</button>
             </div>
+            <ImageUploadField label="شعار شركة الطيران (يظهر على بطاقة الرحلة في PDF)" value={f.logoUrl || ''} onChange={(url) => updateRow('flights', idx, 'logoUrl', url)} />
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(150px,1fr))', gap: 8 }}>
+              <input style={inputStyle} placeholder="الدرجة (عربي)، مثال: سياحية" value={f.cabinAr || ''} onChange={(e) => updateRow('flights', idx, 'cabinAr', e.target.value)} />
+              <input style={inputStyle} placeholder="Cabin (English), e.g. Economy" value={f.cabinEn || ''} onChange={(e) => updateRow('flights', idx, 'cabinEn', e.target.value)} />
+              <input style={inputStyle} placeholder="الأمتعة، مثال: 30 كغ" value={f.baggage || ''} onChange={(e) => updateRow('flights', idx, 'baggage', e.target.value)} />
+            </div>
             <div style={{ borderTop: '1px dashed #ececed', paddingTop: 8 }}>
               <span style={{ fontSize: 12.5, fontWeight: 700, color: '#036f8c' }}>✈ رحلة الذهاب</span>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(110px,1fr))', gap: 8, marginTop: 6 }}>
@@ -313,7 +361,7 @@ function PackageForm({ initial, onSave, onCancel, saving }) {
       <div>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
           <span style={{ fontSize: 13.5, fontWeight: 700 }}>برنامج الرحلة يوماً بيوم</span>
-          <button type="button" style={btnStyle('ghost')} onClick={() => addRow('days', { titleAr: '', descAr: '', titleEn: '', descEn: '' })}>+ إضافة يوم</button>
+          <button type="button" style={btnStyle('ghost')} onClick={() => addRow('days', { titleAr: '', descAr: '', titleEn: '', descEn: '', imageUrl: '' })}>+ إضافة يوم</button>
         </div>
         {(form.days || []).map((d, idx) => (
           <div key={idx} style={{ border: '1px solid #ececed', borderRadius: 10, padding: 10, marginBottom: 8, display: 'flex', flexDirection: 'column', gap: 6 }}>
@@ -325,6 +373,7 @@ function PackageForm({ initial, onSave, onCancel, saving }) {
               <input style={inputStyle} placeholder="وصف اليوم (عربي)" value={d.descAr} onChange={(e) => updateRow('days', idx, 'descAr', e.target.value)} />
               <input style={inputStyle} placeholder="Day description (English)" value={d.descEn} onChange={(e) => updateRow('days', idx, 'descEn', e.target.value)} />
             </div>
+            <ImageUploadField label={`صورة اليوم ${idx + 1} (تظهر في ملف PDF)`} value={d.imageUrl || ''} onChange={(url) => updateRow('days', idx, 'imageUrl', url)} />
             <button type="button" style={{ ...btnStyle('danger'), alignSelf: 'flex-start' }} onClick={() => removeRow('days', idx)}>حذف اليوم</button>
           </div>
         ))}
