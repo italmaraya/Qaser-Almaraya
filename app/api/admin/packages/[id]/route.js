@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server';
 import { sql, ensureSchema } from '../../../../../lib/db';
 import { requireAdmin } from '../../../../../lib/session';
 
+const clean = (a) => (Array.isArray(a) ? a.map((s) => String(s || '').trim()).filter(Boolean) : []);
+
 export async function PUT(request, { params }) {
   if (!(await requireAdmin(request))) return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
   await ensureSchema();
@@ -22,7 +24,8 @@ export async function PUT(request, { params }) {
       includes_ar = ${JSON.stringify(b.includes_ar || [])}, includes_en = ${JSON.stringify(b.includes_en || [])},
       hotels = ${JSON.stringify(b.hotels || [])}, flights = ${JSON.stringify(b.flights || [])},
       days = ${JSON.stringify(b.days || [])}, image_url = ${b.image_url || ''},
-      active = ${b.active !== false}, sort_order = ${b.sort_order || 0}, iqd_migrated = true, rating = ${b.rating || 4.8}, pdf_banner_url = ${b.pdf_banner_url || ''}
+      active = ${b.active !== false}, sort_order = ${b.sort_order || 0}, iqd_migrated = true, rating = ${b.rating || 4.8}, pdf_banner_url = ${b.pdf_banner_url || ''},
+      excludes_ar = ${JSON.stringify(clean(b.excludes_ar))}, excludes_en = ${JSON.stringify(clean(b.excludes_en))}
     WHERE id = ${id} RETURNING *
   `;
   return NextResponse.json(rows[0] || {});

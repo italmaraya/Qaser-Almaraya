@@ -117,12 +117,38 @@ function blankPackage() {
     nights_ar: '', nights_en: '', departs_ar: '', departs_en: '', price: 0, child_price: 0,
     adult_cost: 0, child_cost: 0, cost_currency: 'IQD',
     badge_ar: '', badge_en: '', prefs: [], includes_ar: [], includes_en: [],
-    hotels: [], flights: [], days: [], image_url: '', pdf_banner_url: '', active: true, sort_order: 0, rating: 4.8,
+    hotels: [], flights: [], days: [], image_url: '', pdf_banner_url: '', excludes_ar: [], excludes_en: [], active: true, sort_order: 0, rating: 4.8,
   };
 }
 
 function linesToArr(text) {
   return text.split('\n').map((s) => s.trim()).filter(Boolean);
+}
+
+// Text box that edits a list (one item per line, or comma separated).
+// It keeps exactly what was typed — spaces and new lines included — and only
+// hands the parent a cleaned-up array, so typing is never "eaten" mid-word.
+function ListField({ value, onChange, separator = 'line', placeholder, multiline = true, minHeight = 80 }) {
+  const join = (arr) => (arr || []).join(separator === 'line' ? '\n' : separator === 'ar-comma' ? '، ' : ', ');
+  const [text, setText] = useState(() => join(value));
+  const lastSent = React.useRef(value);
+  React.useEffect(() => {
+    // Only resync when the list was changed from outside (e.g. another package opened).
+    if (value !== lastSent.current) {
+      setText(join(value));
+      lastSent.current = value;
+    }
+  }, [value]); // eslint-disable-line react-hooks/exhaustive-deps
+  function handle(v) {
+    setText(v);
+    const parts = separator === 'line' ? v.split('\n') : v.split(/[,،]/);
+    const arr = parts.map((s) => s.trim()).filter(Boolean);
+    lastSent.current = arr;
+    onChange(arr);
+  }
+  return multiline
+    ? <textarea style={{ ...inputStyle, minHeight }} placeholder={placeholder} value={text} onChange={(e) => handle(e.target.value)} />
+    : <input style={inputStyle} placeholder={placeholder} value={text} onChange={(e) => handle(e.target.value)} />;
 }
 
 function PackageForm({ initial, onSave, onCancel, saving }) {
@@ -193,12 +219,20 @@ function PackageForm({ initial, onSave, onCancel, saving }) {
       <ImageUploadField label="صورة الغلاف" value={form.image_url} onChange={(url) => set('image_url', url)} />
       <ImageUploadField label="بانر ملف PDF (صورة عريضة للدولة/الوجهة — إذا تُركت فارغة تُستخدم صورة الغلاف)" value={form.pdf_banner_url || ''} onChange={(url) => set('pdf_banner_url', url)} />
 
-      <label style={labelStyle}>ما تشمله الباقة — سطر لكل بند (عربي)
-        <textarea style={{ ...inputStyle, minHeight: 80 }} value={(form.includes_ar || []).join('\n')} onChange={(e) => set('includes_ar', linesToArr(e.target.value))} />
-      </label>
-      <label style={labelStyle}>What's included — one per line (English)
-        <textarea style={{ ...inputStyle, minHeight: 80 }} value={(form.includes_en || []).join('\n')} onChange={(e) => set('includes_en', linesToArr(e.target.value))} />
-      </label>
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+        <label style={labelStyle}>✅ السعر يشمل — سطر لكل بند (عربي)
+          <ListField value={form.includes_ar} onChange={(v) => set('includes_ar', v)} placeholder={'الفندق\nالطيران ذهاب وعودة\nالإفطار\nالتنقلات من وإلى المطار'} />
+        </label>
+        <label style={labelStyle}>✅ Price includes — one per line (English)
+          <ListField value={form.includes_en} onChange={(v) => set('includes_en', v)} placeholder={'Hotel\nReturn flights\nBreakfast\nAirport transfers'} />
+        </label>
+        <label style={labelStyle}>❌ السعر لا يشمل — سطر لكل بند (عربي)
+          <ListField value={form.excludes_ar} onChange={(v) => set('excludes_ar', v)} placeholder={'رسوم التأشيرة\nوجبات الغداء والعشاء\nالمصاريف الشخصية'} />
+        </label>
+        <label style={labelStyle}>❌ Price does not include — one per line (English)
+          <ListField value={form.excludes_en} onChange={(v) => set('excludes_en', v)} placeholder={'Visa fees\nLunch and dinner\nPersonal expenses'} />
+        </label>
+      </div>
 
       <div>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
@@ -215,8 +249,8 @@ function PackageForm({ initial, onSave, onCancel, saving }) {
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: 8 }}>
               <input style={inputStyle} placeholder="الموقع، مثال: لندن، المملكة المتحدة" value={h.location || ''} onChange={(e) => updateRow('hotels', idx, 'location', e.target.value)} />
-              <input style={inputStyle} placeholder="المرافق (عربي) — مفصولة بفاصلة، مثال: إفطار، واي فاي مجاني، مرشد سياحي" value={(h.amenitiesAr || []).join('، ')} onChange={(e) => updateRow('hotels', idx, 'amenitiesAr', e.target.value.split(/[,،]/).map((s) => s.trim()).filter(Boolean))} />
-              <input style={inputStyle} placeholder="Amenities (English), comma separated: Breakfast, Free WiFi, Gym" value={(h.amenitiesEn || []).join(', ')} onChange={(e) => updateRow('hotels', idx, 'amenitiesEn', e.target.value.split(',').map((s) => s.trim()).filter(Boolean))} />
+              <ListField multiline={false} separator="ar-comma" placeholder="المرافق (عربي) — مفصولة بفاصلة، مثال: إفطار، واي فاي مجاني، مرشد سياحي" value={h.amenitiesAr} onChange={(v) => updateRow('hotels', idx, 'amenitiesAr', v)} />
+              <ListField multiline={false} separator="comma" placeholder="Amenities (English), comma separated: Breakfast, Free WiFi, Gym" value={h.amenitiesEn} onChange={(v) => updateRow('hotels', idx, 'amenitiesEn', v)} />
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
               <input type="number" step="any" style={inputStyle} placeholder="خط العرض Latitude، مثال: 33.3152" value={h.lat || ''} onChange={(e) => updateRow('hotels', idx, 'lat', e.target.value)} />

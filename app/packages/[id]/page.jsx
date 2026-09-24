@@ -47,6 +47,7 @@ export default function PackageDetailPage() {
   const flights = pkg?.flights || [];
   const days = pkg?.days || [];
   const includes = (lang === 'en' && pkg?.includes_en?.length ? pkg.includes_en : pkg?.includes_ar) || [];
+  const excludes = (lang === 'en' && pkg?.excludes_en?.length ? pkg.excludes_en : pkg?.excludes_ar) || [];
 
   const hotelDiff = hotels[hotelIdx]?.diff || 0;
   const flightDiff = flights[flightIdx]?.diff || 0;
@@ -98,6 +99,11 @@ export default function PackageDetailPage() {
       lines.push(en ? "What's included:" : 'تشمل الباقة:');
       includes.forEach((i) => lines.push('• ' + i));
     }
+    if (excludes.length) {
+      lines.push('');
+      lines.push(en ? 'Not included:' : 'السعر لا يشمل:');
+      excludes.forEach((i) => lines.push('✗ ' + i));
+    }
     lines.push('');
     lines.push('قصر المرايا للسفر والسياحة');
     return lines;
@@ -114,6 +120,7 @@ export default function PackageDetailPage() {
       flight: flights[flightIdx],
       days,
       includes,
+      excludes,
       adults,
       children,
       perAdult: totalPerAdult,
@@ -267,16 +274,32 @@ export default function PackageDetailPage() {
                 </div>
               </div>
 
-              {includes.length > 0 && (
+              {(includes.length > 0 || excludes.length > 0) && (
                 <div className="qa-card">
-                  <h4 style={{ margin: '0 0 14px' }}>{lang === 'en' ? 'What’s included' : 'ما تشمله الباقة'}</h4>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-                    {includes.map((i, idx) => (
-                      <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                        <Icon name="check" size={16} style={{ color: '#049dc5', flex: 'none' }} />
-                        <span style={{ fontSize: 14.5, color: '#1d2733' }}>{i}</span>
+                  <h4 style={{ margin: '0 0 14px' }}>{lang === 'en' ? 'What the price covers' : 'ماذا يشمل السعر'}</h4>
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(220px,1fr))', gap: 14 }}>
+                    {includes.length > 0 && (
+                      <div style={{ background: '#eefaf3', border: '1px solid #cdebd9', borderRadius: 12, padding: '12px 14px', display: 'flex', flexDirection: 'column', gap: 8 }}>
+                        <span style={{ fontWeight: 700, color: '#1a7f47' }}>{lang === 'en' ? 'Price includes' : 'السعر يشمل'}</span>
+                        {includes.map((i, idx) => (
+                          <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                            <Icon name="check" size={16} style={{ color: '#1a7f47', flex: 'none' }} />
+                            <span style={{ fontSize: 14.5, color: '#1d2733' }}>{i}</span>
+                          </div>
+                        ))}
                       </div>
-                    ))}
+                    )}
+                    {excludes.length > 0 && (
+                      <div style={{ background: '#fdf1f3', border: '1px solid #f4d3da', borderRadius: 12, padding: '12px 14px', display: 'flex', flexDirection: 'column', gap: 8 }}>
+                        <span style={{ fontWeight: 700, color: '#c02643' }}>{lang === 'en' ? 'Not included' : 'السعر لا يشمل'}</span>
+                        {excludes.map((i, idx) => (
+                          <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                            <span style={{ color: '#c02643', fontWeight: 700, width: 16, textAlign: 'center', flex: 'none' }}>✕</span>
+                            <span style={{ fontSize: 14.5, color: '#1d2733' }}>{i}</span>
+                          </div>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 </div>
               )}

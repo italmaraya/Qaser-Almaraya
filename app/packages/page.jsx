@@ -94,7 +94,7 @@ export default function PackagesPage() {
 
   const currentReview = reviews[reviewIndex] || reviews[0] || null;
 
-  const CAT_EMOJI = { family: '👨‍👩‍👧', couples: '❤️', group: '🎉', beach: '🌴', event: '🎫', umrah: '🕌', adventure: '🏔️' };
+  const CAT_EMOJI = { family: '👨‍👩‍👧', honeymoon: '💍', music: '🎵', sports: '⚽', umrah: '🕋' };
 
   const heroImage = '/assets/packages-hero-cliffs.jpg';
 

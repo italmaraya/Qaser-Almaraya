@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server';
 import { sql, ensureSchema } from '../../../../lib/db';
 import { requireAdmin } from '../../../../lib/session';
 
+const clean = (a) => (Array.isArray(a) ? a.map((s) => String(s || '').trim()).filter(Boolean) : []);
+
 export async function GET(request) {
   if (!(await requireAdmin(request))) return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
   await ensureSchema();
@@ -18,7 +20,7 @@ export async function POST(request) {
       cat, countries, dest_ar, dest_en, title_ar, title_en, nights_ar, nights_en,
       departs_ar, departs_en, price, child_price, adult_cost, child_cost, cost_currency,
       badge_ar, badge_en, prefs,
-      includes_ar, includes_en, hotels, flights, days, image_url, active, sort_order, iqd_migrated, rating, pdf_banner_url
+      includes_ar, includes_en, hotels, flights, days, image_url, active, sort_order, iqd_migrated, rating, pdf_banner_url, excludes_ar, excludes_en
     ) VALUES (
       ${b.cat || 'family'}, ${JSON.stringify(b.countries || [])}, ${b.dest_ar || ''}, ${b.dest_en || ''},
       ${b.title_ar || ''}, ${b.title_en || ''}, ${b.nights_ar || ''}, ${b.nights_en || ''},
@@ -27,7 +29,8 @@ export async function POST(request) {
       ${b.badge_ar || ''}, ${b.badge_en || ''}, ${JSON.stringify(b.prefs || [])},
       ${JSON.stringify(b.includes_ar || [])}, ${JSON.stringify(b.includes_en || [])},
       ${JSON.stringify(b.hotels || [])}, ${JSON.stringify(b.flights || [])}, ${JSON.stringify(b.days || [])},
-      ${b.image_url || ''}, ${b.active !== false}, ${b.sort_order || 0}, true, ${b.rating || 4.8}, ${b.pdf_banner_url || ''}
+      ${b.image_url || ''}, ${b.active !== false}, ${b.sort_order || 0}, true, ${b.rating || 4.8}, ${b.pdf_banner_url || ''},
+      ${JSON.stringify(clean(b.excludes_ar))}, ${JSON.stringify(clean(b.excludes_en))}
     )
     RETURNING *
   `;
