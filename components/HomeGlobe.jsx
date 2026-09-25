@@ -12,7 +12,9 @@ const BAGHDAD = { lat: 33.31, lng: 44.36 };
 // Homepage globe: glowing flight lines from Baghdad to every country we serve
 // (visa countries + package destinations). Tapping a point opens a small card
 // with links to that country's visas and packages.
-export default function HomeGlobe({ lang = 'ar' }) {
+// mode 'visa': visa countries only (used on the visas page); 'all': visas + packages.
+export default function HomeGlobe({ lang = 'ar', mode = 'all' }) {
+  const visaOnly = mode === 'visa';
   const en = lang === 'en';
   const [visaCards, setVisaCards] = useState([]);
   const [packages, setPackages] = useState([]);
@@ -20,7 +22,7 @@ export default function HomeGlobe({ lang = 'ar' }) {
 
   useEffect(() => {
     fetch('/api/visa/cards').then((r) => r.json()).then((d) => Array.isArray(d) && setVisaCards(d)).catch(() => {});
-    fetch('/api/packages').then((r) => r.json()).then((d) => Array.isArray(d) && setPackages(d)).catch(() => {});
+    if (!visaOnly) fetch('/api/packages').then((r) => r.json()).then((d) => Array.isArray(d) && setPackages(d)).catch(() => {});
   }, []);
 
   const pins = useMemo(() => {
@@ -54,10 +56,16 @@ export default function HomeGlobe({ lang = 'ar' }) {
   return (
     <section className="qa-sec" style={{ display: 'grid', gridTemplateColumns: 'minmax(260px,.8fr) 1.2fr', gap: 32, alignItems: 'center' }} dir={en ? 'ltr' : 'rtl'}>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-        <span style={{ fontSize: 13, fontWeight: 700, color: '#049dc5' }}>{en ? 'From Baghdad to the world' : 'من بغداد إلى العالم'}</span>
-        <h2 style={{ margin: 0, fontSize: 'clamp(24px,3vw,34px)', lineHeight: 1.25 }}>{en ? `${pins.length} destinations, one call away` : `${pins.length} وجهة… على بُعد رسالة واحدة`}</h2>
+        <span style={{ fontSize: 13, fontWeight: 700, color: visaOnly ? '#faab18' : '#049dc5' }}>{en ? 'From Baghdad to the world' : 'من بغداد إلى العالم'}</span>
+        <h2 style={{ margin: 0, fontSize: 'clamp(24px,3vw,34px)', lineHeight: 1.25 }}>
+          {visaOnly
+            ? (en ? `Visas for ${pins.length} countries, one message away` : `تأشيرات ${pins.length} دولة… على بُعد رسالة واحدة`)
+            : (en ? `${pins.length} destinations, one call away` : `${pins.length} وجهة… على بُعد رسالة واحدة`)}
+        </h2>
         <p style={{ margin: 0, color: '#3d4650', lineHeight: 1.8 }}>
-          {en ? 'Spin the globe and tap any glowing point to see its visas and trips.' : 'أدر الكرة الأرضية واضغط على أي نقطة مضيئة لتشاهد تأشيراتها ورحلاتها.'}
+          {visaOnly
+            ? (en ? 'Spin the globe and tap any glowing country to see its visa types.' : 'أدر الكرة الأرضية واضغط على أي دولة مضيئة لتشاهد أنواع تأشيراتها.')
+            : (en ? 'Spin the globe and tap any glowing point to see its visas and trips.' : 'أدر الكرة الأرضية واضغط على أي نقطة مضيئة لتشاهد تأشيراتها ورحلاتها.')}
         </p>
         {picked ? (
           <div className="qa-card" style={{ display: 'flex', flexDirection: 'column', gap: 10, border: '1px solid #d9e9ef' }}>

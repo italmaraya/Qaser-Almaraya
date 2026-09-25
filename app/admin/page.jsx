@@ -2,8 +2,10 @@
 import React, { useEffect, useState } from 'react';
 import VisaAdmin from '../../components/VisaAdmin';
 import PackagesAdmin from '../../components/PackagesAdmin';
+import HeroAdmin from '../../components/HeroAdmin';
 
 const TABS = [
+  { id: 'hero', label: 'الواجهة الرئيسية' },
   { id: 'jobs', label: 'الوظائف' },
   { id: 'faq', label: 'الأسئلة الشائعة' },
   { id: 'achievements', label: 'الإنجازات' },
@@ -462,6 +464,16 @@ export default function AdminPage() {
         )}
 
         {/* CONTACT TAB */}
+        {activeTab === 'hero' && (
+          <HeroAdmin
+            hero={content.hero}
+            onChange={(hero) => setContent((c) => ({ ...c, hero }))}
+            onSave={() => saveSection('hero')}
+            saving={savingTab === 'hero'}
+            saved={savedTab === 'hero'}
+          />
+        )}
+
         {activeTab === 'contact' && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
             <div style={cardStyle}>

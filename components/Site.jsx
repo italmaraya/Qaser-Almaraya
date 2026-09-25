@@ -1,7 +1,7 @@
 'use client';
 import { APPLY_FLOW_ENABLED, openWhatsApp, visaMessage } from '../lib/whatsapp';
 import { WA_ICON } from './WhatsAppButton';
-import HomeGlobe from './HomeGlobe';
+import HomeHero from './HomeHero';
 import React, { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import Icon from './Icon';
@@ -901,6 +901,7 @@ function   visaVals(country){
 
 {isHome ? (<>
 <div className="qa-page">
+<HomeHero hero={props.content && props.content.hero} lang={st.lang} onPrimary={goFlights}>
 <section style={{ position: "relative", background: "var(--tw-band,#34bbe1)" }}>
 <img src="/assets/cover-website.png" alt="ذكرياتك تبدأ معنا — قصر المرايا للسفر و السياحة" style={{ display: "block", width: "100%", height: "auto" }} />
 <div className="qa-cover-copy" style={{ position: "absolute", right: "3%", top: "50%", transform: "translateY(-50%)", width: "34%", maxHeight: "94%", display: "flex", flexDirection: "column", alignItems: "flex-start", textAlign: "start", gap: "clamp(12px,1.3vw,22px)" }}>
@@ -911,7 +912,7 @@ function   visaVals(country){
 </button>
 </div>
 </section>
-<div data-no-i18n=""><HomeGlobe lang={st.lang} /></div>
+</HomeHero>
 <section className="qa-sec" style={{ display: "flex", flexDirection: "column", gap: "32px" }}>
 <div style={{ maxWidth: "680px", margin: "0 auto", textAlign: "center", display: "flex", flexDirection: "column", gap: "16px" }}>
 <h2 style={{ fontSize: "36px", fontWeight: "700" }}>نُعيد صياغة مفهوم السفر</h2>

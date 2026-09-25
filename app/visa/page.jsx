@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import SiteHeader from '../../components/SiteHeader';
+import HomeGlobe from '../../components/HomeGlobe';
 import SiteFooter from '../../components/SiteFooter';
 import MascotLoader from '../../components/MascotLoader';
 import { useLangToggle } from '../../lib/i18n';
@@ -439,6 +440,8 @@ export default function VisaLandingPage() {
               </div>
             </div>
           </section>
+
+          <HomeGlobe lang={lang} mode="visa" />
 
           <section className="qa-sec" style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
