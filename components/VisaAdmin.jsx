@@ -41,6 +41,23 @@ function confirmDelete(message) {
   return window.confirm(message || 'هل أنت متأكد من الحذف؟ لا يمكن التراجع عن هذا الإجراء.');
 }
 
+// On/off switch used to show or hide visas and countries on the website.
+function VisibilitySwitch({ visible, onChange, busy }) {
+  return (
+    <button
+      type="button"
+      onClick={() => !busy && onChange(!visible)}
+      title={visible ? 'اضغط لإخفائها عن العملاء' : 'اضغط لإظهارها للعملاء'}
+      style={{ display: 'inline-flex', alignItems: 'center', gap: 8, border: '1px solid ' + (visible ? '#bfe6cf' : '#f1c9d1'), background: visible ? '#eefaf3' : '#fdf1f3', color: visible ? '#1a7f47' : '#c02643', borderRadius: 999, padding: '5px 12px 5px 6px', fontSize: 12.5, fontWeight: 700, cursor: busy ? 'wait' : 'pointer', fontFamily: 'inherit', opacity: busy ? 0.6 : 1 }}
+    >
+      <span style={{ position: 'relative', width: 34, height: 20, borderRadius: 999, background: visible ? '#22a55a' : '#c9ced3', transition: 'background .15s', flex: 'none' }}>
+        <span style={{ position: 'absolute', top: 2, insetInlineStart: visible ? 16 : 2, width: 16, height: 16, borderRadius: '50%', background: '#fff', boxShadow: '0 1px 3px rgba(0,0,0,.25)', transition: 'inset-inline-start .15s' }} />
+      </span>
+      {visible ? '👁 ظاهرة للعملاء' : '🚫 مخفية عن العملاء'}
+    </button>
+  );
+}
+
 function SearchBox({ value, onChange, placeholder }) {
   return (
     <div style={{ position: 'relative', maxWidth: 360 }}>
@@ -923,7 +940,17 @@ function CountriesTab({ countries, reload, setError }) {
       <SearchBox value={search} onChange={setSearch} placeholder="ابحث عن دولة..." />
       <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
         {countries.filter((c) => matchesSearch(search, c.name_ar, c.name_en, c.region)).map((c) => (
-          <div key={c.id} style={cardStyle}>
+          <div key={c.id} style={{ ...cardStyle, opacity: c.active === false ? 0.65 : 1 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap', marginBottom: 8 }}>
+              <VisibilitySwitch
+                visible={c.active !== false}
+                onChange={(v) => {
+                  if (!v && !confirmDelete(`إخفاء دولة "${c.name_ar}" سيخفي جميع تأشيراتها عن الموقع. يمكنك إظهارها لاحقاً في أي وقت. متابعة؟`)) return;
+                  update({ ...c, active: v });
+                }}
+              />
+              {c.active === false && <span style={{ fontSize: 12, color: '#7b8087' }}>جميع تأشيرات هذه الدولة مخفية عن العملاء</span>}
+            </div>
             <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', alignItems: 'flex-end' }}>
               <label style={{ ...labelStyle, flex: 1, minWidth: 140 }}>
                 الاسم بالعربية
@@ -950,6 +977,10 @@ function CountriesTab({ countries, reload, setError }) {
               <label style={{ ...labelStyle, flex: 1, minWidth: 200 }}>
                 صورة غلاف البطاقة
                 <CoverImageUploader value={c.card_image_url} onChange={(url) => update({ ...c, card_image_url: url })} />
+              </label>
+              <label style={{ ...labelStyle, flex: 1, minWidth: 200 }}>
+                بانر ملف PDF (إذا تُرك فارغاً تُستخدم صورة الغلاف)
+                <CoverImageUploader value={c.pdf_banner_url || ''} onChange={(url) => update({ ...c, pdf_banner_url: url })} />
               </label>
               <button style={btnStyle('danger')} onClick={() => remove(c.id, c.name_ar)}>
                 حذف
@@ -1205,6 +1236,26 @@ function CardsTab({ cards, countries, types, providers, reload, setError }) {
   const [expanded, setExpanded] = useState(null);
   const [editing, setEditing] = useState(null);
   const [editDraft, setEditDraft] = useState(null);
+  const [visFilter, setVisFilter] = useState('all');
+  const [selected, setSelected] = useState([]);
+  const [bulkBusy, setBulkBusy] = useState(false);
+  const hiddenCountryIds = new Set((countries || []).filter((c) => c.active === false).map((c) => c.id));
+  const isShown = (c) => c.active !== false;
+
+  async function setVisibility(list, visible) {
+    setBulkBusy(true);
+    try {
+      for (const card of list) {
+        await api(`/api/admin/visa/cards/${card.id}`, { method: 'PUT', body: JSON.stringify({ ...card, active: visible }) });
+      }
+      setSelected([]);
+      reload();
+    } catch (e) {
+      setError(e.message);
+    } finally {
+      setBulkBusy(false);
+    }
+  }
   const [search, setSearch] = useState('');
 
   async function add() {
@@ -1371,23 +1422,47 @@ function CardsTab({ cards, countries, types, providers, reload, setError }) {
 
       <SearchBox value={search} onChange={setSearch} placeholder="ابحث عن دولة أو نوع تأشيرة..." />
 
+      {(() => {
+        const counts = { all: cards.length, shown: cards.filter(isShown).length, hidden: cards.filter((c) => !isShown(c)).length };
+        const chip = (id, label) => (
+          <button key={id} type="button" onClick={() => { setVisFilter(id); setSelected([]); }}
+            style={{ border: '1px solid ' + (visFilter === id ? '#049dc5' : '#ececed'), background: visFilter === id ? '#049dc5' : '#fff', color: visFilter === id ? '#fff' : '#3d4650', borderRadius: 999, padding: '6px 14px', fontSize: 13, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}>
+            {label} ({counts[id]})
+          </button>
+        );
+        const sel = cards.filter((c) => selected.includes(c.id));
+        return (
+          <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 8 }}>
+            {chip('all', 'الكل')}{chip('shown', '👁 الظاهرة')}{chip('hidden', '🚫 المخفية')}
+            {sel.length > 0 && (
+              <div style={{ marginInlineStart: 'auto', display: 'flex', alignItems: 'center', gap: 8, background: '#f3fafc', border: '1px solid #d9e9ef', borderRadius: 999, padding: '4px 6px 4px 14px' }}>
+                <span style={{ fontSize: 13, fontWeight: 700 }}>تم تحديد {sel.length}</span>
+                <button type="button" disabled={bulkBusy} style={btnStyle('ghost')} onClick={() => setVisibility(sel, false)}>🚫 إخفاء المحدد</button>
+                <button type="button" disabled={bulkBusy} style={btnStyle('ghost')} onClick={() => setVisibility(sel, true)}>👁 إظهار المحدد</button>
+                <button type="button" style={btnStyle('ghost')} onClick={() => setSelected([])}>إلغاء التحديد</button>
+              </div>
+            )}
+          </div>
+        );
+      })()}
+
       {cards
         .filter((c) => matchesSearch(search, c.country_name_ar, c.country_name_en, c.visa_type_name_ar, c.visa_type_name_en, c.provider_name))
+        .filter((c) => (visFilter === 'shown' ? isShown(c) : visFilter === 'hidden' ? !isShown(c) : true))
         .map((c) => (
         <div key={c.id} style={{ ...cardStyle, opacity: c.active === false ? 0.6 : 1 }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 8 }}>
-            <h4 style={{ margin: 0 }}>
+            <h4 style={{ margin: 0, display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
+              <input type="checkbox" checked={selected.includes(c.id)} onChange={(e) => setSelected(e.target.checked ? [...selected, c.id] : selected.filter((x) => x !== c.id))} style={{ width: 17, height: 17, accentColor: '#049dc5', cursor: 'pointer' }} title="تحديد لإخفاء/إظهار عدة بطاقات معاً" />
               {c.country_name_ar} — {c.visa_type_name_ar}
-              {c.active === false && (
-                <span style={{ marginInlineStart: 10, fontSize: 12, fontWeight: 700, color: '#d2324f', background: '#fdecef', borderRadius: 999, padding: '2px 10px' }}>
-                  مخفية عن العملاء
+              {hiddenCountryIds.has(c.country_id) && (
+                <span style={{ fontSize: 12, fontWeight: 700, color: '#8a5a00', background: '#fff4dc', borderRadius: 999, padding: '2px 10px' }}>
+                  الدولة مخفية — لن تظهر حتى تُظهر الدولة
                 </span>
               )}
             </h4>
-            <div style={{ display: 'flex', gap: 8 }}>
-              <button style={btnStyle('ghost')} onClick={() => toggleActive(c)}>
-                {c.active === false ? 'إظهار البطاقة' : 'إخفاء البطاقة'}
-              </button>
+            <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center' }}>
+              <VisibilitySwitch visible={c.active !== false} onChange={() => toggleActive(c)} />
               <button style={btnStyle('ghost')} onClick={() => (editing === c.id ? setEditing(null) : startEdit(c))}>
                 {editing === c.id ? 'إلغاء التعديل' : 'تعديل البطاقة'}
               </button>

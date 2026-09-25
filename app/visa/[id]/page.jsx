@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import WhatsAppButton from '../../../components/WhatsAppButton';
+import { buildVisaPdfHtml } from '../../../lib/visaPdf';
 import { APPLY_FLOW_ENABLED, visaMessage } from '../../../lib/whatsapp';
 import SiteHeader from '../../../components/SiteHeader';
 import SiteFooter from '../../../components/SiteFooter';
@@ -118,11 +119,7 @@ export default function VisaDetailPage() {
               <button
                 type="button"
                 onClick={() => {
-                  const bodyHtml =
-                    '<h1>' + esc(nm(card.country_name_ar, card.country_name_en)) + '</h1>' +
-                    visaTableHtml([card], lang) +
-                    '<h2>' + (lang === 'en' ? 'Required documents:' : 'المستمسكات المطلوبة:') + '</h2>' +
-                    '<p class="docs">' + combinedDocsLine([card], lang) + '</p>';
+                  const bodyHtml = buildVisaPdfHtml({ cards: [card], lang, fmtPrice: (n) => formatPrice(n, 'IQD', lang), pageUrl: window.location.href });
                   printDoc(nm(card.visa_type_name_ar, card.visa_type_name_en) + ' — ' + nm(card.country_name_ar, card.country_name_en), bodyHtml, lang);
                 }}
                 style={{ cursor: 'pointer', border: '1px solid #ececed', borderRadius: 999, padding: '10px 20px', fontSize: 14, fontWeight: 700, fontFamily: 'inherit', background: '#fff', color: '#036f8c', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}

@@ -6,6 +6,7 @@ import SiteHeader from '../../../../components/SiteHeader';
 import SiteFooter from '../../../../components/SiteFooter';
 import MascotLoader from '../../../../components/MascotLoader';
 import { printDoc, visaTableHtml, combinedDocsLine, esc } from '../../../../lib/printDoc';
+import { buildVisaPdfHtml } from '../../../../lib/visaPdf';
 import { useLangToggle } from '../../../../lib/i18n';
 import { formatPrice, formatRawAmount } from '../../../../lib/currency';
 import { flagSrc } from '../../../../lib/flags';
@@ -104,21 +105,18 @@ export default function CountryVisaListPage() {
   }
   const noneFeasible = daysUntilTravel !== null && countryCards.length > 0 && !countryCards.some(isFeasible);
 
-  async function downloadCountryPdf() {
+  function downloadCountryPdf() {
     setDownloading(true);
-    try {
+    // Hand printDoc a promise so its window opens immediately (inside the
+    // click) and is filled once every visa's documents have been fetched.
+    const body = (async () => {
       const detailed = await Promise.all(
         filtered.map((c) => fetch(`/api/visa/cards/${c.id}`).then((r) => r.json()).catch(() => c))
       );
-      const bodyHtml =
-        '<h1>' + esc(nm(country.country_name_ar, country.country_name_en)) + '</h1>' +
-        visaTableHtml(detailed, lang) +
-        '<h2>' + (lang === 'en' ? 'Required documents:' : 'المستمسكات المطلوبة:') + '</h2>' +
-        '<p class="docs">' + combinedDocsLine(detailed, lang) + '</p>';
-      printDoc((lang === 'en' ? 'Visas — ' : 'تأشيرات ') + nm(country.country_name_ar, country.country_name_en), bodyHtml, lang);
-    } finally {
-      setDownloading(false);
-    }
+      return buildVisaPdfHtml({ cards: detailed, lang, fmtPrice: (n) => formatPrice(n, 'IQD', lang), pageUrl: window.location.href });
+    })();
+    printDoc((lang === 'en' ? 'Visas — ' : 'تأشيرات ') + nm(country.country_name_ar, country.country_name_en), body, lang);
+    body.finally(() => setDownloading(false));
   }
 
   if (cards && countryCards.length === 0) {
