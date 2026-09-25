@@ -146,7 +146,10 @@ export default function VisaDetailPage() {
             </div>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
-              <div style={{ position: 'relative', height: 220, borderRadius: 20, overflow: 'hidden', background: 'linear-gradient(135deg,#34bbe1,#049dc5)', display: 'flex', alignItems: 'flex-end', padding: 20 }}>
+              <div style={{ position: 'relative', height: 260, borderRadius: 20, overflow: 'hidden', background: (card.image_url || card.card_image_url) ? `url("${card.image_url || card.card_image_url}") center/cover no-repeat, linear-gradient(135deg,#34bbe1,#049dc5)` : 'linear-gradient(135deg,#34bbe1,#049dc5)', display: 'flex', alignItems: 'flex-end', padding: 20 }}>
+                {(card.image_url || card.card_image_url) && (
+                  <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(1,30,40,.78) 0%, rgba(1,30,40,.25) 55%, rgba(1,30,40,.05) 100%)' }} />
+                )}
                 {providerHints && providerHints[card.id] && (
                   <span
                     style={{
@@ -182,12 +185,12 @@ export default function VisaDetailPage() {
                   <img
                     src={flagSrc(card.flag_code)}
                     alt=""
-                    style={{ position: 'absolute', top: 20, right: 20, width: 52, height: 52, borderRadius: '50%', border: '2px solid #fff', objectFit: 'cover' }}
+                    style={{ position: 'absolute', top: 20, right: 20, zIndex: 1, width: 52, height: 52, borderRadius: '50%', border: '2px solid #fff', objectFit: 'cover', boxShadow: '0 4px 12px rgba(0,0,0,.25)' }}
                     onError={(e) => { e.currentTarget.style.display = 'none'; }}
                   />
                 ) : null}
-                <div>
-                  <h1 style={{ margin: 0, fontSize: 30, color: '#fff' }}>{nm(card.country_name_ar, card.country_name_en)}</h1>
+                <div style={{ position: 'relative', zIndex: 1 }}>
+                  <h1 style={{ margin: 0, fontSize: 30, color: '#fff', textShadow: '0 2px 10px rgba(0,0,0,.25)' }}>{nm(card.country_name_ar, card.country_name_en)}</h1>
                   <span style={{ fontSize: 14.5, color: 'rgba(255,255,255,.9)' }}>{nm(card.visa_type_name_ar, card.visa_type_name_en)} · إقامة {card.stay_duration || '—'}</span>
                 </div>
               </div>

@@ -1382,7 +1382,11 @@ function CardsTab({ cards, countries, types, providers, reload, setError }) {
           عملة التكلفة الداخلية (لكِلا الحقلين أعلاه)
           <CostCurrencyPicker value={draft.cost_currency} onChange={(v) => setDraft({ ...draft, cost_currency: v })} />
         </label>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+        <label style={labelStyle}>
+            صورة بانر صفحة التأشيرة (إذا تُركت فارغة تُستخدم صورة غلاف الدولة)
+            <CoverImageUploader value={draft.image_url || ''} onChange={(url) => setDraft({ ...draft, image_url: url })} />
+          </label>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
           <label style={labelStyle}>
             ملاحظات الحجز (تظهر للعميل بالعربية)
             <textarea style={{ ...inputStyle, minHeight: 60 }} value={draft.booking_notes} onChange={(e) => setDraft({ ...draft, booking_notes: e.target.value })} />
@@ -1532,7 +1536,11 @@ function CardsTab({ cards, countries, types, providers, reload, setError }) {
                 عملة التكلفة الداخلية (لكِلا الحقلين أعلاه)
                 <CostCurrencyPicker value={editDraft.cost_currency} onChange={(v) => setEditDraft({ ...editDraft, cost_currency: v })} />
               </label>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+              <label style={labelStyle}>
+            صورة بانر صفحة التأشيرة (إذا تُركت فارغة تُستخدم صورة غلاف الدولة)
+            <CoverImageUploader value={editDraft.image_url || ''} onChange={(url) => setEditDraft({ ...editDraft, image_url: url })} />
+          </label>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
                 <label style={labelStyle}>
                   ملاحظات الحجز (تظهر للعميل بالعربية)
                   <textarea style={{ ...inputStyle, minHeight: 60 }} value={editDraft.booking_notes || ''} onChange={(e) => setEditDraft({ ...editDraft, booking_notes: e.target.value })} />
