@@ -1,6 +1,7 @@
 'use client';
 import { useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { packageUrgency } from '../../lib/packageUrgency';
 import dynamic from 'next/dynamic';
 import SiteHeader from '../../components/SiteHeader';
 import SiteFooter from '../../components/SiteFooter';
@@ -30,6 +31,16 @@ export default function PackagesPage() {
   const [packages, setPackages] = useState(null);
   const [error, setError] = useState('');
   const [query, setQuery] = useState('');
+  // Opened from the homepage globe as /packages?q=<country name>
+  useEffect(() => {
+    try {
+      const q = new URLSearchParams(window.location.search).get('q');
+      if (q) {
+        setQuery(q);
+        setTimeout(() => document.getElementById('qa-pkg-results')?.scrollIntoView({ behavior: 'smooth' }), 400);
+      }
+    } catch {}
+  }, []);
   const [cat, setCat] = useState('all');
   const [prefs, setPrefs] = useState([]);
   const [destinations, setDestinations] = useState([]);
@@ -478,6 +489,7 @@ export default function PackagesPage() {
                     flights={p.flights || []}
                     lang={lang}
                     rating={p.rating || 4.8}
+                    urgency={packageUrgency(p, lang)}
                     onDetails={() => router.push(`/packages/${p.id}`)}
                   />
                 ))}

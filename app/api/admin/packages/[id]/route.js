@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { sql, ensureSchema } from '../../../../../lib/db';
 import { requireAdmin } from '../../../../../lib/session';
 
+const seats = (v) => (v === '' || v === null || v === undefined || Number.isNaN(Number(v)) ? null : Math.max(0, Math.round(Number(v))));
 const clean = (a) => (Array.isArray(a) ? a.map((s) => String(s || '').trim()).filter(Boolean) : []);
 
 export async function PUT(request, { params }) {
@@ -25,7 +26,8 @@ export async function PUT(request, { params }) {
       hotels = ${JSON.stringify(b.hotels || [])}, flights = ${JSON.stringify(b.flights || [])},
       days = ${JSON.stringify(b.days || [])}, image_url = ${b.image_url || ''},
       active = ${b.active !== false}, sort_order = ${b.sort_order || 0}, iqd_migrated = true, rating = ${b.rating || 4.8}, pdf_banner_url = ${b.pdf_banner_url || ''},
-      excludes_ar = ${JSON.stringify(clean(b.excludes_ar))}, excludes_en = ${JSON.stringify(clean(b.excludes_en))}
+      excludes_ar = ${JSON.stringify(clean(b.excludes_ar))}, excludes_en = ${JSON.stringify(clean(b.excludes_en))},
+      publish_at = ${b.publish_at || null}, departure_date = ${b.departure_date || null}, seats_left = ${seats(b.seats_left)}
     WHERE id = ${id} RETURNING *
   `;
   return NextResponse.json(rows[0] || {});

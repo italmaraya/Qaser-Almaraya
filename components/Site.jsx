@@ -1,6 +1,7 @@
 'use client';
 import { APPLY_FLOW_ENABLED, openWhatsApp, visaMessage } from '../lib/whatsapp';
 import { WA_ICON } from './WhatsAppButton';
+import HomeGlobe from './HomeGlobe';
 import React, { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import Icon from './Icon';
@@ -910,6 +911,7 @@ function   visaVals(country){
 </button>
 </div>
 </section>
+<div data-no-i18n=""><HomeGlobe lang={st.lang} /></div>
 <section className="qa-sec" style={{ display: "flex", flexDirection: "column", gap: "32px" }}>
 <div style={{ maxWidth: "680px", margin: "0 auto", textAlign: "center", display: "flex", flexDirection: "column", gap: "16px" }}>
 <h2 style={{ fontSize: "36px", fontWeight: "700" }}>نُعيد صياغة مفهوم السفر</h2>

@@ -120,7 +120,7 @@ function HotelRow({ h, lang, selected, onSelect }) {
   );
 }
 
-export default function PackageCard({ title, destination, image, nights, groupType, departs, price, includes = [], badge, onDetails, hotels = [], flights = [], lang = 'ar', rating = 4.8, style }) {
+export default function PackageCard({ title, destination, image, nights, groupType, departs, price, includes = [], badge, onDetails, hotels = [], flights = [], lang = 'ar', rating = 4.8, style, urgency = null }) {
   const [open, setOpen] = useState(false);
   const [tab, setTab] = useState('flights');
   const [flightIdx, setFlightIdx] = useState(0);
@@ -142,6 +142,11 @@ export default function PackageCard({ title, destination, image, nights, groupTy
         )}
         <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(1,20,28,.9) 0%, rgba(1,20,28,.35) 42%, transparent 68%)' }} />
 
+        {urgency && urgency.label && (
+          <span className="qa-pkg-badge" style={{ position: 'absolute', top: 14, insetInlineStart: 14, display: 'inline-flex', alignItems: 'center', gap: 5, background: urgency.soldOut ? '#1d2733' : urgency.hot ? '#e0364f' : '#faab18', color: '#fff', borderRadius: 999, fontWeight: 700, boxShadow: '0 4px 12px rgba(1,42,55,.25)', zIndex: 2 }}>
+            {urgency.soldOut ? '⛔' : '⏳'} {urgency.label}
+          </span>
+        )}
         <span className="qa-pkg-badge" style={{ position: 'absolute', top: 14, insetInlineEnd: 14, display: 'inline-flex', alignItems: 'center', gap: 5, background: '#fff', borderRadius: 999, fontWeight: 700, color: '#1d2733', boxShadow: '0 4px 12px rgba(1,42,55,.25)' }}>
           <Icon name="star" size={12} style={{ color: '#faab18' }} />{rating}
         </span>

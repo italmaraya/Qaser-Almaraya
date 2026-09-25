@@ -1,6 +1,18 @@
 'use client';
 import React, { useEffect, useMemo, useState } from 'react';
 import { CATS, MEAL_PLANS } from '../lib/packagesData';
+import { dateOnly, baghdadToday, packageUrgency } from '../lib/packageUrgency';
+
+// Badge for the admin list: scheduled / expired / countdown.
+function scheduleStatus(p) {
+  const today = baghdadToday();
+  const pub = dateOnly(p.publish_at), dep = dateOnly(p.departure_date);
+  if (pub && pub > today) return { label: '⏳ مجدولة — تُنشر في ' + pub, style: { background: '#fff4dc', color: '#8a5a00' } };
+  if (dep && dep < today) return { label: '⌛ انتهت — مخفية تلقائياً', style: { background: '#f1f3f5', color: '#7b8087' } };
+  const u = packageUrgency(p, 'ar');
+  if (u && u.label) return { label: '🔥 ' + u.label, style: { background: '#fdecef', color: '#c02643' } };
+  return null;
+}
 
 const inputStyle = {
   width: '100%', boxSizing: 'border-box', padding: '10px 12px', borderRadius: 8,
@@ -216,6 +228,21 @@ function PackageForm({ initial, onSave, onCancel, saving }) {
         </div>
       </div>
 
+      <div style={{ border: '1px solid #d9e9ef', background: '#f7fcfe', borderRadius: 12, padding: 12, display: 'flex', flexDirection: 'column', gap: 8 }}>
+        <span style={{ fontSize: 13, fontWeight: 700, color: '#036f8c' }}>🗓 النشر المجدول والعدّ التنازلي</span>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(170px,1fr))', gap: 10 }}>
+          <label style={labelStyle}>تاريخ النشر (تظهر الباقة من هذا اليوم)
+            <input type="date" style={inputStyle} value={dateOnly(form.publish_at)} onChange={(e) => set('publish_at', e.target.value)} />
+          </label>
+          <label style={labelStyle}>تاريخ الانطلاق (تختفي الباقة تلقائياً بعده)
+            <input type="date" style={inputStyle} value={dateOnly(form.departure_date)} onChange={(e) => set('departure_date', e.target.value)} />
+          </label>
+          <label style={labelStyle}>المقاعد المتبقية (اختياري)
+            <input type="number" min="0" style={inputStyle} placeholder="مثال 8" value={form.seats_left ?? ''} onChange={(e) => set('seats_left', e.target.value)} />
+          </label>
+        </div>
+        <span style={{ fontSize: 12, color: '#7b8087' }}>اترك الحقول فارغة إذا لا تحتاجها. عند إدخال تاريخ الانطلاق يظهر للعملاء "باقي 12 يوماً"، وعند إدخال المقاعد يظهر "8 مقاعد متبقية" — مناسب لباقات الحفلات والرياضة.</span>
+      </div>
       <ImageUploadField label="صورة الغلاف" value={form.image_url} onChange={(url) => set('image_url', url)} />
       <ImageUploadField label="بانر ملف PDF (صورة عريضة للدولة/الوجهة — إذا تُركت فارغة تُستخدم صورة الغلاف)" value={form.pdf_banner_url || ''} onChange={(url) => set('pdf_banner_url', url)} />
 
@@ -485,7 +512,9 @@ function PackagesTab() {
         packages.map((p) => (
           <div key={p.id} style={{ ...cardStyle, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
             <div>
-              <div style={{ fontWeight: 700 }}>{p.title_ar} {!p.active && <span style={{ color: '#d2324f', fontSize: 12 }}>(مخفية)</span>}</div>
+              <div style={{ fontWeight: 700 }}>{p.title_ar} {!p.active && <span style={{ color: '#d2324f', fontSize: 12 }}>(مخفية)</span>}
+                {p.active && scheduleStatus(p) && <span style={{ marginInlineStart: 6, fontSize: 12, fontWeight: 700, borderRadius: 999, padding: '1px 9px', ...scheduleStatus(p).style }}>{scheduleStatus(p).label}</span>}
+              </div>
               <div style={{ fontSize: 13, color: '#7b8087' }}>{p.dest_ar} · {p.nights_ar} · {Number(p.price).toLocaleString()} IQD</div>
             </div>
             <div style={{ display: 'flex', gap: 8 }}>

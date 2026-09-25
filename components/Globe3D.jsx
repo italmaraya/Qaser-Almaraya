@@ -35,7 +35,22 @@ function buildPinSprite(color) {
   return new THREE.CanvasTexture(canvas);
 }
 
-export default function Globe3D({ pins = [], onSelectPin, height = 340 }) {
+// Great-circle arc between two points, lifted off the surface in the middle.
+function arcCurve(a, b, radius) {
+  const start = latLngToVector3(a.lat, a.lng, radius);
+  const end = latLngToVector3(b.lat, b.lng, radius);
+  const angle = start.angleTo(end);
+  const lift = radius + 0.25 + angle * 0.55;
+  const mid = start.clone().add(end).multiplyScalar(0.5).normalize().multiplyScalar(lift);
+  const c1 = start.clone().lerp(mid, 0.55).normalize().multiplyScalar(lift * 0.96);
+  const c2 = end.clone().lerp(mid, 0.55).normalize().multiplyScalar(lift * 0.96);
+  return new THREE.CubicBezierCurve3(start, c1, c2, end);
+}
+
+/**
+ * @param origin optional {lat,lng}: draws glowing flight lines from it to every pin
+ */
+export default function Globe3D({ pins = [], onSelectPin, height = 340, origin = null, startLng = null, startLat = null, cameraZ = 6.2 }) {
   const containerRef = useRef(null);
 
   useEffect(() => {
@@ -47,7 +62,7 @@ export default function Globe3D({ pins = [], onSelectPin, height = 340 }) {
 
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(42, width / heightPx, 0.1, 100);
-    camera.position.set(0, 0, 6.2);
+    camera.position.set(0, 0, cameraZ);
 
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
     renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
@@ -114,14 +129,47 @@ export default function Globe3D({ pins = [], onSelectPin, height = 340 }) {
       pinMeshes.push(sprite);
     });
 
+    // Flight lines from the origin (Baghdad) with a travelling light on each.
+    const arcObjects = [];
+    const comets = [];
+    let originSprite = null;
+    let cometTexture = null;
+    if (origin) {
+      cometTexture = buildPinSprite('#ffffff');
+      const originTex = buildPinSprite('#ff5a5f');
+      originSprite = new THREE.Sprite(new THREE.SpriteMaterial({ map: originTex, depthTest: false, transparent: true }));
+      originSprite.position.copy(latLngToVector3(origin.lat, origin.lng, 2.5));
+      originSprite.scale.set(0.5, 0.5, 0.5);
+      originSprite.userData.tex = originTex;
+      globeGroup.add(originSprite);
+      pins.forEach((p, i) => {
+        if (typeof p.lat !== 'number' || typeof p.lng !== 'number') return;
+        if (Math.abs(p.lat - origin.lat) < 1.5 && Math.abs(p.lng - origin.lng) < 1.5) return;
+        const curve = arcCurve(origin, p, 2.44);
+        const pts = curve.getPoints(64);
+        const geo = new THREE.BufferGeometry().setFromPoints(pts);
+        const glow = new THREE.Line(geo, new THREE.LineBasicMaterial({ color: 0x5fd6f5, transparent: true, opacity: 0.35, blending: THREE.AdditiveBlending, depthWrite: false }));
+        const core = new THREE.Line(geo, new THREE.LineBasicMaterial({ color: 0xffd27a, transparent: true, opacity: 0.85, depthWrite: false }));
+        globeGroup.add(glow);
+        globeGroup.add(core);
+        arcObjects.push(glow, core);
+        const comet = new THREE.Sprite(new THREE.SpriteMaterial({ map: cometTexture, transparent: true, blending: THREE.AdditiveBlending, depthWrite: false }));
+        comet.scale.set(0.16, 0.16, 0.16);
+        comet.userData = { curve, offset: (i * 0.137) % 1, speed: 0.0035 + (i % 5) * 0.0006 };
+        globeGroup.add(comet);
+        comets.push(comet);
+      });
+    }
+
     const raycaster = new THREE.Raycaster();
     const pointerNdc = new THREE.Vector2();
     let dragging = false;
     let moved = false;
     let lastX = 0;
     let lastY = 0;
-    let rotY = 0.4;
-    let rotX = -0.15;
+    // Start with the chosen longitude (e.g. Baghdad) facing the viewer.
+    let rotY = typeof startLng === 'number' ? -((startLng + 90) * Math.PI) / 180 : 0.4;
+    let rotX = typeof startLat === 'number' ? Math.max(-0.6, Math.min(0.6, (startLat * Math.PI) / 180)) : -0.15;
     let autoRotate = true;
 
     function applyRotation() {
@@ -176,6 +224,11 @@ export default function Globe3D({ pins = [], onSelectPin, height = 340 }) {
       }
       cloudsMesh.rotation.y += 0.00035;
       t += 0.045;
+      comets.forEach((c) => {
+        c.userData.offset = (c.userData.offset + c.userData.speed) % 1;
+        c.position.copy(c.userData.curve.getPoint(c.userData.offset));
+      });
+      if (originSprite) { const os = 0.5 * (1 + Math.sin(t * 1.3) * 0.18); originSprite.scale.set(os, os, os); }
       pinMeshes.forEach((sprite, i) => {
         const s = sprite.userData.baseScale * (1 + Math.sin(t + i) * 0.12);
         sprite.scale.set(s, s, s);
@@ -216,11 +269,15 @@ export default function Globe3D({ pins = [], onSelectPin, height = 340 }) {
       bumpTex.dispose();
       cloudsTex.dispose();
       pinTexture.dispose();
+      arcObjects.forEach((o) => { o.geometry.dispose(); o.material.dispose(); });
+      comets.forEach((c) => c.material.dispose());
+      if (cometTexture) cometTexture.dispose();
+      if (originSprite) { originSprite.material.dispose(); originSprite.userData.tex.dispose(); }
       renderer.dispose();
       if (container.contains(renderer.domElement)) container.removeChild(renderer.domElement);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pins, height]);
+  }, [pins, height, origin, startLng, startLat, cameraZ]);
 
   return <div ref={containerRef} style={{ width: '100%', height, touchAction: 'none' }} />;
 }

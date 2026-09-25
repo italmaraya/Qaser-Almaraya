@@ -13,6 +13,10 @@ import { printDoc, copyText } from '../../../lib/printDoc';
 import WhatsAppButton from '../../../components/WhatsAppButton';
 import { APPLY_FLOW_ENABLED, packageMessage } from '../../../lib/whatsapp';
 import { buildPackageVoucherHtml } from '../../../lib/packagePdf';
+import { packageUrgency } from '../../../lib/packageUrgency';
+import { useProviderReveal } from '../../../lib/useProviderReveal';
+import WorldClocks, { destinationTz } from '../../../components/WorldClocks';
+import { COUNTRY_GEO } from '../../../lib/geoData';
 
 const optStyle = (on) => ({
   display: 'flex', alignItems: 'center', gap: 14, padding: '14px 16px', borderRadius: 14,
@@ -34,6 +38,9 @@ export default function PackageDetailPage() {
   const [children, setChildren] = useState(0);
   const [toast, setToast] = useState('');
   const [tripDate, setTripDate] = useState('');
+  // Staff quote builder (only after Alt + Q with a logged-in staff session)
+  const { revealed: staffMode } = useProviderReveal();
+  const [quote, setQuote] = useState({ customer: '', discountType: 'amount', discount: '', validUntil: '', note: '' });
 
   useEffect(() => {
     fetch(`/api/packages/${id}`)
@@ -115,7 +122,15 @@ export default function PackageDetailPage() {
     copyText(packageSummaryLines().join('\n'), () => flashToast(t.copied_msg));
   }
 
+  function quoteDiscount() {
+    const v = Number(quote.discount) || 0;
+    if (!staffMode || v <= 0) return 0;
+    const d = quote.discountType === 'percent' ? Math.round((grandTotal * Math.min(v, 100)) / 100) : v;
+    return Math.min(d, grandTotal);
+  }
+
   function handleDownloadPdf() {
+    const discount = quoteDiscount();
     const bodyHtml = buildPackageVoucherHtml({
       pkg,
       hotel: hotels[hotelIdx],
@@ -131,8 +146,10 @@ export default function PackageDetailPage() {
       fmtPrice: (n) => formatPrice(n, 'IQD', lang),
       lang,
       startDate: tripDate,
+      pageUrl: window.location.href,
+      quote: staffMode ? { customer: quote.customer.trim(), discount, discountLabel: quote.discountType === 'percent' && Number(quote.discount) > 0 ? Math.min(Number(quote.discount), 100) + '%' : '', validUntil: quote.validUntil, note: quote.note.trim() } : null,
     });
-    printDoc(nm(pkg.title_ar, pkg.title_en) + ' — ' + nm(pkg.dest_ar, pkg.dest_en), bodyHtml, lang);
+    printDoc(nm(pkg.title_ar, pkg.title_en) + ' — ' + nm(pkg.dest_ar, pkg.dest_en) + (staffMode && quote.customer.trim() ? ' — ' + quote.customer.trim() : ''), bodyHtml, lang);
   }
 
   if (error) {
@@ -206,6 +223,37 @@ export default function PackageDetailPage() {
                 <span style={{ color: '#049dc5' }}>{formatPrice(grandTotal, 'IQD', lang)}</span>
               </div>
 
+              {(() => {
+                const u = packageUrgency(pkg, lang);
+                if (!u || !u.label) return null;
+                return (
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 10, borderRadius: 12, padding: '10px 14px', background: u.soldOut ? '#1d2733' : u.hot ? '#fdecef' : '#fff4dc', color: u.soldOut ? '#fff' : u.hot ? '#c02643' : '#8a5a00', fontWeight: 700, fontSize: 14 }}>
+                    <span style={{ fontSize: 20 }}>{u.soldOut ? '⛔' : '⏳'}</span>
+                    <span>{u.label}{u.soldOut ? (lang === 'en' ? ' — message us to join the waiting list' : ' — راسلنا للانضمام لقائمة الانتظار') : ''}</span>
+                  </div>
+                );
+              })()}
+              {staffMode && (
+                <div style={{ border: '2px dashed #faab18', background: '#fffaf0', borderRadius: 14, padding: 12, display: 'flex', flexDirection: 'column', gap: 8 }}>
+                  <b style={{ fontSize: 13.5, color: '#8a5a00' }}>🧾 عرض سعر مخصص (وضع الموظفين)</b>
+                  <input style={{ padding: '8px 10px', borderRadius: 8, border: '1px solid #ececed', fontFamily: 'inherit' }} placeholder="اسم العميل — مثال: أحمد علي" value={quote.customer} onChange={(e) => setQuote({ ...quote, customer: e.target.value })} />
+                  <div style={{ display: 'flex', gap: 6 }}>
+                    <select style={{ padding: '8px', borderRadius: 8, border: '1px solid #ececed', fontFamily: 'inherit' }} value={quote.discountType} onChange={(e) => setQuote({ ...quote, discountType: e.target.value })}>
+                      <option value="amount">خصم بالدينار</option>
+                      <option value="percent">خصم بالنسبة %</option>
+                    </select>
+                    <input type="number" min="0" style={{ flex: 1, minWidth: 0, padding: '8px 10px', borderRadius: 8, border: '1px solid #ececed', fontFamily: 'inherit' }} placeholder={quote.discountType === 'percent' ? 'مثال 10' : 'مثال 100000'} value={quote.discount} onChange={(e) => setQuote({ ...quote, discount: e.target.value })} />
+                  </div>
+                  <label style={{ display: 'flex', flexDirection: 'column', gap: 4, fontSize: 12, color: '#7b8087' }}>العرض صالح حتى (اختياري)
+                    <input type="date" style={{ padding: '8px 10px', borderRadius: 8, border: '1px solid #ececed', fontFamily: 'inherit' }} value={quote.validUntil} onChange={(e) => setQuote({ ...quote, validUntil: e.target.value })} />
+                  </label>
+                  <textarea style={{ padding: '8px 10px', borderRadius: 8, border: '1px solid #ececed', fontFamily: 'inherit', minHeight: 56 }} placeholder="ملاحظة خاصة للعميل (اختياري)" value={quote.note} onChange={(e) => setQuote({ ...quote, note: e.target.value })} />
+                  {quoteDiscount() > 0 && (
+                    <span style={{ fontSize: 13 }}>الإجمالي بعد الخصم: <b data-no-i18n="">{formatPrice(grandTotal - quoteDiscount(), 'IQD', lang)}</b> <s data-no-i18n="" style={{ color: '#7b8087' }}>{formatPrice(grandTotal, 'IQD', lang)}</s></span>
+                  )}
+                  <span style={{ fontSize: 11.5, color: '#7b8087' }}>يظهر اسم العميل والخصم في ملف PDF فقط — لا يراه أحد غيرك على الموقع.</span>
+                </div>
+              )}
               {APPLY_FLOW_ENABLED ? (
                 <button type="button" onClick={goBook} className="qa-btn qa-cyan" style={{ textAlign: 'center' }}>{t.detail_cta}</button>
               ) : (
@@ -262,6 +310,16 @@ export default function PackageDetailPage() {
               )}
 
               <span style={{ fontSize: 12, color: '#7b8087', textAlign: 'center' }}>{t.detail_note}</span>
+              {(() => {
+                const cs = Array.isArray(pkg.countries) ? pkg.countries : [];
+                const iso = cs[0] ? String(cs[0]).toLowerCase() : null;
+                const tz = destinationTz(iso, cs.length === 1 ? nm(pkg.dest_ar, pkg.dest_en) + ' ' + (hotels[hotelIdx]?.location || '') : '');
+                if (!tz || iso === 'iq') return null;
+                const g = COUNTRY_GEO[iso];
+                const place = cs.length === 1 ? nm(pkg.dest_ar, pkg.dest_en) : g ? (lang === 'en' ? g[4] : g[3]) : nm(pkg.dest_ar, pkg.dest_en);
+                const f = flights[flightIdx];
+                return <WorldClocks tz={tz} place={place} lang={lang} compact flight={f ? { arrive: f.outArriveTime, depart: f.retDepartTime } : null} />;
+              })()}
             </div>
 
             {/* Main content */}

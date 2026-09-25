@@ -3,7 +3,8 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import WhatsAppButton from '../../../components/WhatsAppButton';
-import { buildVisaPdfHtml } from '../../../lib/visaPdf';
+import { buildVisaPdfHtml, findCountryIso } from '../../../lib/visaPdf';
+import WorldClocks, { destinationTz } from '../../../components/WorldClocks';
 import { APPLY_FLOW_ENABLED, visaMessage } from '../../../lib/whatsapp';
 import SiteHeader from '../../../components/SiteHeader';
 import SiteFooter from '../../../components/SiteFooter';
@@ -128,6 +129,11 @@ export default function VisaDetailPage() {
               </button>
               <span style={{ fontSize: 12, color: '#7b8087', textAlign: 'center' }}>السعر بالدينار العراقي، ويُثبَّت عند تقديم الطلب.</span>
 
+              {(() => {
+                const iso = findCountryIso(card);
+                const tz = iso && iso !== 'iq' ? destinationTz(iso) : null;
+                return tz ? <WorldClocks tz={tz} place={nm(card.country_name_ar, card.country_name_en)} lang={lang} compact /> : null;
+              })()}
               <div style={{ background: 'linear-gradient(135deg,#0e6f8f,#049dc5)', borderRadius: 14, padding: 18, color: '#fff', display: 'flex', flexDirection: 'column', gap: 10 }}>
                 <h4 style={{ margin: 0, fontSize: 15, color: '#fff' }}>لماذا قصر المرايا؟</h4>
                 {WHY_US.map((w, i) => (
