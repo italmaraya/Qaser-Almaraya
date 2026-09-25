@@ -2,6 +2,8 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
+import WhatsAppButton from '../../../components/WhatsAppButton';
+import { APPLY_FLOW_ENABLED, visaMessage } from '../../../lib/whatsapp';
 import SiteHeader from '../../../components/SiteHeader';
 import SiteFooter from '../../../components/SiteFooter';
 import MascotLoader from '../../../components/MascotLoader';
@@ -98,7 +100,21 @@ export default function VisaDetailPage() {
                   <div style={{ fontSize: 20, fontWeight: 700, color: '#049dc5' }}>{formatPrice(card.child_price, 'IQD', lang)}</div>
                 </div>
               </div>
-              <Link href={`/visa/${id}/apply`} className="qa-btn qa-cyan" style={{ textAlign: 'center', textDecoration: 'none' }}>ابدأ الآن</Link>
+              {APPLY_FLOW_ENABLED ? (
+                <Link href={`/visa/${id}/apply`} className="qa-btn qa-cyan" style={{ textAlign: 'center', textDecoration: 'none' }}>ابدأ الآن</Link>
+              ) : (
+                <WhatsAppButton
+                  label="تواصل معنا على واتساب للتقديم"
+                  getMessage={() => visaMessage({
+                    type: nm(card.visa_type_name_ar, card.visa_type_name_en),
+                    country: nm(card.country_name_ar, card.country_name_en),
+                    stay: card.stay_duration,
+                    issuing: card.issuing_time_days ? card.issuing_time_days + ' أيام عمل' : '',
+                    validity: card.validity_before_travel,
+                    url: window.location.href,
+                  })}
+                />
+              )}
               <button
                 type="button"
                 onClick={() => {

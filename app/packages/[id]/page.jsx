@@ -10,6 +10,8 @@ import { useLangToggle } from '../../../lib/i18n';
 import { T, catLabel } from '../../../lib/packagesData';
 import { formatPrice, formatSignedPrice } from '../../../lib/currency';
 import { printDoc, copyText } from '../../../lib/printDoc';
+import WhatsAppButton from '../../../components/WhatsAppButton';
+import { APPLY_FLOW_ENABLED, packageMessage } from '../../../lib/whatsapp';
 import { buildPackageVoucherHtml } from '../../../lib/packagePdf';
 
 const optStyle = (on) => ({
@@ -204,7 +206,28 @@ export default function PackageDetailPage() {
                 <span style={{ color: '#049dc5' }}>{formatPrice(grandTotal, 'IQD', lang)}</span>
               </div>
 
-              <button type="button" onClick={goBook} className="qa-btn qa-cyan" style={{ textAlign: 'center' }}>{t.detail_cta}</button>
+              {APPLY_FLOW_ENABLED ? (
+                <button type="button" onClick={goBook} className="qa-btn qa-cyan" style={{ textAlign: 'center' }}>{t.detail_cta}</button>
+              ) : (
+                <WhatsAppButton
+                  label={lang === 'en' ? 'Contact us on WhatsApp to book' : 'تواصل معنا على واتساب للحجز'}
+                  getMessage={() => {
+                    const h = hotels[hotelIdx];
+                    const f = flights[flightIdx];
+                    const en = lang === 'en';
+                    return packageMessage({
+                      title: nm(pkg.title_ar, pkg.title_en),
+                      dest: nm(pkg.dest_ar, pkg.dest_en),
+                      nights: nm(pkg.nights_ar, pkg.nights_en),
+                      hotel: h ? nm(h.nameAr, h.nameEn) : '',
+                      flight: f ? nm(f.nameAr, f.nameEn) : '',
+                      travellers: adults + (en ? ' adult(s)' : ' بالغ') + (children ? (en ? ', ' + children + ' child(ren)' : '، ' + children + ' طفل') : ''),
+                      date: tripDate,
+                      url: window.location.href,
+                    }, lang);
+                  }}
+                />
+              )}
 
               <label style={{ display: 'flex', flexDirection: 'column', gap: 6, fontSize: 12.5, fontWeight: 700, color: '#3d4650' }}>
                 {lang === 'en' ? 'Travel date (optional — adds dates to the PDF)' : 'تاريخ السفر (اختياري — يضيف التواريخ إلى ملف PDF)'}

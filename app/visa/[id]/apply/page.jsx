@@ -1,7 +1,8 @@
 'use client';
 import { useEffect, useState } from 'react';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { APPLY_FLOW_ENABLED } from '../../../../lib/whatsapp';
 import PaymentMethods from '../../../../components/PaymentMethods';
 import SiteHeader from '../../../../components/SiteHeader';
 import SiteFooter from '../../../../components/SiteFooter';
@@ -249,7 +250,7 @@ function TravelerForm({ index, travelerType, documents, onChange, onProgress }) 
   );
 }
 
-export default function VisaApplyPage() {
+function ArchivedVisaApplyPage() {
   const { lang } = useLangToggle();
   const nm = (ar, en) => (lang === 'en' && en ? en : ar);
   const { id } = useParams();
@@ -545,4 +546,17 @@ export default function VisaApplyPage() {
       <SiteFooter />
     </div>
   );
+}
+
+// ARCHIVED: the online steps are switched off (see lib/whatsapp.js →
+// APPLY_FLOW_ENABLED). Anyone opening this address is sent back to the
+// details page, which now has the WhatsApp button instead.
+export default function VisaApplyPage() {
+  const { id } = useParams();
+  const router = useRouter();
+  useEffect(() => {
+    if (!APPLY_FLOW_ENABLED) router.replace(`/visa/${id}`);
+  }, [id, router]);
+  if (!APPLY_FLOW_ENABLED) return null;
+  return <ArchivedVisaApplyPage />;
 }

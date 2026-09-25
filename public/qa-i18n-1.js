@@ -20,7 +20,7 @@
   "تأشيرة زيارة": "Visit visa", "مدة الإقامة": "Stay duration", "مدة الإصدار": "Processing time",
   "صلاحية قبل السفر": "Validity before travel", "صلاحية الجواز": "Passport validity",
   "٦ أشهر بعد الوصول": "6 months after arrival", "لكل زيارة": "per visit",
-  "ابدأ الآن": "Start now", "الإجمالي لـ": "Total for", "مسافر": "traveller",
+  "ابدأ الآن": "Start now", "تواصل معنا على واتساب للتقديم": "Contact us on WhatsApp to apply", "الإجمالي لـ": "Total for", "مسافر": "traveller",
   "لماذا قصر المرايا؟": "Why Qaser Almaraya?",
   "مراجعة كاملة لمستنداتك قبل التقديم": "A full review of your documents before submitting",
   "متابعة حالة الطلب حتى الإصدار": "Tracking your request until issuance",

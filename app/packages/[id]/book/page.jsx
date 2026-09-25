@@ -2,6 +2,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
+import { APPLY_FLOW_ENABLED } from '../../../../lib/whatsapp';
 import SiteHeader from '../../../../components/SiteHeader';
 import SiteFooter from '../../../../components/SiteFooter';
 import MascotLoader from '../../../../components/MascotLoader';
@@ -20,7 +21,7 @@ function sanitizeName(value) {
   return value.replace(/[0-9\u0660-\u0669]/g, '');
 }
 
-export default function PackageBookingPage() {
+function ArchivedPackageBookingPage() {
   const { id } = useParams();
   const router = useRouter();
   const search = useSearchParams();
@@ -270,4 +271,17 @@ export default function PackageBookingPage() {
       <SiteFooter />
     </div>
   );
+}
+
+// ARCHIVED: the online steps are switched off (see lib/whatsapp.js →
+// APPLY_FLOW_ENABLED). Anyone opening this address is sent back to the
+// details page, which now has the WhatsApp button instead.
+export default function PackageBookingPage() {
+  const { id } = useParams();
+  const router = useRouter();
+  useEffect(() => {
+    if (!APPLY_FLOW_ENABLED) router.replace(`/packages/${id}`);
+  }, [id, router]);
+  if (!APPLY_FLOW_ENABLED) return null;
+  return <ArchivedPackageBookingPage />;
 }

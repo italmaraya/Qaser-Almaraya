@@ -1,4 +1,6 @@
 'use client';
+import { APPLY_FLOW_ENABLED, openWhatsApp, visaMessage } from '../lib/whatsapp';
+import { WA_ICON } from './WhatsAppButton';
 import React, { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import Icon from './Icon';
@@ -764,7 +766,11 @@ function   visaVals(country){
       showResults: page === 'visas' && S.searched && !S.visaDetailOpen,
       showVisaRail: page === 'visas',
       closeVisaDetail: e => { if(e) e.preventDefault(); patch({ visaDetailOpen: false }); },
-      goVisaApplyDetail: e => { if(e) e.preventDefault(); patch({ visaId: visa.id, app: loadApp(visa), appStage: 'form', appError: '', ask: false }); go('visa-apply'); },
+      goVisaApplyDetail: e => {
+        if(e) e.preventDefault();
+        if (APPLY_FLOW_ENABLED) { patch({ visaId: visa.id, app: loadApp(visa), appStage: 'form', appError: '', ask: false }); go('visa-apply'); return; }
+        openWhatsApp(visaMessage({ type: visa.typeName, country: country.name, stay: visa.stay, issuing: visa.issuing, validity: visa.validity, travellers: st.travellers + ' بالغ' + (st.children ? '، ' + st.children + ' طفل' : ''), url: window.location.href }));
+      },
       flowSteps: FLOW.map((s, i) => ({ n: String(i + 1).padStart(2, '0'), title: s.title, hint: s.hint, role: ROLE[s.role][0], roleBg: ROLE[s.role][1], roleInk: ROLE[s.role][2], bg: ROLE[s.role][3], border: ROLE[s.role][4] })),
       stepsOn: page === 'visas' && props.visaSteps !== false,
       visaExportOn: page === 'visas' && props.exportActions !== false,
@@ -1423,7 +1429,7 @@ function   visaVals(country){
 </div>
 </div>
 <span style={{ fontSize: "13px", color: "#7b8087" }}><span data-no-i18n="">{feeTotal}</span> الإجمالي لـ <span data-no-i18n="">{travellersAr}</span> بالغ و <span data-no-i18n="">{childrenAr}</span> طفل</span>
-<button type="button" onClick={goVisaApplyDetail} className="qa-btn qa-cyan" style={{ justifyContent: "center", fontSize: "16px", padding: "15px" }}>ابدأ الآن</button>
+<button type="button" onClick={goVisaApplyDetail} className="qa-btn" style={{ justifyContent: "center", alignItems: "center", gap: "10px", fontSize: "16px", padding: "15px", background: "#25d366", color: "#fff", border: 0 }}>{WA_ICON}<span>تواصل معنا على واتساب للتقديم</span></button>
 <span style={{ fontSize: "12.5px", color: "#a6abb0", textAlign: "center" }}>السعر بالدينار العراقي، ويُثبَّت عند تقديم الطلب.</span>
 </div>
 <div style={{ position: "relative", display: "flex", flexDirection: "column", gap: "12px", background: "linear-gradient(155deg,#036f8c,#049dc5)", borderRadius: "var(--tw-radius,18px)", padding: "22px", overflow: "hidden" }}>
