@@ -2,6 +2,7 @@
 import { APPLY_FLOW_ENABLED, openWhatsApp, visaMessage } from '../lib/whatsapp';
 import { WA_ICON } from './WhatsAppButton';
 import HomeHero from './HomeHero';
+import SkyloPartnersVideo from './SkyloPartnersVideo';
 import React, { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import Icon from './Icon';
@@ -1042,6 +1043,7 @@ function   visaVals(country){
 </div>
 </div>
 </section>
+<SkyloPartnersVideo lang={st.lang} onFlights={goFlights} />
 <section className="qa-sec" style={{ display: "flex", flexDirection: "column", gap: "36px" }}>
 <div style={{ maxWidth: "740px", margin: "0 auto", textAlign: "center", display: "flex", flexDirection: "column", gap: "14px" }}>
 <h2 style={{ fontSize: "38px", fontWeight: "700", color: "#22a9d4", lineHeight: "1.3" }}>توصيات العملاء</h2>
