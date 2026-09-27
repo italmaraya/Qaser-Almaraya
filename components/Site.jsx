@@ -2686,7 +2686,7 @@ function   visaVals(country){
 <a href="#" onClick={goJobs} style={{ fontSize: "16px", color: "rgba(255,255,255,.85)", textDecoration: "none", width: "fit-content" }}>التوظيف</a>
 <a href="#" onClick={goFaq} style={{ fontSize: "16px", color: "rgba(255,255,255,.85)", textDecoration: "none", width: "fit-content" }}>نصائح السفر</a>
 <a href="#" onClick={goFlights} style={{ fontSize: "16px", color: "rgba(255,255,255,.85)", textDecoration: "none", width: "fit-content" }}>عروض السفر</a>
-<a href="/assets/qaser-almaraya-company-profile.pdf" target="_blank" rel="noopener" style={{ fontSize: "16px", color: "rgba(255,255,255,.85)", textDecoration: "none", width: "fit-content" }}>ملف تعريفي</a>
+<a href="/assets/qaser-almaraya-company-profile-2026.pdf" target="_blank" rel="noopener" style={{ fontSize: "16px", color: "rgba(255,255,255,.85)", textDecoration: "none", width: "fit-content" }}>ملف تعريفي</a>
 </div>
 <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
 <h4 style={{ fontSize: "18.5px", color: "#fff", margin: "0" }}>تابعنا</h4>
