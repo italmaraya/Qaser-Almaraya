@@ -2,7 +2,6 @@
 import { APPLY_FLOW_ENABLED, openWhatsApp, visaMessage } from '../lib/whatsapp';
 import { WA_ICON } from './WhatsAppButton';
 import HomeHero from './HomeHero';
-import SkyloPartnersVideo from './SkyloPartnersVideo';
 import React, { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import Icon from './Icon';
@@ -919,7 +918,7 @@ function   visaVals(country){
 <h2 style={{ fontSize: "36px", fontWeight: "700" }}>نُعيد صياغة مفهوم السفر</h2>
 <p style={{ fontSize: "18px", lineHeight: "1.75", color: "#22a9d4" }}>من تصميم الباقات المخصصة إلى إدارة وتنظيم حركة السفر للفعاليات الكبرى، تمثّل قصر المرايا جسراً من الثقة والاحترافية.</p>
 </div>
-<div className="qa-grid" style={{ gridTemplateColumns: "repeat(4,1fr)" }}>
+<div className="qa-grid qa-swipe" style={{ gridTemplateColumns: "repeat(4,1fr)" }}>
 <div className="qa-card" style={{ display: "flex", flexDirection: "column", gap: "12px", cursor: "pointer" }} onClick={goFlights}>
 <h4 style={{ fontSize: "20px", fontWeight: "700", color: "#1d2733" }}>الطيران والفنادق</h4>
 <p style={{ fontSize: "14px", lineHeight: "1.45", color: "#7b8087" }}>شريكنا Flamingo يتولى الحجز المباشر، وفريقنا يتابع طلبك خطوة بخطوة.</p>
@@ -941,6 +940,7 @@ function   visaVals(country){
 <span style={{ marginTop: "auto", fontSize: "14px", fontWeight: "600", color: "#22a9d4" }}>اعرف أكثر ←</span>
 </div>
 </div>
+<div className="qa-swipe-hint" aria-hidden="true">اسحب لرؤية المزيد ↔</div>
 </section>
 <section className="qa-sec qa-2col" style={{ paddingTop: "0", display: "grid", gridTemplateColumns: "1fr 1fr", gap: "64px", alignItems: "center" }}>
 <img src="/assets/mascot-skylo-pilot-plane.webp" alt="سكايلو، مرشد قصر المرايا" style={{ width: "100%", maxWidth: "400px", justifySelf: "center" }} />
@@ -959,12 +959,13 @@ function   visaVals(country){
 <h2 style={{ fontSize: "36px", fontWeight: "700", color: "#fff" }}>قيمنا</h2>
 <p style={{ fontSize: "18px", lineHeight: "1.75", color: "rgba(255,255,255,.92)" }}>أربع قيم تحكم كل رحلة نخطّط لها.</p>
 </div>
-<div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: "20px", alignItems: "stretch" }}>
+<div className="qa-swipe" style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: "20px", alignItems: "stretch" }}>
 <div style={{ background: "rgba(255,255,255,.94)", borderRadius: "18px", padding: "24px" }}><h4 style={{ fontSize: "20px", fontWeight: "700", color: "#1b93b8", marginBottom: "8px" }}>المغامرة والاستكشاف</h4><p style={{ fontSize: "14px", lineHeight: "1.45" }}>نُلهم المسافرين لاكتشاف أماكن وتجارب لا تُنسى.</p></div>
 <div style={{ background: "rgba(255,255,255,.94)", borderRadius: "18px", padding: "24px" }}><h4 style={{ fontSize: "20px", fontWeight: "700", color: "#1b93b8", marginBottom: "8px" }}>الثقة والاعتمادية</h4><p style={{ fontSize: "14px", lineHeight: "1.45" }}>كل رحلة تُخطَّط بصدق وأمان ومسؤولية كاملة.</p></div>
 <div style={{ background: "rgba(255,255,255,.94)", borderRadius: "18px", padding: "24px" }}><h4 style={{ fontSize: "20px", fontWeight: "700", color: "#1b93b8", marginBottom: "8px" }}>رضا العميل أولاً</h4><p style={{ fontSize: "14px", lineHeight: "1.45" }}>راحتك ودعمك في كل خطوة، بلا تعقيد.</p></div>
 <div style={{ background: "rgba(255,255,255,.94)", borderRadius: "18px", padding: "24px" }}><h4 style={{ fontSize: "20px", fontWeight: "700", color: "#1b93b8", marginBottom: "8px" }}>التميّز في الخدمة</h4><p style={{ fontSize: "14px", lineHeight: "1.45" }}>تخطيط عالي الجودة وحجز سلس وتجربة سفر متكاملة.</p></div>
 </div>
+<div className="qa-swipe-hint" aria-hidden="true">اسحب لرؤية المزيد ↔</div>
 </div>
 </section>
 <section style={{ position: "relative" }}>
@@ -973,7 +974,7 @@ function   visaVals(country){
 <span style={{ fontSize: "14px", fontWeight: "600", color: "rgba(255,255,255,.78)" }}>ما نعمل من أجله كل يوم</span>
 <h2 style={{ fontSize: "38px", fontWeight: "700", color: "#fff", lineHeight: "1.3" }}>أهداف شركة قصر المرايا للسفر والسياحة</h2>
 </div>
-<div className="qa-goals" style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: "20px", alignItems: "stretch" }}>
+<div className="qa-goals qa-swipe" style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: "20px", alignItems: "stretch" }}>
 <div style={{ background: "rgba(255,255,255,.96)", borderRadius: "18px", padding: "26px 24px", display: "flex", flexDirection: "column", gap: "12px", boxShadow: "0 14px 30px rgba(1,58,74,.16)" }}>
 <span style={{ width: "52px", height: "52px", borderRadius: "50%", background: "#e4f5fb", color: "#22a9d4", display: "flex", alignItems: "center", justifyContent: "center" }}><Icon name="plane-takeoff" size={26} /></span>
 <h4 style={{ fontSize: "20px", fontWeight: "700", color: "#1d2733" }}>خدمات سياحية متكاملة</h4>
@@ -1005,6 +1006,7 @@ function   visaVals(country){
 <p style={{ fontSize: "15px", lineHeight: "1.7", color: "#7b8087" }}>شركاء موثوقون، تأمين شامل، وراحة وأمان من الإقلاع حتى العودة.</p>
 </div>
 </div>
+<div className="qa-swipe-hint" aria-hidden="true">اسحب لرؤية المزيد ↔</div>
 </div>
 </section>
 </div>
@@ -1043,13 +1045,12 @@ function   visaVals(country){
 </div>
 </div>
 </section>
-<SkyloPartnersVideo lang={st.lang} onFlights={goFlights} />
 <section className="qa-sec" style={{ display: "flex", flexDirection: "column", gap: "36px" }}>
 <div style={{ maxWidth: "740px", margin: "0 auto", textAlign: "center", display: "flex", flexDirection: "column", gap: "14px" }}>
 <h2 style={{ fontSize: "38px", fontWeight: "700", color: "#22a9d4", lineHeight: "1.3" }}>توصيات العملاء</h2>
 <p style={{ fontSize: "17px", lineHeight: "1.75", color: "#7b8087", textWrap: "pretty" }}>رضا العملاء هو حجر الأساس لنجاحنا. هذه تجارب حقيقية لعملاء وثقوا بنا في تنظيم رحلاتهم.</p>
 </div>
-<div className="qa-2col qa-testi-grid" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(300px,1fr))", gap: "24px", alignItems: "stretch" }}>
+<div className="qa-2col qa-testi-grid qa-swipe" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(300px,1fr))", gap: "24px", alignItems: "stretch" }}>
 <div className="qa-testi-card" style={{ position: "relative", background: "#fff", border: "1px solid #ececed", borderRadius: "18px", padding: "30px 30px 26px", display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center", gap: "16px", boxShadow: "0 10px 26px rgba(29,39,51,.07)" }}>
 <span className="qa-testi-avatar" style={{ width: "112px", height: "112px", borderRadius: "50%", flex: "none", overflow: "hidden", background: "#e4f5fb", boxShadow: "0 0 0 4px #e4f5fb,0 10px 22px rgba(1,42,55,.12)" }}><img src="/assets/avatar-ibrahim.png" alt="ابراهيم مناضل" style={{ width: "100%", height: "100%", objectFit: "cover" }} /></span>
 <span aria-hidden="true" style={{ fontSize: "34px", lineHeight: ".6", color: "#e4f5fb", fontWeight: "700" }}>”</span>
@@ -1087,6 +1088,7 @@ function   visaVals(country){
 </div>
 </div>
 </div>
+<div className="qa-swipe-hint" aria-hidden="true">اسحب لرؤية المزيد ↔</div>
 </section>
 <div data-ach-band="" style={{ '--bw-hairline': "0" }}><AchievementSpread assetBase="/assets" /></div>
 <section dir="rtl" style={{ position: "relative", overflow: "hidden", background: "linear-gradient(180deg,#34bbe1 0%,#2fb4dd 45%,#049dc5 100%)" }}>

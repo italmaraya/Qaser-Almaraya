@@ -565,7 +565,7 @@ export default function VisaLandingPage() {
               <span style={{ fontSize: 13, fontWeight: 700, color: '#faab18' }}>من الاختيار إلى التحميل</span>
               <h2 style={{ fontSize: 'clamp(22px,2.4vw,32px)' }}>كيف تُباع التأشيرة وتُنجَز؟</h2>
             </div>
-            <div className="qa-grid" style={{ gridTemplateColumns: 'repeat(auto-fit,minmax(220px,1fr))' }}>
+            <div className="qa-grid qa-swipe" style={{ gridTemplateColumns: 'repeat(auto-fit,minmax(220px,1fr))' }}>
               {STEPS.map((s) => (
                 <div key={s.n} className="qa-card" style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
@@ -577,6 +577,7 @@ export default function VisaLandingPage() {
                 </div>
               ))}
             </div>
+            <div className="qa-swipe-hint" aria-hidden="true">اسحب لرؤية المزيد ↔</div>
             <div style={{ background: '#fef3dc', border: '1px solid #fdd27c', borderRadius: 14, padding: '14px 20px', textAlign: 'center', fontSize: 14, color: '#a06a00', fontWeight: 600 }}>
               الخطوات لا تتغير — ما يتغير هو المحتوى: الدول والمستندات والأسعار والحالات.
             </div>

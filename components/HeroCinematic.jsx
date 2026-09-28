@@ -39,11 +39,17 @@ export default function HeroCinematic({ slides = [], kicker, title, subtitle, pr
     return () => document.removeEventListener('visibilitychange', on);
   }, []);
   const [reduced, setReduced] = useState(false);
+  const [lite, setLite] = useState(false);
   const videoRefs = useRef([]);
   const count = slides.length;
 
   useEffect(() => {
     try { setReduced(window.matchMedia('(prefers-reduced-motion: reduce)').matches); } catch {}
+    // On phones with data saver or a slow connection, show the poster photo instead of the video.
+    try {
+      const c = navigator.connection;
+      if (c && (c.saveData || /(^|-)2g|3g/.test(c.effectiveType || ''))) setLite(true);
+    } catch {}
   }, []);
 
   // Auto-advance
@@ -101,12 +107,12 @@ export default function HeroCinematic({ slides = [], kicker, title, subtitle, pr
 .qh-scroll{position:absolute;z-index:5;left:50%;bottom:clamp(14px,2.4vh,26px);transform:translateX(-50%);width:26px;height:40px;border:1.5px solid rgba(255,255,255,.6);border-radius:14px}
 .qh-scroll:after{content:"";position:absolute;left:50%;top:7px;width:3px;height:8px;margin-left:-1.5px;border-radius:2px;background:#fff;animation:qh-wheel 1.8s ease-in-out infinite}
 @keyframes qh-wheel{0%{opacity:0;transform:translateY(0)}30%{opacity:1}100%{opacity:0;transform:translateY(12px)}}
-@media (max-width:640px){.qh{height:min(86vh,720px)}.qh-scroll{display:none}.qh-bottom{flex-direction:column-reverse;align-items:center}}
+@media (max-width:820px){.qh{height:calc(100svh - 150px);min-height:480px;max-height:720px}.qh-scroll{display:none}.qh-bottom{flex-direction:column-reverse;align-items:center;gap:10px;bottom:16px}.qh-ctas{flex-direction:column;align-items:stretch;width:100%;max-width:320px}.qh-btn{justify-content:center}.qh-lines{opacity:.7}}
 @media (prefers-reduced-motion:reduce){.qh-slide.on img,.qh-mer,.qh-bar.on i,.qh *{animation:none!important}}
 `}</style>
       {slides.map((s, i) => (
         <div key={i} className={'qh-slide' + (i === active ? ' on' : '')} aria-hidden={i !== active}>
-          {s.type === 'video' && !reduced ? (
+          {s.type === 'video' && !reduced && !(lite && s.poster) ? (
             <video
               ref={(el) => { videoRefs.current[i] = el; }}
               src={s.url}

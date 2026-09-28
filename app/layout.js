@@ -1,4 +1,12 @@
 import './site.css';
+import MobileBottomBar from '../components/MobileBottomBar';
+
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  viewportFit: 'cover',
+  themeColor: '#049dc5',
+};
 
 export const metadata = {
   title: 'قصر المرايا للسفر و السياحة | Qaser Almaraya for Travel & Tourism',
@@ -24,7 +32,10 @@ export default function RootLayout({ children }) {
         <script src="/qa-i18n-5.js" />
         <script src="/qa-i18n-6.js" />
       </head>
-      <body>{children}</body>
+      <body>
+        {children}
+        <MobileBottomBar />
+      </body>
     </html>
   );
 }

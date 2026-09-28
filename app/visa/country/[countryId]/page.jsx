@@ -7,6 +7,7 @@ import SiteFooter from '../../../../components/SiteFooter';
 import MascotLoader from '../../../../components/MascotLoader';
 import { printDoc, visaTableHtml, combinedDocsLine, esc } from '../../../../lib/printDoc';
 import { buildVisaPdfHtml } from '../../../../lib/visaPdf';
+import CountryHero from '../../../../components/CountryHero';
 import { useLangToggle } from '../../../../lib/i18n';
 import { formatPrice, formatRawAmount } from '../../../../lib/currency';
 import { flagSrc } from '../../../../lib/flags';
@@ -138,24 +139,23 @@ export default function CountryVisaListPage() {
     <div dir="rtl" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
       <SiteHeader active="التأشيرات" />
       <main style={{ flex: 1 }}>
+        {country && (
+          <CountryHero
+            country={country}
+            count={filtered.length}
+            fastestDays={(() => { const d = countryCards.map((c) => Number(c.issuing_time_days) || 0).filter(Boolean); return d.length ? Math.min(...d) : null; })()}
+            lang={lang}
+            onPdf={downloadCountryPdf}
+            downloading={downloading}
+          />
+        )}
         <div className="qa-page qa-sec" style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
-          <Link href="/visa" style={{ fontSize: 13.5, fontWeight: 600, color: '#036f8c', textDecoration: 'none', alignSelf: 'flex-start' }}>← رجوع إلى التأشيرات</Link>
+          {!country && <Link href="/visa" style={{ fontSize: 13.5, fontWeight: 600, color: '#036f8c', textDecoration: 'none', alignSelf: 'flex-start' }}>← رجوع إلى التأشيرات</Link>}
 
           {error && <p style={{ color: '#d2324f', background: '#fdecef', border: '1px solid #f7c3cc', borderRadius: 10, padding: '12px 16px' }}>{error}</p>}
 
           {country && (
             <>
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12 }}>
-                <h1 style={{ fontSize: 'clamp(24px,2.6vw,34px)', margin: 0 }}>{filtered.length} تأشيرة متاحة لـ {nm(country.country_name_ar, country.country_name_en)}</h1>
-                <button
-                  type="button"
-                  onClick={downloadCountryPdf}
-                  disabled={downloading}
-                  style={{ cursor: downloading ? 'not-allowed' : 'pointer', opacity: downloading ? 0.6 : 1, border: '1px solid #ececed', borderRadius: 999, padding: '10px 20px', fontSize: 14, fontWeight: 700, fontFamily: 'inherit', background: '#fff', color: '#036f8c' }}
-                >
-                  {downloading ? '...جارٍ التحضير' : <>تحميل PDF لكل تأشيرات {nm(country.country_name_ar, country.country_name_en)}</>}
-                </button>
-              </div>
 
               {travelDate && (
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 12.5, color: '#7b8087' }}>
