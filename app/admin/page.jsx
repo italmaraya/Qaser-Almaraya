@@ -3,10 +3,12 @@ import React, { useEffect, useState } from 'react';
 import VisaAdmin from '../../components/VisaAdmin';
 import PackagesAdmin from '../../components/PackagesAdmin';
 import HeroAdmin from '../../components/HeroAdmin';
+import NewsAdmin from '../../components/NewsAdmin';
 import OdooJobsSettings from '../../components/OdooJobsSettings';
 
 const TABS = [
   { id: 'hero', label: 'الواجهة الرئيسية' },
+  { id: 'news', label: 'المدونة' },
   { id: 'jobs', label: 'الوظائف' },
   { id: 'faq', label: 'الأسئلة الشائعة' },
   { id: 'achievements', label: 'الإنجازات' },
@@ -480,6 +482,8 @@ export default function AdminPage() {
         )}
 
         {/* CONTACT TAB */}
+        {activeTab === 'news' && <NewsAdmin />}
+
         {activeTab === 'hero' && (
           <HeroAdmin
             hero={content.hero}

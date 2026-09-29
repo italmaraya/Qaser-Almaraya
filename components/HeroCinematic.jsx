@@ -84,7 +84,7 @@ export default function HeroCinematic({ slides = [], kicker, title, subtitle, pr
 .qh-mer{animation:qh-turn 24s linear infinite}
 @keyframes qh-turn{0%{rx:430px}25%{rx:0px}50%{rx:430px}75%{rx:0px}100%{rx:430px}}
 .qh-copy{position:absolute;inset:0;z-index:4;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:clamp(10px,1.4vw,18px);padding:0 6%}
-.qh-logo{width:clamp(52px,5vw,78px);height:auto;filter:drop-shadow(0 4px 14px rgba(0,0,0,.3));animation:qh-up .9s ease both}
+.qh-logo{width:clamp(60px,5.6vw,88px);height:auto;filter:drop-shadow(0 0 18px rgba(52,187,225,.55)) drop-shadow(0 6px 16px rgba(0,0,0,.35));animation:qh-up .9s ease both}
 .qh-kicker{font-size:clamp(14px,1.25vw,20px);font-weight:500;letter-spacing:.02em;opacity:.95;animation:qh-up .9s .12s ease both}
 .qh-title{margin:0;font-size:clamp(38px,6.4vw,104px);font-weight:700;line-height:1.05;letter-spacing:-.01em;text-shadow:0 6px 30px rgba(0,0,0,.35);animation:qh-up 1s .22s ease both}
 .qh-sub{margin:0;max-width:640px;font-size:clamp(15px,1.2vw,19px);line-height:1.8;opacity:.92;animation:qh-up 1s .34s ease both}
@@ -134,7 +134,7 @@ export default function HeroCinematic({ slides = [], kicker, title, subtitle, pr
 
       <div className="qh-copy">
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img className="qh-logo" src="/assets/logo-mark-white.webp" alt="" />
+        <img className="qh-logo" src="/assets/logo-mark-hero.png" alt="قصر المرايا" />
         {kicker && <span className="qh-kicker">{kicker}</span>}
         {title && <h1 className="qh-title">{title}</h1>}
         {subtitle && <p className="qh-sub">{subtitle}</p>}

@@ -21,6 +21,13 @@ const nextConfig = {
   // which only run on a server.
   images: { unoptimized: true },
   poweredByHeader: false,
+  async redirects() {
+    return [
+      // The old WordPress site's blog → the new blog
+      { source: '/blog', destination: '/news', permanent: true },
+      { source: '/blog/:path*', destination: '/news', permanent: true },
+    ];
+  },
   async headers() {
     return [
       { source: '/:path*', headers: securityHeaders },

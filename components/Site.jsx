@@ -2,6 +2,7 @@
 import { APPLY_FLOW_ENABLED, openWhatsApp, visaMessage } from '../lib/whatsapp';
 import { WA_ICON } from './WhatsAppButton';
 import HomeHero from './HomeHero';
+import AirlinesMarquee from './AirlinesMarquee';
 import React, { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import Icon from './Icon';
@@ -1112,12 +1113,7 @@ function   visaVals(country){
 </div>
 </div>
 <div aria-hidden="true" style={{ position: "relative", height: "1px", background: "linear-gradient(to left,transparent,rgba(255,255,255,.22) 24%,rgba(255,255,255,.22) 76%,transparent)" }}></div>
-<div dir="ltr" data-keep-dir="" style={{ position: "relative", padding: "26px 0", overflow: "hidden", maskImage: "linear-gradient(to left,transparent,#000 6%,#000 94%,transparent)", WebkitMaskImage: "linear-gradient(to left,transparent,#000 6%,#000 94%,transparent)" }}>
-<div dir="ltr" data-keep-dir="" style={{ display: "flex", width: "max-content", animation: "qa-agents-marquee 38s linear infinite" }}>
-<img src="/assets/partners-airlines-white.webp" alt="شركات الطيران الشريكة" style={{ height: "56px", width: "auto", opacity: ".95" }} />
-<img src="/assets/partners-airlines-white.webp" alt="" aria-hidden="true" style={{ height: "56px", width: "auto", opacity: ".95" }} />
-</div>
-</div>
+<AirlinesMarquee />
 </section>
 </div>
 </>) : null}
@@ -2691,9 +2687,9 @@ function   visaVals(country){
 </div>
 <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
 <h4 style={{ fontSize: "18.5px", color: "#fff", margin: "0" }}>مركز المعلومات</h4>
-<a href="#" onClick={goHome} style={{ fontSize: "16px", color: "rgba(255,255,255,.85)", textDecoration: "none", width: "fit-content" }}>المدونة</a>
+<a href="/news" style={{ fontSize: "16px", color: "rgba(255,255,255,.85)", textDecoration: "none", width: "fit-content" }}>المدونة</a>
 <a href="#" onClick={goJobs} style={{ fontSize: "16px", color: "rgba(255,255,255,.85)", textDecoration: "none", width: "fit-content" }}>التوظيف</a>
-<a href="#" onClick={goFaq} style={{ fontSize: "16px", color: "rgba(255,255,255,.85)", textDecoration: "none", width: "fit-content" }}>نصائح السفر</a>
+<a href="/news?category=tips" style={{ fontSize: "16px", color: "rgba(255,255,255,.85)", textDecoration: "none", width: "fit-content" }}>نصائح السفر</a>
 <a href="#" onClick={goFlights} style={{ fontSize: "16px", color: "rgba(255,255,255,.85)", textDecoration: "none", width: "fit-content" }}>عروض السفر</a>
 <a href="/assets/qaser-almaraya-company-profile-2026.pdf" target="_blank" rel="noopener" style={{ fontSize: "16px", color: "rgba(255,255,255,.85)", textDecoration: "none", width: "fit-content" }}>ملف تعريفي</a>
 </div>
