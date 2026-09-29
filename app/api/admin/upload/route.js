@@ -29,6 +29,8 @@ export async function POST(request) {
   try {
     const blob = await put(`qaser-uploads/${Date.now()}-${safeName}`, file, {
       access: 'public',
+      // Random code in the file address keeps uploaded documents unguessable.
+      addRandomSuffix: true,
     });
     return NextResponse.json({ url: blob.url });
   } catch (err) {

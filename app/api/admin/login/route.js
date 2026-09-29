@@ -1,7 +1,11 @@
 import { NextResponse } from 'next/server';
+import { clientIp, loginLocked, loginFailed, loginSucceeded, tooMany } from '../../../../lib/security';
 import { resolveRole, createSession, SESSION_COOKIE } from '../../../../lib/session';
 
 export async function POST(request) {
+  const ip = clientIp(request);
+  const locked = await loginLocked(ip);
+  if (locked) return tooMany(NextResponse, locked, `تم إيقاف تسجيل الدخول مؤقتاً بسبب محاولات خاطئة كثيرة. حاول بعد ${Math.ceil(locked / 60)} دقيقة.`);
   let body;
   try {
     body = await request.json();
@@ -13,6 +17,7 @@ export async function POST(request) {
   const role = resolveRole(password);
 
   if (!role) {
+    await loginFailed(ip);
     return NextResponse.json({ error: 'Incorrect password' }, { status: 401 });
   }
 
@@ -27,6 +32,7 @@ export async function POST(request) {
     );
   }
 
+  await loginSucceeded(ip);
   const response = NextResponse.json({ ok: true, role });
   response.cookies.set(SESSION_COOKIE, token, {
     httpOnly: true,

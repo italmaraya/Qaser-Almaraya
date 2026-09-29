@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { clientIp, rateLimit, tooMany } from '../../../../lib/security';
 import { sendJobApplicationEmail } from '../../../../lib/mailer';
 import { getContent } from '../../../../lib/content';
 import { fetchOdooJobs } from '../../../../lib/odooJobs';
@@ -27,6 +28,10 @@ async function download(u, label) {
 export const maxDuration = 60;
 
 export async function POST(request) {
+  {
+    const rl = await rateLimit('apply:' + clientIp(request), 6, 3600);
+    if (!rl.ok) return tooMany(NextResponse, rl.retryAfter, 'أرسلت طلبات كثيرة. حاول مرة أخرى بعد ساعة.');
+  }
   const body = await request.json().catch(() => ({}));
   const { job, odooJobId, name, phone, email, bring, cvUrl, coverUrl, workUrl } = body || {};
 

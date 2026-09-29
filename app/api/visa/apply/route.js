@@ -1,8 +1,16 @@
 import { NextResponse } from 'next/server';
+import { APPLY_FLOW_ENABLED } from '../../../../lib/whatsapp';
+import { clientIp, rateLimit, tooMany } from '../../../../lib/security';
 import { sql, ensureSchema } from '../../../../lib/db';
 import { sendPaymentReviewNotice } from '../../../../lib/mailer';
 
 export async function POST(request) {
+  // Online visa applications are archived (WhatsApp is used instead).
+  if (!APPLY_FLOW_ENABLED) return NextResponse.json({ error: 'Online applications are currently closed' }, { status: 410 });
+  {
+    const rl = await rateLimit('vapply:' + clientIp(request), 6, 3600);
+    if (!rl.ok) return tooMany(NextResponse, rl.retryAfter);
+  }
   await ensureSchema();
   const body = await request.json();
   const { visa_card_id, customer_name, customer_phone, customer_email, payment_method, payment_proof_url, travelers } = body || {};

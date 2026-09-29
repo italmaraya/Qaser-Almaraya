@@ -1,7 +1,12 @@
 import { NextResponse } from 'next/server';
+import { clientIp, rateLimit, tooMany } from '../../../../lib/security';
 import { sql, ensureSchema } from '../../../../lib/db';
 
 export async function GET(request) {
+  {
+    const rl = await rateLimit('track:' + clientIp(request), 30, 3600);
+    if (!rl.ok) return tooMany(NextResponse, rl.retryAfter);
+  }
   await ensureSchema();
   const { searchParams } = new URL(request.url);
   const q = (searchParams.get('q') || '').trim();
