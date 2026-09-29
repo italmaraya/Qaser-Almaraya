@@ -48,7 +48,7 @@ export async function POST(request) {
         download(workUrl, 'Work_Samples_' + safeName),
       ])).filter(Boolean);
       const message = [bring, '', 'Applied via almarayagroup.iq'].join('\n');
-      const r = await submitToOdoo(target.url, { name, email, phone, message }, files);
+      const r = await submitToOdoo(target.url, { name, email, phone, message }, files, { jobId: String(target.id).replace(/^odoo-/, '') });
       return NextResponse.json({ ok: true, odoo: true, id: r.id });
     } catch (err) {
       // Never lose an application: if Odoo refuses it, email it to HR instead.

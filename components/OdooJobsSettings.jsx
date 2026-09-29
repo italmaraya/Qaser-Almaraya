@@ -9,13 +9,14 @@ export default function OdooJobsSettings({ careers, onChange, onSave, saving, sa
   const [testing, setTesting] = useState(false);
   const [diag, setDiag] = useState(null);
   const [diagBusy, setDiagBusy] = useState('');
+  const [diagJob, setDiagJob] = useState('');
 
   async function runDiag(dryRun) {
-    if (!dryRun && !confirm('سيتم إرسال متقدّم تجريبي باسم "TEST — Qaser Website" إلى أول وظيفة في Odoo. يمكنك حذفه بعد ذلك. متابعة؟')) return;
+    if (!dryRun && !confirm('سسيتم إرسال متقدّم تجريبي باسم "TEST — Qaser Website" إلى الوظيفة المختارة في Odoo. يمكنك حذفه بعد ذلك. متابعة؟')) return;
     setDiagBusy(dryRun ? 'dry' : 'real');
     setDiag(null);
     try {
-      const r = await fetch('/api/admin/jobs-apply-test', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ dryRun, odooUrl: careers.odooUrl }) });
+      const r = await fetch('/api/admin/jobs-apply-test', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ dryRun, odooUrl: careers.odooUrl, jobId: diagJob }) });
       setDiag(await r.json());
     } catch (e) {
       setDiag({ ok: false, error: e.message, trace: [] });
@@ -59,6 +60,12 @@ export default function OdooJobsSettings({ careers, onChange, onSave, saving, sa
       </div>
       <div style={{ borderTop: '1px dashed #cfe9f2', paddingTop: 10, display: 'flex', flexDirection: 'column', gap: 8 }}>
         <b style={{ fontSize: 13.5 }}>🩺 فحص إرسال الطلبات إلى Odoo</b>
+        <label style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 13 }}>الوظيفة المراد فحصها:
+          <select value={diagJob} onChange={(e) => setDiagJob(e.target.value)} style={{ padding: '7px 10px', borderRadius: 8, border: '1px solid #ececed', fontFamily: 'inherit', minWidth: 220 }}>
+            <option value="">{test && test.ok ? '— اختر —' : '— اضغط «اختبار الاتصال» أولاً لعرض الوظائف —'}</option>
+            {(test && test.jobs ? test.jobs : []).map((j) => <option key={j.id} value={j.id}>{j.title}</option>)}
+          </select>
+        </label>
         <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
           <button type="button" onClick={() => runDiag(true)} disabled={!!diagBusy || !careers.odooUrl} style={{ padding: '8px 14px', borderRadius: 8, border: '1px solid #cfe9f2', background: '#fff', color: '#036f8c', fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}>{diagBusy === 'dry' ? 'جارٍ الفحص…' : '١. فحص نموذج التقديم (بدون إرسال)'}</button>
           <button type="button" onClick={() => runDiag(false)} disabled={!!diagBusy || !careers.odooUrl} style={{ padding: '8px 14px', borderRadius: 8, border: '1px solid #f5d8a0', background: '#fffaf0', color: '#8a5a00', fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}>{diagBusy === 'real' ? 'جارٍ الإرسال…' : '٢. إرسال متقدّم تجريبي'}</button>
