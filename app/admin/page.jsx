@@ -312,6 +312,14 @@ export default function AdminPage() {
               saving={savingTab === 'careers'}
               saved={savedTab === 'careers'}
             />
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 4, marginTop: 6 }}>
+              <b style={{ fontSize: 15 }}>الوظائف المكتوبة يدوياً ({content.jobs.length})</b>
+              <span style={{ fontSize: 12.5, color: '#7b8087' }}>
+                {content.careers?.odooUrl && content.careers?.hideManualWhenOdoo !== false
+                  ? 'لا تظهر على الموقع ما دامت هناك وظائف منشورة في Odoo. يمكنك حذفها كلها ثم الضغط على «حفظ» في الأسفل.'
+                  : 'تظهر على الموقع إلى جانب وظائف Odoo.'}
+              </span>
+            </div>
             {content.jobs.map((job, i) => (
               <div key={job.id || i} style={cardStyle}>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
