@@ -23,6 +23,9 @@ async function download(u, label) {
   return { name: label + '.' + ext, type: r.headers.get('content-type') || 'application/octet-stream', data: buf };
 }
 
+// Applying talks to Odoo several times — allow more than the 10 s default.
+export const maxDuration = 60;
+
 export async function POST(request) {
   const body = await request.json().catch(() => ({}));
   const { job, odooJobId, name, phone, email, bring, cvUrl, coverUrl, workUrl } = body || {};
@@ -49,7 +52,7 @@ export async function POST(request) {
       return NextResponse.json({ ok: true, odoo: true, id: r.id });
     } catch (err) {
       // Never lose an application: if Odoo refuses it, email it to HR instead.
-      console.error('Odoo application failed, falling back to email:', err);
+      console.error('Odoo application failed, falling back to email:', err && err.message);
       try {
         await sendJobApplicationEmail({ job: (job || '') + ' (Odoo: ' + (err.message || 'error') + ')', name, phone, email, bring, cvUrl, coverUrl, workUrl });
         return NextResponse.json({ ok: true, odoo: false });
