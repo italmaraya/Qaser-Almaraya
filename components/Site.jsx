@@ -461,8 +461,8 @@ function   renderVals(){
       cvName: st.files.cv || 'لم يتم اختيار ملف',
       coverName: st.files.cover || 'لم يتم اختيار ملف',
       workName: st.files.work || 'لم يتم اختيار ملف',
-      openApply: e => { if(e) e.preventDefault(); const j = e && e.currentTarget ? e.currentTarget.getAttribute('data-job') : ''; patch({ apply: j || 'تقديم عام', applySent: false, applyError: '' }); },
-      closeApply: e => { if(e) e.preventDefault(); patch({ apply: null, applySent: false, applyError: '' }); },
+      openApply: e => { if(e) e.preventDefault(); const j = e && e.currentTarget ? e.currentTarget.getAttribute('data-job') : ''; const o = e && e.currentTarget ? e.currentTarget.getAttribute('data-odoo') : ''; patch({ apply: j || 'تقديم عام', applyOdoo: o || '', applySent: false, applyError: '' }); },
+      closeApply: e => { if(e) e.preventDefault(); patch({ apply: null, applyOdoo: '', applySent: false, applyError: '' }); },
       stopClose: e => { if(e) e.stopPropagation(); },
       setAfName: e => patch({ af: Object.assign({}, st.af, { name: e.target.value }) }),
       setAfPhone: e => patch({ af: Object.assign({}, st.af, { phone: e.target.value }) }),
@@ -487,7 +487,7 @@ function   renderVals(){
           const res = await fetch('/api/jobs/apply', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ job: st.apply, name: a.name, phone: a.phone, email: a.email, bring: a.bring, cvUrl: st.fileUrls.cv, coverUrl: st.fileUrls.cover, workUrl: st.fileUrls.work }),
+            body: JSON.stringify({ job: st.apply, odooJobId: st.applyOdoo || '', name: a.name, phone: a.phone, email: a.email, bring: a.bring, cvUrl: st.fileUrls.cv, coverUrl: st.fileUrls.cover, workUrl: st.fileUrls.work }),
           });
           if(!res.ok) { const d = await res.json().catch(() => ({})); throw new Error(d.error || 'تعذر إرسال الطلب، حاول مرة أخرى'); }
           patch({ applySent: true, applyError: '', applySending: false });
@@ -2154,7 +2154,7 @@ function   visaVals(country){
 <h4 style={{ fontFamily: "'IBM Plex Sans',system-ui,sans-serif", fontSize: "21px", fontWeight: "700", color: "#1d2733", lineHeight: "1.3" }}>{job.title}</h4>
 <span style={{ fontSize: "15px", color: "#7b8087" }}>{job.location}</span>
 <ul style={{ display: "flex", flexDirection: "column", gap: "8px", margin: "0", paddingInlineStart: "18px", fontSize: "15px", lineHeight: "1.7", color: "#3d4650" }}>{(job.bullets || []).map((b, i) => (<li key={i}>{b}</li>))}</ul>
-{job.source === "odoo" && job.url ? (<a href={job.url} target="_blank" rel="noopener" className="qa-btn qa-cyan" style={{ marginTop: "auto", alignSelf: "flex-start", textDecoration: "none", fontSize: "15px", padding: "11px 22px" }}>قدّم الآن ←</a>) : (<button type="button" data-job={job.title} onClick={openApply} style={{ marginTop: "auto", alignSelf: "flex-start", background: "none", border: "0", padding: "0", fontFamily: "inherit", fontSize: "15px", fontWeight: "600", color: "#22a9d4", cursor: "pointer" }}>تقدَّم لهذه الوظيفة ←</button>)}
+{job.source === "odoo" ? (<button type="button" data-job={job.title} data-odoo={job.id} onClick={openApply} className="qa-btn qa-cyan" style={{ marginTop: "auto", alignSelf: "flex-start", fontFamily: "inherit", fontSize: "15px", padding: "11px 22px" }}>قدّم الآن ←</button>) : (<button type="button" data-job={job.title} onClick={openApply} style={{ marginTop: "auto", alignSelf: "flex-start", background: "none", border: "0", padding: "0", fontFamily: "inherit", fontSize: "15px", fontWeight: "600", color: "#22a9d4", cursor: "pointer" }}>تقدَّم لهذه الوظيفة ←</button>)}
 </div>
 ))}
 </div>
