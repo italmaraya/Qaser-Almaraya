@@ -137,7 +137,8 @@ export default function Site(props) {
     return () => { document.body.style.overflow = ''; };
   }, [qaMobileMenuOpen]);
   const ROUTE_MAP = { home: '/', packages: '/packages', flights: '/flights', visas: '/visa', jobs: '/jobs', faq: '/faq', contact: '/contact' };
-  const contentJobs = (props.content && props.content.jobs) || null;
+  const [odooJobsData, setOdooJobsData] = useState(null);
+  const contentJobs = (odooJobsData && odooJobsData.jobs && odooJobsData.jobs.length ? odooJobsData.jobs : null) || (props.content && props.content.jobs) || null;
   const contentFaq = (props.content && props.content.faq) || null;
   const contentContact = (props.content && props.content.contact) || null;
   const hasLegacyData = !!(
@@ -175,6 +176,12 @@ export default function Site(props) {
   // Keep language in sync with the shared preference used by every other
   // page on the site (including the standalone /visa pages), so switching
   // language on one page stays consistent when navigating to another.
+  // Jobs published in Odoo Recruitment (merged with dashboard jobs on the server)
+  useEffect(() => {
+    if (st.page !== 'jobs' || odooJobsData) return;
+    fetch('/api/jobs').then((r) => r.json()).then((d) => setOdooJobsData(d && Array.isArray(d.jobs) ? d : { jobs: [] })).catch(() => setOdooJobsData({ jobs: [] }));
+  }, [st.page]); // eslint-disable-line react-hooks/exhaustive-deps
+
   useEffect(() => {
     const stored = getStoredLang();
     if (stored !== st.lang) patch({ lang: stored });
@@ -2147,7 +2154,7 @@ function   visaVals(country){
 <h4 style={{ fontFamily: "'IBM Plex Sans',system-ui,sans-serif", fontSize: "21px", fontWeight: "700", color: "#1d2733", lineHeight: "1.3" }}>{job.title}</h4>
 <span style={{ fontSize: "15px", color: "#7b8087" }}>{job.location}</span>
 <ul style={{ display: "flex", flexDirection: "column", gap: "8px", margin: "0", paddingInlineStart: "18px", fontSize: "15px", lineHeight: "1.7", color: "#3d4650" }}>{(job.bullets || []).map((b, i) => (<li key={i}>{b}</li>))}</ul>
-<button type="button" data-job={job.title} onClick={openApply} style={{ marginTop: "auto", alignSelf: "flex-start", background: "none", border: "0", padding: "0", fontFamily: "inherit", fontSize: "15px", fontWeight: "600", color: "#22a9d4", cursor: "pointer" }}>تقدَّم لهذه الوظيفة ←</button>
+{job.source === "odoo" && job.url ? (<a href={job.url} target="_blank" rel="noopener" className="qa-btn qa-cyan" style={{ marginTop: "auto", alignSelf: "flex-start", textDecoration: "none", fontSize: "15px", padding: "11px 22px" }}>قدّم الآن ←</a>) : (<button type="button" data-job={job.title} onClick={openApply} style={{ marginTop: "auto", alignSelf: "flex-start", background: "none", border: "0", padding: "0", fontFamily: "inherit", fontSize: "15px", fontWeight: "600", color: "#22a9d4", cursor: "pointer" }}>تقدَّم لهذه الوظيفة ←</button>)}
 </div>
 ))}
 </div>

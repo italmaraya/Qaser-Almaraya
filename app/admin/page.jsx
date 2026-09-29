@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import VisaAdmin from '../../components/VisaAdmin';
 import PackagesAdmin from '../../components/PackagesAdmin';
 import HeroAdmin from '../../components/HeroAdmin';
+import OdooJobsSettings from '../../components/OdooJobsSettings';
 
 const TABS = [
   { id: 'hero', label: 'الواجهة الرئيسية' },
@@ -304,6 +305,13 @@ export default function AdminPage() {
         {/* JOBS TAB */}
         {activeTab === 'jobs' && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+            <OdooJobsSettings
+              careers={content.careers || {}}
+              onChange={(careers) => setContent((c) => ({ ...c, careers }))}
+              onSave={() => saveSection('careers')}
+              saving={savingTab === 'careers'}
+              saved={savedTab === 'careers'}
+            />
             {content.jobs.map((job, i) => (
               <div key={job.id || i} style={cardStyle}>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
