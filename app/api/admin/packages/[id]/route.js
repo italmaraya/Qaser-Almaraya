@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { sql, ensureSchema } from '../../../../../lib/db';
 import { requireAdmin } from '../../../../../lib/session';
 
-const firstFree = (arr) => (Array.isArray(arr) ? arr.map((x, i) => (i === 0 ? { ...x, diff: 0 } : { ...x, diff: Math.max(0, Math.round(Number(x && x.diff) || 0)) })) : []);
+const firstFree = (arr) => (Array.isArray(arr) ? arr.map((x, i) => { const clampAll = (o) => ['diff','diffChildBed','diffChildNoBed','diffInfant'].reduce((r,k)=>({...r,[k]:Math.max(0,Math.round(Number(o&&o[k])||0))}),{}); return i===0 ? {...x, diff:0, diffChildBed:0, diffChildNoBed:0, diffInfant:0} : {...x, ...clampAll(x)}; }) : []);
 const num = (v) => (Number.isFinite(Number(v)) ? Math.round(Number(v)) : 0);
 const intOrNull = (v) => (v === '' || v === null || v === undefined || Number.isNaN(Number(v)) ? null : Math.round(Number(v)));
 const cleanDates = (a) => (Array.isArray(a) ? a.filter((d) => d && d.date).map((d) => ({ date: String(d.date).slice(0, 10), adjust: Math.round(Number(d.adjust) || 0) })).sort((x, y) => x.date.localeCompare(y.date)) : []);

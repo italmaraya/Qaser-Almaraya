@@ -334,7 +334,7 @@ function PackageForm({ initial, onSave, onCancel, saving }) {
       <div>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
           <span style={{ fontSize: 13.5, fontWeight: 700 }}>خيارات الفنادق</span>
-          <button type="button" style={btnStyle('ghost')} onClick={() => addRow('hotels', { nameAr: '', nameEn: '', diff: 0, imageUrl: '', extraImages: [], locationUrl: '', location: '', amenitiesAr: [], amenitiesEn: [], lat: '', lng: '' })}>+ إضافة فندق</button>
+          <button type="button" style={btnStyle('ghost')} onClick={() => addRow('hotels', { nameAr: '', nameEn: '', diff: 0, diffChildBed: 0, diffChildNoBed: 0, diffInfant: 0, imageUrl: '', extraImages: [], locationUrl: '', location: '', amenitiesAr: [], amenitiesEn: [], lat: '', lng: '' })}>+ إضافة فندق</button>
         </div>
         {(form.hotels || []).map((h, idx) => (
           <div key={idx} style={{ border: '1px solid #ececed', borderRadius: 10, padding: 10, marginBottom: 8, display: 'flex', flexDirection: 'column', gap: 8 }}>
@@ -346,18 +346,20 @@ function PackageForm({ initial, onSave, onCancel, saving }) {
               <input style={inputStyle} placeholder="اسم الفندق (عربي)" value={h.nameAr} onChange={(e) => updateRow('hotels', idx, 'nameAr', e.target.value)} />
               <input style={inputStyle} placeholder="Hotel name (English)" value={h.nameEn} onChange={(e) => updateRow('hotels', idx, 'nameEn', e.target.value)} />
             </div>
-            <label style={labelStyle}>
-              {idx === 0 ? 'السعر الإضافي للفرد' : 'السعر الإضافي للفرد (يُضاف فوق سعر الباقة إذا اختاره العميل)'}
-              {idx === 0 ? (
-                <div style={{ ...inputStyle, background: '#eefaf3', color: '#1a7f47', fontWeight: 700, display: 'flex', alignItems: 'center', gap: 6 }}>✓ مشمول بسعر الباقة (+0) — لا يُضاف أي مبلغ على الخيار الأول</div>
-              ) : (
-                <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
-                  <span style={{ position: 'absolute', insetInlineStart: 12, color: '#7b8087', fontWeight: 700 }}>+</span>
-                  <input type="number" min="0" style={{ ...inputStyle, paddingInlineStart: 26 }} placeholder="مثال: 52000" value={h.diff} onChange={(e) => updateRow('hotels', idx, 'diff', Math.max(0, Number(e.target.value) || 0))} />
-                  <span style={{ position: 'absolute', insetInlineEnd: 12, color: '#7b8087', fontSize: 12 }}>د.ع</span>
+            {idx === 0 ? (
+              <div style={{ ...inputStyle, background: '#eefaf3', color: '#1a7f47', fontWeight: 700, display: 'flex', alignItems: 'center', gap: 6 }}>✓ الخيار الأول مشمول بسعر الباقة (+0) لجميع الأنواع</div>
+            ) : (
+              <div>
+                <span style={{ fontSize: 12.5, fontWeight: 700, color: '#036f8c' }}>السعر الإضافي لكل نوع (يُضاف فوق سعر الباقة إذا اختار العميل هذا الفندق)</span>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(150px,1fr))', gap: 8, marginTop: 6 }}>
+                  {[['diff','بالغ'],['diffChildBed','طفل بسرير'],['diffChildNoBed','طفل بدون سرير'],['diffInfant','رضيع']].map(([field,label]) => (
+                    <label key={field} style={{ ...labelStyle, fontSize: 12 }}>+ {label}
+                      <input type="number" min="0" style={inputStyle} placeholder="0" value={h[field] ?? (field === 'diff' ? h.diff : 0) ?? 0} onChange={(e) => updateRow('hotels', idx, field, Math.max(0, Number(e.target.value) || 0))} />
+                    </label>
+                  ))}
                 </div>
-              )}
-            </label>
+              </div>
+            )}
             <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: 8 }}>
               <input style={inputStyle} placeholder="الموقع، مثال: لندن، المملكة المتحدة" value={h.location || ''} onChange={(e) => updateRow('hotels', idx, 'location', e.target.value)} />
               <input style={inputStyle} dir="ltr" placeholder="رابط موقع الفندق (Booking / خرائط Google)، مثال: https://maps.app.goo.gl/…" value={h.locationUrl || ''} onChange={(e) => updateRow('hotels', idx, 'locationUrl', e.target.value)} />
@@ -459,7 +461,7 @@ function PackageForm({ initial, onSave, onCancel, saving }) {
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
           <span style={{ fontSize: 13.5, fontWeight: 700 }}>خيارات الرحلات</span>
           <button type="button" style={btnStyle('ghost')} onClick={() => addRow('flights', {
-            nameAr: '', nameEn: '', diff: 0,
+            nameAr: '', nameEn: '', diff: 0, diffChildBed: 0, diffChildNoBed: 0, diffInfant: 0,
             outFlightNo: '', outFromCity: '', outToCity: '', outDepartTime: '', outArriveTime: '', outDuration: '',
             retFlightNo: '', retFromCity: '', retToCity: '', retDepartTime: '', retArriveTime: '', retDuration: '',
           })}>+ إضافة رحلة</button>
@@ -474,18 +476,20 @@ function PackageForm({ initial, onSave, onCancel, saving }) {
               <input style={inputStyle} placeholder="اسم شركة الطيران (عربي)" value={f.nameAr} onChange={(e) => updateRow('flights', idx, 'nameAr', e.target.value)} />
               <input style={inputStyle} placeholder="Airline (English)" value={f.nameEn} onChange={(e) => updateRow('flights', idx, 'nameEn', e.target.value)} />
             </div>
-            <label style={labelStyle}>
-              {idx === 0 ? 'السعر الإضافي للفرد' : 'السعر الإضافي للفرد (يُضاف فوق سعر الباقة إذا اختاره العميل)'}
-              {idx === 0 ? (
-                <div style={{ ...inputStyle, background: '#eefaf3', color: '#1a7f47', fontWeight: 700, display: 'flex', alignItems: 'center', gap: 6 }}>✓ مشمول بسعر الباقة (+0) — لا يُضاف أي مبلغ على الخيار الأول</div>
-              ) : (
-                <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
-                  <span style={{ position: 'absolute', insetInlineStart: 12, color: '#7b8087', fontWeight: 700 }}>+</span>
-                  <input type="number" min="0" style={{ ...inputStyle, paddingInlineStart: 26 }} placeholder="مثال: 26000" value={f.diff} onChange={(e) => updateRow('flights', idx, 'diff', Math.max(0, Number(e.target.value) || 0))} />
-                  <span style={{ position: 'absolute', insetInlineEnd: 12, color: '#7b8087', fontSize: 12 }}>د.ع</span>
+            {idx === 0 ? (
+              <div style={{ ...inputStyle, background: '#eefaf3', color: '#1a7f47', fontWeight: 700, display: 'flex', alignItems: 'center', gap: 6 }}>✓ الخيار الأول مشمول بسعر الباقة (+0) لجميع الأنواع</div>
+            ) : (
+              <div>
+                <span style={{ fontSize: 12.5, fontWeight: 700, color: '#036f8c' }}>السعر الإضافي لكل نوع (يُضاف فوق سعر الباقة إذا اختار العميل هذه الرحلة)</span>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(150px,1fr))', gap: 8, marginTop: 6 }}>
+                  {[['diff','بالغ'],['diffChildBed','طفل بسرير'],['diffChildNoBed','طفل بدون سرير'],['diffInfant','رضيع']].map(([field,label]) => (
+                    <label key={field} style={{ ...labelStyle, fontSize: 12 }}>+ {label}
+                      <input type="number" min="0" style={inputStyle} placeholder="0" value={f[field] ?? (field === 'diff' ? f.diff : 0) ?? 0} onChange={(e) => updateRow('flights', idx, field, Math.max(0, Number(e.target.value) || 0))} />
+                    </label>
+                  ))}
                 </div>
-              )}
-            </label>
+              </div>
+            )}
             <ImageUploadField label="شعار شركة الطيران (يظهر على بطاقة الرحلة في PDF)" value={f.logoUrl || ''} onChange={(url) => updateRow('flights', idx, 'logoUrl', url)} />
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(150px,1fr))', gap: 8 }}>
               <input style={inputStyle} placeholder="الدرجة (عربي)، مثال: سياحية" value={f.cabinAr || ''} onChange={(e) => updateRow('flights', idx, 'cabinAr', e.target.value)} />
