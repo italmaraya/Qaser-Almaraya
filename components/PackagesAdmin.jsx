@@ -127,10 +127,69 @@ function blankPackage() {
   return {
     cat: 'family', countries: [], dest_ar: '', dest_en: '', title_ar: '', title_en: '',
     nights_ar: '', nights_en: '', departs_ar: '', departs_en: '', price: 0, child_price: 0,
-    adult_cost: 0, child_cost: 0, cost_currency: 'IQD',
+    adult_cost: 0, child_cost: 0, child_nobed_price: 0, infant_price: 0, child_nobed_cost: 0, infant_cost: 0, cost_currency: 'IQD', nights: '', days: '', available_dates: [],
     badge_ar: '', badge_en: '', prefs: [], includes_ar: [], includes_en: [],
     hotels: [], flights: [], days: [], image_url: '', pdf_banner_url: '', excludes_ar: [], excludes_en: [], active: true, sort_order: 0, rating: 4.8,
   };
+}
+
+// Pick the specific dates this group runs. Each date can carry its own price
+// change (+/- IQD), e.g. Eid dates cost more. Stored as form.available_dates.
+function GroupDatesPicker({ dates, onChange }) {
+  const [month, setMonth] = React.useState(() => { const d = new Date(); return { y: d.getFullYear(), m: d.getMonth() }; });
+  const list = Array.isArray(dates) ? dates : [];
+  const byDate = Object.fromEntries(list.map((d) => [d.date, d]));
+  const iso = (y, m, day) => `${y}-${String(m + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+  const toggle = (ds) => {
+    if (byDate[ds]) onChange(list.filter((d) => d.date !== ds));
+    else onChange([...list, { date: ds, adjust: 0 }].sort((a, b) => a.date.localeCompare(b.date)));
+  };
+  const setAdjust = (ds, v) => onChange(list.map((d) => (d.date === ds ? { ...d, adjust: Number(v) || 0 } : d)));
+  const first = new Date(month.y, month.m, 1);
+  const daysInMonth = new Date(month.y, month.m + 1, 0).getDate();
+  const pad = first.getDay();
+  const monthName = first.toLocaleDateString('ar-IQ', { month: 'long', year: 'numeric' });
+  const shift = (n) => { let m = month.m + n, y = month.y; if (m < 0) { m = 11; y--; } if (m > 11) { m = 0; y++; } setMonth({ y, m }); };
+  const today = new Date(); today.setHours(0, 0, 0, 0);
+  return (
+    <div style={{ display: 'grid', gridTemplateColumns: 'auto 1fr', gap: 16, alignItems: 'start', flexWrap: 'wrap' }}>
+      <div style={{ border: '1px solid #ececed', borderRadius: 12, padding: 12, minWidth: 300 }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
+          <button type="button" style={btnStyle('ghost')} onClick={() => shift(-1)}>‹</button>
+          <b style={{ fontSize: 14 }}>{monthName}</b>
+          <button type="button" style={btnStyle('ghost')} onClick={() => shift(1)}>›</button>
+        </div>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7,1fr)', gap: 4, fontSize: 11, color: '#7b8087', textAlign: 'center', marginBottom: 4 }}>
+          {['أحد', 'اثن', 'ثلا', 'أرب', 'خمي', 'جمع', 'سبت'].map((d) => <span key={d}>{d}</span>)}
+        </div>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7,1fr)', gap: 4 }}>
+          {Array.from({ length: pad }).map((_, i) => <span key={'p' + i} />)}
+          {Array.from({ length: daysInMonth }).map((_, i) => {
+            const day = i + 1; const ds = iso(month.y, month.m, day);
+            const on = !!byDate[ds]; const past = new Date(ds) < today;
+            return (
+              <button key={ds} type="button" disabled={past} onClick={() => toggle(ds)}
+                style={{ aspectRatio: '1', borderRadius: 8, border: on ? '2px solid #049dc5' : '1px solid #ececed', background: on ? '#049dc5' : past ? '#f6f7f8' : '#fff', color: on ? '#fff' : past ? '#c9ced3' : '#1d2733', fontWeight: on ? 700 : 500, cursor: past ? 'default' : 'pointer', fontFamily: 'inherit', fontSize: 13 }}>
+                {day}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 8, minWidth: 260 }}>
+        <span style={{ fontSize: 12.5, color: '#7b8087' }}>اضغط على أي يوم لإضافته أو إزالته. يمكنك تعديل السعر لكل تاريخ (مثلاً +50000 لأيام العيد).</span>
+        {list.length === 0 && <span style={{ fontSize: 13, color: '#c02643' }}>لم تُحدَّد أي تواريخ — لن تظهر هذه المجموعة للعملاء حتى تُضاف تواريخ.</span>}
+        {list.map((d) => (
+          <div key={d.date} style={{ display: 'flex', alignItems: 'center', gap: 8, border: '1px solid #ececed', borderRadius: 8, padding: '6px 10px' }}>
+            <b style={{ fontSize: 13, minWidth: 96 }} dir="ltr">{new Date(d.date).toLocaleDateString('ar-IQ', { day: 'numeric', month: 'short', year: 'numeric' })}</b>
+            <span style={{ fontSize: 12, color: '#7b8087' }}>تعديل السعر:</span>
+            <input type="number" value={d.adjust} onChange={(e) => setAdjust(d.date, e.target.value)} style={{ ...inputStyle, width: 110, padding: '6px 8px' }} placeholder="0" />
+            <button type="button" style={btnStyle('danger')} onClick={() => toggle(d.date)}>حذف</button>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
 }
 
 function linesToArr(text) {
@@ -206,22 +265,32 @@ function PackageForm({ initial, onSave, onCancel, saving }) {
         <label style={labelStyle}>Destination (English)<input style={inputStyle} value={form.dest_en} onChange={(e) => set('dest_en', e.target.value)} /></label>
         <label style={labelStyle}>عنوان الباقة (عربي)<input style={inputStyle} value={form.title_ar} onChange={(e) => set('title_ar', e.target.value)} /></label>
         <label style={labelStyle}>Package title (English)<input style={inputStyle} value={form.title_en} onChange={(e) => set('title_en', e.target.value)} /></label>
-        <label style={labelStyle}>المدة (عربي)<input style={inputStyle} value={form.nights_ar} onChange={(e) => set('nights_ar', e.target.value)} placeholder="مثال: 7 ليالٍ" /></label>
-        <label style={labelStyle}>Duration (English)<input style={inputStyle} value={form.nights_en} onChange={(e) => set('nights_en', e.target.value)} placeholder="e.g. 7 nights" /></label>
+        <label style={labelStyle}>عدد الليالي<input type="number" min="0" style={inputStyle} value={form.nights ?? ''} placeholder="مثال: 4" onChange={(e) => set('nights', e.target.value === '' ? '' : Number(e.target.value))} /></label>
+        <label style={labelStyle}>عدد الأيام<input type="number" min="0" style={inputStyle} value={form.days ?? ''} placeholder="مثال: 5" onChange={(e) => set('days', e.target.value === '' ? '' : Number(e.target.value))} /></label>
         <label style={labelStyle}>مواعيد المغادرة (عربي)<input style={inputStyle} value={form.departs_ar} onChange={(e) => set('departs_ar', e.target.value)} /></label>
         <label style={labelStyle}>Departures (English)<input style={inputStyle} value={form.departs_en} onChange={(e) => set('departs_en', e.target.value)} /></label>
         <label style={labelStyle}>سعر البالغ (IQD)<input type="number" style={inputStyle} value={form.price} onChange={(e) => set('price', Number(e.target.value))} /></label>
-        <label style={labelStyle}>سعر الطفل (IQD)<input type="number" style={inputStyle} value={form.child_price} onChange={(e) => set('child_price', Number(e.target.value))} /></label>
+        <label style={labelStyle}>سعر الطفل بسرير<input type="number" style={inputStyle} value={form.child_price} onChange={(e) => set('child_price', Number(e.target.value))} /></label>
+        <label style={labelStyle}>سعر الطفل بدون سرير<input type="number" style={inputStyle} value={form.child_nobed_price ?? 0} onChange={(e) => set('child_nobed_price', Number(e.target.value))} /></label>
+        <label style={labelStyle}>سعر الرضيع<input type="number" style={inputStyle} value={form.infant_price ?? 0} onChange={(e) => set('infant_price', Number(e.target.value))} /></label>
         <label style={labelStyle}>شارة (عربي، اختياري)<input style={inputStyle} value={form.badge_ar} onChange={(e) => set('badge_ar', e.target.value)} placeholder="مثال: الأكثر طلباً" /></label>
         <label style={labelStyle}>Badge (English, optional)<input style={inputStyle} value={form.badge_en} onChange={(e) => set('badge_en', e.target.value)} /></label>
         <label style={labelStyle}>التقييم (من ٥)<input type="number" step="0.1" min="0" max="5" style={inputStyle} value={form.rating ?? 4.8} onChange={(e) => set('rating', Number(e.target.value))} /></label>
+      </div>
+
+      <div style={{ borderTop: '1px solid #ececed', paddingTop: 14, display: 'flex', flexDirection: 'column', gap: 10 }}>
+        <span style={{ fontSize: 13.5, fontWeight: 700 }}>🗓 تواريخ توفّر المجموعة</span>
+        <span style={{ fontSize: 12.5, color: '#7b8087' }}>حدّد الأيام التي تنطلق فيها هذه المجموعة. يختار العميل من هذه التواريخ فقط، ويظهر التاريخ في القسيمة (الفاوتشر). اترك الحقل فارغاً للباقات المتاحة يومياً.</span>
+        <GroupDatesPicker dates={form.available_dates || []} onChange={(v) => set('available_dates', v)} />
       </div>
 
       <div style={{ borderTop: '1px solid #ececed', paddingTop: 14, display: 'flex', flexDirection: 'column', gap: 12 }}>
         <span style={{ fontSize: 13.5, fontWeight: 700 }}>التكلفة الداخلية (للاستخدام الداخلي فقط — لا تظهر للعميل)</span>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(200px,1fr))', gap: 12 }}>
           <label style={labelStyle}>تكلفة البالغ<input type="number" style={inputStyle} value={form.adult_cost} onChange={(e) => set('adult_cost', Number(e.target.value))} /></label>
-          <label style={labelStyle}>تكلفة الطفل<input type="number" style={inputStyle} value={form.child_cost} onChange={(e) => set('child_cost', Number(e.target.value))} /></label>
+          <label style={labelStyle}>تكلفة الطفل بسرير<input type="number" style={inputStyle} value={form.child_cost} onChange={(e) => set('child_cost', Number(e.target.value))} /></label>
+          <label style={labelStyle}>تكلفة الطفل بدون سرير<input type="number" style={inputStyle} value={form.child_nobed_cost ?? 0} onChange={(e) => set('child_nobed_cost', Number(e.target.value))} /></label>
+          <label style={labelStyle}>تكلفة الرضيع<input type="number" style={inputStyle} value={form.infant_cost ?? 0} onChange={(e) => set('infant_cost', Number(e.target.value))} /></label>
           <label style={labelStyle}>عملة التكلفة
             <CostCurrencyPicker value={form.cost_currency} onChange={(v) => set('cost_currency', v)} />
           </label>
@@ -264,18 +333,19 @@ function PackageForm({ initial, onSave, onCancel, saving }) {
       <div>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
           <span style={{ fontSize: 13.5, fontWeight: 700 }}>خيارات الفنادق</span>
-          <button type="button" style={btnStyle('ghost')} onClick={() => addRow('hotels', { nameAr: '', nameEn: '', diff: 0, imageUrl: '', extraImages: [], location: '', amenitiesAr: [], amenitiesEn: [], lat: '', lng: '' })}>+ إضافة فندق</button>
+          <button type="button" style={btnStyle('ghost')} onClick={() => addRow('hotels', { nameAr: '', nameEn: '', diff: 0, imageUrl: '', extraImages: [], locationUrl: '', location: '', amenitiesAr: [], amenitiesEn: [], lat: '', lng: '' })}>+ إضافة فندق</button>
         </div>
         {(form.hotels || []).map((h, idx) => (
           <div key={idx} style={{ border: '1px solid #ececed', borderRadius: 10, padding: 10, marginBottom: 8, display: 'flex', flexDirection: 'column', gap: 8 }}>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 140px auto', gap: 8 }}>
               <input style={inputStyle} placeholder="اسم الفندق (عربي)" value={h.nameAr} onChange={(e) => updateRow('hotels', idx, 'nameAr', e.target.value)} />
               <input style={inputStyle} placeholder="Hotel name (English)" value={h.nameEn} onChange={(e) => updateRow('hotels', idx, 'nameEn', e.target.value)} />
-              <input type="number" style={inputStyle} placeholder="فرق السعر (IQD)" value={h.diff} onChange={(e) => updateRow('hotels', idx, 'diff', Number(e.target.value))} />
+              <input type="number" style={inputStyle} placeholder="سعر إضافي يُضاف للفرد (IQD)" value={h.diff} onChange={(e) => updateRow('hotels', idx, 'diff', Number(e.target.value))} />
               <button type="button" style={btnStyle('danger')} onClick={() => removeRow('hotels', idx)}>حذف</button>
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: 8 }}>
               <input style={inputStyle} placeholder="الموقع، مثال: لندن، المملكة المتحدة" value={h.location || ''} onChange={(e) => updateRow('hotels', idx, 'location', e.target.value)} />
+              <input style={inputStyle} dir="ltr" placeholder="رابط موقع الفندق (Booking / خرائط Google)، مثال: https://maps.app.goo.gl/…" value={h.locationUrl || ''} onChange={(e) => updateRow('hotels', idx, 'locationUrl', e.target.value)} />
               <ListField multiline={false} separator="ar-comma" placeholder="المرافق (عربي) — مفصولة بفاصلة، مثال: إفطار، واي فاي مجاني، مرشد سياحي" value={h.amenitiesAr} onChange={(v) => updateRow('hotels', idx, 'amenitiesAr', v)} />
               <ListField multiline={false} separator="comma" placeholder="Amenities (English), comma separated: Breakfast, Free WiFi, Gym" value={h.amenitiesEn} onChange={(v) => updateRow('hotels', idx, 'amenitiesEn', v)} />
             </div>

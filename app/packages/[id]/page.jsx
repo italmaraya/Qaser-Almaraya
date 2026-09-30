@@ -14,6 +14,7 @@ import WhatsAppButton from '../../../components/WhatsAppButton';
 import { APPLY_FLOW_ENABLED, packageMessage } from '../../../lib/whatsapp';
 import { buildPackageVoucherHtml } from '../../../lib/packagePdf';
 import { packageUrgency } from '../../../lib/packageUrgency';
+import { TRAVELLER_TYPES, computeTotals, unitPrice, durationLabel } from '../../../lib/packagePricing';
 import { useProviderReveal } from '../../../lib/useProviderReveal';
 import WorldClocks, { destinationTz } from '../../../components/WorldClocks';
 import { COUNTRY_GEO } from '../../../lib/geoData';
@@ -99,9 +100,9 @@ export default function PackageDetailPage() {
     ];
     if (hotels[hotelIdx]) lines.push((en ? 'Hotel: ' : 'الفندق: ') + nm(hotels[hotelIdx].nameAr, hotels[hotelIdx].nameEn));
     if (flights[flightIdx]) lines.push((en ? 'Flight: ' : 'الرحلة: ') + nm(flights[flightIdx].nameAr, flights[flightIdx].nameEn));
-    lines.push((en ? 'Price per adult: ' : 'السعر للبالغ: ') + formatPrice(totalPerAdult, 'IQD', lang));
-    if (children > 0) lines.push((en ? 'Price per child: ' : 'سعر الطفل: ') + formatPrice(totalPerChild, 'IQD', lang));
-    lines.push((en ? 'Travellers: ' : 'عدد المسافرين: ') + adults + (en ? ' adult(s)' : ' بالغ') + (children ? ', ' + children + (en ? ' child(ren)' : ' طفل') : ''));
+    totals.lines.forEach((l) => lines.push('• ' + l.count + ' ' + (en ? l.type.en : l.type.ar) + ' × ' + formatPrice(l.unit, 'IQD', lang)));
+    if (selectedDate) lines.push((en ? 'Date: ' : 'التاريخ: ') + selectedDate.date);
+    lines.push((en ? 'Travellers: ' : 'عدد المسافرين: ') + travellerSummary(en));
     lines.push((en ? 'Grand total: ' : 'الإجمالي الكلي: ') + formatPrice(grandTotal, 'IQD', lang));
     if (includes.length) {
       lines.push('');
@@ -122,6 +123,10 @@ export default function PackageDetailPage() {
     copyText(packageSummaryLines().join('\n'), () => flashToast(t.copied_msg));
   }
 
+  function travellerSummary(en) {
+    return TRAVELLER_TYPES.map((t) => (counts[t.key] > 0 ? counts[t.key] + ' ' + (en ? t.en : t.ar) : null)).filter(Boolean).join(en ? ', ' : '، ');
+  }
+
   function quoteDiscount() {
     const v = Number(quote.discount) || 0;
     if (!staffMode || v <= 0) return 0;
@@ -140,9 +145,10 @@ export default function PackageDetailPage() {
       excludes,
       adults,
       children,
-      perAdult: totalPerAdult,
-      perChild: totalPerChild,
+      lines: totals.lines,
       grandTotal,
+      travellerSummary: travellerSummary(lang === 'en'),
+      selectedDate,
       fmtPrice: (n) => formatPrice(n, 'IQD', lang),
       lang,
       startDate: tripDate,
@@ -198,29 +204,54 @@ export default function PackageDetailPage() {
                 <div style={{ display: 'flex', justifyContent: 'space-between', fontWeight: 700 }}><span>{t.detail_total_pp}</span><span style={{ color: '#049dc5' }}>{formatPrice(totalPerAdult, 'IQD', lang)}</span></div>
               </div>
 
+              {availableDates.length > 0 && (
+                <div style={{ borderTop: '1px solid #ececed', paddingTop: 14, display: 'flex', flexDirection: 'column', gap: 8 }}>
+                  <span style={{ fontSize: 14, fontWeight: 700 }}>{lang === 'en' ? 'Choose a departure date' : 'اختر تاريخ الانطلاق'}</span>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+                    {availableDates.map((d, i) => (
+                      <button key={d.date} type="button" onClick={() => setDateIdx(i)}
+                        style={{ borderRadius: 10, padding: '8px 12px', cursor: 'pointer', fontFamily: 'inherit', fontSize: 13.5, fontWeight: 700, border: i === dateIdx ? '2px solid #049dc5' : '1px solid #ececed', background: i === dateIdx ? '#eaf8fd' : '#fff', color: '#1d2733' }}>
+                        <span dir="ltr">{new Date(d.date).toLocaleDateString(lang === 'en' ? 'en-GB' : 'ar-IQ', { day: 'numeric', month: 'short', year: 'numeric' })}</span>
+                        {d.adjust ? <span style={{ display: 'block', fontSize: 11, color: d.adjust > 0 ? '#c27a00' : '#1a7f47' }}>{formatSignedPrice(d.adjust, 'IQD', lang)}</span> : null}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+
               <div style={{ borderTop: '1px solid #ececed', paddingTop: 14, display: 'flex', flexDirection: 'column', gap: 10 }}>
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                  <span style={{ fontSize: 14 }}>{t.detail_adults}</span>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                    <button type="button" onClick={() => setAdults((a) => Math.max(1, a - 1))} style={{ width: 28, height: 28, borderRadius: '50%', border: '1px solid #cacbcc', background: '#fff', cursor: 'pointer' }}>−</button>
-                    <span style={{ minWidth: 18, textAlign: 'center' }}>{adults}</span>
-                    <button type="button" onClick={() => setAdults((a) => a + 1)} style={{ width: 28, height: 28, borderRadius: '50%', border: '1px solid #cacbcc', background: '#fff', cursor: 'pointer' }}>+</button>
-                  </div>
-                </div>
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                  <span style={{ fontSize: 14 }}>{t.detail_children}</span>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                    <button type="button" onClick={() => setChildren((c) => Math.max(0, c - 1))} style={{ width: 28, height: 28, borderRadius: '50%', border: '1px solid #cacbcc', background: '#fff', cursor: 'pointer' }}>−</button>
-                    <span style={{ minWidth: 18, textAlign: 'center' }}>{children}</span>
-                    <button type="button" onClick={() => setChildren((c) => c + 1)} style={{ width: 28, height: 28, borderRadius: '50%', border: '1px solid #cacbcc', background: '#fff', cursor: 'pointer' }}>+</button>
-                  </div>
-                </div>
-                {children > 0 && <div style={{ fontSize: 12.5, color: '#7b8087' }}>{t.detail_child_price}: {formatPrice(totalPerChild, 'IQD', lang)}</div>}
+                <span style={{ fontSize: 14, fontWeight: 700 }}>{lang === 'en' ? 'Travellers' : 'المسافرون'}</span>
+                {TRAVELLER_TYPES.map((tt) => {
+                  const min = tt.key === 'adult' ? 1 : 0;
+                  const label = lang === 'en' ? tt.en : tt.ar;
+                  const hint = lang === 'en' ? tt.hintEn : tt.hintAr;
+                  const unit = unitPrice(pkg, tt, upgrade);
+                  return (
+                    <div key={tt.key} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8 }}>
+                      <span style={{ fontSize: 14 }}>{label}{hint ? <span style={{ fontSize: 11.5, color: '#7b8087' }}> ({hint})</span> : null}
+                        {counts[tt.key] > 0 && <span style={{ display: 'block', fontSize: 11.5, color: '#7b8087' }}>{formatPrice(unit, 'IQD', lang)}</span>}
+                      </span>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                        <button type="button" onClick={() => setCounts((c) => ({ ...c, [tt.key]: Math.max(min, c[tt.key] - 1) }))} style={{ width: 28, height: 28, borderRadius: '50%', border: '1px solid #cacbcc', background: '#fff', cursor: 'pointer' }}>−</button>
+                        <span style={{ minWidth: 18, textAlign: 'center' }}>{counts[tt.key]}</span>
+                        <button type="button" onClick={() => setCounts((c) => ({ ...c, [tt.key]: c[tt.key] + 1 }))} style={{ width: 28, height: 28, borderRadius: '50%', border: '1px solid #cacbcc', background: '#fff', cursor: 'pointer' }}>+</button>
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
 
-              <div style={{ display: 'flex', justifyContent: 'space-between', borderTop: '1px solid #ececed', paddingTop: 14, fontSize: 17, fontWeight: 700 }}>
-                <span>{t.detail_total}</span>
-                <span style={{ color: '#049dc5' }}>{formatPrice(grandTotal, 'IQD', lang)}</span>
+              <div style={{ borderTop: '1px solid #ececed', paddingTop: 14, display: 'flex', flexDirection: 'column', gap: 6 }}>
+                {totals.lines.map((l) => (
+                  <div key={l.type.key} style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13, color: '#5b646d' }}>
+                    <span>{l.count} {lang === 'en' ? l.type.en : l.type.ar} × {formatPrice(l.unit, 'IQD', lang)}</span>
+                    <span>{formatPrice(l.subtotal, 'IQD', lang)}</span>
+                  </div>
+                ))}
+                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 17, fontWeight: 700, marginTop: 4 }}>
+                  <span>{t.detail_total}</span>
+                  <span style={{ color: '#049dc5' }}>{formatPrice(grandTotal, 'IQD', lang)}</span>
+                </div>
               </div>
 
               {(() => {
@@ -269,7 +300,7 @@ export default function PackageDetailPage() {
                       nights: nm(pkg.nights_ar, pkg.nights_en),
                       hotel: h ? nm(h.nameAr, h.nameEn) : '',
                       flight: f ? nm(f.nameAr, f.nameEn) : '',
-                      travellers: adults + (en ? ' adult(s)' : ' بالغ') + (children ? (en ? ', ' + children + ' child(ren)' : '، ' + children + ' طفل') : ''),
+                      travellers: travellerSummary(en),
                       date: tripDate,
                       url: window.location.href,
                     }, lang);
@@ -414,6 +445,12 @@ export default function PackageDetailPage() {
                       </div>
                     ))}
                   </div>
+
+                  {hotels[hotelIdx]?.locationUrl ? (
+                    <a href={hotels[hotelIdx].locationUrl} target="_blank" rel="noopener noreferrer" style={{ marginTop: 12, display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 13.5, fontWeight: 700, color: '#049dc5', textDecoration: 'none' }}>
+                      <Icon name="map-pin" size={16} /> {lang === 'en' ? 'View hotel location' : 'موقع الفندق على الخريطة'}
+                    </a>
+                  ) : null}
 
                   {hotels[hotelIdx] && ((hotels[hotelIdx].extraImages || []).length > 0 || hotels[hotelIdx].imageUrl) ? (
                     <div style={{ marginTop: 16, display: 'flex', gap: 8, overflowX: 'auto', paddingBottom: 4 }}>

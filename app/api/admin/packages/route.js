@@ -2,6 +2,9 @@ import { NextResponse } from 'next/server';
 import { sql, ensureSchema } from '../../../../lib/db';
 import { requireAdmin } from '../../../../lib/session';
 
+const num = (v) => (Number.isFinite(Number(v)) ? Math.round(Number(v)) : 0);
+const intOrNull = (v) => (v === '' || v === null || v === undefined || Number.isNaN(Number(v)) ? null : Math.round(Number(v)));
+const cleanDates = (a) => (Array.isArray(a) ? a.filter((d) => d && d.date).map((d) => ({ date: String(d.date).slice(0, 10), adjust: Math.round(Number(d.adjust) || 0) })).sort((x, y) => x.date.localeCompare(y.date)) : []);
 const seats = (v) => (v === '' || v === null || v === undefined || Number.isNaN(Number(v)) ? null : Math.max(0, Math.round(Number(v))));
 const clean = (a) => (Array.isArray(a) ? a.map((s) => String(s || '').trim()).filter(Boolean) : []);
 
@@ -21,7 +24,8 @@ export async function POST(request) {
       cat, countries, dest_ar, dest_en, title_ar, title_en, nights_ar, nights_en,
       departs_ar, departs_en, price, child_price, adult_cost, child_cost, cost_currency,
       badge_ar, badge_en, prefs,
-      includes_ar, includes_en, hotels, flights, days, image_url, active, sort_order, iqd_migrated, rating, pdf_banner_url, excludes_ar, excludes_en, publish_at, departure_date, seats_left
+      includes_ar, includes_en, hotels, flights, days, image_url, active, sort_order, iqd_migrated, rating, pdf_banner_url, excludes_ar, excludes_en, publish_at, departure_date, seats_left,
+      child_nobed_price, infant_price, child_nobed_cost, infant_cost, nights, days, available_dates
     ) VALUES (
       ${b.cat || 'family'}, ${JSON.stringify(b.countries || [])}, ${b.dest_ar || ''}, ${b.dest_en || ''},
       ${b.title_ar || ''}, ${b.title_en || ''}, ${b.nights_ar || ''}, ${b.nights_en || ''},
@@ -32,7 +36,8 @@ export async function POST(request) {
       ${JSON.stringify(b.hotels || [])}, ${JSON.stringify(b.flights || [])}, ${JSON.stringify(b.days || [])},
       ${b.image_url || ''}, ${b.active !== false}, ${b.sort_order || 0}, true, ${b.rating || 4.8}, ${b.pdf_banner_url || ''},
       ${JSON.stringify(clean(b.excludes_ar))}, ${JSON.stringify(clean(b.excludes_en))},
-      ${b.publish_at || null}, ${b.departure_date || null}, ${seats(b.seats_left)}
+      ${b.publish_at || null}, ${b.departure_date || null}, ${seats(b.seats_left)},
+      ${num(b.child_nobed_price)}, ${num(b.infant_price)}, ${num(b.child_nobed_cost)}, ${num(b.infant_cost)}, ${intOrNull(b.nights)}, ${intOrNull(b.days)}, ${JSON.stringify(cleanDates(b.available_dates))}
     )
     RETURNING *
   `;

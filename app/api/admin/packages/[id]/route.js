@@ -2,6 +2,9 @@ import { NextResponse } from 'next/server';
 import { sql, ensureSchema } from '../../../../../lib/db';
 import { requireAdmin } from '../../../../../lib/session';
 
+const num = (v) => (Number.isFinite(Number(v)) ? Math.round(Number(v)) : 0);
+const intOrNull = (v) => (v === '' || v === null || v === undefined || Number.isNaN(Number(v)) ? null : Math.round(Number(v)));
+const cleanDates = (a) => (Array.isArray(a) ? a.filter((d) => d && d.date).map((d) => ({ date: String(d.date).slice(0, 10), adjust: Math.round(Number(d.adjust) || 0) })).sort((x, y) => x.date.localeCompare(y.date)) : []);
 const seats = (v) => (v === '' || v === null || v === undefined || Number.isNaN(Number(v)) ? null : Math.max(0, Math.round(Number(v))));
 const clean = (a) => (Array.isArray(a) ? a.map((s) => String(s || '').trim()).filter(Boolean) : []);
 
@@ -27,7 +30,9 @@ export async function PUT(request, { params }) {
       days = ${JSON.stringify(b.days || [])}, image_url = ${b.image_url || ''},
       active = ${b.active !== false}, sort_order = ${b.sort_order || 0}, iqd_migrated = true, rating = ${b.rating || 4.8}, pdf_banner_url = ${b.pdf_banner_url || ''},
       excludes_ar = ${JSON.stringify(clean(b.excludes_ar))}, excludes_en = ${JSON.stringify(clean(b.excludes_en))},
-      publish_at = ${b.publish_at || null}, departure_date = ${b.departure_date || null}, seats_left = ${seats(b.seats_left)}
+      publish_at = ${b.publish_at || null}, departure_date = ${b.departure_date || null}, seats_left = ${seats(b.seats_left)},
+      child_nobed_price = ${num(b.child_nobed_price)}, infant_price = ${num(b.infant_price)}, child_nobed_cost = ${num(b.child_nobed_cost)}, infant_cost = ${num(b.infant_cost)},
+      nights = ${intOrNull(b.nights)}, days = ${intOrNull(b.days)}, available_dates = ${JSON.stringify(cleanDates(b.available_dates))}
     WHERE id = ${id} RETURNING *
   `;
   return NextResponse.json(rows[0] || {});
