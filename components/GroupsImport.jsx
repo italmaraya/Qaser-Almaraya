@@ -1,5 +1,6 @@
 'use client';
 import { useMemo, useState } from 'react';
+import { parseWorkbook } from '../lib/importGroups';
 
 const btn = (k) => ({ padding: '9px 16px', borderRadius: 8, border: k === 'ghost' ? '1px solid #ececed' : 0, background: k === 'primary' ? '#049dc5' : k === 'ghost' ? '#fff' : '#f1f3f5', color: k === 'primary' ? '#fff' : '#1d2733', fontWeight: 700, fontSize: 13.5, cursor: 'pointer', fontFamily: 'inherit' });
 const fmt = (n) => (Number(n) || 0).toLocaleString('en-US');
@@ -23,13 +24,18 @@ export default function GroupsImport({ onDone }) {
   async function upload(file) {
     setErr(''); setResult(null); setBusy('read');
     try {
-      const fd = new FormData(); fd.append('file', file);
-      const r = await fetch('/api/admin/packages/import', { method: 'POST', body: fd });
-      const d = await r.json();
-      if (!r.ok) throw new Error(d.error || 'تعذّرت القراءة');
-      setDrafts(d.drafts); setPreview(d.preview);
-      setPicked(Object.fromEntries(d.preview.map((p) => [p.i, true])));
-    } catch (e) { setErr(e.message); } finally { setBusy(''); }
+      // Parse the Excel file in the browser (no server upload-size limit).
+      const buf = await file.arrayBuffer();
+      const list = parseWorkbook(new Uint8Array(buf));
+      if (!list.length) throw new Error('لم نجد أي مجموعات في هذا الملف. تأكد أنه ملف كروبات قصر المرايا.');
+      const prev = list.map((d, i) => ({
+        i, dest: d.dest_ar, title: d.title_ar, nights: d.nights, days: d.day_count,
+        date: d.available_dates[0] ? d.available_dates[0].date : '',
+        hotels: d._hotelCount, price: d.price, flight: d.flights[0] ? d.flights[0].nameAr : '',
+      }));
+      setDrafts(list); setPreview(prev);
+      setPicked(Object.fromEntries(prev.map((p) => [p.i, true])));
+    } catch (e) { setErr(e.message || 'تعذّرت قراءة الملف'); } finally { setBusy(''); }
   }
 
   async function commit() {
@@ -37,10 +43,17 @@ export default function GroupsImport({ onDone }) {
     if (!chosen.length) { setErr('اختر باقة واحدة على الأقل'); return; }
     setBusy('save'); setErr('');
     try {
-      const r = await fetch('/api/admin/packages/import', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ drafts: chosen }) });
-      const d = await r.json();
-      if (!r.ok) throw new Error(d.error || 'تعذّر الحفظ');
-      setResult(d.inserted);
+      // Send in small batches so each request stays well under the size limit.
+      const SIZE = 15;
+      let inserted = 0;
+      for (let i = 0; i < chosen.length; i += SIZE) {
+        const batch = chosen.slice(i, i + SIZE);
+        const r = await fetch('/api/admin/packages/import', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ drafts: batch }) });
+        const d = await r.json();
+        if (!r.ok) throw new Error(d.error || 'تعذّر الحفظ');
+        inserted += d.inserted || 0;
+        setResult(inserted); // live progress
+      }
       if (onDone) onDone();
     } catch (e) { setErr(e.message); } finally { setBusy(''); }
   }
