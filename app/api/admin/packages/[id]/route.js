@@ -33,7 +33,7 @@ export async function PUT(request, { params }) {
       excludes_ar = ${JSON.stringify(clean(b.excludes_ar))}, excludes_en = ${JSON.stringify(clean(b.excludes_en))},
       publish_at = ${b.publish_at || null}, departure_date = ${b.departure_date || null}, seats_left = ${seats(b.seats_left)},
       child_nobed_price = ${num(b.child_nobed_price)}, infant_price = ${num(b.infant_price)}, child_nobed_cost = ${num(b.child_nobed_cost)}, infant_cost = ${num(b.infant_cost)},
-      nights = ${intOrNull(b.nights)}, days = ${intOrNull(b.days)}, available_dates = ${JSON.stringify(cleanDates(b.available_dates))}
+      nights = ${intOrNull(b.nights)}, day_count = ${intOrNull(b.day_count ?? b.days)}, available_dates = ${JSON.stringify(cleanDates(b.available_dates))}
     WHERE id = ${id} RETURNING *
   `;
   return NextResponse.json(rows[0] || {});

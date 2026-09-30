@@ -1,6 +1,7 @@
 'use client';
 import React, { useEffect, useMemo, useState } from 'react';
 import { CATS, MEAL_PLANS } from '../lib/packagesData';
+import GroupsImport from './GroupsImport';
 import { dateOnly, baghdadToday, packageUrgency } from '../lib/packageUrgency';
 
 // Badge for the admin list: scheduled / expired / countdown.
@@ -127,7 +128,7 @@ function blankPackage() {
   return {
     cat: 'family', countries: [], dest_ar: '', dest_en: '', title_ar: '', title_en: '',
     nights_ar: '', nights_en: '', departs_ar: '', departs_en: '', price: 0, child_price: 0,
-    adult_cost: 0, child_cost: 0, child_nobed_price: 0, infant_price: 0, child_nobed_cost: 0, infant_cost: 0, cost_currency: 'IQD', nights: '', days: '', available_dates: [],
+    adult_cost: 0, child_cost: 0, child_nobed_price: 0, infant_price: 0, child_nobed_cost: 0, infant_cost: 0, cost_currency: 'IQD', nights: '', day_count: '', available_dates: [],
     badge_ar: '', badge_en: '', prefs: [], includes_ar: [], includes_en: [],
     hotels: [], flights: [], days: [], image_url: '', pdf_banner_url: '', excludes_ar: [], excludes_en: [], active: true, sort_order: 0, rating: 4.8,
   };
@@ -266,7 +267,7 @@ function PackageForm({ initial, onSave, onCancel, saving }) {
         <label style={labelStyle}>عنوان الباقة (عربي)<input style={inputStyle} value={form.title_ar} onChange={(e) => set('title_ar', e.target.value)} /></label>
         <label style={labelStyle}>Package title (English)<input style={inputStyle} value={form.title_en} onChange={(e) => set('title_en', e.target.value)} /></label>
         <label style={labelStyle}>عدد الليالي<input type="number" min="0" style={inputStyle} value={form.nights ?? ''} placeholder="مثال: 4" onChange={(e) => set('nights', e.target.value === '' ? '' : Number(e.target.value))} /></label>
-        <label style={labelStyle}>عدد الأيام<input type="number" min="0" style={inputStyle} value={form.days ?? ''} placeholder="مثال: 5" onChange={(e) => set('days', e.target.value === '' ? '' : Number(e.target.value))} /></label>
+        <label style={labelStyle}>عدد الأيام<input type="number" min="0" style={inputStyle} value={form.day_count ?? ''} placeholder="مثال: 5" onChange={(e) => set('day_count', e.target.value === '' ? '' : Number(e.target.value))} /></label>
         <label style={labelStyle}>مواعيد المغادرة (عربي)<input style={inputStyle} value={form.departs_ar} onChange={(e) => set('departs_ar', e.target.value)} /></label>
         <label style={labelStyle}>Departures (English)<input style={inputStyle} value={form.departs_en} onChange={(e) => set('departs_en', e.target.value)} /></label>
         <label style={labelStyle}>سعر البالغ (IQD)<input type="number" style={inputStyle} value={form.price} onChange={(e) => set('price', Number(e.target.value))} /></label>
@@ -599,6 +600,7 @@ function PackagesTab() {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
       {error && <p style={{ color: '#d2324f' }}>{error}</p>}
+      <GroupsImport onDone={load} />
       <div>
         <button type="button" style={btnStyle('primary')} onClick={() => setEditing('new')}>+ إضافة باقة جديدة</button>
       </div>

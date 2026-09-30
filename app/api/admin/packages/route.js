@@ -26,7 +26,7 @@ export async function POST(request) {
       departs_ar, departs_en, price, child_price, adult_cost, child_cost, cost_currency,
       badge_ar, badge_en, prefs,
       includes_ar, includes_en, hotels, flights, days, image_url, active, sort_order, iqd_migrated, rating, pdf_banner_url, excludes_ar, excludes_en, publish_at, departure_date, seats_left,
-      child_nobed_price, infant_price, child_nobed_cost, infant_cost, nights, days, available_dates
+      child_nobed_price, infant_price, child_nobed_cost, infant_cost, nights, day_count, available_dates
     ) VALUES (
       ${b.cat || 'family'}, ${JSON.stringify(b.countries || [])}, ${b.dest_ar || ''}, ${b.dest_en || ''},
       ${b.title_ar || ''}, ${b.title_en || ''}, ${b.nights_ar || ''}, ${b.nights_en || ''},
@@ -38,7 +38,7 @@ export async function POST(request) {
       ${b.image_url || ''}, ${b.active !== false}, ${b.sort_order || 0}, true, ${b.rating || 4.8}, ${b.pdf_banner_url || ''},
       ${JSON.stringify(clean(b.excludes_ar))}, ${JSON.stringify(clean(b.excludes_en))},
       ${b.publish_at || null}, ${b.departure_date || null}, ${seats(b.seats_left)},
-      ${num(b.child_nobed_price)}, ${num(b.infant_price)}, ${num(b.child_nobed_cost)}, ${num(b.infant_cost)}, ${intOrNull(b.nights)}, ${intOrNull(b.days)}, ${JSON.stringify(cleanDates(b.available_dates))}
+      ${num(b.child_nobed_price)}, ${num(b.infant_price)}, ${num(b.child_nobed_cost)}, ${num(b.infant_cost)}, ${intOrNull(b.nights)}, ${intOrNull(b.day_count ?? b.days)}, ${JSON.stringify(cleanDates(b.available_dates))}
     )
     RETURNING *
   `;
