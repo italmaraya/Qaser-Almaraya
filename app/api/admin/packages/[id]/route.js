@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { sql, ensureSchema } from '../../../../../lib/db';
 import { requireAdmin } from '../../../../../lib/session';
 
+const firstFree = (arr) => (Array.isArray(arr) ? arr.map((x, i) => (i === 0 ? { ...x, diff: 0 } : { ...x, diff: Math.max(0, Math.round(Number(x && x.diff) || 0)) })) : []);
 const num = (v) => (Number.isFinite(Number(v)) ? Math.round(Number(v)) : 0);
 const intOrNull = (v) => (v === '' || v === null || v === undefined || Number.isNaN(Number(v)) ? null : Math.round(Number(v)));
 const cleanDates = (a) => (Array.isArray(a) ? a.filter((d) => d && d.date).map((d) => ({ date: String(d.date).slice(0, 10), adjust: Math.round(Number(d.adjust) || 0) })).sort((x, y) => x.date.localeCompare(y.date)) : []);
@@ -26,7 +27,7 @@ export async function PUT(request, { params }) {
       badge_ar = ${b.badge_ar || ''}, badge_en = ${b.badge_en || ''},
       prefs = ${JSON.stringify(b.prefs || [])},
       includes_ar = ${JSON.stringify(b.includes_ar || [])}, includes_en = ${JSON.stringify(b.includes_en || [])},
-      hotels = ${JSON.stringify(b.hotels || [])}, flights = ${JSON.stringify(b.flights || [])},
+      hotels = ${JSON.stringify(firstFree(b.hotels))}, flights = ${JSON.stringify(firstFree(b.flights))},
       days = ${JSON.stringify(b.days || [])}, image_url = ${b.image_url || ''},
       active = ${b.active !== false}, sort_order = ${b.sort_order || 0}, iqd_migrated = true, rating = ${b.rating || 4.8}, pdf_banner_url = ${b.pdf_banner_url || ''},
       excludes_ar = ${JSON.stringify(clean(b.excludes_ar))}, excludes_en = ${JSON.stringify(clean(b.excludes_en))},

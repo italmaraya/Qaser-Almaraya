@@ -35,8 +35,10 @@ export default function PackageDetailPage() {
   const [error, setError] = useState('');
   const [hotelIdx, setHotelIdx] = useState(0);
   const [flightIdx, setFlightIdx] = useState(0);
-  const [adults, setAdults] = useState(2);
-  const [children, setChildren] = useState(0);
+  const [counts, setCounts] = useState({ adult: 2, childBed: 0, childNoBed: 0, infant: 0 });
+  const [dateIdx, setDateIdx] = useState(0);
+  const adults = counts.adult; // kept for the WhatsApp/booking params below
+  const children = counts.childBed + counts.childNoBed + counts.infant;
   const [toast, setToast] = useState('');
   const [tripDate, setTripDate] = useState('');
   // Staff quote builder (only after Alt + Q with a logged-in staff session)
@@ -59,8 +61,6 @@ export default function PackageDetailPage() {
   const includes = (lang === 'en' && pkg?.includes_en?.length ? pkg.includes_en : pkg?.includes_ar) || [];
   const excludes = (lang === 'en' && pkg?.excludes_en?.length ? pkg.excludes_en : pkg?.excludes_ar) || [];
 
-  const hotelDiff = hotels[hotelIdx]?.diff || 0;
-  const flightDiff = flights[flightIdx]?.diff || 0;
   const selectedHotelCoords = useMemo(() => {
     const h = hotels[hotelIdx];
     if (!h || h.lat === undefined || h.lat === '' || h.lng === undefined || h.lng === '') return null;
@@ -69,12 +69,15 @@ export default function PackageDetailPage() {
     if (Number.isNaN(lat) || Number.isNaN(lng)) return null;
     return { lat, lng };
   }, [hotels, hotelIdx]);
-  const upgrade = hotelDiff + flightDiff;
-  const basePrice = Number(pkg?.price) || 0;
-  const baseChildPrice = Number(pkg?.child_price) || 0;
-  const totalPerAdult = basePrice + upgrade;
-  const totalPerChild = baseChildPrice + upgrade;
-  const grandTotal = useMemo(() => adults * totalPerAdult + children * totalPerChild, [adults, children, totalPerAdult, totalPerChild]);
+  const availableDates = Array.isArray(pkg?.available_dates) ? pkg.available_dates : [];
+  const selectedDate = availableDates[dateIdx] || null;
+  const totals = useMemo(
+    () => computeTotals(pkg || {}, counts, hotels[hotelIdx], flights[flightIdx], selectedDate),
+    [pkg, counts, hotels, hotelIdx, flights, flightIdx, selectedDate]
+  );
+  const upgrade = totals.extra;
+  const grandTotal = totals.total;
+  const totalPerAdult = unitPrice(pkg || {}, TRAVELLER_TYPES[0], upgrade);
 
   function goBook() {
     const params = new URLSearchParams({
@@ -197,7 +200,7 @@ export default function PackageDetailPage() {
             <div className="qa-card" style={{ position: 'sticky', top: 90, display: 'flex', flexDirection: 'column', gap: 14 }}>
               <h3 style={{ margin: 0, fontSize: 18 }}>{t.price_title}</h3>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 6, fontSize: 14 }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between' }}><span style={{ color: '#7b8087' }}>{t.detail_base}</span><span>{formatPrice(basePrice, 'IQD', lang)}</span></div>
+                <div style={{ display: 'flex', justifyContent: 'space-between' }}><span style={{ color: '#7b8087' }}>{t.detail_base}</span><span>{formatPrice(Number(pkg.price) || 0, 'IQD', lang)}</span></div>
                 {upgrade !== 0 && (
                   <div style={{ display: 'flex', justifyContent: 'space-between' }}><span style={{ color: '#7b8087' }}>{t.detail_upgrade}</span><span>{formatSignedPrice(upgrade, 'IQD', lang)}</span></div>
                 )}
@@ -374,9 +377,9 @@ export default function PackageDetailPage() {
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(160px,1fr))', gap: 12 }}>
                   {[
                     [lang === 'en' ? 'Destination' : 'الوجهة', nm(pkg.dest_ar, pkg.dest_en)],
-                    [lang === 'en' ? 'Duration' : 'المدة', nm(pkg.nights_ar, pkg.nights_en)],
+                    [lang === 'en' ? 'Duration' : 'المدة', durationLabel(pkg, lang) || nm(pkg.nights_ar, pkg.nights_en)],
                     [lang === 'en' ? 'Departures' : 'المغادرة', nm(pkg.departs_ar, pkg.departs_en)],
-                    [t.detail_base, formatPrice(basePrice, 'IQD', lang)],
+                    [t.detail_base, formatPrice(Number(pkg.price) || 0, 'IQD', lang)],
                   ].map(([label, value]) => (
                     <div key={label} style={{ border: '1px solid #ececed', borderRadius: 10, padding: '12px 14px' }}>
                       <div style={{ fontSize: 12, color: '#7b8087' }}>{label}</div>

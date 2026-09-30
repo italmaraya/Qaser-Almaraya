@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { sql, ensureSchema } from '../../../../lib/db';
 import { requireAdmin } from '../../../../lib/session';
 
+const firstFree = (arr) => (Array.isArray(arr) ? arr.map((x, i) => (i === 0 ? { ...x, diff: 0 } : { ...x, diff: Math.max(0, Math.round(Number(x && x.diff) || 0)) })) : []);
 const num = (v) => (Number.isFinite(Number(v)) ? Math.round(Number(v)) : 0);
 const intOrNull = (v) => (v === '' || v === null || v === undefined || Number.isNaN(Number(v)) ? null : Math.round(Number(v)));
 const cleanDates = (a) => (Array.isArray(a) ? a.filter((d) => d && d.date).map((d) => ({ date: String(d.date).slice(0, 10), adjust: Math.round(Number(d.adjust) || 0) })).sort((x, y) => x.date.localeCompare(y.date)) : []);
@@ -33,7 +34,7 @@ export async function POST(request) {
       ${b.adult_cost || 0}, ${b.child_cost || 0}, ${b.cost_currency || 'IQD'},
       ${b.badge_ar || ''}, ${b.badge_en || ''}, ${JSON.stringify(b.prefs || [])},
       ${JSON.stringify(b.includes_ar || [])}, ${JSON.stringify(b.includes_en || [])},
-      ${JSON.stringify(b.hotels || [])}, ${JSON.stringify(b.flights || [])}, ${JSON.stringify(b.days || [])},
+      ${JSON.stringify(firstFree(b.hotels))}, ${JSON.stringify(firstFree(b.flights))}, ${JSON.stringify(b.days || [])},
       ${b.image_url || ''}, ${b.active !== false}, ${b.sort_order || 0}, true, ${b.rating || 4.8}, ${b.pdf_banner_url || ''},
       ${JSON.stringify(clean(b.excludes_ar))}, ${JSON.stringify(clean(b.excludes_en))},
       ${b.publish_at || null}, ${b.departure_date || null}, ${seats(b.seats_left)},
