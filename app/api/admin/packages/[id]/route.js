@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 import { sql, ensureSchema } from '../../../../../lib/db';
 import { requireAdmin } from '../../../../../lib/session';
+import { syncedPriceColumns } from '../../../../../lib/packagePricing';
+import { getExchangeRate } from '../../../../../lib/settings';
 
 const firstFree = (arr) => (Array.isArray(arr) ? arr.map((x, i) => { const clampAll = (o) => ['diff','diffChildBed','diffChildNoBed','diffInfant'].reduce((r,k)=>({...r,[k]:Math.max(0,Math.round(Number(o&&o[k])||0))}),{}); return i===0 ? {...x, diff:0, diffChildBed:0, diffChildNoBed:0, diffInfant:0} : {...x, ...clampAll(x)}; }) : []);
 const numOrEmpty = (v) => (v === '' || v === null || v === undefined || Number.isNaN(Number(v)) ? '' : Math.round(Number(v)));
@@ -18,6 +20,8 @@ export async function PUT(request, { params }) {
   await ensureSchema();
   const { id } = await params;
   const b = await request.json();
+  // Package selling prices follow internal cost + commission once the adult commission is entered
+  const px = syncedPriceColumns(b, await getExchangeRate());
   const rows = await sql`
     UPDATE packages SET
       cat = ${b.cat || 'family'},
@@ -26,7 +30,7 @@ export async function PUT(request, { params }) {
       title_ar = ${b.title_ar || ''}, title_en = ${b.title_en || ''},
       nights_ar = ${b.nights_ar || ''}, nights_en = ${b.nights_en || ''},
       departs_ar = ${b.departs_ar || ''}, departs_en = ${b.departs_en || ''},
-      price = ${b.price || 0}, child_price = ${b.child_price || 0},
+      price = ${px.price}, child_price = ${px.child_price},
       adult_cost = ${b.adult_cost || 0}, child_cost = ${b.child_cost || 0}, cost_currency = ${b.cost_currency || 'IQD'},
       badge_ar = ${b.badge_ar || ''}, badge_en = ${b.badge_en || ''},
       prefs = ${JSON.stringify(b.prefs || [])},
@@ -36,9 +40,10 @@ export async function PUT(request, { params }) {
       active = ${b.active !== false}, sort_order = ${b.sort_order || 0}, iqd_migrated = true, rating = ${b.rating || 4.8}, pdf_banner_url = ${b.pdf_banner_url || ''},
       excludes_ar = ${JSON.stringify(clean(b.excludes_ar))}, excludes_en = ${JSON.stringify(clean(b.excludes_en))},
       publish_at = ${b.publish_at || null}, departure_date = ${b.departure_date || null}, seats_left = ${seats(b.seats_left)},
-      child_nobed_price = ${num(b.child_nobed_price)}, infant_price = ${num(b.infant_price)}, child_nobed_cost = ${num(b.child_nobed_cost)}, infant_cost = ${num(b.infant_cost)},
+      child_nobed_price = ${px.child_nobed_price}, infant_price = ${px.infant_price}, child_nobed_cost = ${num(b.child_nobed_cost)}, infant_cost = ${num(b.infant_cost)},
       nights = ${intOrNull(b.nights)}, day_count = ${intOrNull(b.day_count ?? b.days)}, available_dates = ${JSON.stringify(cleanDates(b.available_dates))},
-      general_notes_ar = ${String(b.general_notes_ar || '')}, general_notes_en = ${String(b.general_notes_en || '')}, price_currency = ${b.price_currency === 'USD' ? 'USD' : 'IQD'}, supplier_id = ${intOrNull(b.supplier_id)}
+      general_notes_ar = ${String(b.general_notes_ar || '')}, general_notes_en = ${String(b.general_notes_en || '')}, price_currency = ${b.price_currency === 'USD' ? 'USD' : 'IQD'}, supplier_id = ${intOrNull(b.supplier_id)},
+      adult_commission = ${intOrNull(b.adult_commission)}, child_commission = ${intOrNull(b.child_commission)}, child_nobed_commission = ${intOrNull(b.child_nobed_commission)}, infant_commission = ${intOrNull(b.infant_commission)}
     WHERE id = ${id} RETURNING *
   `;
   return NextResponse.json(rows[0] || {});

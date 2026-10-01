@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 import { sql, ensureSchema } from '../../../../lib/db';
 import { requireAdmin } from '../../../../lib/session';
+import { syncedPriceColumns } from '../../../../lib/packagePricing';
+import { getExchangeRate } from '../../../../lib/settings';
 
 const firstFree = (arr) => (Array.isArray(arr) ? arr.map((x, i) => { const clampAll = (o) => ['diff','diffChildBed','diffChildNoBed','diffInfant'].reduce((r,k)=>({...r,[k]:Math.max(0,Math.round(Number(o&&o[k])||0))}),{}); return i===0 ? {...x, diff:0, diffChildBed:0, diffChildNoBed:0, diffInfant:0} : {...x, ...clampAll(x)}; }) : []);
 const numOrEmpty = (v) => (v === '' || v === null || v === undefined || Number.isNaN(Number(v)) ? '' : Math.round(Number(v)));
@@ -24,6 +26,8 @@ export async function POST(request) {
   if (!(await requireAdmin(request))) return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
   await ensureSchema();
   const b = await request.json();
+  // Package selling prices follow internal cost + commission once the adult commission is entered
+  const px = syncedPriceColumns(b, await getExchangeRate());
   const rows = await sql`
     INSERT INTO packages (
       cat, countries, dest_ar, dest_en, title_ar, title_en, nights_ar, nights_en,
@@ -31,11 +35,12 @@ export async function POST(request) {
       badge_ar, badge_en, prefs,
       includes_ar, includes_en, hotels, flights, days, image_url, active, sort_order, iqd_migrated, rating, pdf_banner_url, excludes_ar, excludes_en, publish_at, departure_date, seats_left,
       child_nobed_price, infant_price, child_nobed_cost, infant_cost, nights, day_count, available_dates,
-      general_notes_ar, general_notes_en, price_currency, supplier_id
+      general_notes_ar, general_notes_en, price_currency, supplier_id,
+      adult_commission, child_commission, child_nobed_commission, infant_commission
     ) VALUES (
       ${b.cat || 'family'}, ${JSON.stringify(b.countries || [])}, ${b.dest_ar || ''}, ${b.dest_en || ''},
       ${b.title_ar || ''}, ${b.title_en || ''}, ${b.nights_ar || ''}, ${b.nights_en || ''},
-      ${b.departs_ar || ''}, ${b.departs_en || ''}, ${b.price || 0}, ${b.child_price || 0},
+      ${b.departs_ar || ''}, ${b.departs_en || ''}, ${px.price}, ${px.child_price},
       ${b.adult_cost || 0}, ${b.child_cost || 0}, ${b.cost_currency || 'IQD'},
       ${b.badge_ar || ''}, ${b.badge_en || ''}, ${JSON.stringify(b.prefs || [])},
       ${JSON.stringify(b.includes_ar || [])}, ${JSON.stringify(b.includes_en || [])},
@@ -43,8 +48,9 @@ export async function POST(request) {
       ${b.image_url || ''}, ${b.active !== false}, ${b.sort_order || 0}, true, ${b.rating || 4.8}, ${b.pdf_banner_url || ''},
       ${JSON.stringify(clean(b.excludes_ar))}, ${JSON.stringify(clean(b.excludes_en))},
       ${b.publish_at || null}, ${b.departure_date || null}, ${seats(b.seats_left)},
-      ${num(b.child_nobed_price)}, ${num(b.infant_price)}, ${num(b.child_nobed_cost)}, ${num(b.infant_cost)}, ${intOrNull(b.nights)}, ${intOrNull(b.day_count ?? b.days)}, ${JSON.stringify(cleanDates(b.available_dates))},
-      ${String(b.general_notes_ar || '')}, ${String(b.general_notes_en || '')}, ${b.price_currency === 'USD' ? 'USD' : 'IQD'}, ${intOrNull(b.supplier_id)}
+      ${px.child_nobed_price}, ${px.infant_price}, ${num(b.child_nobed_cost)}, ${num(b.infant_cost)}, ${intOrNull(b.nights)}, ${intOrNull(b.day_count ?? b.days)}, ${JSON.stringify(cleanDates(b.available_dates))},
+      ${String(b.general_notes_ar || '')}, ${String(b.general_notes_en || '')}, ${b.price_currency === 'USD' ? 'USD' : 'IQD'}, ${intOrNull(b.supplier_id)},
+      ${intOrNull(b.adult_commission)}, ${intOrNull(b.child_commission)}, ${intOrNull(b.child_nobed_commission)}, ${intOrNull(b.infant_commission)}
     )
     RETURNING *
   `;

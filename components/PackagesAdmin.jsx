@@ -1,7 +1,7 @@
 'use client';
 import React, { useEffect, useMemo, useState } from 'react';
 import { CATS, MEAL_PLANS } from '../lib/packagesData';
-import { visibleHotels, hotelPrices, hotelHasEngine, packageUsesEngine, TRAVELLER_TYPES } from '../lib/packagePricing';
+import { visibleHotels, hotelPrices, hotelHasEngine, packageUsesEngine, packageBasePrices, TRAVELLER_TYPES } from '../lib/packagePricing';
 import GroupsImport from './GroupsImport';
 import SupplierPicker from './SupplierPicker';
 import { dateOnly, baghdadToday, packageUrgency } from '../lib/packageUrgency';
@@ -130,7 +130,7 @@ function blankPackage() {
   return {
     cat: 'family', countries: [], dest_ar: '', dest_en: '', title_ar: '', title_en: '',
     nights_ar: '', nights_en: '', departs_ar: '', departs_en: '', price: 0, child_price: 0,
-    adult_cost: 0, child_cost: 0, child_nobed_price: 0, infant_price: 0, child_nobed_cost: 0, infant_cost: 0, cost_currency: 'IQD', nights: '', day_count: '', available_dates: [], general_notes_ar: '', general_notes_en: '', price_currency: 'IQD', supplier_id: null,
+    adult_cost: 0, child_cost: 0, child_nobed_price: 0, infant_price: 0, child_nobed_cost: 0, infant_cost: 0, cost_currency: 'IQD', nights: '', day_count: '', available_dates: [], general_notes_ar: '', general_notes_en: '', price_currency: 'IQD', supplier_id: null, adult_commission: '', child_commission: '', child_nobed_commission: '', infant_commission: '',
     badge_ar: '', badge_en: '', prefs: [], includes_ar: [], includes_en: [],
     hotels: [], flights: [], days: [], image_url: '', pdf_banner_url: '', excludes_ar: [], excludes_en: [], active: true, sort_order: 0, rating: 4.8,
   };
@@ -199,7 +199,7 @@ const fmtN = (v) => (v == null || v === '' ? '—' : Number(v).toLocaleString('e
 
 // Per-hotel pricing: the admin enters SELL + SETTLEMENT only; commission,
 // customer prices and differences are computed live. Inputs only are saved.
-function HotelPricingEditor({ form, h, idx, rate, primaryIdx, onChange }) {
+function HotelPricingEditor({ form, h, idx, rate, primaryIdx, onChange, onCurrency }) {
   const isPrimary = primaryIdx === idx;
   const primary = primaryIdx >= 0 ? form.hotels[primaryIdx] : null;
   const calc = hotelPrices(form, h, rate);
@@ -215,7 +215,16 @@ function HotelPricingEditor({ form, h, idx, rate, primaryIdx, onChange }) {
   );
   return (
     <div style={{ border: '1px dashed #cfe9f2', borderRadius: 10, padding: 10, display: 'flex', flexDirection: 'column', gap: 10, background: '#fbfeff' }}>
-      <span style={{ fontSize: 12.5, fontWeight: 700, color: '#036f8c' }}>💰 الأسعار (بالـ{cur}) — أدخل البيع والتسديد فقط، والعمولة وأسعار العميل تُحسب تلقائياً</span>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8, flexWrap: 'wrap' }}>
+        <span style={{ fontSize: 12.5, fontWeight: 700, color: '#036f8c' }}>💰 الأسعار (بالـ{cur}) — أدخل البيع والتسديد فقط، والعمولة وأسعار العميل تُحسب تلقائياً</span>
+        <span style={{ display: 'inline-flex', gap: 4, alignItems: 'center', fontSize: 12 }}>
+          عملة أسعار الفنادق:
+          {['IQD', 'USD'].map((c) => (
+            <button key={c} type="button" onClick={() => onCurrency && onCurrency(c)} style={{ cursor: 'pointer', padding: '4px 12px', borderRadius: 999, border: '1px solid ' + ((form.price_currency || 'IQD') === c ? '#049dc5' : '#ececed'), background: (form.price_currency || 'IQD') === c ? '#049dc5' : '#fff', color: (form.price_currency || 'IQD') === c ? '#fff' : '#3d4650', fontFamily: 'inherit', fontSize: 12, fontWeight: 700 }}>{c === 'USD' ? 'دولار $' : 'دينار'}</button>
+          ))}
+        </span>
+      </div>
+      {form.price_currency === 'USD' && <span style={{ fontSize: 11.5, color: '#7b8087' }}>تُحوَّل إلى الدينار تلقائياً بسعر الصرف ({fmtN(rate)} د.ع) وتُقرَّب إلى أقرب 1,000.</span>}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(160px,1fr))', gap: 8 }}>
         {field('sellAdult', 'سعر البيع للبالغ')}
         {field('settleAdult', 'التسديد للبالغ', '(للشركة)')}
@@ -254,6 +263,68 @@ function HotelPricingEditor({ form, h, idx, rate, primaryIdx, onChange }) {
         <div style={{ fontSize: 12.5, color: '#7b8087', background: '#f6f7f8', borderRadius: 8, padding: '8px 12px' }}>
           هذا الفندق لا يزال بالطريقة القديمة (سعر الباقة + فرق). أدخل «سعر البيع للبالغ» و«التسديد» أعلاه ليتحوّل تلقائياً إلى التسعير الجديد.
           {(h.diff || h.diffChildBed || h.diffChildNoBed || h.diffInfant) ? ` (الفروق الحالية: بالغ +${fmtN(h.diff || 0)})` : ''}
+        </div>
+      )}
+    </div>
+  );
+}
+
+const CC_ROWS = [
+  { key: 'adult', label: 'بالغ', cost: 'adult_cost', comm: 'adult_commission', price: 'price' },
+  { key: 'childBed', label: 'طفل بسرير', cost: 'child_cost', comm: 'child_commission', price: 'child_price' },
+  { key: 'childNoBed', label: 'طفل بدون سرير', cost: 'child_nobed_cost', comm: 'child_nobed_commission', price: 'child_nobed_price' },
+  { key: 'infant', label: 'رضيع', cost: 'infant_cost', comm: 'infant_commission', price: 'infant_price' },
+];
+const hasNum = (v) => v !== undefined && v !== null && v !== '' && !Number.isNaN(Number(v));
+
+// Package base price = internal cost + commission, per category. The admin enters
+// the cost and the adult commission; the selling price is computed automatically.
+function CostCommissionSection({ form, set, rate }) {
+  const base = packageBasePrices(form, rate);
+  const usd = form.cost_currency === 'USD';
+  const sym = usd ? '$' : 'د.ع';
+  const adultOn = hasNum(form.adult_commission);
+  const input = (key, placeholder) => (
+    <input type="number" style={inputStyle} placeholder={placeholder} value={form[key] ?? ''} onChange={(e) => set(key, e.target.value === '' ? '' : Number(e.target.value))} />
+  );
+  return (
+    <div style={{ borderTop: '1px solid #ececed', paddingTop: 14, display: 'flex', flexDirection: 'column', gap: 10 }}>
+      <span style={{ fontSize: 13.5, fontWeight: 700 }}>💰 التكلفة الداخلية والعمولة — سعر البيع يُحسب تلقائياً</span>
+      <span style={{ fontSize: 12.5, color: '#7b8087', lineHeight: 1.8 }}>
+        أدخل التكلفة الداخلية لكل فئة وعمولة البالغ. عمولة الطفل والرضيع تساوي عمولة البالغ تلقائياً (اتركها فارغة)، ويمكنك تغييرها لأي فئة.
+        سعر البيع للعميل = التكلفة + العمولة، ويُقرَّب إلى أقرب 1,000. هذه البيانات داخلية ولا تظهر للعميل.
+      </span>
+      <label style={{ ...labelStyle, maxWidth: 420 }}>عملة التكلفة والعمولة
+        <CostCurrencyPicker value={form.cost_currency || 'IQD'} onChange={(v) => set('cost_currency', v)} />
+        {usd && <span style={{ fontSize: 11.5, color: '#7b8087', fontWeight: 400 }}>سعر البيع = (التكلفة + العمولة) × {fmtN(rate)} د.ع (سعر الصرف من الإعدادات).</span>}
+      </label>
+      <div style={{ border: '1px solid #ececed', borderRadius: 10, overflow: 'hidden' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'minmax(96px,.7fr) 1fr 1fr 1fr', gap: 8, background: '#f6f7f8', padding: '8px 12px', fontSize: 12, fontWeight: 700, color: '#3d4650' }}>
+          <span>الفئة</span><span>التكلفة الداخلية ({sym})</span><span>العمولة ({sym})</span><span>سعر البيع للعميل (د.ع)</span>
+        </div>
+        {CC_ROWS.map((r) => {
+          const own = hasNum(form[r.comm]);
+          const neg = own && Number(form[r.comm]) < 0;
+          return (
+            <div key={r.key} style={{ display: 'grid', gridTemplateColumns: 'minmax(96px,.7fr) 1fr 1fr 1fr', gap: 8, padding: '8px 12px', borderTop: '1px solid #f1f3f5', alignItems: 'center' }}>
+              <b style={{ fontSize: 13.5 }}>{r.label}</b>
+              {input(r.cost, '0')}
+              <div>
+                {input(r.comm, r.key === 'adult' ? '0' : adultOn ? String(form.adult_commission) : 'مثل البالغ')}
+                {r.key !== 'adult' && !own && adultOn && <span style={{ fontSize: 11, color: '#1a7f47' }}>= عمولة البالغ تلقائياً</span>}
+                {neg && <span style={{ fontSize: 11, color: '#c02643' }}>⚠ عمولة سالبة</span>}
+              </div>
+              <div style={{ fontWeight: 700, fontSize: 14, color: base ? '#049dc5' : '#7b8087' }}>
+                {base ? fmtN(base[r.key]) + ' د.ع' : fmtN(form[r.price] || 0) + ' د.ع'}
+                {!base && <span style={{ display: 'block', fontSize: 11, fontWeight: 400 }}>سعر قديم محفوظ</span>}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+      {!adultOn && (
+        <div style={{ background: '#fff4dc', border: '1px solid #f5dfa8', color: '#8a5a00', borderRadius: 8, padding: '8px 12px', fontSize: 12.5 }}>
+          ما زال السعر القديم المحفوظ هو المعمول به. أدخل التكلفة وعمولة البالغ ليُحتسب سعر البيع تلقائياً بدلاً منه.
         </div>
       )}
     </div>
@@ -340,12 +411,7 @@ function PackageForm({ initial, onSave, onCancel, saving }) {
         <label style={labelStyle}>عدد الأيام<input type="number" min="0" style={inputStyle} value={form.day_count ?? ''} placeholder="مثال: 5" onChange={(e) => set('day_count', e.target.value === '' ? '' : Number(e.target.value))} /></label>
         <label style={labelStyle}>مواعيد المغادرة (عربي)<input style={inputStyle} value={form.departs_ar} onChange={(e) => set('departs_ar', e.target.value)} /></label>
         <label style={labelStyle}>Departures (English)<input style={inputStyle} value={form.departs_en} onChange={(e) => set('departs_en', e.target.value)} /></label>
-        {!packageUsesEngine(form) ? (<>
-        <label style={labelStyle}>سعر البالغ (IQD)<input type="number" style={inputStyle} value={form.price} onChange={(e) => set('price', Number(e.target.value))} /></label>
-        <label style={labelStyle}>سعر الطفل بسرير<input type="number" style={inputStyle} value={form.child_price} onChange={(e) => set('child_price', Number(e.target.value))} /></label>
-        <label style={labelStyle}>سعر الطفل بدون سرير<input type="number" style={inputStyle} value={form.child_nobed_price ?? 0} onChange={(e) => set('child_nobed_price', Number(e.target.value))} /></label>
-        <label style={labelStyle}>سعر الرضيع<input type="number" style={inputStyle} value={form.infant_price ?? 0} onChange={(e) => set('infant_price', Number(e.target.value))} /></label>
-        </>) : (
+        {packageUsesEngine(form) && (
           <div style={{ gridColumn: '1 / -1', background: '#eefaf3', border: '1px solid #cdebd9', borderRadius: 10, padding: '10px 14px', fontSize: 13, color: '#1a7f47' }}>
             ✓ أسعار هذه الباقة تُحسب تلقائياً من <b>الفندق الأساسي</b> (أول فندق ظاهر): سعر البيع الذي تدخله للفندق هو ما يراه العميل، والعمولة = البيع − التسديد تُضاف تلقائياً إلى باقي الفئات.
           </div>
@@ -353,10 +419,6 @@ function PackageForm({ initial, onSave, onCancel, saving }) {
         <label style={labelStyle}>🏢 المورد (داخلي — لا يظهر للعميل)
           <SupplierPicker value={form.supplier_id || null} onChange={(id) => set('supplier_id', id)} />
           <span style={{ fontSize: 11.5, color: '#7b8087', fontWeight: 400 }}>للتمييز بين الكروبات المتشابهة في الاسم والتابعة لموردين مختلفين.</span>
-        </label>
-        <label style={labelStyle}>عملة أسعار الفنادق
-          <CostCurrencyPicker value={form.price_currency || 'IQD'} onChange={(v) => set('price_currency', v)} />
-          <span style={{ fontSize: 11.5, color: '#7b8087', fontWeight: 400 }}>{form.price_currency === 'USD' ? 'تُحوَّل إلى الدينار تلقائياً بسعر الصرف من الإعدادات، وتُقرَّب إلى أقرب 1,000.' : 'الأسعار بالدينار العراقي.'}</span>
         </label>
         <label style={labelStyle}>شارة (عربي، اختياري)<input style={inputStyle} value={form.badge_ar} onChange={(e) => set('badge_ar', e.target.value)} placeholder="مثال: الأكثر طلباً" /></label>
         <label style={labelStyle}>Badge (English, optional)<input style={inputStyle} value={form.badge_en} onChange={(e) => set('badge_en', e.target.value)} /></label>
@@ -378,20 +440,7 @@ function PackageForm({ initial, onSave, onCancel, saving }) {
         <GroupDatesPicker dates={form.available_dates || []} onChange={(v) => set('available_dates', v)} />
       </div>
 
-      {!packageUsesEngine(form) && (
-      <div style={{ borderTop: '1px solid #ececed', paddingTop: 14, display: 'flex', flexDirection: 'column', gap: 12 }}>
-        <span style={{ fontSize: 13.5, fontWeight: 700 }}>التكلفة الداخلية (للاستخدام الداخلي فقط — لا تظهر للعميل)</span>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(200px,1fr))', gap: 12 }}>
-          <label style={labelStyle}>تكلفة البالغ<input type="number" style={inputStyle} value={form.adult_cost} onChange={(e) => set('adult_cost', Number(e.target.value))} /></label>
-          <label style={labelStyle}>تكلفة الطفل بسرير<input type="number" style={inputStyle} value={form.child_cost} onChange={(e) => set('child_cost', Number(e.target.value))} /></label>
-          <label style={labelStyle}>تكلفة الطفل بدون سرير<input type="number" style={inputStyle} value={form.child_nobed_cost ?? 0} onChange={(e) => set('child_nobed_cost', Number(e.target.value))} /></label>
-          <label style={labelStyle}>تكلفة الرضيع<input type="number" style={inputStyle} value={form.infant_cost ?? 0} onChange={(e) => set('infant_cost', Number(e.target.value))} /></label>
-          <label style={labelStyle}>عملة التكلفة
-            <CostCurrencyPicker value={form.cost_currency} onChange={(v) => set('cost_currency', v)} />
-          </label>
-        </div>
-      </div>
-      )}
+      {!packageUsesEngine(form) && <CostCommissionSection form={form} set={set} rate={rate} />}
 
       <div style={{ border: '1px solid #d9e9ef', background: '#f7fcfe', borderRadius: 12, padding: 12, display: 'flex', flexDirection: 'column', gap: 8 }}>
         <span style={{ fontSize: 13, fontWeight: 700, color: '#036f8c' }}>🗓 النشر المجدول والعدّ التنازلي</span>
@@ -459,7 +508,7 @@ function PackageForm({ initial, onSave, onCancel, saving }) {
               <input style={inputStyle} placeholder="ملاحظة خاصة بالفندق (اختياري)، مثال: مع الإفطار / يُضاف 40000 للإفطار" value={h.notesAr || ''} onChange={(e) => updateRow('hotels', idx, 'notesAr', e.target.value)} />
               <input style={{ ...inputStyle, direction: 'ltr' }} placeholder="Hotel note (optional), e.g. Breakfast included" value={h.notesEn || ''} onChange={(e) => updateRow('hotels', idx, 'notesEn', e.target.value)} />
             </div>
-            <HotelPricingEditor form={form} h={h} idx={idx} rate={rate} primaryIdx={primaryIdx} onChange={(field, v) => updateRow('hotels', idx, field, v)} />
+            <HotelPricingEditor form={form} h={h} idx={idx} rate={rate} primaryIdx={primaryIdx} onChange={(field, v) => updateRow('hotels', idx, field, v)} onCurrency={(v) => set('price_currency', v)} />
             <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: 8 }}>
               <input style={inputStyle} placeholder="الموقع، مثال: لندن، المملكة المتحدة" value={h.location || ''} onChange={(e) => updateRow('hotels', idx, 'location', e.target.value)} />
               <input style={inputStyle} dir="ltr" placeholder="رابط موقع الفندق (Booking / خرائط Google)، مثال: https://maps.app.goo.gl/…" value={h.locationUrl || ''} onChange={(e) => updateRow('hotels', idx, 'locationUrl', e.target.value)} />
