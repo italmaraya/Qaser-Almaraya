@@ -1,4 +1,6 @@
 import { NextResponse } from 'next/server';
+import { publicPackage } from '../../../lib/packagePricing';
+import { getExchangeRate } from '../../../lib/settings';
 import { sql, ensureSchema } from '../../../lib/db';
 
 export async function GET() {
@@ -9,5 +11,7 @@ export async function GET() {
       AND (departure_date IS NULL OR departure_date >= (now() AT TIME ZONE 'Asia/Baghdad')::date)
     ORDER BY sort_order ASC, id ASC
   `;
-  return NextResponse.json(rows);
+  const rate = await getExchangeRate();
+  // Customer-safe: computed prices only — no settlement, commission, supplier or hidden hotels
+  return NextResponse.json(rows.map((r) => publicPackage(r, rate)));
 }

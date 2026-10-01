@@ -7,6 +7,10 @@ export const maxDuration = 60;
 const num = (v) => (Number.isFinite(Number(v)) ? Math.round(Number(v)) : 0);
 const intOrNull = (v) => (v === '' || v == null || Number.isNaN(Number(v)) ? null : Math.round(Number(v)));
 const firstFree = (arr) => (Array.isArray(arr) ? arr.map((x, i) => { const clampAll = (o) => ['diff','diffChildBed','diffChildNoBed','diffInfant'].reduce((r,k)=>({...r,[k]:Math.max(0,Math.round(Number(o&&o[k])||0))}),{}); return i===0 ? {...x, diff:0, diffChildBed:0, diffChildNoBed:0, diffInfant:0} : {...x, ...clampAll(x)}; }) : []);
+const numOrEmpty = (v) => (v === '' || v === null || v === undefined || Number.isNaN(Number(v)) ? '' : Math.round(Number(v)));
+const cleanHotels = (arr) => (Array.isArray(arr) ? arr.map((x) => { const c = ['diff','diffChildBed','diffChildNoBed','diffInfant'].reduce((r,k)=>({...r,[k]:Math.max(0,Math.round(Number(x&&x[k])||0))}),{}); return { ...x, ...c,
+  sellAdult: numOrEmpty(x && x.sellAdult), settleAdult: numOrEmpty(x && x.settleAdult), settleChildBed: numOrEmpty(x && x.settleChildBed), settleChildNoBed: numOrEmpty(x && x.settleChildNoBed), settleInfant: numOrEmpty(x && x.settleInfant),
+  singleDiff: Math.max(0, Math.round(Number(x && x.singleDiff) || 0)), hidden: !!(x && x.hidden), notesAr: String((x && x.notesAr) || ''), notesEn: String((x && x.notesEn) || '') }; }) : []);
 const cleanDates = (a) => (Array.isArray(a) ? a.filter((d) => d && d.date).map((d) => ({ date: String(d.date).slice(0, 10), adjust: Math.round(Number(d.adjust) || 0) })) : []);
 
 // Step 2: commit — insert the selected drafts as hidden packages
@@ -25,16 +29,18 @@ export async function PUT(request) {
           badge_ar, badge_en, prefs, includes_ar, includes_en, hotels, flights, days,
           image_url, active, sort_order, iqd_migrated, rating, pdf_banner_url, excludes_ar, excludes_en,
           publish_at, departure_date, seats_left,
-          child_nobed_price, infant_price, child_nobed_cost, infant_cost, nights, day_count, available_dates
+          child_nobed_price, infant_price, child_nobed_cost, infant_cost, nights, day_count, available_dates,
+          general_notes_ar, general_notes_en, price_currency
         ) VALUES (
           ${b.cat || 'family'}, ${JSON.stringify([])}, ${b.dest_ar || ''}, '', ${b.title_ar || ''}, '', '', '',
           ${b.departs_ar || ''}, '', ${num(b.price)}, ${num(b.child_price)}, ${num(b.adult_cost)}, ${num(b.child_cost)}, 'IQD',
           '', '', ${JSON.stringify([])}, ${JSON.stringify([])}, ${JSON.stringify([])},
-          ${JSON.stringify(firstFree(b.hotels))}, ${JSON.stringify(firstFree(b.flights))}, ${JSON.stringify([])},
+          ${JSON.stringify(cleanHotels(b.hotels))}, ${JSON.stringify(firstFree(b.flights))}, ${JSON.stringify([])},
           '', false, 0, true, 4.8, '', ${JSON.stringify([])}, ${JSON.stringify([])},
           null, null, null,
           ${num(b.child_nobed_price)}, ${num(b.infant_price)}, ${num(b.child_nobed_cost)}, ${num(b.infant_cost)},
-          ${intOrNull(b.nights)}, ${intOrNull(b.day_count)}, ${JSON.stringify(cleanDates(b.available_dates))}
+          ${intOrNull(b.nights)}, ${intOrNull(b.day_count)}, ${JSON.stringify(cleanDates(b.available_dates))},
+          ${String(b.general_notes_ar || '')}, ${String(b.general_notes_en || '')}, ${b.price_currency === 'USD' ? 'USD' : 'IQD'}
         )`;
       inserted += 1;
     } catch (e) {

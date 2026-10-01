@@ -4,6 +4,7 @@ import VisaAdmin from '../../components/VisaAdmin';
 import PackagesAdmin from '../../components/PackagesAdmin';
 import HeroAdmin from '../../components/HeroAdmin';
 import NewsAdmin from '../../components/NewsAdmin';
+import SettingsAdmin from '../../components/SettingsAdmin';
 import OdooJobsSettings from '../../components/OdooJobsSettings';
 
 const TABS = [
@@ -15,6 +16,7 @@ const TABS = [
   { id: 'contact', label: 'معلومات التواصل' },
   { id: 'visa', label: 'التأشيرات' },
   { id: 'packages', label: 'الباقات والمجموعات' },
+  { id: 'settings', label: 'الإعدادات / سعر الصرف' },
 ];
 
 const inputStyle = {
@@ -483,6 +485,7 @@ export default function AdminPage() {
 
         {/* CONTACT TAB */}
         {activeTab === 'news' && <NewsAdmin />}
+        {activeTab === 'settings' && <SettingsAdmin />}
 
         {activeTab === 'hero' && (
           <HeroAdmin

@@ -1,9 +1,10 @@
 import { NextResponse } from 'next/server';
 import { sql, ensureSchema } from '../../../../../lib/db';
 import { requireAuth, getSessionRole, SESSION_COOKIE } from '../../../../../lib/session';
-import { IQD_PER_USD } from '../../../../../lib/exchangeRate';
+import { getExchangeRate } from '../../../../../lib/settings';
 
 export async function GET(request) {
+  const RATE = await getExchangeRate();
   if (!(await requireAuth(request))) return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
   const role = await getSessionRole(request.cookies.get(SESSION_COOKIE)?.value);
   await ensureSchema();
@@ -52,7 +53,7 @@ export async function GET(request) {
     let internal_cost_total = (Number(a.adult_cost) || 0) * (Number(a.adult_count) || 0) + (Number(a.child_cost) || 0) * (Number(a.child_count) || 0);
     // The admin may have entered this card's internal cost in USD — convert
     // to IQD here so the badge always reads in one consistent currency.
-    if (a.cost_currency === 'USD') internal_cost_total *= IQD_PER_USD;
+    if (a.cost_currency === 'USD') internal_cost_total *= RATE;
 
     // Surfaced so admin/staff can catch a card that's set to send to the
     // provider but has no provider email resolvable — before approving

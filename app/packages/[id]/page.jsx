@@ -35,9 +35,9 @@ export default function PackageDetailPage() {
   const [error, setError] = useState('');
   const [hotelIdx, setHotelIdx] = useState(0);
   const [flightIdx, setFlightIdx] = useState(0);
-  const [counts, setCounts] = useState({ adult: 2, childBed: 0, childNoBed: 0, infant: 0 });
+  const [counts, setCounts] = useState({ adult: 2, single: 0, childBed: 0, childNoBed: 0, infant: 0 });
   const [dateIdx, setDateIdx] = useState(0);
-  const adults = counts.adult; // kept for the WhatsApp/booking params below
+  const adults = counts.adult + counts.single; // kept for the WhatsApp/booking params below
   const children = counts.childBed + counts.childNoBed + counts.infant;
   const [toast, setToast] = useState('');
   const [tripDate, setTripDate] = useState('');
@@ -60,6 +60,7 @@ export default function PackageDetailPage() {
   const days = pkg?.days || [];
   const includes = (lang === 'en' && pkg?.includes_en?.length ? pkg.includes_en : pkg?.includes_ar) || [];
   const excludes = (lang === 'en' && pkg?.excludes_en?.length ? pkg.excludes_en : pkg?.excludes_ar) || [];
+  const generalNotes = String((lang === 'en' && pkg?.general_notes_en) ? pkg.general_notes_en : (pkg?.general_notes_ar || pkg?.general_notes_en || '')).split('\n').map((l) => l.trim()).filter(Boolean);
 
   const selectedHotelCoords = useMemo(() => {
     const h = hotels[hotelIdx];
@@ -228,16 +229,17 @@ export default function PackageDetailPage() {
                   const min = tt.key === 'adult' ? 1 : 0;
                   const label = lang === 'en' ? tt.en : tt.ar;
                   const hint = lang === 'en' ? tt.hintEn : tt.hintAr;
-                  const unit = unitPrice(pkg, tt, upgrade);
+                  const unit = totals.units ? totals.units[tt.key] : unitPrice(pkg, tt, upgrade);
                   return (
                     <div key={tt.key} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8 }}>
-                      <span style={{ fontSize: 14 }}>{label}{hint ? <span style={{ fontSize: 11.5, color: '#7b8087' }}> ({hint})</span> : null}
-                        {counts[tt.key] > 0 && <span style={{ display: 'block', fontSize: 11.5, color: '#7b8087' }}>{formatPrice(unit, 'IQD', lang)}</span>}
+                      <span style={{ fontSize: 14, color: unit == null ? '#b0b6bb' : '#1d2733' }}>{label}{hint ? <span style={{ fontSize: 11.5, color: '#7b8087' }}> ({hint})</span> : null}
+                        {unit == null ? <span style={{ display: 'block', fontSize: 11.5, color: '#b0b6bb' }}>{lang === 'en' ? 'Not available for this hotel' : 'غير متاح لهذا الفندق'}</span>
+                          : counts[tt.key] > 0 && <span style={{ display: 'block', fontSize: 11.5, color: '#7b8087' }}>{formatPrice(unit, 'IQD', lang)}</span>}
                       </span>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                         <button type="button" onClick={() => setCounts((c) => ({ ...c, [tt.key]: Math.max(min, c[tt.key] - 1) }))} style={{ width: 28, height: 28, borderRadius: '50%', border: '1px solid #cacbcc', background: '#fff', cursor: 'pointer' }}>−</button>
                         <span style={{ minWidth: 18, textAlign: 'center' }}>{counts[tt.key]}</span>
-                        <button type="button" onClick={() => setCounts((c) => ({ ...c, [tt.key]: c[tt.key] + 1 }))} style={{ width: 28, height: 28, borderRadius: '50%', border: '1px solid #cacbcc', background: '#fff', cursor: 'pointer' }}>+</button>
+                        <button type="button" disabled={unit == null} onClick={() => setCounts((c) => ({ ...c, [tt.key]: c[tt.key] + 1 }))} style={{ width: 28, height: 28, borderRadius: '50%', border: '1px solid #cacbcc', background: '#fff', cursor: unit == null ? 'not-allowed' : 'pointer', opacity: unit == null ? 0.4 : 1 }}>+</button>
                       </div>
                     </div>
                   );
@@ -301,7 +303,7 @@ export default function PackageDetailPage() {
                       title: nm(pkg.title_ar, pkg.title_en),
                       dest: nm(pkg.dest_ar, pkg.dest_en),
                       nights: nm(pkg.nights_ar, pkg.nights_en),
-                      hotel: h ? nm(h.nameAr, h.nameEn) : '',
+                      hotel: h ? nm(h.nameAr, h.nameEn) + ((h.notesAr || h.notesEn) ? ' (' + nm(h.notesAr, h.notesEn) + ')' : '') : '',
                       flight: f ? nm(f.nameAr, f.nameEn) : '',
                       travellers: travellerSummary(en),
                       date: tripDate,
@@ -389,6 +391,15 @@ export default function PackageDetailPage() {
                 </div>
               </div>
 
+              {generalNotes.length > 0 && (
+                <div className="qa-card" style={{ borderInlineStart: '4px solid #faab18', background: '#fffaf0' }}>
+                  <h4 style={{ margin: '0 0 10px' }}>📝 {lang === 'en' ? 'Important notes' : 'ملاحظات مهمة'}</h4>
+                  <ul style={{ margin: 0, paddingInlineStart: 20, display: 'flex', flexDirection: 'column', gap: 6 }}>
+                    {generalNotes.map((l, i) => <li key={i} style={{ fontSize: 14.5, color: '#3d4650', lineHeight: 1.7 }}>{l}</li>)}
+                  </ul>
+                </div>
+              )}
+
               {(includes.length > 0 || excludes.length > 0) && (
                 <div className="qa-card">
                   <h4 style={{ margin: '0 0 14px' }}>{lang === 'en' ? 'What the price covers' : 'ماذا يشمل السعر'}</h4>
@@ -443,8 +454,11 @@ export default function PackageDetailPage() {
                         {h.imageUrl ? (
                           <img src={h.imageUrl} alt="" style={{ width: 44, height: 44, borderRadius: 8, objectFit: 'cover', flex: 'none' }} />
                         ) : null}
-                        <span style={{ flex: 1, fontSize: 14.5, color: '#1d2733' }}>{nm(h.nameAr, h.nameEn)}</span>
-                        <span style={{ fontSize: 13.5, fontWeight: 700, color: h.diff ? '#049dc5' : '#7b8087' }}>{h.diff ? formatSignedPrice(h.diff, 'IQD', lang) : (lang === 'en' ? 'Included' : 'مشمول')}</span>
+                        <span style={{ flex: 1, fontSize: 14.5, color: '#1d2733' }}>
+                          {nm(h.nameAr, h.nameEn)}
+                          {(h.notesAr || h.notesEn) && <span style={{ display: 'block', fontSize: 12.5, color: '#1a7f47', fontWeight: 600, marginTop: 2 }}>🍽 {nm(h.notesAr, h.notesEn)}</span>}
+                        </span>
+                        <span style={{ fontSize: 13.5, fontWeight: 700, color: (h.extras?.adult ?? h.diff) ? '#049dc5' : '#7b8087' }}>{(h.extras?.adult ?? h.diff) ? formatSignedPrice(h.extras?.adult ?? h.diff, 'IQD', lang) : (lang === 'en' ? 'Included' : 'مشمول')}</span>
                       </div>
                     ))}
                   </div>
