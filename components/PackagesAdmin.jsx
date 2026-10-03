@@ -729,7 +729,26 @@ function PackagesTab() {
       setSaving(false);
     }
   }
+async function handleDuplicate(pkg) {
+    try {
+      const { id, _id, createdAt, updatedAt, ...rest } = pkg;
+      const duplicatedPkg = {
+        ...rest,
+        title_ar: `${pkg.title_ar || ''} (نسخة)`,
+      };
 
+      await api('/api/admin/packages', {
+        method: 'POST',
+        body: JSON.stringify(duplicatedPkg),
+      });
+
+      load();
+      alert('تم تكرار الباقة بنجاح!');
+    } catch (e) {
+      setError(e.message);
+      alert('حدث خطأ أثناء تكرار الباقة');
+    }
+  }
   async function handleDelete(id) {
     if (!confirm('حذف هذه الباقة نهائياً؟')) return;
     try {
@@ -787,6 +806,7 @@ function PackagesTab() {
               <div style={{ fontSize: 13, color: '#7b8087' }}>{p.dest_ar} · {p.nights_ar} · {Number(p.price).toLocaleString()} IQD</div>
             </div>
             <div style={{ display: 'flex', gap: 8 }}>
+              <button type="button" style={btnStyle('ghost')} onClick={() => handleDuplicate(p)}>تكرار</button>
               <button type="button" style={btnStyle('ghost')} onClick={() => setEditing(p)}>تعديل</button>
               <button type="button" style={btnStyle('danger')} onClick={() => handleDelete(p.id)}>حذف</button>
             </div>
