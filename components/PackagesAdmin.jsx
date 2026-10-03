@@ -737,12 +737,18 @@ async function handleDuplicate(pkg) {
         title_ar: `${pkg.title_ar || ''} (نسخة)`,
       };
 
-      await api('/api/admin/packages', {
+      const newPkg = await api('/api/admin/packages', {
         method: 'POST',
         body: JSON.stringify(duplicatedPkg),
       });
 
-      load();
+      // إذا رجع الـ API الباقة الجديدة، بنضيفها في أول القائمة فوراً
+      if (newPkg && newPkg.id) {
+        setPackages(prev => [newPkg, ...(prev || [])]);
+      } else {
+        await load();
+      }
+
       alert('تم تكرار الباقة بنجاح!');
     } catch (e) {
       setError(e.message);
