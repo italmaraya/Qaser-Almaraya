@@ -707,6 +707,46 @@ function PackagesTab() {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
 
+  const [selectedIds, setSelectedIds] = useState([]);
+
+  const toggleSelect = (id) => {
+    setSelectedIds(prev => prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]);
+  };
+
+  const toggleSelectAll = (list) => {
+    if (selectedIds.length === list.length) {
+      setSelectedIds([]);
+    } else {
+      setSelectedIds(list.map(p => p.id));
+    }
+  };
+
+  async function handleBulkDelete() {
+    if (!selectedIds.length || !confirm(`هل أنت متأكد من حذف ${selectedIds.length} باقة؟`)) return;
+    try {
+      await Promise.all(selectedIds.map(id => api(`/api/admin/packages/${id}`, { method: 'DELETE' })));
+      setSelectedIds([]);
+      load();
+      alert('تم الحذف بنجاح!');
+    } catch (e) {
+      alert('حدث خطأ: ' + e.message);
+    }
+  }
+
+  async function handleBulkToggleActive(activeState) {
+    if (!selectedIds.length) return;
+    try {
+      await Promise.all(selectedIds.map(id => {
+        const pkg = (packages || []).find(p => p.id === id);
+        return pkg ? api(`/api/admin/packages/${id}`, { method: 'PUT', body: JSON.stringify({ ...pkg, active: activeState }) }) : Promise.resolve();
+      }));
+      setSelectedIds([]);
+      load();
+      alert('تم التحديث بنجاح!');
+    } catch (e) {
+      alert('حدث خطأ: ' + e.message);
+    }
+  }
   function load() {
     api('/api/admin/packages').then(setPackages).catch((e) => setError(e.message));
   }
@@ -797,6 +837,14 @@ async function handleDuplicate(pkg) {
       <div>
         <button type="button" style={btnStyle('primary')} onClick={() => setEditing('new')}>+ إضافة باقة جديدة</button>
       </div>
+      {selectedIds.length > 0 && (
+  <div style={{ display: 'flex', gap: 8, padding: 10, background: '#e0f2fe', marginBottom: 12, borderRadius: 8 }}>
+    <span>محدد ({selectedIds.length})</span>
+    <button type="button" style={btnStyle('danger')} onClick={handleBulkDelete}>حذف المحدد</button>
+    <button type="button" style={btnStyle('ghost')} onClick={() => handleBulkToggleActive(false)}>إخفاء المحدد</button>
+    <button type="button" style={btnStyle('ghost')} onClick={() => handleBulkToggleActive(true)}>إظهار المحدد</button>
+  </div>
+)}
       {!packages ? (
         <p>جارٍ التحميل...</p>
       ) : packages.length === 0 ? (
@@ -804,6 +852,7 @@ async function handleDuplicate(pkg) {
       ) : (
         packages.filter((p) => !supplierFilter || (supplierFilter === '__none__' ? !p.supplier_name : p.supplier_name === supplierFilter)).map((p) => (
           <div key={p.id} style={{ ...cardStyle, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+            <input type="checkbox" checked={selectedIds.includes(p.id)} onChange={() => toggleSelect(p.id)} style={{ width: 18, height: 18, cursor: 'pointer' }} />
             <div>
               <div style={{ fontWeight: 700 }}>{p.title_ar} {!p.active && <span style={{ color: '#d2324f', fontSize: 12 }}>(مخفية)</span>}
                 {p.supplier_name && <span style={{ marginInlineStart: 6, fontSize: 11.5, fontWeight: 700, borderRadius: 999, padding: '1px 9px', background: '#f3f0ff', color: '#5b3fb5', border: '1px solid #e2daf8' }}>🏢 {p.supplier_name}</span>}
