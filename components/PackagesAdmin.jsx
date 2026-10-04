@@ -3,6 +3,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { CATS, MEAL_PLANS } from '../lib/packagesData';
 import { visibleHotels, hotelPrices, hotelHasEngine, packageUsesEngine, packageBasePrices, TRAVELLER_TYPES } from '../lib/packagePricing';
 import GroupsImport from './GroupsImport';
+import GroupsImportFull from './GroupsImportFull';
 import SupplierPicker from './SupplierPicker';
 import { dateOnly, baghdadToday, packageUrgency } from '../lib/packageUrgency';
 
@@ -820,6 +821,7 @@ async function handleDuplicate(pkg) {
     <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
       {error && <p style={{ color: '#d2324f' }}>{error}</p>}
       <GroupsImport onDone={load} />
+      <GroupsImportFull onDone={load} />
       {Array.isArray(packages) && (() => {
         const names = [...new Set(packages.map((p) => p.supplier_name).filter(Boolean))].sort();
         if (!names.length) return null;
