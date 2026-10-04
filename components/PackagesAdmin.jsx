@@ -766,7 +766,12 @@ function PackagesTab() {
         title_en: p.title_en ? `${p.title_en} (Copy)` : '',
         active: false,
       };
-      await api('/api/admin/packages', { method: 'POST', body: JSON.stringify(copy) });
+      const created = await api('/api/admin/packages', { method: 'POST', body: JSON.stringify(copy) });
+      // Put the copy right after the original in the saved order.
+      const ids = (packages || []).map((x) => x.id);
+      const at = ids.indexOf(p.id);
+      ids.splice(at >= 0 ? at + 1 : ids.length, 0, created.id);
+      await api('/api/admin/packages/reorder', { method: 'POST', body: JSON.stringify({ ids }) });
       load();
     } catch (e) {
       setError(e.message);
