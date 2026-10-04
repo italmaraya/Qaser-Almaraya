@@ -8,7 +8,8 @@ import SupplierPicker from './SupplierPicker';
 import ScanFill from './ScanFill';
 import { mergeScan } from '../lib/scanMerge';
 import { dateOnly, baghdadToday, packageUrgency } from '../lib/packageUrgency';
-
+import BulkActionBar from './BulkActionBar';
+import { usePackagesBulk } from './usePackagesBulk';
 // Badge for the admin list: scheduled / expired / countdown.
 function scheduleStatus(p) {
   const today = baghdadToday();
@@ -719,7 +720,7 @@ function PackagesTab() {
   const [saving, setSaving] = useState(false);
   const [duplicating, setDuplicating] = useState(null);
   const [error, setError] = useState('');
-
+const { selectedIds, toggleSelect, handleBulkDelete, handleBulkToggleActive, clearSelection } = usePackagesBulk(packages, api, load);
   function load() {
     api('/api/admin/packages').then(setPackages).catch((e) => setError(e.message));
   }
@@ -814,6 +815,7 @@ function PackagesTab() {
       <div>
         <button type="button" style={btnStyle('primary')} onClick={() => setEditing('new')}>+ إضافة باقة جديدة</button>
       </div>
+      <BulkActionBar selectedIds={selectedIds} handleBulkDelete={handleBulkDelete} handleBulkToggleActive={handleBulkToggleActive} clearSelection={clearSelection} btnStyle={btnStyle} />
       {!packages ? (
         <p>جارٍ التحميل...</p>
       ) : packages.length === 0 ? (
@@ -821,6 +823,7 @@ function PackagesTab() {
       ) : (
         packages.filter((p) => !supplierFilter || (supplierFilter === '__none__' ? !p.supplier_name : p.supplier_name === supplierFilter)).map((p) => (
           <div key={p.id} style={{ ...cardStyle, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+            <input type="checkbox" checked={selectedIds.includes(p.id)} onChange={() => toggleSelect(p.id)} style={{ width: 18, height: 18, cursor: 'pointer', marginInlineEnd: 10 }} />
             <div>
               <div style={{ fontWeight: 700 }}>{p.title_ar} {!p.active && <span style={{ color: '#d2324f', fontSize: 12 }}>(مخفية)</span>}
                 {p.supplier_name && <span style={{ marginInlineStart: 6, fontSize: 11.5, fontWeight: 700, borderRadius: 999, padding: '1px 9px', background: '#f3f0ff', color: '#5b3fb5', border: '1px solid #e2daf8' }}>🏢 {p.supplier_name}</span>}
