@@ -720,10 +720,10 @@ function PackagesTab() {
   const [saving, setSaving] = useState(false);
   const [duplicating, setDuplicating] = useState(null);
   const [error, setError] = useState('');
-const { selectedIds, toggleSelect, handleBulkDelete, handleBulkToggleActive, clearSelection } = usePackagesBulk(packages, api, load);
-  function load() {
-    api('/api/admin/packages').then(setPackages).catch((e) => setError(e.message));
-  }
+const { selectedIds, toggleSelect, handleBulkDelete, handleBulkToggleActive, clearSelection } = usePackagesBulk(packages, api, () => load());
+function load() {
+  api('/api/admin/packages').then(setPackages).catch((e) => setError(e.message));
+}
   useEffect(load, []);
 
   async function handleSave(form) {
@@ -813,9 +813,9 @@ const { selectedIds, toggleSelect, handleBulkDelete, handleBulkToggleActive, cle
         );
       })()}
       <div>
+        <BulkActionBar selectedIds={selectedIds} handleBulkDelete={handleBulkDelete} handleBulkToggleActive={handleBulkToggleActive} clearSelection={clearSelection} btnStyle={btnStyle} />
         <button type="button" style={btnStyle('primary')} onClick={() => setEditing('new')}>+ إضافة باقة جديدة</button>
       </div>
-      <BulkActionBar selectedIds={selectedIds} handleBulkDelete={handleBulkDelete} handleBulkToggleActive={handleBulkToggleActive} clearSelection={clearSelection} btnStyle={btnStyle} />
       {!packages ? (
         <p>جارٍ التحميل...</p>
       ) : packages.length === 0 ? (
