@@ -1,9 +1,11 @@
 'use client';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { CATS, MEAL_PLANS } from '../lib/packagesData';
 import { visibleHotels, hotelPrices, hotelHasEngine, packageUsesEngine, packageBasePrices, TRAVELLER_TYPES } from '../lib/packagePricing';
 import GroupsImport from './GroupsImport';
 import SupplierPicker from './SupplierPicker';
+import ScanFill from './ScanFill';
+import { mergeScan } from '../lib/scanMerge';
 import { dateOnly, baghdadToday, packageUrgency } from '../lib/packageUrgency';
 
 // Badge for the admin list: scheduled / expired / countdown.
@@ -364,6 +366,14 @@ function ListField({ value, onChange, separator = 'line', placeholder, multiline
 function PackageForm({ initial, onSave, onCancel, saving }) {
   const [form, setForm] = useState(initial);
   const [rate, setRate] = useState(1310);
+  const formRef = useRef(form);
+  formRef.current = form;
+  // Scanned values go only into boxes that are still empty.
+  function applyScan(fields) {
+    const { next, count } = mergeScan(formRef.current, fields);
+    if (count) setForm(next);
+    return count;
+  }
   useEffect(() => { fetch('/api/admin/settings').then((r) => r.json()).then((d) => d.usd_iqd_rate && setRate(Number(d.usd_iqd_rate))).catch(() => {}); }, []);
   const primaryIdx = (() => { const v = visibleHotels(form); return v.length ? (form.hotels || []).indexOf(v[0]) : -1; })();
   const set = (field, value) => setForm((f) => ({ ...f, [field]: value }));
@@ -388,6 +398,7 @@ function PackageForm({ initial, onSave, onCancel, saving }) {
 
   return (
     <div style={cardStyle}>
+      <ScanFill onResult={applyScan} />
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(200px,1fr))', gap: 12 }}>
         <label style={labelStyle}>التصنيف
           <select style={inputStyle} value={form.cat} onChange={(e) => set('cat', e.target.value)}>
@@ -705,6 +716,7 @@ function PackagesTab() {
   const [supplierFilter, setSupplierFilter] = useState('');
   const [editing, setEditing] = useState(null); // package object or 'new' or null
   const [saving, setSaving] = useState(false);
+  const [duplicating, setDuplicating] = useState(null);
   const [error, setError] = useState('');
 
   function load() {
@@ -737,6 +749,29 @@ function PackagesTab() {
       load();
     } catch (e) {
       setError(e.message);
+    }
+  }
+
+  // Duplicate a group: copies everything (hotels, flights, dates, prices...)
+  // as a NEW hidden package so it never goes live by accident.
+  async function handleDuplicate(p) {
+    setError('');
+    setDuplicating(p.id);
+    try {
+      const { id, supplier_name, created_at, updated_at, ...rest } = p;
+      const copy = {
+        ...rest,
+        day_count: p.day_count ?? '',
+        title_ar: `${p.title_ar || ''} (نسخة)`,
+        title_en: p.title_en ? `${p.title_en} (Copy)` : '',
+        active: false,
+      };
+      await api('/api/admin/packages', { method: 'POST', body: JSON.stringify(copy) });
+      load();
+    } catch (e) {
+      setError(e.message);
+    } finally {
+      setDuplicating(null);
     }
   }
 
@@ -788,6 +823,7 @@ function PackagesTab() {
             </div>
             <div style={{ display: 'flex', gap: 8 }}>
               <button type="button" style={btnStyle('ghost')} onClick={() => setEditing(p)}>تعديل</button>
+              <button type="button" style={btnStyle('ghost')} disabled={duplicating === p.id} onClick={() => handleDuplicate(p)}>{duplicating === p.id ? '...' : '⧉ نسخ'}</button>
               <button type="button" style={btnStyle('danger')} onClick={() => handleDelete(p.id)}>حذف</button>
             </div>
           </div>

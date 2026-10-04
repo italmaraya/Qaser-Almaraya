@@ -49,3 +49,8 @@ Remove `output: 'export'` from `next.config.mjs` if you want SSR / a Node server
   not translate; English artwork is needed for a full English experience.
 
 Contact: info@almarayagroup.com · sales@almarayagroup.com · 6393 · +964 784 999 9600
+
+## Packages dashboard additions
+
+- **⧉ نسخ (Duplicate)** button on every group in the Packages tab: copies the whole group as a new hidden package.
+- **📷 Scan image** button at the top of the package form: reads a screenshot of the Excel group sheet (or Ctrl+V paste) and fills only the empty boxes (title, dates, flights, hotels, prices, hotel notes, general notes). Needs the env var `ANTHROPIC_API_KEY` (Vercel → Settings → Environment Variables). Files: `components/ScanFill.jsx`, `lib/scanMerge.js`, `app/api/admin/packages/scan/route.js`.
