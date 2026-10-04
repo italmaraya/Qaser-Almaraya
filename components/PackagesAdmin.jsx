@@ -708,16 +708,7 @@ function PackagesTab() {
   const [error, setError] = useState('');
 
   function load() {
-    api('/api/admin/packages')
-      .then(data => {
-        if (Array.isArray(data)) {
-          // يعكس الترتيب بحيث تكون الأحدث في الأعلى دائماً
-          setPackages([...data].reverse());
-        } else {
-          setPackages(data);
-        }
-      })
-      .catch(e => setError(e.message));
+    api('/api/admin/packages').then(setPackages).catch((e) => setError(e.message));
   }
   useEffect(load, []);
 
