@@ -1,5 +1,5 @@
 'use client';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { usePathname } from 'next/navigation';
 import { getStoredLang } from '../lib/i18n';
 
@@ -27,9 +27,22 @@ function applyVisible(show) {
   try { siq()?.floatbutton?.visible?.(show ? 'show' : 'hide'); } catch { /* widget not ready */ }
 }
 
+function openChat() {
+  try { siq()?.floatwindow?.visible?.('show'); } catch { /* widget not ready */ }
+}
+
+// Text next to the Skylo button. Zoho's own launcher message disappears once
+// a visitor closes it, so the site keeps its own label beside the button.
+const LABEL = {
+  ar: { title: 'تحدّث معنا 💬', sub: 'سكايلو جاهز لمساعدتك' },
+  en: { title: 'Chat with us 💬', sub: 'Skylo is here to help' },
+};
+
 export default function LiveChat() {
   const path = usePathname() || '/';
   const hidden = isHiddenPath(path);
+  const [lang, setLang] = useState('ar');
+  const [pos, setPos] = useState(null); // where the label sits, next to the button
 
   // Load the widget once, on the first public page the visitor opens.
   useEffect(() => {
@@ -52,10 +65,50 @@ export default function LiveChat() {
 
   // Follow the site's AR/EN toggle.
   useEffect(() => {
-    const on = (e) => (e?.detail === 'ar' || e?.detail === 'en') && applyLang(e.detail);
+    setLang(getStoredLang() === 'en' ? 'en' : 'ar');
+    const on = (e) => {
+      if (e?.detail !== 'ar' && e?.detail !== 'en') return;
+      applyLang(e.detail);
+      setLang(e.detail);
+    };
     window.addEventListener('qa-lang-change', on);
     return () => window.removeEventListener('qa-lang-change', on);
   }, []);
 
-  return null;
+  // Keep the label next to the button; hide it while the chat window is open.
+  useEffect(() => {
+    if (hidden) { setPos(null); return undefined; }
+    const tick = () => {
+      const btn = document.getElementById('zsiq_float');
+      const wrap = document.getElementById('zsiq_chat_wrap');
+      const r = btn?.getBoundingClientRect();
+      const chatOpen = (wrap?.getBoundingClientRect().height || 0) > 0;
+      if (!r || !r.width || chatOpen) { setPos(null); return; }
+      const w = document.documentElement.clientWidth;
+      const h = window.innerHeight;
+      const next = { right: Math.round(w - r.left + 12), bottom: Math.round(h - r.bottom + r.height / 2) };
+      setPos((p) => (p && p.right === next.right && p.bottom === next.bottom ? p : next));
+    };
+    tick();
+    const id = setInterval(tick, 700);
+    window.addEventListener('resize', tick);
+    return () => { clearInterval(id); window.removeEventListener('resize', tick); };
+  }, [hidden]);
+
+  if (hidden) return null;
+  const t = LABEL[lang];
+  return (
+    <button
+      type="button"
+      className={'qa-chat-label' + (pos ? ' on' : '')}
+      data-no-i18n=""
+      dir={lang === 'en' ? 'ltr' : 'rtl'}
+      style={pos ? { right: pos.right, bottom: pos.bottom, transform: 'translateY(50%)' } : undefined}
+      onClick={openChat}
+      aria-label={t.title}
+    >
+      <b>{t.title}</b>
+      <span>{t.sub}</span>
+    </button>
+  );
 }
