@@ -1,5 +1,6 @@
 import './site.css';
 import MobileBottomBar from '../components/MobileBottomBar';
+import LiveChat from '../components/LiveChat';
 
 export const viewport = {
   width: 'device-width',
@@ -35,6 +36,7 @@ export default function RootLayout({ children }) {
       <body>
         {children}
         <MobileBottomBar />
+        <LiveChat />
       </body>
     </html>
   );
