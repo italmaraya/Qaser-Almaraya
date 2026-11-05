@@ -378,7 +378,7 @@ export default function PackagesPage({ initialPackages = null }) {
 
           {/* Filters side drawer */}
           {drawerOpen ? (
-            <div style={{ position: 'fixed', inset: 0, zIndex: 60, display: 'flex', justifyContent: 'flex-end' }}>
+            <div style={{ position: 'fixed', inset: 0, zIndex: 1000, display: 'flex', justifyContent: 'flex-end' }}>
               <div onClick={() => setDrawerOpen(false)} style={{ position: 'absolute', inset: 0, background: 'rgba(1,20,28,.45)' }} />
               <div className="qa-drawer" style={{ position: 'relative', width: 'min(360px,88vw)', height: '100%', background: '#fff', boxShadow: '-12px 0 40px rgba(1,42,55,.2)', display: 'flex', flexDirection: 'column', overflowY: 'auto' }}>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '20px 22px', borderBottom: '1px solid #ececed' }}>
