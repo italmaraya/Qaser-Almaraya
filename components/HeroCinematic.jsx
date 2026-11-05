@@ -28,7 +28,7 @@ function GlobeLines() {
  * Full-screen cinematic hero.
  * slides: [{ type: 'video'|'image', url, poster?, caption? }]
  */
-export default function HeroCinematic({ slides = [], kicker, title, subtitle, primary, secondary, lang = 'ar' }) {
+export default function HeroCinematic({ slides: allSlides = [], kicker, title, subtitle, primary, secondary, lang = 'ar' }) {
   const [active, setActive] = useState(0);
   // Pause only while the browser tab is hidden (the hero fills the screen, so
   // pausing on hover would stop it for good).
@@ -40,17 +40,28 @@ export default function HeroCinematic({ slides = [], kicker, title, subtitle, pr
   }, []);
   const [reduced, setReduced] = useState(false);
   const [lite, setLite] = useState(false);
+  // Videos get their source only after the page knows the screen size, so a
+  // phone never starts downloading a large hero video it will not show.
+  const [ready, setReady] = useState(false);
   const videoRefs = useRef([]);
-  const count = slides.length;
 
   useEffect(() => {
     try { setReduced(window.matchMedia('(prefers-reduced-motion: reduce)').matches); } catch {}
-    // On phones with data saver or a slow connection, show the poster photo instead of the video.
+    // Phones, data saver and slow connections get photos instead of the video
+    // (the video is several MB; on mobile data it delayed the page by ~10 s).
     try {
       const c = navigator.connection;
       if (c && (c.saveData || /(^|-)2g|3g/.test(c.effectiveType || ''))) setLite(true);
     } catch {}
+    try { if (window.matchMedia('(max-width: 820px)').matches) setLite(true); } catch {}
+    setReady(true);
   }, []);
+
+  // In lite mode a video slide shows its poster photo; a video with no poster
+  // is skipped, unless it is the only slide.
+  const photoOnly = allSlides.filter((s) => s.type !== 'video' || s.poster);
+  const slides = (lite || reduced) && photoOnly.length ? photoOnly : allSlides;
+  const count = slides.length;
 
   // Auto-advance
   useEffect(() => {
@@ -61,11 +72,15 @@ export default function HeroCinematic({ slides = [], kicker, title, subtitle, pr
 
   // Only the visible video plays (saves data on phones)
   useEffect(() => {
+    if (!ready) return;
     videoRefs.current.forEach((v, i) => {
       if (!v) return;
       if (i === active) { v.currentTime = 0; const p = v.play(); if (p && p.catch) p.catch(() => {}); } else v.pause();
     });
-  }, [active]);
+  }, [active, ready, lite]);
+
+  // Keep the active index valid when the slide list shrinks (lite mode)
+  useEffect(() => { if (active >= count && count) setActive(0); }, [active, count]);
 
   const current = slides[active] || {};
   const dir = lang === 'en' ? 'ltr' : 'rtl';
@@ -115,13 +130,13 @@ export default function HeroCinematic({ slides = [], kicker, title, subtitle, pr
           {s.type === 'video' && !reduced && !(lite && s.poster) ? (
             <video
               ref={(el) => { videoRefs.current[i] = el; }}
-              src={s.url}
+              src={ready ? s.url : undefined}
               poster={s.poster || undefined}
               muted
               loop
               playsInline
-              preload={i === 0 ? 'auto' : 'metadata'}
-              autoPlay={i === 0}
+              preload={ready ? (i === 0 ? 'auto' : 'metadata') : 'none'}
+              autoPlay={ready && i === 0}
             />
           ) : (
             // eslint-disable-next-line @next/next/no-img-element
@@ -134,7 +149,7 @@ export default function HeroCinematic({ slides = [], kicker, title, subtitle, pr
 
       <div className="qh-copy">
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img className="qh-logo" src="/assets/logo-mark-hero.png" alt="قصر المرايا" />
+        <img className="qh-logo" src="/assets/logo-mark-hero.webp" alt="قصر المرايا" />
         {kicker && <span className="qh-kicker">{kicker}</span>}
         {title && <h1 className="qh-title">{title}</h1>}
         {subtitle && <p className="qh-sub">{subtitle}</p>}

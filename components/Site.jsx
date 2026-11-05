@@ -518,7 +518,8 @@ function   renderVals(){
       submitContact: async e => {
         if(e) e.preventDefault();
         const c = st.contact;
-        if(!c.name.trim() || !c.email.trim() || !c.message.trim()) { patch({ contactError: 'يرجى تعبئة الاسم والبريد الإلكتروني والسؤال.' }); return; }
+        if(!c.name.trim() || !c.phone.trim() || !c.message.trim()) { patch({ contactError: 'يرجى تعبئة الاسم ورقم الهاتف والسؤال.' }); return; }
+        if(c.phone.replace(/\D/g, '').length < 7) { patch({ contactError: 'يرجى كتابة رقم هاتف صحيح.' }); return; }
         patch({ contactSending: true, contactError: '' });
         try {
           const res = await fetch('/api/contact', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(c) });
@@ -833,7 +834,7 @@ function   visaVals(country){
 <header style={{ position: "sticky", top: "0", zIndex: "40", background: "#fff", borderBottom: "1px solid #ececed", boxShadow: "0 1px 2px rgba(29,39,51,.06)" }}>
 <div className="qa-head" style={{ maxWidth: "1240px", margin: "0 auto", padding: "12px 32px", display: "flex", alignItems: "center", gap: "24px" }}>
 <a href="#" onClick={goHome} aria-label="قصر المرايا للسفر و السياحة" className="qa-logo" style={{ display: "flex", alignItems: "center", gap: "9px", textDecoration: "none", flex: "none" }}>
-<img src="/assets/logo-mark-tight.png" alt="" style={{ height: "38px", width: "38px", objectFit: "contain", display: "block", flex: "none" }} />
+<img src="/assets/logo-mark-tight.webp" alt="" style={{ height: "38px", width: "38px", objectFit: "contain", display: "block", flex: "none" }} />
 <span style={{ display: "flex", flexDirection: "column", gap: "1px", lineHeight: "1.05" }}>
 <span style={{ fontSize: "19px", fontWeight: "700", color: "#22a9d4", whiteSpace: "nowrap" }}>قصر المرايا</span>
 <span style={{ fontSize: "10.5px", fontWeight: "600", letterSpacing: ".02em", color: "#7b8087", whiteSpace: "nowrap" }}>للسفر و السياحة</span>
@@ -911,7 +912,7 @@ function   visaVals(country){
 <div className="qa-page">
 <HomeHero hero={props.content && props.content.hero} lang={st.lang} onPrimary={goFlights}>
 <section style={{ position: "relative", background: "var(--tw-band,#34bbe1)" }}>
-<img src="/assets/cover-website.png" alt="ذكرياتك تبدأ معنا — قصر المرايا للسفر و السياحة" style={{ display: "block", width: "100%", height: "auto" }} />
+<img src="/assets/cover-website.webp" alt="ذكرياتك تبدأ معنا — قصر المرايا للسفر و السياحة" style={{ display: "block", width: "100%", height: "auto" }} />
 <div className="qa-cover-copy" style={{ position: "absolute", right: "3%", top: "50%", transform: "translateY(-50%)", width: "34%", maxHeight: "94%", display: "flex", flexDirection: "column", alignItems: "flex-start", textAlign: "start", gap: "clamp(12px,1.3vw,22px)" }}>
 <h1 style={{ margin: "0", fontSize: "clamp(30px,3.4vw,62px)", fontWeight: "700", lineHeight: "1.12", color: "#0e88ad", textWrap: "pretty" }}>رحلتك تبدأ معنا!</h1>
 <p style={{ margin: "0", fontSize: "clamp(16px,1.25vw,24px)", lineHeight: "1.65", color: "#1d5f76", fontWeight: "500", textWrap: "pretty" }}>مع قصر المرايا للسفر والسياحة، نأخذك في رحلات لا تُنسى، بخدمات احترافية وتجارب مصممة خصيصًا لك.</p>
@@ -1021,7 +1022,7 @@ function   visaVals(country){
 <section className="qa-sec qa-2col" style={{ display: "grid", gridTemplateColumns: ".9fr 1.1fr", gap: "56px", alignItems: "center" }}>
 <div style={{ position: "relative", justifySelf: "center", width: "100%", maxWidth: "430px", display: "flex", alignItems: "center", justifyContent: "center" }}>
 <div aria-hidden="true" style={{ position: "absolute", left: "8%", right: "8%", bottom: "12%", height: "16%", borderRadius: "50%", background: "radial-gradient(ellipse,rgba(4,111,140,.22),transparent 70%)", filter: "blur(14px)" }}></div>
-<img src="/assets/vision-plane-cutout3.png" alt="طائرة قصر المرايا على جوازات السفر" style={{ position: "relative", display: "block", width: "100%", maxWidth: "100%", height: "auto" }} />
+<img src="/assets/vision-plane-cutout3.webp" alt="طائرة قصر المرايا على جوازات السفر" style={{ position: "relative", display: "block", width: "100%", maxWidth: "100%", height: "auto" }} />
 </div>
 <div style={{ display: "flex", flexDirection: "column", gap: "18px" }}>
 <h2 style={{ fontSize: "36px", fontWeight: "700", color: "#22a9d4", lineHeight: "1.3" }}>رؤيتنا المستقبلية في قصر المرايا للسفر والسياحة</h2>
@@ -1034,7 +1035,7 @@ function   visaVals(country){
 <img src="/assets/logo-mark-white.webp" alt="" style={{ position: "absolute", insetInlineStart: "-130px", top: "-70px", height: "440px", opacity: ".09" }} />
 <div className="qa-sec qa-2col" style={{ position: "relative", display: "grid", gridTemplateColumns: ".85fr 1.15fr", gap: "56px", alignItems: "center" }}>
 <div style={{ position: "relative", justifySelf: "center", width: "100%", maxWidth: "420px" }}>
-<img src="/assets/ceo-interview.png" alt="حمزة سعد، المدير التنفيذي، في مقابلة تلفزيونية" style={{ position: "relative", display: "block", width: "100%", aspectRatio: "4/3", objectFit: "cover", objectPosition: "center 38%", borderRadius: "20px", outline: "2px solid rgba(255,255,255,.6)", outlineOffset: "12px", boxShadow: "0 26px 50px rgba(1,42,55,.42)" }} />
+<img src="/assets/ceo-interview.webp" alt="حمزة سعد، المدير التنفيذي، في مقابلة تلفزيونية" style={{ position: "relative", display: "block", width: "100%", aspectRatio: "4/3", objectFit: "cover", objectPosition: "center 38%", borderRadius: "20px", outline: "2px solid rgba(255,255,255,.6)", outlineOffset: "12px", boxShadow: "0 26px 50px rgba(1,42,55,.42)" }} />
 <div style={{ position: "relative", marginTop: "-26px", marginInlineStart: "22px", display: "inline-flex", flexDirection: "column", gap: "2px", background: "#fff", borderRadius: "14px", padding: "13px 24px", boxShadow: "0 14px 30px rgba(1,42,55,.28)" }}>
 <span style={{ fontSize: "19px", fontWeight: "700", color: "#22a9d4" }}>حمــزة سعد</span>
 <span style={{ fontSize: "14px", color: "#7b8087" }}>المدير التنفيذي</span>
@@ -1060,7 +1061,7 @@ function   visaVals(country){
 </div>
 <div className="qa-2col qa-testi-grid qa-swipe" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(300px,1fr))", gap: "24px", alignItems: "stretch" }}>
 <div className="qa-testi-card" style={{ position: "relative", background: "#fff", border: "1px solid #ececed", borderRadius: "18px", padding: "30px 30px 26px", display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center", gap: "16px", boxShadow: "0 10px 26px rgba(29,39,51,.07)" }}>
-<span className="qa-testi-avatar" style={{ width: "112px", height: "112px", borderRadius: "50%", flex: "none", overflow: "hidden", background: "#e4f5fb", boxShadow: "0 0 0 4px #e4f5fb,0 10px 22px rgba(1,42,55,.12)" }}><img src="/assets/avatar-ibrahim.png" alt="ابراهيم مناضل" style={{ width: "100%", height: "100%", objectFit: "cover" }} /></span>
+<span className="qa-testi-avatar" style={{ width: "112px", height: "112px", borderRadius: "50%", flex: "none", overflow: "hidden", background: "#e4f5fb", boxShadow: "0 0 0 4px #e4f5fb,0 10px 22px rgba(1,42,55,.12)" }}><img src="/assets/avatar-ibrahim.webp" alt="ابراهيم مناضل" style={{ width: "100%", height: "100%", objectFit: "cover" }} /></span>
 <span aria-hidden="true" style={{ fontSize: "34px", lineHeight: ".6", color: "#e4f5fb", fontWeight: "700" }}>”</span>
 <p style={{ margin: "0", fontSize: "16.5px", lineHeight: "1.8", color: "#1d2733", textWrap: "pretty" }}>حجزتُ رحلة عائلية إلى ماليزيا، وكانت رحلة ممتعة من جميع النواحي — سواء من حيث الطيران، الفنادق، البرامج السياحية، أو حتى حسن التعامل من قبل موظفي الشركة والمندوبين.</p>
 <div style={{ marginTop: "auto", display: "flex", flexDirection: "column", gap: "3px", paddingTop: "12px", borderTop: "1px solid #ececed", width: "100%" }}>
@@ -1069,7 +1070,7 @@ function   visaVals(country){
 </div>
 </div>
 <div className="qa-testi-card" style={{ position: "relative", background: "#fff", border: "1px solid #ececed", borderRadius: "18px", padding: "30px 30px 26px", display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center", gap: "16px", boxShadow: "0 10px 26px rgba(29,39,51,.07)" }}>
-<span className="qa-testi-avatar" style={{ width: "112px", height: "112px", borderRadius: "50%", flex: "none", overflow: "hidden", background: "#fef3dc", boxShadow: "0 0 0 4px #fef3dc,0 10px 22px rgba(1,42,55,.12)" }}><img src="/assets/avatar-hasan.png" alt="م.م. حسن عصام الدليمي" style={{ width: "100%", height: "100%", objectFit: "cover" }} /></span>
+<span className="qa-testi-avatar" style={{ width: "112px", height: "112px", borderRadius: "50%", flex: "none", overflow: "hidden", background: "#fef3dc", boxShadow: "0 0 0 4px #fef3dc,0 10px 22px rgba(1,42,55,.12)" }}><img src="/assets/avatar-hasan.webp" alt="م.م. حسن عصام الدليمي" style={{ width: "100%", height: "100%", objectFit: "cover" }} /></span>
 <span aria-hidden="true" style={{ fontSize: "34px", lineHeight: ".6", color: "#fef3dc", fontWeight: "700" }}>”</span>
 <p style={{ margin: "0", fontSize: "16.5px", lineHeight: "1.8", color: "#1d2733", textWrap: "pretty" }}>تعاملتُ مع شركة قصر المرايا عدة مرات، وقد قاموا باستخراج تأشيرات الدخول لي لعدة دول. بكل صراحة وأمانة، كان تعاملهم راقيًا للغاية وأسعارهم مناسبة جدًا، كما أنهم يوفرون خيارات متعددة للعديد من الوجهات.</p>
 <div style={{ marginTop: "auto", display: "flex", flexDirection: "column", gap: "3px", paddingTop: "12px", borderTop: "1px solid #ececed", width: "100%" }}>
@@ -1078,7 +1079,7 @@ function   visaVals(country){
 </div>
 </div>
 <div className="qa-testi-card" style={{ position: "relative", background: "#fff", border: "1px solid #ececed", borderRadius: "18px", padding: "30px 30px 26px", display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center", gap: "16px", boxShadow: "0 10px 26px rgba(29,39,51,.07)" }}>
-<span className="qa-testi-avatar" style={{ width: "112px", height: "112px", borderRadius: "50%", flex: "none", overflow: "hidden", background: "#e4f5fb", boxShadow: "0 0 0 4px #e4f5fb,0 10px 22px rgba(1,42,55,.12)" }}><img src="/assets/avatar-ali.png" alt="علي حسين الزبيدي" style={{ width: "100%", height: "100%", objectFit: "cover" }} /></span>
+<span className="qa-testi-avatar" style={{ width: "112px", height: "112px", borderRadius: "50%", flex: "none", overflow: "hidden", background: "#e4f5fb", boxShadow: "0 0 0 4px #e4f5fb,0 10px 22px rgba(1,42,55,.12)" }}><img src="/assets/avatar-ali.webp" alt="علي حسين الزبيدي" style={{ width: "100%", height: "100%", objectFit: "cover" }} /></span>
 <span aria-hidden="true" style={{ fontSize: "34px", lineHeight: ".6", color: "#e4f5fb", fontWeight: "700" }}>”</span>
 <p style={{ margin: "0", fontSize: "16.5px", lineHeight: "1.8", color: "#1d2733", textWrap: "pretty" }}>رتّبوا لي رحلة إلى باكو خلال يومين — التأشيرة، الفندق، والجولات. حتى تغيير موعد العودة في اللحظة الأخيرة تولّوه بأنفسهم دون أي عناء عليّ.</p>
 <div style={{ marginTop: "auto", display: "flex", flexDirection: "column", gap: "3px", paddingTop: "12px", borderTop: "1px solid #ececed", width: "100%" }}>
@@ -1087,7 +1088,7 @@ function   visaVals(country){
 </div>
 </div>
 <div className="qa-testi-card" style={{ position: "relative", background: "#fff", border: "1px solid #ececed", borderRadius: "18px", padding: "30px 30px 26px", display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center", gap: "16px", boxShadow: "0 10px 26px rgba(29,39,51,.07)" }}>
-<span className="qa-testi-avatar" style={{ width: "112px", height: "112px", borderRadius: "50%", flex: "none", overflow: "hidden", background: "#fef3dc", boxShadow: "0 0 0 4px #fef3dc,0 10px 22px rgba(1,42,55,.12)" }}><img src="/assets/avatar-saif.png" alt="سيف الدين قاسم" style={{ width: "100%", height: "100%", objectFit: "cover" }} /></span>
+<span className="qa-testi-avatar" style={{ width: "112px", height: "112px", borderRadius: "50%", flex: "none", overflow: "hidden", background: "#fef3dc", boxShadow: "0 0 0 4px #fef3dc,0 10px 22px rgba(1,42,55,.12)" }}><img src="/assets/avatar-saif.webp" alt="سيف الدين قاسم" style={{ width: "100%", height: "100%", objectFit: "cover" }} /></span>
 <span aria-hidden="true" style={{ fontSize: "34px", lineHeight: ".6", color: "#fef3dc", fontWeight: "700" }}>”</span>
 <p style={{ margin: "0", fontSize: "16.5px", lineHeight: "1.8", color: "#1d2733", textWrap: "pretty" }}>نتعامل معهم لسفر موظفينا منذ سنتين. الأسعار التعاقدية واضحة، والتعديلات على الحجوزات تُنجَز في نفس اليوم — هذا ما نحتاجه في سفر الأعمال.</p>
 <div style={{ marginTop: "auto", display: "flex", flexDirection: "column", gap: "3px", paddingTop: "12px", borderTop: "1px solid #ececed", width: "100%" }}>
@@ -1109,7 +1110,7 @@ function   visaVals(country){
 </div>
 <div style={{ position: "relative", justifySelf: "center", width: "100%", maxWidth: "430px" }}>
 <div aria-hidden="true" style={{ position: "absolute", inset: "-6% -4%", borderRadius: "28px", background: "radial-gradient(circle,rgba(255,255,255,.35),transparent 70%)", filter: "blur(16px)" }}></div>
-<img src="/assets/partners-trusted-global.png" alt="شركاء قصر المرايا من شركات الطيران العالمية" style={{ position: "relative", display: "block", width: "100%", height: "auto", borderRadius: "24px", boxShadow: "0 24px 46px rgba(1,42,55,.34)" }} />
+<img src="/assets/partners-trusted-global.webp" alt="شركاء قصر المرايا من شركات الطيران العالمية" style={{ position: "relative", display: "block", width: "100%", height: "auto", borderRadius: "24px", boxShadow: "0 24px 46px rgba(1,42,55,.34)" }} />
 </div>
 </div>
 <div aria-hidden="true" style={{ position: "relative", height: "1px", background: "linear-gradient(to left,transparent,rgba(255,255,255,.22) 24%,rgba(255,255,255,.22) 76%,transparent)" }}></div>
@@ -1135,7 +1136,7 @@ function   visaVals(country){
 <div style={{ display: "flex", alignItems: "center", gap: "18px", flexWrap: "wrap" }}>
 <img src="/assets/logo-mark.webp" alt="قصر المرايا" style={{ height: "64px", width: "auto", background: "#fff", borderRadius: "50%", padding: "6px" }} />
 <span style={{ fontSize: "34px", fontWeight: "300", color: "rgba(255,255,255,.75)" }}>×</span>
-<img src="/assets/logo-flamingo.png" alt="Flamingo" style={{ height: "42px", width: "auto" }} />
+<img src="/assets/logo-flamingo.webp" alt="Flamingo" style={{ height: "42px", width: "auto" }} />
 </div>
 <h2 style={{ fontSize: "36px", fontWeight: "700", color: "#fff", lineHeight: "1.25" }}>شريك واحد… وكل رحلات العالم</h2>
 <p style={{ fontSize: "18px", lineHeight: "1.75", color: "rgba(255,255,255,.92)" }}>إذا رغبت بإتمام الحجز بنفسك، اكمل حجز الطيران والفنادق مباشرة عبر فلامنغو — نفس الأسعار التعاقدية، ونفس فريق قصر المرايا خلف الكواليس.</p>
@@ -1144,7 +1145,7 @@ function   visaVals(country){
 <a href="https://flamingo.iq" target="_blank" rel="noopener" className="qa-ticket">
 <span style={{ flex: "1", padding: "20px 22px", display: "flex", flexDirection: "column", gap: "8px", minWidth: "0" }}>
 <span style={{ display: "flex", alignItems: "center", gap: "8px", fontFamily: "'IBM Plex Sans',system-ui,sans-serif", fontSize: "10px", letterSpacing: ".1em", whiteSpace: "nowrap", color: "#7b8087" }}>BOOK DIRECT AT<span style={{ flex: "1", height: "1px", background: "#ececed" }}></span></span>
-<img src="/assets/logo-flamingo.png" alt="flamingo.iq" className="qa-ticket-url" style={{ height: "38px", width: "auto", alignSelf: "flex-start" }} />
+<img src="/assets/logo-flamingo.webp" alt="flamingo.iq" className="qa-ticket-url" style={{ height: "38px", width: "auto", alignSelf: "flex-start" }} />
 <span style={{ height: "16px", borderRadius: "2px", background: "repeating-linear-gradient(90deg,#1d2733 0 2px,transparent 2px 5px,#1d2733 5px 7px,transparent 7px 11px)", opacity: ".45" }}></span>
 </span>
 <span style={{ position: "relative", flex: "none", width: "0", margin: "16px 0", borderInlineStart: "2px dashed #d8d9da" }}>
@@ -1164,12 +1165,12 @@ function   visaVals(country){
 </section>
 <section className="qa-sec" style={{ paddingTop: "0", display: "flex", flexDirection: "column", gap: "24px" }}>
 <div className="qa-grid">
-<div className="qa-card" style={{ display: "flex", flexDirection: "column", gap: "10px" }}><h4 style={{ display: "flex", alignItems: "center", gap: "8px", fontSize: "20px", fontWeight: "700", color: "#1d2733" }}>١. ابحث على <img src="/assets/logo-flamingo.png" alt="flamingo.iq" style={{ height: "22px", width: "auto" }} /></h4><p style={{ fontSize: "14px", lineHeight: "1.45", color: "#7b8087" }}>كل شركات الطيران وسلاسل الفنادق التي نتعامل معها متاحة على المنصة بأسعارنا التعاقدية.</p></div>
+<div className="qa-card" style={{ display: "flex", flexDirection: "column", gap: "10px" }}><h4 style={{ display: "flex", alignItems: "center", gap: "8px", fontSize: "20px", fontWeight: "700", color: "#1d2733" }}>١. ابحث على <img src="/assets/logo-flamingo.webp" alt="flamingo.iq" style={{ height: "22px", width: "auto" }} /></h4><p style={{ fontSize: "14px", lineHeight: "1.45", color: "#7b8087" }}>كل شركات الطيران وسلاسل الفنادق التي نتعامل معها متاحة على المنصة بأسعارنا التعاقدية.</p></div>
 <div className="qa-card" style={{ display: "flex", flexDirection: "column", gap: "10px" }}><h4 style={{ fontSize: "20px", fontWeight: "700", color: "#1d2733" }}>٢. أكمل الحجز</h4><p style={{ fontSize: "14px", lineHeight: "1.45", color: "#7b8087" }}>دفع آمن وتأكيد فوري على بريدك الإلكتروني وواتساب.</p></div>
 <div className="qa-card" style={{ display: "flex", flexDirection: "column", gap: "10px" }}><h4 style={{ fontSize: "20px", fontWeight: "700", color: "#1d2733" }}>٣. نتابع نحن الباقي</h4><p style={{ fontSize: "14px", lineHeight: "1.45", color: "#7b8087" }}>تغيير موعد، أمتعة إضافية، أو تأشيرة — كلّم قصر المرايا وسنتولى الأمر.</p></div>
 </div>
 <div style={{ display: "flex", alignItems: "center", gap: "24px", flexWrap: "wrap", background: "#e4f5fb", border: "1px solid #bfe9f6", borderRadius: "18px", padding: "24px 28px" }}>
-<span style={{ flex: "none", width: "132px", height: "132px", borderRadius: "50%", background: "#fff", overflow: "hidden", display: "grid", placeItems: "center", boxShadow: "0 10px 22px rgba(1,42,55,.14)" }}><img src="/assets/mascot-skylo-passport-hq.png" alt="" style={{ width: "100%", height: "100%", objectFit: "contain" }} /></span>
+<span style={{ flex: "none", width: "132px", height: "132px", borderRadius: "50%", background: "#fff", overflow: "hidden", display: "grid", placeItems: "center", boxShadow: "0 10px 22px rgba(1,42,55,.14)" }}><img src="/assets/mascot-skylo-passport-hq.webp" alt="" style={{ width: "100%", height: "100%", objectFit: "contain" }} /></span>
 <p style={{ flex: "1", minWidth: "260px", fontSize: "18px", lineHeight: "1.75", color: "#1b93b8" }}>تحتاج مساعدة قبل الحجز؟ اتصل بالرقم المختصر <b>6393</b> أو راسلنا على واتساب، وسنرتب لك أفضل خيار سعراً وتوقيتاً.</p>
 <button className="qa-btn qa-cyan" onClick={goContact}>تواصل معنا</button>
 </div>
@@ -2097,7 +2098,7 @@ function   visaVals(country){
 <span style={{ position: "absolute", bottom: "-4px", left: "50%", width: "7px", height: "7px", marginLeft: "-3.5px", borderRadius: "50%", background: "rgba(255,255,255,.9)" }}></span>
 </span>
 
-<img src="/assets/mascot-skylo-recruit-phone-cut.png" alt="سكايلو يستقبل طلبات التوظيف" className="qa-hero-mascot" style={{ position: "absolute", zIndex: "2", left: "-11%", bottom: "-30px", display: "block", width: "clamp(210px,62%,460px)", height: "auto", objectFit: "contain", filter: "drop-shadow(0 26px 38px rgba(1,42,55,.34))" }} />
+<img src="/assets/mascot-skylo-recruit-phone-cut.webp" alt="سكايلو يستقبل طلبات التوظيف" className="qa-hero-mascot" style={{ position: "absolute", zIndex: "2", left: "-11%", bottom: "-30px", display: "block", width: "clamp(210px,62%,460px)", height: "auto", objectFit: "contain", filter: "drop-shadow(0 26px 38px rgba(1,42,55,.34))" }} />
 
 <div aria-hidden="true" className="qa-hero-float" style={{ position: "absolute", zIndex: "4", top: "50%", right: "-18px", width: "clamp(186px,44%,246px)", transform: "translateY(-50%)", display: "flex", flexDirection: "column", alignItems: "stretch", gap: "14px", pointerEvents: "none" }}>
 <div style={{ alignSelf: "stretch", display: "flex", flexDirection: "column", alignItems: "center", transformOrigin: "50% 0", animation: "qa-swing 5.6s ease-in-out infinite" }}>
@@ -2200,7 +2201,7 @@ function   visaVals(country){
 </span>
 
 <img
-  src="/assets/mascot-skylo-questions-cut.png"
+  src="/assets/mascot-skylo-questions-cut.webp"
   alt="سكايلو يفكّر في أسئلتك"
   className="qa-hero-mascot"
   style={{
@@ -2279,7 +2280,7 @@ function   visaVals(country){
 <span style={{ position: "absolute", inset: "0", borderRadius: "50%", border: "1px dashed rgba(255,255,255,.42)" }}></span>
 <span style={{ position: "absolute", top: "-5px", left: "50%", width: "10px", height: "10px", marginLeft: "-5px", borderRadius: "50%", background: "#faab18", boxShadow: "0 0 0 5px rgba(250,171,24,.25)" }}></span>
 </span>
-<img src="/assets/mascot-skylo-passport-hq.png" alt="" style={{ position: "absolute", zIndex: "2", left: "-6%", top: "-10px", bottom: "-18px", display: "block", width: "auto", height: "calc(100% + 28px)", objectFit: "contain", objectPosition: "left bottom", filter: "drop-shadow(0 26px 38px rgba(1,42,55,.3))" }} />
+<img src="/assets/mascot-skylo-passport-hq.webp" alt="" style={{ position: "absolute", zIndex: "2", left: "-6%", top: "-10px", bottom: "-18px", display: "block", width: "auto", height: "calc(100% + 28px)", objectFit: "contain", objectPosition: "left bottom", filter: "drop-shadow(0 26px 38px rgba(1,42,55,.3))" }} />
 </div>
 </div>
 </section>
@@ -2329,7 +2330,7 @@ function   visaVals(country){
 <span style={{ position: "absolute", inset: "0", borderRadius: "50%", border: "1px dashed rgba(255,255,255,.42)" }}></span>
 <span style={{ position: "absolute", top: "-5px", left: "50%", width: "10px", height: "10px", marginLeft: "-5px", borderRadius: "50%", background: "#faab18", boxShadow: "0 0 0 5px rgba(250,171,24,.25)" }}></span>
 </span>
-<img src="/assets/mascot-skylo-suit-hq.png" alt="" style={{ position: "absolute", zIndex: "2", left: "-6%", top: "-10px", bottom: "-18px", display: "block", width: "auto", height: "calc(100% + 28px)", objectFit: "contain", objectPosition: "left bottom", filter: "drop-shadow(0 26px 38px rgba(1,42,55,.3))" }} />
+<img src="/assets/mascot-skylo-suit-hq.webp" alt="" style={{ position: "absolute", zIndex: "2", left: "-6%", top: "-10px", bottom: "-18px", display: "block", width: "auto", height: "calc(100% + 28px)", objectFit: "contain", objectPosition: "left bottom", filter: "drop-shadow(0 26px 38px rgba(1,42,55,.3))" }} />
 </div>
 </div>
 </section>
@@ -2367,7 +2368,7 @@ function   visaVals(country){
 <p style={{ fontSize: "18.5px", lineHeight: "1.7", color: "rgba(255,255,255,.92)", maxWidth: "640px", textWrap: "pretty" }}>تلتزم قصر المرايا للسفر والسياحة بحماية خصوصية عملائها وضمان سرية المعلومات التي يتم جمعها من خلال موقعنا الإلكتروني أو من خلال خدماتنا المختلفة.</p>
 </div>
 <div style={{ justifySelf: "center", width: "100%", maxWidth: "270px", aspectRatio: "1", borderRadius: "50%", background: "#fff", boxShadow: "0 20px 44px rgba(1,42,55,.24)", overflow: "hidden", display: "flex", alignItems: "center", justifyContent: "center" }}>
-<img src="/assets/mascot-skylo-suit-hq.png" alt="" style={{ width: "106%", height: "106%", objectFit: "cover" }} />
+<img src="/assets/mascot-skylo-suit-hq.webp" alt="" style={{ width: "106%", height: "106%", objectFit: "cover" }} />
 </div>
 </div>
 </section>
@@ -2452,7 +2453,7 @@ function   visaVals(country){
 <p style={{ fontSize: "18.5px", lineHeight: "1.7", color: "rgba(255,255,255,.92)", maxWidth: "640px", textWrap: "pretty" }}>اتفاقية شروط وأحكام استخدام خدمات شركة قصر المرايا للسفر والسياحة — تنظّم العلاقة بين الشركة والعميل وتضمن حقوق والتزامات كل طرف.</p>
 </div>
 <div style={{ justifySelf: "center", width: "100%", maxWidth: "270px", aspectRatio: "1", borderRadius: "50%", background: "#fff", boxShadow: "0 20px 44px rgba(1,42,55,.24)", overflow: "hidden", display: "flex", alignItems: "center", justifyContent: "center" }}>
-<img src="/assets/mascot-skylo-passport-hq.png" alt="" style={{ width: "106%", height: "106%", objectFit: "cover" }} />
+<img src="/assets/mascot-skylo-passport-hq.webp" alt="" style={{ width: "106%", height: "106%", objectFit: "cover" }} />
 </div>
 </div>
 </section>
@@ -2626,8 +2627,8 @@ function   visaVals(country){
 <p style={{ fontSize: "18px", color: "#1d2733" }}>املأ النموذج وسنقوم بالتواصل معك في أقرب وقت.</p>
 <div className="qa-2col" style={{ display: "grid", gridTemplateColumns: "minmax(0,1fr) minmax(0,1fr)", gap: "16px" }}>
 <label style={{ display: "flex", flexDirection: "column", gap: "8px" }}><span style={{ fontSize: "14px", fontWeight: "500", color: "#1d2733" }}>اسمك *</span><input value={contact.name} onChange={setContactField('name')} style={{ height: "46px", border: "1px solid #ececed", borderRadius: "8px", padding: "0 16px", font: "inherit", fontSize: "16px", color: "#1d2733" }} /></label>
-<label style={{ display: "flex", flexDirection: "column", gap: "8px" }}><span style={{ fontSize: "14px", fontWeight: "500", color: "#1d2733" }}>رقم الهاتف</span><input value={contact.phone} onChange={setContactField('phone')} style={{ height: "46px", border: "1px solid #ececed", borderRadius: "8px", padding: "0 16px", font: "inherit", fontSize: "16px", color: "#1d2733" }} /></label>
-<label style={{ display: "flex", flexDirection: "column", gap: "8px" }}><span style={{ fontSize: "14px", fontWeight: "500", color: "#1d2733" }}>بريدك الإلكتروني *</span><input value={contact.email} onChange={setContactField('email')} style={{ height: "46px", border: "1px solid #ececed", borderRadius: "8px", padding: "0 16px", font: "inherit", fontSize: "16px", color: "#1d2733" }} /></label>
+<label style={{ display: "flex", flexDirection: "column", gap: "8px" }}><span style={{ fontSize: "14px", fontWeight: "500", color: "#1d2733" }}>رقم الهاتف *</span><input type="tel" inputMode="tel" autoComplete="tel" dir="ltr" placeholder="07xx xxx xxxx" value={contact.phone} onChange={setContactField('phone')} style={{ height: "46px", border: "1px solid #ececed", borderRadius: "8px", padding: "0 16px", font: "inherit", fontSize: "16px", color: "#1d2733" }} /></label>
+<label style={{ display: "flex", flexDirection: "column", gap: "8px" }}><span style={{ fontSize: "14px", fontWeight: "500", color: "#1d2733" }}>بريدك الإلكتروني (اختياري)</span><input type="email" inputMode="email" autoComplete="email" dir="ltr" value={contact.email} onChange={setContactField('email')} style={{ height: "46px", border: "1px solid #ececed", borderRadius: "8px", padding: "0 16px", font: "inherit", fontSize: "16px", color: "#1d2733" }} /></label>
 <label style={{ display: "flex", flexDirection: "column", gap: "8px" }}><span style={{ fontSize: "14px", fontWeight: "500", color: "#1d2733" }}>شركتك</span><input value={contact.company} onChange={setContactField('company')} style={{ height: "46px", border: "1px solid #ececed", borderRadius: "8px", padding: "0 16px", font: "inherit", fontSize: "16px", color: "#1d2733" }} /></label>
 </div>
 <label style={{ display: "flex", flexDirection: "column", gap: "8px" }}><span style={{ fontSize: "14px", fontWeight: "500", color: "#1d2733" }}>الموضوع *</span><select value={contact.subject} onChange={setContactField('subject')} style={{ height: "46px", border: "1px solid #ececed", borderRadius: "8px", padding: "0 16px", font: "inherit", fontSize: "16px", color: "#1d2733" }}><option>حجز طيران</option><option>حجز فندق</option><option>تأشيرة</option><option>باقة أو جولة</option><option>أخرى</option></select></label>
@@ -2650,7 +2651,7 @@ function   visaVals(country){
 <span style={{ position: "relative", flex: "none", width: "78px", height: "78px", borderRadius: "50%", background: "radial-gradient(circle at 34% 28%,#ffffff,#eaf8fd 78%)", boxShadow: "0 12px 28px rgba(1,42,55,.26),inset 0 -2px 6px rgba(4,157,197,.14)", display: "grid", placeItems: "center" }}>
 <span aria-hidden="true" style={{ position: "absolute", inset: "-10px", borderRadius: "50%", border: "1.5px dashed rgba(250,171,24,.75)" }}></span>
 <span aria-hidden="true" style={{ position: "absolute", inset: "-10px", borderRadius: "50%", boxShadow: "0 0 0 6px rgba(255,255,255,.1)" }}></span>
-<img src="/assets/logo-mark-tight.png" alt="قصر المرايا" style={{ width: "56px", height: "56px", objectFit: "contain" }} />
+<img src="/assets/logo-mark-tight.webp" alt="قصر المرايا" style={{ width: "56px", height: "56px", objectFit: "contain" }} />
 </span>
 <svg width="74" height="46" viewBox="0 0 74 46" fill="none" aria-hidden="true" style={{ flex: "none", transform: "scaleX(-1)" }}>
 <path d="M2 40C16 40 30 30 40 18C48 8 60 5 71 6" stroke="rgba(255,255,255,.55)" strokeWidth="1.6" strokeLinecap="round" strokeDasharray="5 6"></path>

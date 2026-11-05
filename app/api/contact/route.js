@@ -10,8 +10,13 @@ export async function POST(request) {
   const body = await request.json().catch(() => ({}));
   const { name, phone, email, company, subject, message } = body || {};
 
-  if (!name || !name.trim() || !email || !email.trim() || !message || !message.trim()) {
-    return NextResponse.json({ error: 'يرجى تعبئة الاسم والبريد الإلكتروني والسؤال' }, { status: 400 });
+  // Phone is the main way staff reach customers; email is optional.
+  const str = (v) => (typeof v === 'string' ? v.trim() : '');
+  if (!str(name) || !str(phone) || !str(message)) {
+    return NextResponse.json({ error: 'يرجى تعبئة الاسم ورقم الهاتف والسؤال' }, { status: 400 });
+  }
+  if (str(phone).replace(/\D/g, '').length < 7) {
+    return NextResponse.json({ error: 'يرجى كتابة رقم هاتف صحيح' }, { status: 400 });
   }
 
   try {
