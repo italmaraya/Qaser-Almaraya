@@ -140,7 +140,7 @@ export default function HeroCinematic({ slides: allSlides = [], kicker, title, s
             />
           ) : (
             // eslint-disable-next-line @next/next/no-img-element
-            <img key={i === active ? 'on' + active : 'off'} src={s.type === 'video' ? s.poster || '' : s.url} alt="" loading={i === 0 ? 'eager' : 'lazy'} />
+            <img key={i === active ? 'on' + active : 'off'} src={s.type === 'video' ? s.poster || '' : s.url} alt="" loading={i === 0 ? 'eager' : 'lazy'} fetchPriority={i === 0 ? 'high' : 'auto'} decoding={i === 0 ? 'sync' : 'async'} />
           )}
         </div>
       ))}

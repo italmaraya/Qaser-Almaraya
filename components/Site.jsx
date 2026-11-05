@@ -7,7 +7,7 @@ import AirlinesMarquee from './AirlinesMarquee';
 import React, { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import Icon from './Icon';
-import { getStoredLang } from '../lib/i18n';
+import { getStoredLang, i18nReady, onI18nReady } from '../lib/i18n';
 import AchievementSpread from './AchievementSpread';
 import MascotLoader from './MascotLoader';
 import PackageCard from './PackageCard';
@@ -215,8 +215,12 @@ export default function Site(props) {
   // Arabic -> English runtime swap (public/qa-i18n*.js provide window.QA_I18N)
   const orig = useRef(null);
   const busy = useRef(false);
+  // The dictionaries load deferred; re-render once they arrive so the
+  // English swap (and the visa dictionary below) can run.
+  const [, setI18nTick] = useState(0);
+  useEffect(() => onI18nReady(() => setI18nTick((x) => x + 1)), []);
   const applyLang = () => {
-    const I = typeof window !== 'undefined' && window.QA_I18N;
+    const I = i18nReady() && window.QA_I18N;
     if (!I) return;
     const en = st.lang === 'en';
     if (!orig.current) orig.current = new WeakMap();
@@ -632,7 +636,7 @@ function   lineDone(line, tv){
   }
 
 function   registerDict(){
-    if(typeof window === 'undefined' || dictRef.current || !window.QA_I18N) return; dictRef.current = true;
+    if(typeof window === 'undefined' || dictRef.current || !i18nReady()) return; dictRef.current = true;
     const m = {};
     COUNTRIES.forEach(c => { m[c.name] = c.en; });
     VISA_TYPES.forEach(t => { m[t.name] = t.en; });
