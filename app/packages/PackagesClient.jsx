@@ -164,6 +164,12 @@ export default function PackagesPage({ initialPackages = null }) {
       .map((p) => ({ p, date: upcomingDates(p, today).find((d) => d > today) }))
       .filter((x) => x.date)
       .sort((a, b) => (a.date < b.date ? -1 : a.date > b.date ? 1 : 0))
+      // One row per destination, so the list shows variety instead of four
+      // Istanbul packages leaving the same day.
+      .filter((x, i, arr) => {
+        const key = (x.p.dest_ar || x.p.title_ar || '').split(/[،,]/)[0].trim();
+        return arr.findIndex((y) => (y.p.dest_ar || y.p.title_ar || '').split(/[،,]/)[0].trim() === key) === i;
+      })
       .slice(0, 5);
   }, [packages]);
   const fmtDay = (d) => {
