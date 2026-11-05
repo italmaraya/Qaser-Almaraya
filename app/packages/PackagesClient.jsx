@@ -78,6 +78,12 @@ export default function PackagesPage({ initialPackages = null }) {
   const [preferredDates, setPreferredDates] = useState('');
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [budget, setBudget] = useState('all');
+  // While the filters drawer is open on a phone, hide the bottom bar and chat
+  // bubble so the drawer's own buttons stay visible and tappable.
+  useEffect(() => {
+    document.body.classList.toggle('qa-drawer-open', drawerOpen);
+    return () => document.body.classList.remove('qa-drawer-open');
+  }, [drawerOpen]);
   const [month, setMonth] = useState('all');
 
   useEffect(() => {

@@ -75,3 +75,4 @@ a:hover{color:#036f8c}
   body:has(.qa-pkg-mbar.on){padding-bottom:calc(162px + env(safe-area-inset-bottom,0px))}
   body:has(.qa-pkg-mbar.on) #zsiq_float{bottom:calc(170px + env(safe-area-inset-bottom,0px))!important}
 }
+body.qa-drawer-open .qa-mbar,body.qa-drawer-open #zsiq_float,body.qa-drawer-open .qa-chat-label{display:none!important}
