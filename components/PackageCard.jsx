@@ -171,7 +171,7 @@ export default function PackageCard({ title, destination, image, nights, groupTy
                 <Icon key={i} name="star" size={10} style={{ color: i < roundedRating ? '#faab18' : 'rgba(255,255,255,.35)' }} />
               ))}
             </span>
-            <span style={{ fontSize: 10.5, color: 'rgba(255,255,255,.75)' }}>{rating} {lang === 'en' ? 'Out of 5' : 'من ٥'}</span>
+            <span style={{ fontSize: 10.5, color: 'rgba(255,255,255,.75)' }}>{rating} {lang === 'en' ? 'Out of 5' : 'من 5'}</span>
           </div>
           <h4 className="qa-pkg-title" style={{ margin: 0, fontWeight: 700, color: '#fff', lineHeight: 1.3 }}>{title}</h4>
           {nights ? <span className="qa-pkg-subtitle" style={{ color: 'rgba(255,255,255,.8)' }}>{destination}{destination && nights ? ' · ' : ''}{nights}</span> : (
