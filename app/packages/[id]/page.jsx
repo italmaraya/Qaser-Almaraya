@@ -13,7 +13,7 @@ import { printDoc, copyText } from '../../../lib/printDoc';
 import WhatsAppButton from '../../../components/WhatsAppButton';
 import { APPLY_FLOW_ENABLED, packageMessage } from '../../../lib/whatsapp';
 import { buildPackageVoucherHtml, stripFlags } from '../../../lib/packagePdf';
-import { packageUrgency } from '../../../lib/packageUrgency';
+import UrgencyPanel from '../../../components/UrgencyPanel';
 import { TRAVELLER_TYPES, computeTotals, unitPrice, durationLabel } from '../../../lib/packagePricing';
 import { useProviderReveal } from '../../../lib/useProviderReveal';
 import WorldClocks, { destinationTz } from '../../../components/WorldClocks';
@@ -307,16 +307,7 @@ export default function PackageDetailPage() {
                 </div>
               </div>
 
-              {(() => {
-                const u = packageUrgency(pkg, lang);
-                if (!u || !u.label) return null;
-                return (
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 10, borderRadius: 12, padding: '10px 14px', background: u.soldOut ? '#1d2733' : u.hot ? '#fdecef' : '#fff4dc', color: u.soldOut ? '#fff' : u.hot ? '#c02643' : '#8a5a00', fontWeight: 700, fontSize: 14 }}>
-                    <span style={{ fontSize: 20 }}>{u.soldOut ? '⛔' : '⏳'}</span>
-                    <span>{u.label}{u.soldOut ? (lang === 'en' ? ' — message us to join the waiting list' : ' — راسلنا للانضمام لقائمة الانتظار') : ''}</span>
-                  </div>
-                );
-              })()}
+              <UrgencyPanel pkg={pkg} lang={lang} />
               {staffMode && (
                 <div style={{ border: '2px dashed #faab18', background: '#fffaf0', borderRadius: 14, padding: 12, display: 'flex', flexDirection: 'column', gap: 8 }}>
                   <b style={{ fontSize: 13.5, color: '#8a5a00' }}>🧾 عرض سعر مخصص (وضع الموظفين)</b>
