@@ -55,7 +55,7 @@ export default function HomeGlobe({ lang = 'ar', mode = 'all' }) {
   if (!pins.length) return null;
 
   return (
-    <section className="qa-sec" style={{ display: 'grid', gridTemplateColumns: 'minmax(260px,.8fr) 1.2fr', gap: 32, alignItems: 'center' }} dir={en ? 'ltr' : 'rtl'}>
+    <section className="qa-sec qa-2col" style={{ display: 'grid', gridTemplateColumns: 'minmax(260px,.8fr) 1.2fr', gap: 32, alignItems: 'center' }} dir={en ? 'ltr' : 'rtl'}>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
         <span style={{ fontSize: 13, fontWeight: 700, color: visaOnly ? '#faab18' : '#049dc5' }}>{en ? 'From Baghdad to the world' : 'من بغداد إلى العالم'}</span>
         <h2 style={{ margin: 0, fontSize: 'clamp(24px,3vw,34px)', lineHeight: 1.25 }}>
@@ -73,9 +73,9 @@ export default function HomeGlobe({ lang = 'ar', mode = 'all' }) {
             <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
               <img src={picked.flag} alt="" onError={(e) => { e.currentTarget.style.display = 'none'; }} style={{ width: 38, height: 26, objectFit: 'cover', borderRadius: 5, border: '1px solid #ececed' }} />
               <b style={{ fontSize: 18 }}>{picked.name}</b>
-              <button type="button" onClick={() => setPicked(null)} style={{ marginInlineStart: 'auto', border: 0, background: 'none', cursor: 'pointer', fontSize: 18, color: '#7b8087' }} aria-label="close">×</button>
+              <button type="button" onClick={() => setPicked(null)} style={{ marginInlineStart: 'auto', border: 0, background: 'none', cursor: 'pointer', fontSize: 18, color: '#5f666e' }} aria-label="close">×</button>
             </div>
-            <span style={{ fontSize: 13, color: '#7b8087' }}>
+            <span style={{ fontSize: 13, color: '#5f666e' }}>
               {picked.visas > 0 && (en ? `${picked.visas} visa type${picked.visas > 1 ? 's' : ''}` : `${picked.visas} نوع تأشيرة`)}
               {picked.visas > 0 && picked.packages > 0 && ' · '}
               {picked.packages > 0 && (en ? `${picked.packages} package${picked.packages > 1 ? 's' : ''}` : `${picked.packages} باقة سياحية`)}

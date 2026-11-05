@@ -17,7 +17,7 @@ const CATS = {
 
 const pick = (en, a, b) => (en && b ? b : a || b || '');
 const fmtDate = (d, en) => {
-  try { return new Date(d).toLocaleDateString(en ? 'en-GB' : 'ar-IQ', { day: 'numeric', month: 'long', year: 'numeric' }); } catch { return ''; }
+  try { return new Date(d).toLocaleDateString(en ? 'en-GB' : 'ar-IQ-u-nu-latn', { day: 'numeric', month: 'long', year: 'numeric' }); } catch { return ''; }
 };
 
 const CSS = `
@@ -42,10 +42,10 @@ const CSS = `
 .qn-card .txt{padding:18px 20px 20px;display:flex;flex-direction:column;gap:9px;flex:1}
 .qn-card h3{margin:0;font-size:19px;line-height:1.4}
 .qn-ex{margin:0;font-size:14.5px;line-height:1.75;color:#5b646d;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
-.qn-meta{display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:12.5px;color:#7b8087}
+.qn-meta{display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:12.5px;color:#5f666e}
 .qn-cat{font-size:12px;font-weight:700;border-radius:999px;padding:2px 10px;color:#fff}
 .qn-more{margin-top:auto;font-size:14px;font-weight:700;color:#049dc5}
-.qn-empty{text-align:center;padding:60px 20px;color:#7b8087;display:flex;flex-direction:column;align-items:center;gap:10px}
+.qn-empty{text-align:center;padding:60px 20px;color:#5f666e;display:flex;flex-direction:column;align-items:center;gap:10px}
 .qn-art-hero{position:relative;min-height:380px;display:flex;align-items:flex-end;background:#036f8c center/cover;color:#fff}
 .qn-art-hero:before{content:"";position:absolute;inset:0;background:linear-gradient(to top,rgba(2,30,40,.88),rgba(2,30,40,.25) 60%,rgba(2,30,40,.1))}
 .qn-art-hero .in{position:relative;max-width:860px;width:100%;margin:0 auto;padding:40px 24px 34px;display:flex;flex-direction:column;gap:12px}
@@ -53,7 +53,7 @@ const CSS = `
 .qn-art-hero .qn-meta{color:rgba(255,255,255,.85)}
 .qn-art{max-width:760px;margin:0 auto;padding:34px 24px 20px}
 .qn-lead{font-size:20px;line-height:1.85;color:#3d4650;margin:0 0 26px;font-weight:500}
-.qn-share{display:flex;gap:8px;flex-wrap:wrap;align-items:center;border-top:1px solid #ececed;padding-top:18px;margin-top:10px;font-size:14px;color:#7b8087}
+.qn-share{display:flex;gap:8px;flex-wrap:wrap;align-items:center;border-top:1px solid #ececed;padding-top:18px;margin-top:10px;font-size:14px;color:#5f666e}
 .qn-share a,.qn-share button{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:8px 14px;font-weight:700;font-size:13.5px;text-decoration:none;cursor:pointer;font-family:inherit;border:1px solid #ececed;background:#fff;color:#1d2733}
 .qn-share .wa{background:#25d366;border-color:#25d366;color:#fff}
 .qn-cta{margin:30px 0 0;border-radius:18px;padding:22px;background:linear-gradient(135deg,#eaf8fd,#fff6df);display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}

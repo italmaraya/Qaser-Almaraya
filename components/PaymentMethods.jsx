@@ -10,7 +10,7 @@ export const QA_PAYMENT_METHODS = [
     rows: [['رقم الوكيل', '530181'], ['طريقة الاستلام', 'من خلال عمل سحب أموال — مكتب قصر المرايا'], ['رقم الهاتف', '07835073219']],
     body: 'أرسل المبلغ عبر تطبيق زين كاش إلى رقم الوكيل أعلاه (سحب أموال)، واحتفظ برمز العملية لإرساله إلى موظف الحجز.' },
   { id: 'office', icon: 'building-2', label: 'الدفع في المكتب', hint: 'نقداً — خلال يوم واحد', warn: true,
-    rows: [['العنوان', 'بغداد — حي السلام، شارع 14 رمضان'], ['أوقات العمل', 'السبت – الخميس · ٩:٠٠ – ١٨:٠٠']],
+    rows: [['العنوان', 'بغداد — حي السلام، شارع 14 رمضان'], ['أوقات العمل', 'السبت – الخميس · 9:00 – 18:00']],
     body: 'إذا اخترت هذه الطريقة يجب دفع المبلغ خلال يوم واحد من تاريخ الطلب، وإلا سيُرفض طلبك تلقائياً.' }
 ];
 
@@ -69,12 +69,12 @@ export default function PaymentMethods({ title, note, methods, defaultOpen = 'ca
           <span style={{ fontSize: 24, fontWeight: 700, color: '#036f8c' }}>شكراً لك!</span>
           {orderNo && (
             <span style={{ display: 'inline-flex', alignItems: 'center', gap: 10, padding: '8px 16px', borderRadius: 999, background: '#fff', border: '1px solid #bfe9f6' }}>
-              <span style={{ fontSize: 13, color: '#7b8087' }}>رقم الطلب</span>
+              <span style={{ fontSize: 13, color: '#5f666e' }}>رقم الطلب</span>
               <span dir="ltr" style={{ fontSize: 15, fontWeight: 700, letterSpacing: '.06em', color: '#036f8c' }}>{orderNo}</span>
             </span>
           )}
           <span style={{ fontSize: 15, lineHeight: 1.7, color: '#036f8c' }}>
-            استلمنا إشعار الدفع{receiptName ? ' («' + receiptName + '»)' : ''}. يتحقق فريقنا منه ويعود إليك على واتساب خلال ٢٤ ساعة بتأكيد الطلب.
+            استلمنا إشعار الدفع{receiptName ? ' («' + receiptName + '»)' : ''}. يتحقق فريقنا منه ويعود إليك على واتساب خلال 24 ساعة بتأكيد الطلب.
           </span>
           <span style={{ fontSize: 13, color: '#3d4650' }}>الرقم المختصر 6393 · sales@almarayagroup.com</span>
         </div>
@@ -100,15 +100,15 @@ export default function PaymentMethods({ title, note, methods, defaultOpen = 'ca
                 </span>
                 <span style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', gap: 2 }}>
                   <span style={{ fontSize: 13.5, fontWeight: 600, color: '#1d2733' }}>الطريقة {i + 1} — {m.label}</span>
-                  <span style={{ fontSize: 11, color: '#7b8087' }}>{m.hint}</span>
+                  <span style={{ fontSize: 11, color: '#5f666e' }}>{m.hint}</span>
                 </span>
-                <Icon name={on ? 'chevron-up' : 'chevron-down'} size={18} style={{ color: '#7b8087' }} />
+                <Icon name={on ? 'chevron-up' : 'chevron-down'} size={18} style={{ color: '#5f666e' }} />
               </button>
               {on ? (
                 <div style={{ padding: 16, display: 'flex', flexDirection: 'column', gap: 12, borderTop: '1px solid #ececed' }}>
                   {(m.rows || []).map((r) => (
                     <div key={r[0]} style={{ display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
-                      <span style={{ minWidth: 110, fontSize: 12, color: '#7b8087' }}>{r[0]}</span>
+                      <span style={{ minWidth: 110, fontSize: 12, color: '#5f666e' }}>{r[0]}</span>
                       <span dir={/[0-9+]/.test(r[1][0]) ? 'ltr' : 'rtl'} style={{ fontSize: 13.5, fontWeight: 600, color: '#1d2733', letterSpacing: /[0-9+]/.test(r[1][0]) ? '.04em' : 'normal' }}>{r[1]}</span>
                     </div>
                   ))}
@@ -126,7 +126,7 @@ export default function PaymentMethods({ title, note, methods, defaultOpen = 'ca
         <div style={{ display: 'flex', flexDirection: 'column', gap: 16, padding: 18, borderRadius: 14, border: '1.5px dashed #049dc5', background: '#eaf8fd' }}>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
             <span style={{ fontSize: 15, fontWeight: 600, color: '#1d2733' }}>{atOffice ? 'تأكيد الدفع في المكتب' : 'أرفق إشعار الدفع — ' + chosen.label}</span>
-            <span style={{ fontSize: 12, color: '#3d4650' }}>{atOffice ? 'أكِّد اختيارك، وادفع المبلغ في المكتب خلال يوم واحد — لا حاجة لإرفاق أي ملف.' : 'صورة أو PDF لإشعار التحويل — حتى ٥ ميغابايت.'}</span>
+            <span style={{ fontSize: 12, color: '#3d4650' }}>{atOffice ? 'أكِّد اختيارك، وادفع المبلغ في المكتب خلال يوم واحد — لا حاجة لإرفاق أي ملف.' : 'صورة أو PDF لإشعار التحويل — حتى 5 ميغابايت.'}</span>
           </div>
           {confirmError && (
             <p style={{ margin: 0, padding: '10px 14px', borderRadius: 10, background: '#fdecef', border: '1px solid #f7c3cc', color: '#d2324f', fontSize: 13 }}>{confirmError}</p>
@@ -142,7 +142,7 @@ export default function PaymentMethods({ title, note, methods, defaultOpen = 'ca
             )}
             {atOffice ? null : <input id={uploadId} type="file" accept="image/*,.pdf" disabled={uploading} style={{ display: 'none' }} onChange={(e) => handleFile(e.target.files && e.target.files[0])} />}
             {atOffice ? null : (
-              <span style={{ flex: 1, minWidth: 120, fontSize: 12, color: receiptUrl ? '#1d2733' : '#7b8087', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+              <span style={{ flex: 1, minWidth: 120, fontSize: 12, color: receiptUrl ? '#1d2733' : '#5f666e', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                 {receiptUrl ? receiptName : uploading ? 'جارٍ رفع الملف…' : 'لم يتم اختيار ملف بعد'}
               </span>
             )}

@@ -127,7 +127,7 @@ export default function CountryVisaListPage() {
         <SiteHeader active="التأشيرات" />
         <main style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 40 }}>
           <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', gap: 12, alignItems: 'center' }}>
-            <p style={{ color: '#7b8087' }}>لم يتم العثور على تأشيرات لهذه الدولة.</p>
+            <p style={{ color: '#5f666e' }}>لم يتم العثور على تأشيرات لهذه الدولة.</p>
             <Link href="/visa" className="qa-btn qa-cyan" style={{ textDecoration: 'none' }}>← رجوع إلى التأشيرات</Link>
           </div>
         </main>
@@ -159,7 +159,7 @@ export default function CountryVisaListPage() {
             <>
 
               {travelDate && (
-                <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 12.5, color: '#7b8087' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 12.5, color: '#5f666e' }}>
                   <Icon name="calendar-days" size={14} />
                   {nm('جاهزية التأشيرة محسوبة بناءً على تاريخ السفر: ', 'Visa readiness is checked against your travel date: ')}
                   <b style={{ color: '#3d4650' }}>{travelDate}</b>
@@ -224,7 +224,7 @@ export default function CountryVisaListPage() {
                           {providerHints[c.id].provider_name ? (
                             <span style={{ wordBreak: 'break-word' }}>{providerHints[c.id].provider_name}</span>
                           ) : null}
-                          <span style={{ color: '#7b8087', fontWeight: 600, fontSize: 9.5, wordBreak: 'break-word' }}>
+                          <span style={{ color: '#5f666e', fontWeight: 600, fontSize: 9.5, wordBreak: 'break-word' }}>
                             {nm('التكلفة: ', 'Cost: ')}
                             {formatRawAmount(providerHints[c.id].adult_cost, providerHints[c.id].cost_currency || 'IQD', lang)}
                           </span>
@@ -272,11 +272,11 @@ export default function CountryVisaListPage() {
                           ) : null}
                         </div>
 
-                        <div style={{ background: '#f8fbfc', borderRadius: 14, padding: '12px 16px', display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 4, flex: 'none', minWidth: 168 }}>
-                          <span style={{ fontSize: 10, color: '#7b8087' }}>{lang === 'en' ? 'Travel visa provided' : 'التأشيرة السياحية متوفرة'}</span>
-                          <span style={{ fontSize: 12, color: '#3d4650' }}>{formatPrice(c.child_price, 'IQD', lang)} <span style={{ color: '#7b8087', fontSize: 10.5 }}>{lang === 'en' ? '/ per child' : '/ للطفل'}</span></span>
+                        <div className="qa-visa-pricebox" style={{ background: '#f8fbfc', borderRadius: 14, padding: '12px 16px', display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 4, flex: 'none', minWidth: 168 }}>
+                          <span style={{ fontSize: 10, color: '#5f666e' }}>{lang === 'en' ? 'Travel visa provided' : 'التأشيرة السياحية متوفرة'}</span>
+                          <span style={{ fontSize: 12, color: '#3d4650' }}>{formatPrice(c.child_price, 'IQD', lang)} <span style={{ color: '#5f666e', fontSize: 10.5 }}>{lang === 'en' ? '/ per child' : '/ للطفل'}</span></span>
                           <span style={{ fontSize: 18, fontWeight: 800, color: '#1d2733' }}>{formatPrice(c.adult_price, 'IQD', lang)}</span>
-                          <span style={{ fontSize: 10.5, color: '#7b8087', marginTop: -4 }}>{lang === 'en' ? 'Total per adult' : 'الإجمالي للبالغ'}</span>
+                          <span style={{ fontSize: 10.5, color: '#5f666e', marginTop: -4 }}>{lang === 'en' ? 'Total per adult' : 'الإجمالي للبالغ'}</span>
                           <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 8, width: '100%', justifyContent: 'flex-end' }}>
                             <span title={lang === 'en' ? 'Requirements & info' : 'المتطلبات والمعلومات'} style={{ width: 26, height: 26, borderRadius: '50%', border: '1.5px solid #1d2733', display: 'grid', placeItems: 'center', flex: 'none' }}>
                               <Icon name="info" size={13} style={{ color: '#1d2733' }} />
@@ -306,7 +306,7 @@ export default function CountryVisaListPage() {
                               <Icon name={s.icon} size={13} style={{ color: '#049dc5' }} />
                             </span>
                             <span style={{ display: 'flex', flexDirection: 'column', gap: 0, minWidth: 0 }}>
-                              <span style={{ fontSize: 10, color: '#7b8087' }}>{s.label}</span>
+                              <span style={{ fontSize: 10, color: '#5f666e' }}>{s.label}</span>
                               <span style={{ fontSize: 12, fontWeight: 700, color: '#1d2733', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{s.value}</span>
                             </span>
                           </div>
@@ -316,7 +316,7 @@ export default function CountryVisaListPage() {
                       {expanded[c.id] && (
                         <div style={{ borderTop: '1px solid #f0f0f0', paddingTop: 10, display: 'flex', flexDirection: 'column', gap: 8 }}>
                           {detailsLoading[c.id] ? (
-                            <span style={{ fontSize: 12, color: '#7b8087' }}>{nm('جارٍ التحميل...', 'Loading...')}</span>
+                            <span style={{ fontSize: 12, color: '#5f666e' }}>{nm('جارٍ التحميل...', 'Loading...')}</span>
                           ) : detailsCache[c.id] ? (
                             <>
                               {(detailsCache[c.id].documents || []).length > 0 && (
@@ -338,7 +338,7 @@ export default function CountryVisaListPage() {
                                 </div>
                               ) : null}
                               {(detailsCache[c.id].documents || []).length === 0 && !nm(detailsCache[c.id].booking_notes, detailsCache[c.id].booking_notes_en) && (
-                                <span style={{ fontSize: 12, color: '#7b8087' }}>{nm('لا توجد متطلبات إضافية مسجلة لهذه التأشيرة.', 'No extra requirements recorded for this visa.')}</span>
+                                <span style={{ fontSize: 12, color: '#5f666e' }}>{nm('لا توجد متطلبات إضافية مسجلة لهذه التأشيرة.', 'No extra requirements recorded for this visa.')}</span>
                               )}
                             </>
                           ) : (
@@ -360,7 +360,7 @@ export default function CountryVisaListPage() {
 
                   {typeOptions.length > 2 && (
                     <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-                      <span style={{ fontSize: 12.5, fontWeight: 700, color: '#7b8087' }}>{nm('نوع التأشيرة', 'Visa type')}</span>
+                      <span style={{ fontSize: 12.5, fontWeight: 700, color: '#5f666e' }}>{nm('نوع التأشيرة', 'Visa type')}</span>
                       {typeOptions.map((t) => (
                         <button
                           key={t}
@@ -381,12 +381,12 @@ export default function CountryVisaListPage() {
                   )}
 
                   <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-                    <span style={{ fontSize: 12.5, fontWeight: 700, color: '#7b8087' }}>{nm('سرعة الإصدار', 'Issuance speed')}</span>
+                    <span style={{ fontSize: 12.5, fontWeight: 700, color: '#5f666e' }}>{nm('سرعة الإصدار', 'Issuance speed')}</span>
                     {[
                       ['all', nm('الكل', 'All')],
-                      ['fast', nm('سريعة (٣ أيام أو أقل)', 'Fast (≤3 days)')],
-                      ['normal', nm('متوسطة (٤-٧ أيام)', 'Normal (4-7 days)')],
-                      ['slow', nm('طويلة (٨ أيام فأكثر)', 'Slow (8+ days)')],
+                      ['fast', nm('سريعة (3 أيام أو أقل)', 'Fast (≤3 days)')],
+                      ['normal', nm('متوسطة (4-7 أيام)', 'Normal (4-7 days)')],
+                      ['slow', nm('طويلة (8 أيام فأكثر)', 'Slow (8+ days)')],
                     ].map(([key, label]) => (
                       <button
                         key={key}
@@ -407,7 +407,7 @@ export default function CountryVisaListPage() {
 
                   {priceBounds.max > priceBounds.min && (
                     <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-                      <span style={{ fontSize: 12.5, fontWeight: 700, color: '#7b8087' }}>{nm('الحد الأقصى للسعر', 'Max price')}</span>
+                      <span style={{ fontSize: 12.5, fontWeight: 700, color: '#5f666e' }}>{nm('الحد الأقصى للسعر', 'Max price')}</span>
                       <input
                         type="range"
                         min={priceBounds.min}
@@ -425,7 +425,7 @@ export default function CountryVisaListPage() {
                     <button
                       type="button"
                       onClick={() => { setTypeFilter('الكل'); setSpeedFilter('all'); setMaxPrice(null); }}
-                      style={{ cursor: 'pointer', border: '1px solid #ececed', borderRadius: 999, padding: '8px 14px', fontSize: 13, fontWeight: 700, fontFamily: 'inherit', background: '#fff', color: '#7b8087' }}
+                      style={{ cursor: 'pointer', border: '1px solid #ececed', borderRadius: 999, padding: '8px 14px', fontSize: 13, fontWeight: 700, fontFamily: 'inherit', background: '#fff', color: '#5f666e' }}
                     >
                       {nm('إعادة تعيين الفلاتر', 'Reset filters')}
                     </button>

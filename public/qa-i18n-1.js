@@ -10,6 +10,7 @@
   "تأمين السفر": "Travel insurance", "الرقم المختصر 6393": "Short number 6393",
   "الإجازة المرقمة 784": "Licence No. 784", "قصر المرايا للسفر و السياحة": "Qaser Almaraya for Travel & Tourism",
   "© 2026 قصر المرايا للسفر و السياحة — جميع الحقوق محفوظة": "© 2026 Qaser Almaraya for Travel & Tourism — All rights reserved",
+  "© 2026 قصر المرايا للسفر و السياحة — رقم الإجازة 784 — جميع الحقوق محفوظة": "© 2026 Qaser Almaraya for Travel & Tourism — Licence No. 784 — All rights reserved",
   "طلب تأشيرة": "Visa request", "التأشيرات": "Visas",
   "رجوع إلى النتائج": "Back to results", "نظرة عامة": "Overview", "صالحة لمدة": "Valid for",
   "مدة الإنجاز المتوقعة:": "Expected processing time:", "نوع الدخول:": "Entry type:", "صلاحية التأشيرة:": "Visa validity:",

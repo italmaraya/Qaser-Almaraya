@@ -247,7 +247,7 @@ export default function VisaLandingPage({ initialCards = null }) {
           <section style={{ position: 'relative', background: 'linear-gradient(135deg,#34bbe1 0%,#049dc5 100%)', paddingBottom: 50, overflow: 'hidden' }}>
             <img src="/assets/logo-mark-white.webp" alt="" style={{ position: 'absolute', insetInlineEnd: -150, top: -80, height: 480, opacity: 0.1 }} />
             <div className="qa-sec qa-2col" style={{ position: 'relative', paddingTop: 36, paddingBottom: 0, display: 'grid', gridTemplateColumns: 'minmax(0,1.05fr) minmax(0,.95fr)', gap: 28, alignItems: 'center' }}>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 8, alignItems: 'flex-end', textAlign: 'right' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 8, alignItems: 'flex-start', textAlign: 'start' }}>
                 <span style={{ fontSize: 14, fontWeight: 700, letterSpacing: '.06em', color: '#fff' }}>VISAS</span>
                 <h1 style={{ margin: 0, fontSize: 'clamp(28px,3vw,46px)', color: '#fff' }}>التأشيرات</h1>
                 <p style={{ margin: 0, fontSize: 16, lineHeight: 1.6, color: 'rgba(255,255,255,.92)', maxWidth: 600 }}>
@@ -274,7 +274,7 @@ export default function VisaLandingPage({ initialCards = null }) {
 
                 <div aria-hidden="true" style={{ position: 'absolute', zIndex: 4, top: '8%', insetInlineEnd: -6, width: 'clamp(140px,36%,178px)', display: 'flex', flexDirection: 'column', alignItems: 'stretch', gap: 9, pointerEvents: 'none' }}>
                   <div style={{ alignSelf: 'stretch', maxWidth: 178, padding: 11, background: '#fff', borderRadius: 12, boxShadow: '0 14px 26px rgba(1,42,55,.28)', display: 'flex', flexDirection: 'column', gap: 6, animation: 'qa-swing 5.6s ease-in-out infinite', transformOrigin: '50% 0' }}>
-                    <span style={{ fontFamily: "'IBM Plex Sans',system-ui,sans-serif", fontSize: 7.5, fontWeight: 700, letterSpacing: '.2em', color: '#7b8087' }}>VISA STATUS</span>
+                    <span style={{ fontFamily: "'IBM Plex Sans',system-ui,sans-serif", fontSize: 7.5, fontWeight: 700, letterSpacing: '.2em', color: '#5f666e' }}>VISA STATUS</span>
                     <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                       <span style={{ flex: 'none', display: 'grid', placeItems: 'center', width: 24, height: 24, borderRadius: '50%', background: '#049dc5', color: '#fff' }}>
                         <svg width={13} height={13} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={3} strokeLinecap="round" strokeLinejoin="round"><path d="M20 6 9 17l-5-5" /></svg>
@@ -297,7 +297,7 @@ export default function VisaLandingPage({ initialCards = null }) {
                       <svg width={12} height={12} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.4} strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="16" rx="2" /><path d="M3 9h18M8 4v3M16 4v3" /></svg>
                     </span>
                     <span style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
-                      <span style={{ fontFamily: "'IBM Plex Sans',system-ui,sans-serif", fontSize: 7.5, fontWeight: 700, letterSpacing: '.2em', color: '#7b8087' }}>PASSPORT</span>
+                      <span style={{ fontFamily: "'IBM Plex Sans',system-ui,sans-serif", fontSize: 7.5, fontWeight: 700, letterSpacing: '.2em', color: '#5f666e' }}>PASSPORT</span>
                       <span style={{ height: 6, width: '78%', borderRadius: 4, background: '#1d2733', opacity: 0.82 }} />
                       <span style={{ height: 4, borderRadius: 4, background: '#e7eaec' }} />
                       <span style={{ height: 4, width: '54%', borderRadius: 4, background: '#bfe9f6' }} />
@@ -312,9 +312,9 @@ export default function VisaLandingPage({ initialCards = null }) {
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '18px 26px', borderBottom: '1px solid #ececed' }}>
                   <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
                     <span style={{ fontSize: 17, fontWeight: 700, color: '#1d2733' }}>طلب تأشيرة</span>
-                    <span style={{ fontSize: 11, fontWeight: 600, color: '#7b8087', letterSpacing: '.06em' }}>VISA REQUEST</span>
+                    <span style={{ fontSize: 11, fontWeight: 600, color: '#5f666e', letterSpacing: '.06em' }}>VISA REQUEST</span>
                   </div>
-                  <span style={{ fontSize: 13, fontWeight: 700, color: '#7b8087', letterSpacing: '.04em' }}>QASER · ALMARAYA</span>
+                  <span style={{ fontSize: 13, fontWeight: 700, color: '#5f666e', letterSpacing: '.04em' }}>QASER · ALMARAYA</span>
                 </div>
                 <form
                   onSubmit={goSearch}
@@ -367,7 +367,7 @@ export default function VisaLandingPage({ initialCards = null }) {
                       <span>
                         {adultCount} {nm('بالغ', 'adult')}{childCount > 0 ? ` · ${childCount} ${nm('طفل', 'child')}` : ''}
                       </span>
-                      <span style={{ color: '#7b8087' }}>⌄</span>
+                      <span style={{ color: '#5f666e' }}>⌄</span>
                     </button>
 
                     {travelersOpen && (
@@ -415,7 +415,7 @@ export default function VisaLandingPage({ initialCards = null }) {
 
                 {selectedCountry && (
                   <div style={{ padding: '0 26px 18px' }}>
-                    <span style={{ fontSize: 12.5, color: '#7b8087' }}>
+                    <span style={{ fontSize: 12.5, color: '#5f666e' }}>
                       {selectedCountry.typeNames.map((t) => nm(t, typeNameMap[t])).join('، ')} · الإصدار من {Math.round(selectedCountry.minIssuing)} أيام عمل
                     </span>
                   </div>
@@ -425,7 +425,7 @@ export default function VisaLandingPage({ initialCards = null }) {
                     عرض التفاصيل
                   </button>
                   <div style={{ textAlign: 'left' }}>
-                    <div style={{ fontSize: 13, color: '#7b8087' }}>الإجمالي التقديري</div>
+                    <div style={{ fontSize: 13, color: '#5f666e' }}>الإجمالي التقديري</div>
                     <div style={{ fontSize: 22, fontWeight: 700, color: '#049dc5' }}>{estimatedTotal != null ? formatPrice(estimatedTotal, 'IQD', lang) : '—'}</div>
                   </div>
                 </div>
@@ -455,7 +455,7 @@ export default function VisaLandingPage({ initialCards = null }) {
             <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
               <span style={{ fontSize: 13, fontWeight: 700, color: '#faab18' }}>الدول</span>
               <h2 style={{ fontSize: 'clamp(22px,2.4vw,32px)' }}>الدول المتاحة للتأشيرة</h2>
-              <span style={{ fontSize: 14, color: '#7b8087' }}>{countries.length} {countries.length > 2 && countries.length <= 10 ? 'دول' : 'دولة'} · {cards ? cards.length : 0} {cards && cards.length > 2 && cards.length <= 10 ? 'تأشيرات' : 'تأشيرة'}</span>
+              <span style={{ fontSize: 14, color: '#5f666e' }}>{countries.length} {countries.length > 2 && countries.length <= 10 ? 'دول' : 'دولة'} · {cards ? cards.length : 0} {cards && cards.length > 2 && cards.length <= 10 ? 'تأشيرات' : 'تأشيرة'}</span>
             </div>
 
             {error && <p style={{ color: '#d2324f', background: '#fdecef', border: '1px solid #f7c3cc', borderRadius: 10, padding: '12px 16px' }}>{error}</p>}
@@ -472,7 +472,7 @@ export default function VisaLandingPage({ initialCards = null }) {
                   border: '1px solid #cacbcc', fontSize: 15, fontFamily: 'inherit',
                 }}
               />
-              <span style={{ position: 'absolute', insetInlineEnd: 16, top: '50%', transform: 'translateY(-50%)', color: '#7b8087', pointerEvents: 'none' }}>
+              <span style={{ position: 'absolute', insetInlineEnd: 16, top: '50%', transform: 'translateY(-50%)', color: '#5f666e', pointerEvents: 'none' }}>
                 <Icon name="search" size={18} />
               </span>
               {countrySearch && (
@@ -480,7 +480,7 @@ export default function VisaLandingPage({ initialCards = null }) {
                   type="button"
                   onClick={() => setCountrySearch('')}
                   aria-label={nm('مسح', 'Clear')}
-                  style={{ position: 'absolute', insetInlineStart: 10, top: '50%', transform: 'translateY(-50%)', border: 0, background: 'transparent', cursor: 'pointer', color: '#7b8087', padding: 4 }}
+                  style={{ position: 'absolute', insetInlineStart: 10, top: '50%', transform: 'translateY(-50%)', border: 0, background: 'transparent', cursor: 'pointer', color: '#5f666e', padding: 4 }}
                 >
                   <Icon name="x" size={16} />
                 </button>
@@ -506,14 +506,14 @@ export default function VisaLandingPage({ initialCards = null }) {
             {cards && countries.length === 0 && (
               <div className="qa-card" style={{ textAlign: 'center', padding: 40, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12 }}>
                 <img src="/assets/mascot-skylo-tours.webp" alt="" style={{ height: 120, width: 'auto' }} />
-                <p style={{ color: '#7b8087', margin: 0 }}>لا توجد تأشيرات متاحة حاليًا — تواصل معنا وسنساعدك في ترتيب رحلتك.</p>
+                <p style={{ color: '#5f666e', margin: 0 }}>لا توجد تأشيرات متاحة حاليًا — تواصل معنا وسنساعدك في ترتيب رحلتك.</p>
                 <Link href="/contact" className="qa-btn qa-cyan" style={{ textDecoration: 'none' }}>تواصل معنا</Link>
               </div>
             )}
 
             {countries.length > 0 && filteredByRegion.length === 0 && (
               <div className="qa-card" style={{ textAlign: 'center', padding: 32, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10 }}>
-                <p style={{ color: '#7b8087', margin: 0 }}>{nm('لم نجد دولة مطابقة لبحثكم.', "We couldn't find a matching country.")}</p>
+                <p style={{ color: '#5f666e', margin: 0 }}>{nm('لم نجد دولة مطابقة لبحثكم.', "We couldn't find a matching country.")}</p>
                 <button type="button" onClick={() => { setCountrySearch(''); setTypeFilter('الكل'); }} className="qa-btn qa-cyan" style={{ border: 0 }}>
                   {nm('مسح البحث', 'Clear search')}
                 </button>
@@ -524,7 +524,7 @@ export default function VisaLandingPage({ initialCards = null }) {
               <div key={region} style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1px solid #ececed', paddingBottom: 8 }}>
                   <span style={{ fontSize: 15, fontWeight: 700, color: '#1d2733' }}>{region}</span>
-                  <span style={{ fontSize: 13, color: '#7b8087' }}>{list.length} {nm(list.length <= 10 && list.length > 2 ? 'دول' : 'دولة', list.length === 1 ? 'country' : 'countries')}</span>
+                  <span style={{ fontSize: 13, color: '#5f666e' }}>{list.length} {nm(list.length <= 10 && list.length > 2 ? 'دول' : 'دولة', list.length === 1 ? 'country' : 'countries')}</span>
                 </div>
                 <div className="qa-visa-grid">
                   {list.map((c) => (
@@ -550,8 +550,8 @@ export default function VisaLandingPage({ initialCards = null }) {
                         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                           <span style={{ fontSize: 17, fontWeight: 700, color: '#1d2733' }}>{nm(c.country_name_ar, c.country_name_en)}</span>
                         </div>
-                        <span style={{ fontSize: 13, color: '#7b8087' }}>{c.typeNames.length === 1 ? 'نوع واحد' : c.typeNames.length + ' أنواع'}: {c.typeNames.map((t) => nm(t, typeNameMap[t])).join('، ')}</span>
-                        {c.minIssuing < 999 ? <span style={{ fontSize: 12.5, color: '#7b8087' }}>{nm('الإصدار خلال ', 'Issued in ')}{workDaysLabel(c.minIssuing, lang)}</span> : null}
+                        <span style={{ fontSize: 13, color: '#5f666e' }}>{c.typeNames.length === 1 ? 'نوع واحد' : c.typeNames.length + ' أنواع'}: {c.typeNames.map((t) => nm(t, typeNameMap[t])).join('، ')}</span>
+                        {c.minIssuing < 999 ? <span style={{ fontSize: 12.5, color: '#5f666e' }}>{nm('الإصدار خلال ', 'Issued in ')}{workDaysLabel(c.minIssuing, lang)}</span> : null}
                       </div>
                     </Link>
                   ))}
@@ -573,7 +573,7 @@ export default function VisaLandingPage({ initialCards = null }) {
                     <span style={{ fontSize: 12, fontWeight: 700, color: s.who === 'أنت' ? '#036f8c' : '#a06a00', background: s.who === 'أنت' ? '#eaf8fd' : '#fef3dc', borderRadius: 999, padding: '3px 12px' }}>{s.who}</span>
                   </div>
                   <span style={{ fontSize: 16, fontWeight: 700, color: '#1d2733' }}>{s.title}</span>
-                  <span style={{ fontSize: 13.5, color: '#7b8087' }}>{s.hint}</span>
+                  <span style={{ fontSize: 13.5, color: '#5f666e' }}>{s.hint}</span>
                 </div>
               ))}
             </div>
@@ -602,7 +602,7 @@ export default function VisaLandingPage({ initialCards = null }) {
                 <span style={{ fontSize: 13, fontWeight: 600, color: '#faab18' }}>تتبّع الطلب</span>
                 <h3 style={{ margin: 0, fontSize: 20, fontWeight: 700, color: '#1d2733' }}>حالة طلب التأشيرة</h3>
               </span>
-              <button type="button" onClick={closeTrack} aria-label="إغلاق" style={{ flex: 'none', width: 34, height: 34, borderRadius: '50%', border: '1px solid #ececed', background: '#fff', color: '#7b8087', fontSize: 15, cursor: 'pointer' }}>✕</button>
+              <button type="button" onClick={closeTrack} aria-label="إغلاق" style={{ flex: 'none', width: 34, height: 34, borderRadius: '50%', border: '1px solid #ececed', background: '#fff', color: '#5f666e', fontSize: 15, cursor: 'pointer' }}>✕</button>
             </div>
 
             <form onSubmit={submitTrack} style={{ padding: '22px 24px 26px', display: 'flex', flexDirection: 'column', gap: 14 }}>
@@ -634,7 +634,7 @@ export default function VisaLandingPage({ initialCards = null }) {
                           <span style={{ fontSize: 12, fontWeight: 700, color: '#036f8c', background: '#eaf8fd', borderRadius: 999, padding: '3px 12px' }}>{a.status_name_ar}</span>
                         </div>
                         <span style={{ fontSize: 13.5, color: '#3d4650' }}>{nm(a.country_name_ar, a.country_name_en)} — {nm(a.visa_type_name_ar, a.visa_type_name_en)}</span>
-                        <span style={{ fontSize: 12.5, color: '#7b8087' }}>{a.customer_name}</span>
+                        <span style={{ fontSize: 12.5, color: '#5f666e' }}>{a.customer_name}</span>
 
                         {trackStages.length > 0 && (
                           <div style={{ display: 'flex', alignItems: 'center', gap: 0, padding: '8px 0 2px', overflowX: 'auto' }}>
@@ -747,7 +747,7 @@ const segmentStyle = {
   borderInlineStart: '1px solid #ececed',
 };
 
-const segmentLabel = { fontSize: 12.5, color: '#7b8087' };
+const segmentLabel = { fontSize: 12.5, color: '#5f666e' };
 
 const segmentSelect = {
   fontFamily: 'inherit',
@@ -769,7 +769,7 @@ const chevron = {
   insetInlineStart: 0,
   top: '50%',
   transform: 'translateY(-50%)',
-  color: '#7b8087',
+  color: '#5f666e',
   fontSize: 14,
   pointerEvents: 'none',
 };

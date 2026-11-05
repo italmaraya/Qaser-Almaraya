@@ -20,7 +20,7 @@ function offsetMinutes(tz, at = new Date()) {
 }
 
 function fmtTime(tz, at, lang) {
-  return new Intl.DateTimeFormat(lang === 'en' ? 'en-GB' : 'ar-IQ', { timeZone: tz, hour: '2-digit', minute: '2-digit', hourCycle: 'h23' }).format(at);
+  return new Intl.DateTimeFormat(lang === 'en' ? 'en-GB' : 'ar-IQ-u-nu-latn', { timeZone: tz, hour: '2-digit', minute: '2-digit', hourCycle: 'h23' }).format(at);
 }
 
 // "08:00" in `fromTz` → same moment's clock time in `toTz`.
@@ -64,7 +64,7 @@ export default function WorldClocks({ tz, place, lang = 'ar', flight = null, com
 
   const clock = (label, zone, accent) => (
     <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2, padding: '10px 8px', borderRadius: 12, background: accent ? '#eaf8fd' : '#f6f7f8' }}>
-      <span style={{ fontSize: 12, color: '#7b8087' }}>{label}</span>
+      <span style={{ fontSize: 12, color: '#5f666e' }}>{label}</span>
       <span data-no-i18n="" style={{ fontSize: compact ? 20 : 24, fontWeight: 700, color: accent ? '#036f8c' : '#1d2733', fontFamily: "'IBM Plex Sans',sans-serif", direction: 'ltr' }}>{fmtTime(zone, now, 'en')}</span>
     </div>
   );
@@ -90,7 +90,7 @@ export default function WorldClocks({ tz, place, lang = 'ar', flight = null, com
           {dep && (
             <span>🛫 {en ? `Your return leaves at ${flight.depart} ${place} time — ` : `رحلة العودة تغادر ${flight.depart} بتوقيت ${place} — أي `}<b data-no-i18n="">{dep.text}</b>{en ? ' in Baghdad' : ' في بغداد'}{shift(dep.dayShift)}</span>
           )}
-          <span style={{ fontSize: 12, color: '#7b8087' }}>{en ? 'Handy for planning calls with family.' : 'مفيد لترتيب الاتصال مع العائلة.'}</span>
+          <span style={{ fontSize: 12, color: '#5f666e' }}>{en ? 'Handy for planning calls with family.' : 'مفيد لترتيب الاتصال مع العائلة.'}</span>
         </div>
       )}
     </div>

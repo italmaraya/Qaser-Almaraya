@@ -85,21 +85,21 @@ export default function VisaDetailPage() {
             <Link href={`/visa/country/${card.country_id}`} style={{ fontSize: 13.5, fontWeight: 600, color: '#036f8c', textDecoration: 'none' }}>← رجوع</Link>
           </div>
 
-          <section className="qa-sec qa-2col" style={{ display: 'grid', gridTemplateColumns: 'minmax(240px,320px) 1fr', gap: 28, alignItems: 'flex-start' }}>
+          <section className="qa-sec qa-2col qa-detail" style={{ display: 'grid', gridTemplateColumns: 'minmax(240px,320px) 1fr', gap: 28, alignItems: 'flex-start' }}>
             <div className="qa-card qa-visa-side" style={{ position: 'sticky', top: 90, display: 'flex', flexDirection: 'column', gap: 14 }}>
               <h3 style={{ margin: 0, fontSize: 19 }}>{nm(card.visa_type_name_ar, card.visa_type_name_en)} — {nm(card.country_name_ar, card.country_name_en)}</h3>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 6, fontSize: 14 }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between' }}><span style={{ color: '#7b8087' }}>مدة الإقامة</span><span>{card.stay_duration || '—'}</span></div>
-                <div style={{ display: 'flex', justifyContent: 'space-between' }}><span style={{ color: '#7b8087' }}>مدة الإصدار</span><span>{workDaysLabel(card.issuing_time_days) || '—'}</span></div>
-                <div style={{ display: 'flex', justifyContent: 'space-between' }}><span style={{ color: '#7b8087' }}>صلاحية قبل السفر</span><span>{card.validity_before_travel || '—'}</span></div>
+                <div style={{ display: 'flex', justifyContent: 'space-between' }}><span style={{ color: '#5f666e' }}>مدة الإقامة</span><span>{card.stay_duration || '—'}</span></div>
+                <div style={{ display: 'flex', justifyContent: 'space-between' }}><span style={{ color: '#5f666e' }}>مدة الإصدار</span><span>{workDaysLabel(card.issuing_time_days) || '—'}</span></div>
+                <div style={{ display: 'flex', justifyContent: 'space-between' }}><span style={{ color: '#5f666e' }}>صلاحية قبل السفر</span><span>{card.validity_before_travel || '—'}</span></div>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', borderTop: '1px solid #ececed', paddingTop: 12 }}>
                 <div>
-                  <div style={{ fontSize: 12, color: '#7b8087' }}>البالغ</div>
+                  <div style={{ fontSize: 12, color: '#5f666e' }}>البالغ</div>
                   <div style={{ fontSize: 20, fontWeight: 700, color: '#049dc5' }}>{formatPrice(card.adult_price, 'IQD', lang)}</div>
                 </div>
                 <div style={{ textAlign: 'left' }}>
-                  <div style={{ fontSize: 12, color: '#7b8087' }}>الطفل</div>
+                  <div style={{ fontSize: 12, color: '#5f666e' }}>الطفل</div>
                   <div style={{ fontSize: 20, fontWeight: 700, color: '#049dc5' }}>{formatPrice(card.child_price, 'IQD', lang)}</div>
                 </div>
               </div>
@@ -128,7 +128,7 @@ export default function VisaDetailPage() {
               >
                 تحميل PDF لهذه التأشيرة
               </button>
-              <span style={{ fontSize: 12, color: '#7b8087', textAlign: 'center' }}>السعر بالدينار العراقي، ويُثبَّت عند تقديم الطلب.</span>
+              <span style={{ fontSize: 12, color: '#5f666e', textAlign: 'center' }}>السعر بالدينار العراقي، ويُثبَّت عند تقديم الطلب.</span>
 
               {(() => {
                 const iso = findCountryIso(card);
@@ -146,8 +146,8 @@ export default function VisaDetailPage() {
               </div>
             </div>
 
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
-              <div style={{ position: 'relative', height: 260, borderRadius: 20, overflow: 'hidden', background: (card.image_url || card.card_image_url) ? `url("${card.image_url || card.card_image_url}") center/cover no-repeat, linear-gradient(135deg,#34bbe1,#049dc5)` : 'linear-gradient(135deg,#34bbe1,#049dc5)', display: 'flex', alignItems: 'flex-end', padding: 20 }}>
+            <div className="qa-detail-main" style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+              <div className="qa-detail-hero" style={{ position: 'relative', height: 260, borderRadius: 20, overflow: 'hidden', background: (card.image_url || card.card_image_url) ? `url("${card.image_url || card.card_image_url}") center/cover no-repeat, linear-gradient(135deg,#34bbe1,#049dc5)` : 'linear-gradient(135deg,#34bbe1,#049dc5)', display: 'flex', alignItems: 'flex-end', padding: 20 }}>
                 {(card.image_url || card.card_image_url) && (
                   <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(1,30,40,.78) 0%, rgba(1,30,40,.25) 55%, rgba(1,30,40,.05) 100%)' }} />
                 )}
@@ -173,7 +173,7 @@ export default function VisaDetailPage() {
                     title="معلومات داخلية — تظهر لفريق العمل فقط"
                   >
                     {providerHints[card.id].provider_name ? <span>{providerHints[card.id].provider_name}</span> : null}
-                    <span style={{ color: '#7b8087', fontWeight: 600 }}>
+                    <span style={{ color: '#5f666e', fontWeight: 600 }}>
                       {lang === 'en' ? 'Cost: ' : 'التكلفة: '}
                       {formatRawAmount(providerHints[card.id].adult_cost, providerHints[card.id].cost_currency || 'IQD', lang)}
                       {lang === 'en' ? ' / adult, ' : ' للبالغ، '}
@@ -209,7 +209,7 @@ export default function VisaDetailPage() {
                     ['سعر الطفل', Number(card.child_price).toLocaleString() + ' د.ع'],
                   ].map(([label, value]) => (
                     <div key={label} style={{ border: '1px solid #ececed', borderRadius: 10, padding: '12px 14px' }}>
-                      <div style={{ fontSize: 12, color: '#7b8087' }}>{label}</div>
+                      <div style={{ fontSize: 12, color: '#5f666e' }}>{label}</div>
                       <div style={{ fontSize: 15, fontWeight: 700, color: '#1d2733' }}>{value}</div>
                     </div>
                   ))}
@@ -249,7 +249,7 @@ export default function VisaDetailPage() {
                       <div key={d.id} className="qa-doc-row" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, borderBottom: '1px solid #f4f4f4', paddingBottom: 10 }}>
                         <div>
                           <div style={{ fontSize: 14.5, color: '#1d2733' }}>{d.name_ar}</div>
-                          <div style={{ fontSize: 12, color: '#7b8087' }}>{d.kind === 'file' ? 'رفع ملف' : d.kind === 'photo' ? 'رفع صورة' : 'إجابة'} · {d.audience === 'adults' ? 'البالغين' : d.audience === 'children' ? 'الأطفال' : 'الجميع'}</div>
+                          <div style={{ fontSize: 12, color: '#5f666e' }}>{d.kind === 'file' ? 'رفع ملف' : d.kind === 'photo' ? 'رفع صورة' : 'إجابة'} · {d.audience === 'adults' ? 'البالغين' : d.audience === 'children' ? 'الأطفال' : 'الجميع'}</div>
                         </div>
                         <span
                           style={{
@@ -257,7 +257,7 @@ export default function VisaDetailPage() {
                             fontWeight: 700,
                             borderRadius: 999,
                             padding: '4px 12px',
-                            color: d.required ? '#a06a00' : '#7b8087',
+                            color: d.required ? '#a06a00' : '#5f666e',
                             background: d.required ? '#fef3dc' : '#f4f4f4',
                             flex: 'none',
                           }}

@@ -139,7 +139,7 @@ export default function CountrySelect({ value, onChange, options, placeholder = 
           fontFamily: 'inherit',
           fontSize: 16,
           fontWeight: 700,
-          color: selected ? '#1d2733' : '#7b8087',
+          color: selected ? '#1d2733' : '#5f666e',
           cursor: 'pointer',
           textAlign: 'right',
         }}
@@ -174,7 +174,7 @@ export default function CountrySelect({ value, onChange, options, placeholder = 
           }}
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '10px 14px', borderBottom: '1px solid #f2f2f3' }}>
-            <span style={{ color: '#7b8087', fontSize: 15 }}>⌕</span>
+            <span style={{ color: '#5f666e', fontSize: 15 }}>⌕</span>
             <input
               ref={inputRef}
               value={query}
@@ -186,7 +186,7 @@ export default function CountrySelect({ value, onChange, options, placeholder = 
           </div>
           <div ref={listRef} className="qa-dropdown-scroll" style={{ maxHeight: coords.listMaxHeight, overflowY: 'auto', padding: 6 }}>
             {filtered.length === 0 && (
-              <div style={{ padding: '18px 12px', textAlign: 'center', color: '#7b8087', fontSize: 13.5 }}>
+              <div style={{ padding: '18px 12px', textAlign: 'center', color: '#5f666e', fontSize: 13.5 }}>
                 {options.length === 0 ? '...جارٍ التحميل' : emptyLabel}
               </div>
             )}

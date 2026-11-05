@@ -69,7 +69,7 @@ export const NEWS_BODY_CSS = `
 .qn-body blockquote{margin:24px 0;padding:16px 20px;border-inline-start:4px solid #faab18;background:#fffaf0;border-radius:12px;font-size:19px;color:#3d4650}
 .qn-body figure{margin:26px 0}
 .qn-body figure img{width:100%;height:auto;border-radius:16px;display:block}
-.qn-body figcaption{font-size:14px;color:#7b8087;text-align:center;margin-top:8px}
+.qn-body figcaption{font-size:14px;color:#5f666e;text-align:center;margin-top:8px}
 .qn-body strong{color:#1d2733}
 @media(max-width:640px){.qn-body{font-size:16.5px}.qn-body h2{font-size:22px}}
 `;
