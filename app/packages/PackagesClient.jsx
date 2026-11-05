@@ -449,7 +449,7 @@ export default function PackagesPage({ initialPackages = null }) {
                     />
                   </div>
                 </div>
-                <div style={{ padding: 22, borderTop: '1px solid #ececed', display: 'flex', gap: 10 }}>
+                <div style={{ padding: 22, borderTop: '1px solid #ececed', display: 'flex', gap: 10, position: 'sticky', bottom: 0, background: '#fff' }}>
                   <button
                     type="button"
                     onClick={() => { setPrefs([]); setQuery(''); setBudget('all'); setMonth('all'); setPreferredDates(''); }}
