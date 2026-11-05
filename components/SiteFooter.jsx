@@ -22,7 +22,7 @@ export default function SiteFooter() {
                 placeItems: 'center',
               }}
             >
-              <img src="/assets/logo-mark-tight.png" alt="قصر المرايا" style={{ width: 56, height: 56, objectFit: 'contain' }} />
+              <img src="/assets/logo-mark-tight.webp" alt="قصر المرايا" style={{ width: 56, height: 56, objectFit: 'contain' }} />
             </span>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 7 }}>
               <p style={{ fontSize: 22, fontWeight: 700, color: '#fff', margin: 0, lineHeight: 1.3 }}>رحلتك تبدأ وياّنا</p>

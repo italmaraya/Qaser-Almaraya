@@ -26,7 +26,7 @@ export default function SiteHeader({ active = 'التأشيرات' }) {
     <header style={{ position: 'sticky', top: 0, zIndex: 40, background: '#fff', borderBottom: '1px solid #ececed', boxShadow: '0 1px 2px rgba(29,39,51,.06)' }}>
       <div className="qa-head" style={{ maxWidth: 1240, margin: '0 auto', padding: '12px 32px', display: 'flex', alignItems: 'center', gap: 24 }}>
         <Link href="/" aria-label="قصر المرايا للسفر و السياحة" className="qa-logo" style={{ display: 'flex', alignItems: 'center', gap: 9, textDecoration: 'none', flex: 'none' }}>
-          <img src="/assets/logo-mark-tight.png" alt="" style={{ height: 38, width: 38, objectFit: 'contain', display: 'block', flex: 'none' }} />
+          <img src="/assets/logo-mark-tight.webp" alt="" style={{ height: 38, width: 38, objectFit: 'contain', display: 'block', flex: 'none' }} />
           <span style={{ display: 'flex', flexDirection: 'column', gap: 1, lineHeight: 1.05 }}>
             <span style={{ fontSize: 19, fontWeight: 700, color: '#22a9d4', whiteSpace: 'nowrap' }}>قصر المرايا</span>
             <span style={{ fontSize: 10.5, fontWeight: 600, letterSpacing: '.02em', color: '#7b8087', whiteSpace: 'nowrap' }}>للسفر و السياحة</span>

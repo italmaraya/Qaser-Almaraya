@@ -1,6 +1,7 @@
 import './site.css';
 import MobileBottomBar from '../components/MobileBottomBar';
 import LiveChat from '../components/LiveChat';
+import { SITE_URL, DEFAULT_OG, ORG_JSON_LD } from '../lib/seo';
 
 export const viewport = {
   width: 'device-width',
@@ -10,8 +11,12 @@ export const viewport = {
 };
 
 export const metadata = {
+  metadataBase: new URL(SITE_URL),
   title: 'قصر المرايا للسفر و السياحة | Qaser Almaraya for Travel & Tourism',
   description: 'حجوزات الطيران، الفنادق، والبرامج السياحية — رحلتك تبدأ معنا.',
+  applicationName: 'قصر المرايا للسفر والسياحة',
+  openGraph: { siteName: 'قصر المرايا للسفر والسياحة', locale: 'ar_IQ', type: 'website', images: [DEFAULT_OG] },
+  twitter: { card: 'summary_large_image', images: [DEFAULT_OG] },
 };
 
 export default function RootLayout({ children }) {
@@ -34,6 +39,7 @@ export default function RootLayout({ children }) {
         <script src="/qa-i18n-6.js" />
       </head>
       <body>
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(ORG_JSON_LD) }} />
         {children}
         <MobileBottomBar />
         <LiveChat />

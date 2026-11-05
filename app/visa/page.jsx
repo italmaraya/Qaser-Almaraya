@@ -2,6 +2,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { WHATSAPP_NUMBER } from '../../lib/whatsapp';
 import SiteHeader from '../../components/SiteHeader';
 import HomeGlobe from '../../components/HomeGlobe';
 import SiteFooter from '../../components/SiteFooter';
@@ -696,7 +697,7 @@ export default function VisaLandingPage() {
 
                         <div style={{ display: 'flex', gap: 8, marginTop: 4 }}>
                           <a
-                            href="https://wa.me/9647749999600"
+                            href={"https://wa.me/" + WHATSAPP_NUMBER}
                             target="_blank"
                             rel="noopener"
                             style={{ flex: 1, textAlign: 'center', textDecoration: 'none', fontSize: 13, fontWeight: 700, color: '#fff', background: '#25d366', borderRadius: 999, padding: '9px 0' }}
