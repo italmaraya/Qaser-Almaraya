@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { activeSeason } from '../lib/seasons';
+import Reindeer from './Reindeer';
 
 // Full-page seasonal decoration on the public site (never on /admin):
 //   newyear  → string of hanging bells, stars and gifts, falling snowflakes,
@@ -69,9 +70,10 @@ function Sleigh({ mobile }) {
   const d = mobile ? 40 : 60;
   return (
     <div className="sd-team">
-      <img src={art('deer')} width={d} height={d} alt="" />
-      <img src={art('deer')} width={d} height={d} alt="" />
-      <img src={art('sled')} width={d * 1.1} height={d * 1.1} alt="" />
+      {/* two galloping reindeer, half a stride apart */}
+      <Reindeer size={d} delay="0s" />
+      <Reindeer size={d} delay="-0.27s" />
+      <img className="sd-sled" src={art('sled')} width={d * 1.1} height={d * 1.1} alt="" />
       <img className="sd-trail" src={art('sparkles')} width={d * 0.5} height={d * 0.5} alt="" />
     </div>
   );
@@ -95,7 +97,10 @@ const CSS = `
 .sd-star{position:absolute;opacity:0;animation:sd-once ease-in-out 1 both}
 .sd-fly{position:absolute;top:var(--sd-fly-top,14vh);right:-280px;animation:sd-fly 26s linear infinite;will-change:transform}
 .sd-team{direction:ltr;display:flex;align-items:flex-end;gap:2px;animation:sd-bob 2.6s ease-in-out infinite alternate;filter:drop-shadow(0 6px 8px rgba(1,42,55,.18))}
+.sd-team svg{display:block}
+.sd-sled{animation:sd-sled .55s ease-in-out infinite}
 .sd-trail{align-self:center;margin-inline-start:4px;opacity:.85}
+@keyframes sd-sled{0%,100%{transform:translateY(0)}50%{transform:translateY(-1px)}}
 @keyframes sd-fall{0%{transform:translate3d(0,0,0)}100%{transform:translate3d(var(--sd-drift,0),105vh,0)}}
 @keyframes sd-fall-spin{0%{transform:translate3d(0,0,0) rotate(0)}100%{transform:translate3d(var(--sd-drift,0),105vh,0) rotate(720deg)}}
 @keyframes sd-once{0%{opacity:0;transform:scale(.4)}30%{opacity:1;transform:scale(1.15)}65%{opacity:.9;transform:scale(1)}100%{opacity:0;transform:scale(.5)}}

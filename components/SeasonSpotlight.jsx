@@ -11,15 +11,15 @@ import { nightsLabel, destinationLabel } from '../lib/destinations';
 // before each, as "coming soon"); hidden the rest of the year.
 // Preview: add ?season=ramadan (eid_fitr, eid_adha, newyear, off).
 
-// Artwork: Microsoft Fluent Emoji, Flat style (MIT, public/decor/CREDITS.txt).
-const ART = { crescent: 'crescent_moon', star: 'party_popper', sparkle: 'christmas_tree' };
-
-function Decor({ icon }) {
-  const main = ART[icon] || 'glowing_star';
+// Banner artwork: one photo per season designed in Canva (public/season/*.webp),
+// shaded on the text side so the Arabic/English copy stays readable. If the
+// photo is missing the card simply keeps its gradient.
+function Photo({ id, base }) {
   return (
-    <div className="qa-ss-art" aria-hidden="true">
-      <img className="qa-ss-main" src={'/decor/' + main + '.svg'} alt="" draggable="false" />
-      <img className="qa-ss-sub qa-ss-twinkle" src="/decor/sparkles.svg" alt="" draggable="false" />
+    <div className="qa-ss-photo" aria-hidden="true" style={{ '--ss-a': base, '--ss-b': base + 'c8', '--ss-c': base + '00' }}>
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img src={'/season/' + id + '.webp'} alt="" draggable="false" decoding="async" onError={(e) => { e.currentTarget.parentNode.style.display = 'none'; }} />
+      <span className="qa-ss-shade" />
     </div>
   );
 }
@@ -52,24 +52,21 @@ export default function SeasonSpotlight({ lang = 'ar' }) {
 .qa-ss{position:relative;overflow:hidden;border-radius:26px;padding:30px 34px;display:flex;flex-direction:column;gap:18px;box-shadow:0 22px 50px rgba(1,42,55,.18);animation:qa-ss-in .6s cubic-bezier(.16,1,.3,1) both}
 @keyframes qa-ss-in{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
 .qa-ss h2{font-size:34px;font-weight:700;color:inherit}
-.qa-ss-art{position:absolute;inset-inline-end:10px;top:0;width:260px;height:190px;pointer-events:none;opacity:.95}
-[dir=rtl] .qa-ss-art{transform:scaleX(-1)}
-.qa-ss-twinkle{animation:qa-ss-tw 2.4s ease-in-out infinite}
-.qa-ss-art img{position:absolute;display:block;user-select:none}
-.qa-ss-main{right:14%;top:12%;width:46%;height:auto;filter:drop-shadow(0 10px 18px rgba(0,0,0,.25));animation:qa-ss-float 5s ease-in-out infinite}
-.qa-ss-sub{right:66%;top:10%;width:16%;height:auto}
-@keyframes qa-ss-float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
-@keyframes qa-ss-tw{0%,100%{opacity:.25;transform:scale(.8)}50%{opacity:1;transform:scale(1.1)}}
+.qa-ss-photo{position:absolute;inset:0;pointer-events:none;overflow:hidden;border-radius:inherit}
+.qa-ss-photo img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:left center;display:block;user-select:none}
+[dir=ltr] .qa-ss-photo img{object-position:right center}
+.qa-ss-shade{position:absolute;inset:0;background:linear-gradient(to left,var(--ss-a) 0%,var(--ss-a) 36%,var(--ss-b) 54%,var(--ss-c) 80%)}
+[dir=ltr] .qa-ss-shade{background:linear-gradient(to right,var(--ss-a) 0%,var(--ss-a) 36%,var(--ss-b) 54%,var(--ss-c) 80%)}
 .qa-ss-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;position:relative}
 .qa-ss-card{display:flex;gap:10px;background:#fff;color:#1d2733;border-radius:14px;overflow:hidden;min-height:84px}
 .qa-ss-card:hover{color:#1d2733;transform:translateY(-2px)}
 .qa-ss-card img{width:84px;flex-shrink:0;object-fit:cover}
 .qa-ss .qa-btn{white-space:nowrap!important;min-height:0!important;line-height:1.3}
-@media (max-width:820px){.qa-ss .qa-btn{padding:10px 20px!important;font-size:14.5px!important}.qa-ss{padding:22px 18px;border-radius:20px}.qa-ss h2{font-size:23px!important}.qa-ss-art{width:150px;height:110px;opacity:.55}.qa-ss-grid{display:flex!important;flex-direction:column}}
-@media (prefers-reduced-motion:reduce){.qa-ss,.qa-ss-twinkle,.qa-ss-main{animation:none}}
+@media (max-width:820px){.qa-ss .qa-btn{padding:10px 20px!important;font-size:14.5px!important}.qa-ss{padding:150px 18px 22px;border-radius:20px}.qa-ss h2{font-size:23px!important}.qa-ss-photo img{object-position:center 30%}.qa-ss-shade,[dir=ltr] .qa-ss-shade{background:linear-gradient(to bottom,var(--ss-c) 0px,var(--ss-c) 60px,var(--ss-b) 120px,var(--ss-a) 175px)}.qa-ss-grid{display:flex!important;flex-direction:column}}
+@media (prefers-reduced-motion:reduce){.qa-ss{animation:none}}
 `}</style>
       <div className="qa-ss" style={{ background: season.bg, color: season.fg }}>
-        <Decor icon={season.icon} accent={season.accent} />
+        <Photo id={season.id} base={season.base || '#036f8c'} />
         <div style={{ display: 'flex', flexDirection: 'column', gap: 8, position: 'relative', maxWidth: 620 }}>
           <span style={{ alignSelf: 'flex-start', fontSize: 12.5, fontWeight: 700, padding: '4px 12px', borderRadius: 999, background: 'rgba(255,255,255,.18)', border: '1px solid rgba(255,255,255,.3)' }}>{tx.strip}{active.preview ? (en ? ' · preview' : ' · معاينة') : ''}</span>
           <h2>{soon ? tx.soon + inDays : tx.title}</h2>

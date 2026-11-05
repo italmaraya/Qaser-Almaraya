@@ -14,11 +14,12 @@ export async function generateMetadata({ params }) {
   const { iso } = await params;
   const c = countryInfo(iso);
   const g = guideFor(iso, 'ar');
-  if (!c || !g) return pageMeta({ title: 'دليل السفر', path: '/guide' });
+  if (!c || !g) return pageMeta({ title: 'دليل السفر', path: '/guide', image: '/og/og-guide.jpg' });
   return pageMeta({
     title: 'دليل السفر إلى ' + c.ar + ': الطقس والعملة وفرق التوقيت',
     description: `كل ما تحتاجه قبل السفر إلى ${c.ar} من بغداد: طقس ${g.city} في كل شهر، العملة (${g.currency})، فرق التوقيت، نوع المقبس، أفضل وقت للزيارة ونصائح عملية.`,
     path: '/guide/' + iso,
+    image: '/og/og-guide.jpg',
   });
 }
 

@@ -3,7 +3,7 @@ import { getSiteContent } from '../../lib/content';
 import { getLegacyVisaData } from '../../lib/legacyVisaTransform';
 import { pageMeta } from '../../lib/seo';
 
-export const metadata = pageMeta({ title: 'حجز الطيران والفنادق', description: 'احجز تذاكر الطيران والفنادق من بغداد إلى كل العالم عبر شريكنا Flamingo، أو اتصل بالرقم المختصر 6393 وسنحجز لك.', path: '/flights' });
+export const metadata = pageMeta({ title: 'حجز الطيران والفنادق', description: 'احجز تذاكر الطيران والفنادق من بغداد إلى كل العالم عبر شريكنا Flamingo، أو اتصل بالرقم المختصر 6393 وسنحجز لك.', path: '/flights', image: '/og/og-flights.jpg' });
 
 export const revalidate = 60; // cached at the edge for fast page changes; admin saves refresh it at once
 
