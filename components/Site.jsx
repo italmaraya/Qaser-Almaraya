@@ -280,7 +280,7 @@ export default function Site(props) {
 
 function   toWest(str){ return String(str || '').replace(/[٠-٩]/g, d => String('٠١٢٣٤٥٦٧٨٩'.indexOf(d))); }
 
-function   toArabic(n){ return st.lang === 'en' ? String(n) : String(n).replace(/\d/g, d => '٠١٢٣٤٥٦٧٨٩'[+d]); }
+function   toArabic(n){ return String(n); } // site-wide Western digits
 
 function   feeValue(fee){ const m = toWest(fee).match(/\d+/); return m ? +m[0] : 0; }
 
@@ -586,7 +586,7 @@ function   renderVals(){
 
   /* ---------- Visa module (BRD v3) ---------- */
 
-function   money(n){ const s = Number(n || 0).toLocaleString('en-US'); return st.lang === 'en' ? 'IQD ' + s : s.replace(/\d/g, d => '٠١٢٣٤٥٦٧٨٩'[+d]).replace(/,/g, '٬') + ' د.ع'; }
+function   money(n){ const s = Number(n || 0).toLocaleString('en-US'); return st.lang === 'en' ? 'IQD ' + s : s + ' د.ع'; }
 
 function   L(ar, en){ return st.lang === 'en' && en != null ? en : ar; }
 

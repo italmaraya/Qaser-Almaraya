@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { COUNTRY_GEO } from '../lib/geoData';
 import { findCountryIso, routeMapSvg, distanceKm, BAGHDAD } from '../lib/visaPdf';
 import { destinationTz } from './WorldClocks';
+import { workDaysLabel } from '../lib/destinations';
 
 // Correct Arabic count: تأشيرة واحدة / تأشيرتان / 3 تأشيرات / 11 تأشيرة
 export function visaCountAr(n) {
@@ -65,7 +66,7 @@ export default function CountryHero({ country, count, fastestDays, lang = 'ar', 
     if (info.diff !== null) chips.push(['🕐', en ? 'Time difference' : 'فرق التوقيت', info.diff === 0 ? (en ? 'Same as Baghdad' : 'نفس توقيت بغداد') : (info.diff > 0 ? '+' : '−') + Math.abs(info.diff) + (en ? 'h' : ' س')]);
     if (info.currency) chips.push(['💱', en ? 'Currency' : 'العملة', info.currency]);
   }
-  if (fastestDays) chips.push(['⚡', en ? 'Fastest processing' : 'أسرع إصدار', fastestDays + (en ? ' working days' : ' أيام عمل')]);
+  if (fastestDays) chips.push(['⚡', en ? 'Fastest processing' : 'أسرع إصدار', workDaysLabel(fastestDays, lang)]);
 
   return (
     <section className="qch" style={{ backgroundImage: photo ? `url("${photo}")` : undefined }}>

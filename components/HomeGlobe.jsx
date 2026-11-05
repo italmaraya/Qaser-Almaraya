@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState } from 'react';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import { COUNTRY_GEO } from '../lib/geoData';
+import { packageCountries } from '../lib/destinations';
 import { findCountryIso } from '../lib/visaPdf';
 
 const Globe3D = dynamic(() => import('./Globe3D'), { ssr: false, loading: () => <div style={{ height: 420 }} /> });
@@ -43,7 +44,7 @@ export default function HomeGlobe({ lang = 'ar', mode = 'all' }) {
       if (/^(https?:|\/)/.test(c.flag_code || '')) p.flag = c.flag_code;
     });
     packages.forEach((pk) => {
-      (Array.isArray(pk.countries) ? pk.countries : []).forEach((code) => {
+      packageCountries(pk).forEach((code) => {
         const p = ensure(String(code).toLowerCase());
         if (p) p.packages += 1;
       });
@@ -59,7 +60,7 @@ export default function HomeGlobe({ lang = 'ar', mode = 'all' }) {
         <span style={{ fontSize: 13, fontWeight: 700, color: visaOnly ? '#faab18' : '#049dc5' }}>{en ? 'From Baghdad to the world' : 'من بغداد إلى العالم'}</span>
         <h2 style={{ margin: 0, fontSize: 'clamp(24px,3vw,34px)', lineHeight: 1.25 }}>
           {visaOnly
-            ? (en ? `Visas for ${pins.length} countries, one message away` : `تأشيرات ${pins.length} دولة… على بُعد رسالة واحدة`)
+            ? (en ? `Visas for ${pins.length} countries, one message away` : `تأشيرات ${pins.length} ${pins.length > 2 && pins.length <= 10 ? 'دول' : 'دولة'}… على بُعد رسالة واحدة`)
             : (en ? `${pins.length} destinations, one call away` : `${pins.length} وجهة… على بُعد رسالة واحدة`)}
         </h2>
         <p style={{ margin: 0, color: '#3d4650', lineHeight: 1.8 }}>
