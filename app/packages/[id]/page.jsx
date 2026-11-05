@@ -12,7 +12,7 @@ import { formatPrice, formatSignedPrice } from '../../../lib/currency';
 import { printDoc, copyText } from '../../../lib/printDoc';
 import WhatsAppButton from '../../../components/WhatsAppButton';
 import { APPLY_FLOW_ENABLED, packageMessage } from '../../../lib/whatsapp';
-import { buildPackageVoucherHtml } from '../../../lib/packagePdf';
+import { buildPackageVoucherHtml, stripFlags } from '../../../lib/packagePdf';
 import { packageUrgency } from '../../../lib/packageUrgency';
 import { TRAVELLER_TYPES, computeTotals, unitPrice, durationLabel } from '../../../lib/packagePricing';
 import { useProviderReveal } from '../../../lib/useProviderReveal';
@@ -453,8 +453,8 @@ export default function PackageDetailPage() {
                   <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
                     {days.map((d, idx) => (
                       <div key={idx} style={{ borderInlineStart: '3px solid #049dc5', paddingInlineStart: 14 }}>
-                        <div style={{ fontSize: 15, fontWeight: 700, color: '#1d2733' }}>{nm(d.titleAr, d.titleEn)}</div>
-                        <div style={{ fontSize: 13.5, color: '#5f666e', lineHeight: 1.6, marginTop: 2 }}>{nm(d.descAr, d.descEn)}</div>
+                        <div style={{ fontSize: 15, fontWeight: 700, color: '#1d2733' }}>{stripFlags(nm(d.titleAr, d.titleEn))}</div>
+                        <div style={{ fontSize: 13.5, color: '#5f666e', lineHeight: 1.6, marginTop: 2 }}>{stripFlags(nm(d.descAr, d.descEn))}</div>
                       </div>
                     ))}
                   </div>
