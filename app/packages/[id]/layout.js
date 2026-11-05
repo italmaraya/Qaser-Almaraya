@@ -7,9 +7,12 @@ export async function generateMetadata({ params }) {
   const p = await seoPackage(id);
   if (!p) return pageMeta({ title: 'الباقات السياحية', description: 'باقات سياحية من بغداد.', path: '/packages' });
   const nights = nightsText(p);
+  const price = Number(p.price) > 0 ? 'يبدأ من ' + Number(p.price).toLocaleString('en-US') + ' د.ع للشخص' : '';
   return pageMeta({
     title: p.title_ar || p.dest_ar,
-    description: ['باقة سياحية', p.dest_ar, nights].filter(Boolean).join(' — ') + '. طيران وفندق وجولات من بغداد مع قصر المرايا. احجز عبر واتساب أو الرقم المختصر 6393.',
+    // WhatsApp/Facebook show this under the photo when the link is shared,
+    // so it leads with the duration and the price.
+    description: [[nights, price].filter(Boolean).join(' · '), ['باقة سياحية', p.dest_ar].filter(Boolean).join(' — ')].filter(Boolean).join(' | ') + '. طيران وفندق وجولات من بغداد مع قصر المرايا. احجز عبر واتساب أو الرقم المختصر 6393.',
     path: '/packages/' + p.id,
     image: p.image_url || undefined,
   });

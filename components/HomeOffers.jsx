@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { formatPrice } from '../lib/currency';
 import { nightsLabel, destinationLabel } from '../lib/destinations';
+import { loadPackages } from '../lib/publicPackages';
 
 // "Featured offers" strip on the homepage: the first packages in the order
 // set in the dashboard, with photo, duration and starting price. Hidden when
@@ -15,10 +16,7 @@ export default function HomeOffers({ lang = 'ar' }) {
 
   useEffect(() => {
     let alive = true;
-    fetch('/api/packages')
-      .then((r) => (r.ok ? r.json() : []))
-      .catch(() => [])
-      .then((list) => { if (alive) setItems(Array.isArray(list) ? list.slice(0, MAX) : []); });
+    loadPackages().then((list) => { if (alive) setItems(list.slice(0, MAX)); });
     return () => { alive = false; };
   }, []);
 

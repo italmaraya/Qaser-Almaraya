@@ -134,6 +134,26 @@ export default function PackageDetailPage() {
     return lines;
   }
 
+  // Share the package with family and friends: the phone's own share sheet
+  // when it has one, otherwise WhatsApp (any contact, not the company line).
+  async function handleShare() {
+    const en = lang === 'en';
+    const url = window.location.origin + '/packages/' + pkg.id;
+    const title = nm(pkg.title_ar, pkg.title_en);
+    const text = [
+      '✈️ ' + title + (destinationLabel(pkg, lang) ? ' — ' + destinationLabel(pkg, lang) : ''),
+      nightsLabel(pkg, lang),
+      Number(pkg.price) > 0 ? (en ? 'From ' : 'يبدأ من ') + formatPrice(pkg.price, 'IQD', lang) + (en ? ' per person' : ' للشخص') : '',
+      en ? 'Qaser Almaraya Travel & Tourism' : 'قصر المرايا للسفر والسياحة',
+    ].filter(Boolean).join('\n');
+    if (navigator.share) {
+      try { await navigator.share({ title, text, url }); return; } catch (e) { if (e && e.name === 'AbortError') return; }
+    }
+    const wa = 'https://wa.me/?text=' + encodeURIComponent(text + '\n' + url);
+    const w = window.open(wa, '_blank', 'noopener');
+    if (!w) window.location.href = wa;
+  }
+
   function handleCopy() {
     copyText(packageSummaryLines().join('\n'), () => flashToast(t.copied_msg));
   }
@@ -358,6 +378,15 @@ export default function PackageDetailPage() {
                   {t.copy_btn}
                 </button>
               </div>
+              <button
+                type="button"
+                onClick={handleShare}
+                className="qa-share-btn"
+                style={{ cursor: 'pointer', border: '1px solid #b9eccd', borderRadius: 999, padding: '10px 14px', fontSize: 13.5, fontWeight: 700, fontFamily: 'inherit', background: '#eafaf0', color: '#11804a', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 7 }}
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><circle cx="18" cy="5" r="3" /><circle cx="6" cy="12" r="3" /><circle cx="18" cy="19" r="3" /><path d="m8.6 13.5 6.8 4M15.4 6.5l-6.8 4" /></svg>
+                {lang === 'en' ? 'Share this package with family & friends' : 'شارك الباقة مع أهلك وأصدقائك'}
+              </button>
               {toast && (
                 <span style={{ fontSize: 12.5, fontWeight: 700, color: '#036f8c', background: '#eaf8fd', border: '1px solid #bfe9f6', borderRadius: 8, padding: '6px 10px', textAlign: 'center' }}>{toast}</span>
               )}
