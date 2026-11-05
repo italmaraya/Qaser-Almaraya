@@ -5,7 +5,7 @@ import { pageMeta } from '../lib/seo';
 
 export const metadata = pageMeta({ absoluteTitle: 'قصر المرايا للسفر والسياحة | باقات سياحية وتأشيرات وطيران من بغداد', description: 'قصر المرايا للسفر والسياحة في بغداد: باقات سياحية، تأشيرات، حجز طيران وفنادق وسفر المجموعات. تواصل عبر واتساب أو الرقم المختصر 6393.', path: '/' });
 
-export const dynamic = 'force-dynamic'; // content can change any time via the admin dashboard
+export const revalidate = 60; // cached at the edge for fast page changes; admin saves refresh it at once
 
 export default async function Page() {
   const [content, legacy] = await Promise.all([getContent(), getLegacyVisaData()]);

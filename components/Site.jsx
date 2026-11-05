@@ -185,6 +185,18 @@ export default function Site(props) {
     fetch('/api/jobs').then((r) => r.json()).then((d) => setOdooJobsData(d && Array.isArray(d.jobs) ? d : { jobs: [] })).catch(() => setOdooJobsData({ jobs: [] }));
   }, [st.page]); // eslint-disable-line react-hooks/exhaustive-deps
 
+  // ?topic=package (from "Request a custom package") pre-selects the contact
+  // subject. Read in the browser so the contact page itself can stay cached.
+  useEffect(() => {
+    if (st.page !== 'contact') return;
+    try {
+      const TOPICS = { package: 'باقة أو جولة', visa: 'تأشيرة', hotel: 'حجز فندق', flight: 'حجز طيران' };
+      const topic = new URLSearchParams(window.location.search).get('topic');
+      if (topic && TOPICS[topic]) patch((s) => ({ contact: { ...s.contact, subject: TOPICS[topic] } }));
+    } catch { /* ignore */ }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [st.page]);
+
   useEffect(() => {
     const stored = getStoredLang();
     if (stored !== st.lang) patch({ lang: stored });
