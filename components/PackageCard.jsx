@@ -25,9 +25,9 @@ function FlightRow({ f, lang, selected, onSelect }) {
       <div onClick={onSelect} style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8 }}>
         <span style={{ fontSize: 13, fontWeight: 700, color: '#1d2733' }}>
           {airline || (lang === 'en' ? 'Airline' : 'شركة الطيران')}
-          {legData.flightNo ? <span style={{ color: '#7b8087', fontWeight: 500 }}> · {legData.flightNo}</span> : null}
+          {legData.flightNo ? <span style={{ color: '#5f666e', fontWeight: 500 }}> · {legData.flightNo}</span> : null}
         </span>
-        <span style={{ fontSize: 12.5, fontWeight: 700, color: f.diff ? '#049dc5' : '#7b8087' }}>
+        <span style={{ fontSize: 12.5, fontWeight: 700, color: f.diff ? '#049dc5' : '#5f666e' }}>
           {f.diff ? (f.diff > 0 ? '+' : '') + f.diff.toLocaleString() + ' ' + (lang === 'en' ? 'IQD' : 'د.ع') : (lang === 'en' ? 'Included' : 'مشمول')}
         </span>
       </div>
@@ -61,17 +61,17 @@ function FlightRow({ f, lang, selected, onSelect }) {
         <div onClick={onSelect} style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 10 }}>
           <div style={{ flex: '0 0 auto', minWidth: 70, textAlign: 'center' }}>
             <div style={{ fontSize: 16, fontWeight: 700, color: '#1d2733' }}>{legData.depart || '--:--'}</div>
-            <div style={{ fontSize: 11.5, color: '#7b8087' }}>{legData.from || (lang === 'en' ? 'Origin' : 'الانطلاق')}</div>
+            <div style={{ fontSize: 11.5, color: '#5f666e' }}>{legData.from || (lang === 'en' ? 'Origin' : 'الانطلاق')}</div>
           </div>
           <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 }}>
             <div style={{ position: 'relative', width: '100%', height: 1, background: '#cfe9f2', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <Icon name="plane" size={16} style={{ color: '#049dc5', background: '#fff', transform: active === 'ret' ? 'rotate(-90deg)' : 'rotate(90deg)' }} />
             </div>
-            {legData.duration ? <span style={{ fontSize: 10.5, color: '#7b8087' }}>{legData.duration}</span> : null}
+            {legData.duration ? <span style={{ fontSize: 10.5, color: '#5f666e' }}>{legData.duration}</span> : null}
           </div>
           <div style={{ flex: '0 0 auto', minWidth: 70, textAlign: 'center' }}>
             <div style={{ fontSize: 16, fontWeight: 700, color: '#1d2733' }}>{legData.arrive || '--:--'}</div>
-            <div style={{ fontSize: 11.5, color: '#7b8087' }}>{legData.to || (lang === 'en' ? 'Destination' : 'الوصول')}</div>
+            <div style={{ fontSize: 11.5, color: '#5f666e' }}>{legData.to || (lang === 'en' ? 'Destination' : 'الوصول')}</div>
           </div>
         </div>
       ) : null}
@@ -101,7 +101,7 @@ function HotelRow({ h, lang, selected, onSelect }) {
       <div style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', gap: 4 }}>
         <span style={{ fontSize: 14, fontWeight: 700, color: '#1d2733' }}>{nm(h.nameAr, h.nameEn)}</span>
         {h.location ? (
-          <span style={{ fontSize: 12, color: '#7b8087', display: 'flex', alignItems: 'center', gap: 4 }}>
+          <span style={{ fontSize: 12, color: '#5f666e', display: 'flex', alignItems: 'center', gap: 4 }}>
             <Icon name="map-pin" size={12} />{h.location}
           </span>
         ) : null}
@@ -113,7 +113,7 @@ function HotelRow({ h, lang, selected, onSelect }) {
           </div>
         ) : null}
       </div>
-      <span style={{ fontSize: 12.5, fontWeight: 700, color: h.diff ? '#049dc5' : '#7b8087', flex: 'none' }}>
+      <span style={{ fontSize: 12.5, fontWeight: 700, color: h.diff ? '#049dc5' : '#5f666e', flex: 'none' }}>
         {h.diff ? (h.diff > 0 ? '+' : '') + h.diff.toLocaleString() + ' ' + (lang === 'en' ? 'IQD' : 'د.ع') : (lang === 'en' ? 'Included' : 'مشمول')}
       </span>
     </div>
@@ -180,7 +180,7 @@ export default function PackageCard({ title, destination, image, nights, groupTy
         </div>
       </div>
       <div className="qa-pkg-body" style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
-        <div className="qa-pkg-meta" style={{ display: 'flex', flexWrap: 'wrap', color: '#7b8087' }}>
+        <div className="qa-pkg-meta" style={{ display: 'flex', flexWrap: 'wrap', color: '#5f666e' }}>
           {groupType ? <span style={{ display: 'inline-flex', alignItems: 'center', gap: 5 }}><Icon name="users" size={14} />{groupType}</span> : null}
           {departs ? <span style={{ display: 'inline-flex', alignItems: 'center', gap: 5 }}><Icon name="calendar-days" size={14} />{departs}</span> : null}
         </div>

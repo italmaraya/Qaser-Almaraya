@@ -69,7 +69,7 @@ export default function PaymentMethods({ title, note, methods, defaultOpen = 'ca
           <span style={{ fontSize: 24, fontWeight: 700, color: '#036f8c' }}>شكراً لك!</span>
           {orderNo && (
             <span style={{ display: 'inline-flex', alignItems: 'center', gap: 10, padding: '8px 16px', borderRadius: 999, background: '#fff', border: '1px solid #bfe9f6' }}>
-              <span style={{ fontSize: 13, color: '#7b8087' }}>رقم الطلب</span>
+              <span style={{ fontSize: 13, color: '#5f666e' }}>رقم الطلب</span>
               <span dir="ltr" style={{ fontSize: 15, fontWeight: 700, letterSpacing: '.06em', color: '#036f8c' }}>{orderNo}</span>
             </span>
           )}
@@ -100,15 +100,15 @@ export default function PaymentMethods({ title, note, methods, defaultOpen = 'ca
                 </span>
                 <span style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', gap: 2 }}>
                   <span style={{ fontSize: 13.5, fontWeight: 600, color: '#1d2733' }}>الطريقة {i + 1} — {m.label}</span>
-                  <span style={{ fontSize: 11, color: '#7b8087' }}>{m.hint}</span>
+                  <span style={{ fontSize: 11, color: '#5f666e' }}>{m.hint}</span>
                 </span>
-                <Icon name={on ? 'chevron-up' : 'chevron-down'} size={18} style={{ color: '#7b8087' }} />
+                <Icon name={on ? 'chevron-up' : 'chevron-down'} size={18} style={{ color: '#5f666e' }} />
               </button>
               {on ? (
                 <div style={{ padding: 16, display: 'flex', flexDirection: 'column', gap: 12, borderTop: '1px solid #ececed' }}>
                   {(m.rows || []).map((r) => (
                     <div key={r[0]} style={{ display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
-                      <span style={{ minWidth: 110, fontSize: 12, color: '#7b8087' }}>{r[0]}</span>
+                      <span style={{ minWidth: 110, fontSize: 12, color: '#5f666e' }}>{r[0]}</span>
                       <span dir={/[0-9+]/.test(r[1][0]) ? 'ltr' : 'rtl'} style={{ fontSize: 13.5, fontWeight: 600, color: '#1d2733', letterSpacing: /[0-9+]/.test(r[1][0]) ? '.04em' : 'normal' }}>{r[1]}</span>
                     </div>
                   ))}
@@ -142,7 +142,7 @@ export default function PaymentMethods({ title, note, methods, defaultOpen = 'ca
             )}
             {atOffice ? null : <input id={uploadId} type="file" accept="image/*,.pdf" disabled={uploading} style={{ display: 'none' }} onChange={(e) => handleFile(e.target.files && e.target.files[0])} />}
             {atOffice ? null : (
-              <span style={{ flex: 1, minWidth: 120, fontSize: 12, color: receiptUrl ? '#1d2733' : '#7b8087', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+              <span style={{ flex: 1, minWidth: 120, fontSize: 12, color: receiptUrl ? '#1d2733' : '#5f666e', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                 {receiptUrl ? receiptName : uploading ? 'جارٍ رفع الملف…' : 'لم يتم اختيار ملف بعد'}
               </span>
             )}

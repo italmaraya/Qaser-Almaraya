@@ -129,7 +129,7 @@ function TravelerForm({ index, travelerType, documents, onChange, onProgress }) 
           </span>
           <span style={{ fontSize: 16, fontWeight: 700, color: '#1d2733' }}>مسافر {index + 1}</span>
         </span>
-        <span style={{ fontSize: 13, color: '#7b8087' }}>{doneRequired}/{totalRequired} مكتمل</span>
+        <span style={{ fontSize: 13, color: '#5f666e' }}>{doneRequired}/{totalRequired} مكتمل</span>
       </div>
       <label style={labelStyle}>
         الاسم الكامل كما في الجواز *
@@ -154,7 +154,7 @@ function TravelerForm({ index, travelerType, documents, onChange, onProgress }) 
                     {files[d.id] ? 'تغيير الملف' : 'رفع'}
                     <input type="file" accept={d.kind === 'photo' ? 'image/*' : undefined} onChange={(e) => handleFile(d, e.target.files[0])} style={{ display: 'none' }} />
                   </label>
-                  {uploading[d.id] && <span style={{ fontSize: 13, color: '#7b8087' }}>...جارٍ الرفع</span>}
+                  {uploading[d.id] && <span style={{ fontSize: 13, color: '#5f666e' }}>...جارٍ الرفع</span>}
                   {!uploading[d.id] && files[d.id] && <span style={{ fontSize: 13, color: '#049dc5' }}>✓ تم الرفع</span>}
                 </div>
                 {uploadErrors[d.id] && <span style={{ fontSize: 12.5, color: '#d2324f' }}>{uploadErrors[d.id]}</span>}
@@ -215,7 +215,7 @@ function TravelerForm({ index, travelerType, documents, onChange, onProgress }) 
                   </button>
                 ))}
                 {(!d.choices || d.choices.length === 0) && (
-                  <span style={{ fontSize: 12.5, color: '#7b8087' }}>لم يحدد الخيارات بعد</span>
+                  <span style={{ fontSize: 12.5, color: '#5f666e' }}>لم يحدد الخيارات بعد</span>
                 )}
               </div>
             )}
@@ -423,13 +423,13 @@ function ArchivedVisaApplyPage() {
               <div style={{ display: 'flex', flexDirection: 'column', gap: 8, fontSize: 14 }}>
                 {adultCount > 0 && (
                   <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                    <span style={{ color: '#7b8087' }}>{adultCount} × بالغ</span>
+                    <span style={{ color: '#5f666e' }}>{adultCount} × بالغ</span>
                     <span>{formatPrice(Number(card.adult_price) * adultCount, 'IQD', lang)}</span>
                   </div>
                 )}
                 {childCount > 0 && (
                   <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                    <span style={{ color: '#7b8087' }}>{childCount} × طفل</span>
+                    <span style={{ color: '#5f666e' }}>{childCount} × طفل</span>
                     <span>{formatPrice(Number(card.child_price) * childCount, 'IQD', lang)}</span>
                   </div>
                 )}
@@ -441,7 +441,7 @@ function ArchivedVisaApplyPage() {
               {step === 'form' && (
                 <>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13, color: '#7b8087' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13, color: '#5f666e' }}>
                       <span>المستندات المطلوبة</span>
                       <span>{totalDone}/{totalNeeded} مكتمل</span>
                     </div>
@@ -473,7 +473,7 @@ function ArchivedVisaApplyPage() {
                       <label style={labelStyle}>
                         رقم الهاتف *
                         <div style={{ display: 'flex', alignItems: 'center', gap: 8, ...inputStyle, padding: '0 12px' }}>
-                          <span dir="ltr" style={{ color: '#7b8087', fontWeight: 700, flex: 'none' }}>+964</span>
+                          <span dir="ltr" style={{ color: '#5f666e', fontWeight: 700, flex: 'none' }}>+964</span>
                           <input
                             style={{ border: 0, outline: 'none', fontFamily: 'inherit', fontSize: 15, flex: 1, padding: '10px 0', minWidth: 0 }}
                             dir="ltr"
@@ -524,7 +524,7 @@ function ArchivedVisaApplyPage() {
 
               {step === 'payment' && (
                 <div className="qa-card">
-                  {submitting && <p style={{ margin: 0, color: '#7b8087', fontSize: 14 }}>...جارٍ إرسال طلبك في الخلفية</p>}
+                  {submitting && <p style={{ margin: 0, color: '#5f666e', fontSize: 14 }}>...جارٍ إرسال طلبك في الخلفية</p>}
                   {error && (
                     <p style={{ margin: '0 0 14px', padding: 12, background: '#fdecef', border: '1px solid #f7c3cc', borderRadius: 10, color: '#d2324f', fontSize: 14 }}>{error}</p>
                   )}

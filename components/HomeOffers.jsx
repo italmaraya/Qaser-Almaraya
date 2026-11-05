@@ -39,7 +39,7 @@ export default function HomeOffers({ lang = 'ar' }) {
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 16 }}>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 8, minWidth: 0 }}>
           <h2 style={{ fontSize: 34, fontWeight: 700 }}>{en ? 'Featured offers' : 'أبرز العروض'}</h2>
-          <p style={{ fontSize: 16, color: '#7b8087' }}>{en ? 'Ready-made trips from Baghdad, one price per person.' : 'رحلات جاهزة من بغداد بسعر واحد للفرد.'}</p>
+          <p style={{ fontSize: 16, color: '#5f666e' }}>{en ? 'Ready-made trips from Baghdad, one price per person.' : 'رحلات جاهزة من بغداد بسعر واحد للفرد.'}</p>
         </div>
         <Link href="/packages" className="qa-btn qa-cyan" style={{ padding: '11px 24px', fontSize: 15, whiteSpace: 'nowrap', flexShrink: 0, alignSelf: 'center' }}>{en ? 'All packages' : 'كل الباقات'}</Link>
       </div>
@@ -53,10 +53,10 @@ export default function HomeOffers({ lang = 'ar' }) {
                 {p.image_url ? <img src={p.image_url} alt={nm(p.title_ar, p.title_en)} loading="lazy" /> : null}
               </div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 6, padding: '14px 16px 16px', flex: 1 }}>
-                <span style={{ fontSize: 13, color: '#7b8087' }}>{[destinationLabel(p, lang), nightsLabel(p, lang)].filter(Boolean).join(' · ')}</span>
+                <span style={{ fontSize: 13, color: '#5f666e' }}>{[destinationLabel(p, lang), nightsLabel(p, lang)].filter(Boolean).join(' · ')}</span>
                 <h3 style={{ fontSize: 18, fontWeight: 700, color: '#1d2733', lineHeight: 1.35 }}>{nm(p.title_ar, p.title_en)}</h3>
                 <div style={{ marginTop: 'auto', paddingTop: 10, display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: 8 }}>
-                  <span style={{ fontSize: 13, color: '#7b8087' }}>{en ? 'From' : 'يبدأ من'}</span>
+                  <span style={{ fontSize: 13, color: '#5f666e' }}>{en ? 'From' : 'يبدأ من'}</span>
                   <span style={{ fontSize: 19, fontWeight: 700, color: '#036f8c' }}>{formatPrice(p.price, 'IQD', lang)}</span>
                 </div>
               </div>

@@ -156,7 +156,7 @@ function ArchivedPackageBookingPage() {
           <section className="qa-sec qa-2col" style={{ display: 'grid', gridTemplateColumns: 'minmax(240px,320px) 1fr', gap: 28, alignItems: 'flex-start' }}>
             <div className="qa-card" style={{ position: 'sticky', top: 90, display: 'flex', flexDirection: 'column', gap: 10 }}>
               <h3 style={{ margin: 0, fontSize: 17 }}>{nm(pkg.title_ar, pkg.title_en)}</h3>
-              <span style={{ fontSize: 13, color: '#7b8087' }}>{destinationLabel(pkg, lang)} · {nightsLabel(pkg, lang)}</span>
+              <span style={{ fontSize: 13, color: '#5f666e' }}>{destinationLabel(pkg, lang)} · {nightsLabel(pkg, lang)}</span>
               {hotel && <div style={{ fontSize: 13.5, borderTop: '1px solid #ececed', paddingTop: 10 }}><b>{t.hotel_title}:</b> {nm(hotel.nameAr, hotel.nameEn)}</div>}
               {flight && <div style={{ fontSize: 13.5 }}><b>{t.flight_title}:</b> {nm(flight.nameAr, flight.nameEn)}</div>}
               <div style={{ fontSize: 13.5 }}>{t.detail_adults}: {adultCount} · {t.detail_children}: {childCount}</div>

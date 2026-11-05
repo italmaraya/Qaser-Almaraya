@@ -23,6 +23,30 @@ import { formatPrice } from '../../lib/currency';
 import { COUNTRY_GEO } from '../../lib/geoData';
 import { REGIONS, countryInfo, flagUrl, groupPackagesByCountry, packageCountries, packageCountry, nightsLabel, destinationLabel, isoFromName } from '../../lib/destinations';
 
+// Budget buckets (IQD per adult) and month helpers for the filters.
+const BUDGETS = [
+  { id: 'b1', ar: 'أقل من مليون', en: 'Under 1M', min: 0, max: 1000000 },
+  { id: 'b2', ar: 'مليون – مليونين', en: '1M – 2M', min: 1000000, max: 2000000 },
+  { id: 'b3', ar: 'مليونين – 3 ملايين', en: '2M – 3M', min: 2000000, max: 3000000 },
+  { id: 'b4', ar: 'أكثر من 3 ملايين', en: 'Over 3M', min: 3000000, max: Infinity },
+];
+const MONTHS_AR = ['كانون الثاني', 'شباط', 'آذار', 'نيسان', 'أيار', 'حزيران', 'تموز', 'آب', 'أيلول', 'تشرين الأول', 'تشرين الثاني', 'كانون الأول'];
+const MONTHS_EN = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+function monthLabel(ym, en) {
+  const [y, m] = ym.split('-').map(Number);
+  return (en ? MONTHS_EN : MONTHS_AR)[m - 1] + ' ' + y;
+}
+// Upcoming departure months of a package ("YYYY-MM"), from its dates list.
+function packageMonths(p) {
+  const today = new Date().toISOString().slice(0, 10);
+  const out = new Set();
+  (Array.isArray(p.available_dates) ? p.available_dates : []).forEach((d) => {
+    const v = String((d && d.date) || d || '');
+    if (/^\d{4}-\d{2}-\d{2}/.test(v) && v.slice(0, 10) >= today) out.add(v.slice(0, 7));
+  });
+  return [...out];
+}
+
 export default function PackagesPage({ initialPackages = null }) {
   const router = useRouter();
   const { lang } = useLangToggle();
@@ -53,6 +77,8 @@ export default function PackagesPage({ initialPackages = null }) {
   const [travelers, setTravelers] = useState({ adults: 2, children: 0, infants: 0, singleRooms: 1, doubleRooms: 0 });
   const [preferredDates, setPreferredDates] = useState('');
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [budget, setBudget] = useState('all');
+  const [month, setMonth] = useState('all');
 
   useEffect(() => {
     if (Array.isArray(initialPackages) && initialPackages.length) return; // already rendered by the server
@@ -94,6 +120,20 @@ export default function PackagesPage({ initialPackages = null }) {
     return out;
   }, [destCountries]);
 
+  const monthOptions = useMemo(() => {
+    const m = {};
+    (packages || []).forEach((p) => packageMonths(p).forEach((ym) => { m[ym] = (m[ym] || 0) + 1; }));
+    return Object.keys(m).sort().map((ym) => ({ ym, count: m[ym] }));
+  }, [packages]);
+  const budgetCounts = useMemo(() => {
+    const c = {};
+    (packages || []).forEach((p) => { const b = BUDGETS.find((x) => Number(p.price) >= x.min && Number(p.price) < x.max); if (b) c[b.id] = (c[b.id] || 0) + 1; });
+    return c;
+  }, [packages]);
+  // The date box in the search bar picks the month.
+  useEffect(() => { if (preferredDates) setMonth(preferredDates.slice(0, 7)); }, [preferredDates]);
+  const activeFilters = prefs.length + (budget !== 'all' ? 1 : 0) + (month !== 'all' ? 1 : 0);
+
   const catsWithPackages = useMemo(() => CATS.filter((c) => (packages || []).some((p) => p.cat === c.id)), [packages]);
 
   const currentReview = reviews[reviewIndex] || reviews[0] || null;
@@ -133,6 +173,8 @@ export default function PackagesPage({ initialPackages = null }) {
       if (cat !== 'all' && p.cat !== cat) return false;
       if (country !== 'all' && !packageCountries(p).includes(country)) return false;
       if (prefs.length && !(p.prefs || []).some((pr) => prefs.includes(pr))) return false;
+      if (budget !== 'all') { const b = BUDGETS.find((x) => x.id === budget); const pr = Number(p.price) || 0; if (b && (pr < b.min || pr >= b.max)) return false; }
+      if (month !== 'all' && !packageMonths(p).includes(month)) return false;
       if (q) {
         const names = packageCountries(p).map((iso) => { const c = countryInfo(iso); return c ? c.ar + ' ' + c.en : ''; });
         const hay = [p.dest_ar, p.dest_en, p.title_ar, p.title_en, ...names].filter(Boolean).join(' ').toLowerCase();
@@ -140,16 +182,16 @@ export default function PackagesPage({ initialPackages = null }) {
       }
       return true;
     });
-  }, [packages, cat, prefs, query, country]);
+  }, [packages, cat, prefs, query, country, budget, month]);
 
   // No filter → one block per country; otherwise a single sorted list.
   const grouped = useMemo(() => {
-    if (country !== 'all' || query.trim()) {
+    if (country !== 'all' || query.trim() || budget !== 'all' || month !== 'all') {
       const list = [...filtered].sort((a, b) => (Number(a.nights) || 0) - (Number(b.nights) || 0) || (Number(a.price) || 0) - (Number(b.price) || 0));
       return [{ iso: country, ar: '', en: '', items: list }];
     }
     return groupPackagesByCountry(filtered);
-  }, [filtered, country, query]);
+  }, [filtered, country, query, budget, month]);
 
   return (
     <div dir={lang === 'en' ? 'ltr' : 'rtl'} style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
@@ -184,7 +226,7 @@ export default function PackagesPage({ initialPackages = null }) {
           <div style={{ maxWidth: 1080, margin: 'clamp(-64px,-8vw,-46px) auto 0', padding: '0 20px', position: 'relative', zIndex: 30 }}>
             <div className="qa-search-bar" style={{ background: '#fff', borderRadius: 24, boxShadow: '0 22px 54px rgba(1,42,55,.28)', display: 'flex', flexWrap: 'wrap', alignItems: 'stretch' }}>
               <div className="qa-search-field" style={{ position: 'relative', flex: '1 1 220px', padding: '14px 20px', display: 'flex', flexDirection: 'column', gap: 3, minWidth: 200 }}>
-                <span style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 11, fontWeight: 700, color: '#7b8087', textTransform: 'uppercase', letterSpacing: '.03em' }}>
+                <span style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 11, fontWeight: 700, color: '#5f666e', textTransform: 'uppercase', letterSpacing: '.03em' }}>
                   <Icon name="map-pin" size={12} style={{ color: '#049dc5' }} />{lang === 'en' ? 'Destination' : 'الوجهة'}
                 </span>
                 <input
@@ -206,7 +248,7 @@ export default function PackagesPage({ initialPackages = null }) {
                   >
                     {regionGroups.map((g) => (
                       <div key={g.id} style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-                        <span style={{ fontSize: 12.5, fontWeight: 700, color: '#7b8087' }}>{nm(g.ar, g.en)}</span>
+                        <span style={{ fontSize: 12.5, fontWeight: 700, color: '#5f666e' }}>{nm(g.ar, g.en)}</span>
                         <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
                           {g.list.map((c) => (
                             <button
@@ -218,7 +260,7 @@ export default function PackagesPage({ initialPackages = null }) {
                             >
                               {/* eslint-disable-next-line @next/next/no-img-element */}
                               <img src={flagUrl(c.iso)} alt="" width="20" height="14" loading="lazy" />
-                              {nm(c.ar, c.en)} <span style={{ color: '#7b8087', fontWeight: 500 }}>({c.count})</span>
+                              {nm(c.ar, c.en)} <span style={{ color: '#5f666e', fontWeight: 500 }}>({c.count})</span>
                             </button>
                           ))}
                         </div>
@@ -231,7 +273,7 @@ export default function PackagesPage({ initialPackages = null }) {
               <div className="qa-search-divider" />
 
               <div className="qa-search-field" style={{ flex: '1 1 180px', padding: '14px 20px', display: 'flex', flexDirection: 'column', gap: 3, minWidth: 160 }}>
-                <span style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 11, fontWeight: 700, color: '#7b8087', textTransform: 'uppercase', letterSpacing: '.03em' }}>
+                <span style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 11, fontWeight: 700, color: '#5f666e', textTransform: 'uppercase', letterSpacing: '.03em' }}>
                   <Icon name="calendar-days" size={12} style={{ color: '#049dc5' }} />{t.filter_dates_label}
                 </span>
                 <input
@@ -250,7 +292,7 @@ export default function PackagesPage({ initialPackages = null }) {
                   onClick={() => setShowTravelers((s) => !s)}
                   style={{ width: '100%', height: '100%', cursor: 'pointer', fontFamily: 'inherit', background: 'none', border: 'none', padding: 0, display: 'flex', flexDirection: 'column', gap: 3, textAlign: 'start' }}
                 >
-                  <span style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 11, fontWeight: 700, color: '#7b8087', textTransform: 'uppercase', letterSpacing: '.03em' }}>
+                  <span style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 11, fontWeight: 700, color: '#5f666e', textTransform: 'uppercase', letterSpacing: '.03em' }}>
                     <Icon name="users" size={12} style={{ color: '#049dc5' }} />{lang === 'en' ? 'Guests' : 'المسافرون'}
                   </span>
                   <span style={{ fontSize: 15, fontWeight: 600, color: '#1d2733' }}>{travelersTotal} {lang === 'en' ? 'traveler(s)' : 'مسافر'}</span>
@@ -274,7 +316,7 @@ export default function PackagesPage({ initialPackages = null }) {
                       <div key={key} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10 }}>
                         <span style={{ display: 'flex', flexDirection: 'column' }}>
                           <span style={{ fontSize: 13.5, fontWeight: 600, color: '#1d2733' }}>{label}</span>
-                          {sub ? <span style={{ fontSize: 11, color: '#7b8087' }}>{sub}</span> : null}
+                          {sub ? <span style={{ fontSize: 11, color: '#5f666e' }}>{sub}</span> : null}
                         </span>
                         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                           <button type="button" onClick={() => setTravelerCount(key, -1, min)} style={{ width: 26, height: 26, borderRadius: '50%', border: '1px solid #cacbcc', background: '#fff', cursor: 'pointer' }}>−</button>
@@ -329,7 +371,7 @@ export default function PackagesPage({ initialPackages = null }) {
               <button type="button" onClick={() => setDrawerOpen(true)} className="qa-filters-btn">
                 <Icon name="layout-grid" size={15} />
                 {lang === 'en' ? 'Filters' : 'الفلاتر'}
-                {prefs.length > 0 ? <span className="qa-filters-badge">{prefs.length}</span> : null}
+                {activeFilters > 0 ? <span className="qa-filters-badge">{activeFilters}</span> : null}
               </button>
             </div>
           </div>
@@ -368,6 +410,28 @@ export default function PackagesPage({ initialPackages = null }) {
                     </div>
                   </div>
                   <div>
+                    <div style={{ fontSize: 13, fontWeight: 700, color: '#3d4650', marginBottom: 10 }}>{lang === 'en' ? 'Budget per person' : 'الميزانية للشخص'}</div>
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10 }}>
+                      {BUDGETS.filter((b) => budgetCounts[b.id]).map((b) => (
+                        <button key={b.id} type="button" onClick={() => setBudget(budget === b.id ? 'all' : b.id)} className={'qa-fchip' + (budget === b.id ? ' on' : '')}>
+                          {nm(b.ar, b.en)} <span>{budgetCounts[b.id]}</span>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                  {monthOptions.length > 0 && (
+                    <div>
+                      <div style={{ fontSize: 13, fontWeight: 700, color: '#3d4650', marginBottom: 10 }}>{lang === 'en' ? 'Travel month' : 'شهر السفر'}</div>
+                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10 }}>
+                        {monthOptions.map((m) => (
+                          <button key={m.ym} type="button" onClick={() => { setMonth(month === m.ym ? 'all' : m.ym); setPreferredDates(''); }} className={'qa-fchip' + (month === m.ym ? ' on' : '')}>
+                            {monthLabel(m.ym, lang === 'en')} <span>{m.count}</span>
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                  <div>
                     <div style={{ fontSize: 13, fontWeight: 700, color: '#3d4650', marginBottom: 10 }}>{t.filter_destination_ph}</div>
                     <input
                       type="text"
@@ -381,7 +445,7 @@ export default function PackagesPage({ initialPackages = null }) {
                 <div style={{ padding: 22, borderTop: '1px solid #ececed', display: 'flex', gap: 10 }}>
                   <button
                     type="button"
-                    onClick={() => { setPrefs([]); setQuery(''); }}
+                    onClick={() => { setPrefs([]); setQuery(''); setBudget('all'); setMonth('all'); setPreferredDates(''); }}
                     style={{ flex: 1, padding: '11px 16px', borderRadius: 999, border: '1px solid #cacbcc', background: '#fff', color: '#3d4650', fontSize: 13.5, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}
                   >
                     {lang === 'en' ? 'Reset' : 'إعادة تعيين'}
@@ -413,13 +477,16 @@ export default function PackagesPage({ initialPackages = null }) {
               border-radius: 999px; border: 1px solid #dcebf0; background: #f4fafc; color: #1d2733; font-size: 13.5px; font-weight: 600;
               transition: border-color .15s ease, background .15s ease;
             }
+            .qa-fchip { padding: 8px 14px; border-radius: 999px; font-size: 13.5px; font-weight: 500; cursor: pointer; font-family: inherit; background: #fff; color: #3d4650; border: 1px solid #cacbcc; display: inline-flex; align-items: center; gap: 6px; }
+            .qa-fchip span { font-size: 12px; opacity: .65; }
+            .qa-fchip.on { background: #049dc5; border-color: #049dc5; color: #fff; }
             .qa-dest-chip:hover { border-color: #049dc5; background: #eaf8fd; }
             .qa-dest-chip img { width: 20px; height: 14px; object-fit: cover; border-radius: 2px; box-shadow: 0 0 0 1px rgba(0,0,0,.08); }
             .qa-pkg-group { display: flex; flex-direction: column; gap: 16px; margin-bottom: 40px; }
             .qa-pkg-group-head { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; border-bottom: 1px solid #ececed; padding-bottom: 10px; }
             .qa-pkg-group-head img { width: 28px; height: 20px; object-fit: cover; border-radius: 3px; box-shadow: 0 0 0 1px rgba(0,0,0,.08); }
             .qa-pkg-group-head h3 { margin: 0; font-size: 20px; color: #1d2733; }
-            .qa-pkg-group-head span { font-size: 13px; color: #7b8087; }
+            .qa-pkg-group-head span { font-size: 13px; color: #5f666e; }
             .qa-pkg-group-head button {
               margin-inline-start: auto; cursor: pointer; font-family: inherit; border: 0; background: none; color: #036f8c;
               font-size: 14px; font-weight: 700; padding: 4px 0;
@@ -467,14 +534,30 @@ export default function PackagesPage({ initialPackages = null }) {
           {/* Results */}
           <section id="qa-pkg-results" className="qa-sec" style={{ maxWidth: 1240, margin: '0 auto', padding: '40px 24px 88px' }}>
             <h2 style={{ fontSize: 22, marginBottom: 4 }}>{t.packages_title}</h2>
-            <p style={{ color: '#7b8087', marginBottom: 24 }}>{t.packages_sub}</p>
+            <p style={{ color: '#5f666e', marginBottom: 24 }}>{t.packages_sub}</p>
 
             {error && <p style={{ color: '#d2324f', background: '#fdecef', border: '1px solid #f7c3cc', borderRadius: 10, padding: '14px 20px' }}>{error}</p>}
 
             {!packages && !error && <div style={{ padding: 40 }}><MascotLoader assetBase="/assets" /></div>}
 
             {packages && filtered.length === 0 && (
-              <p style={{ color: '#7b8087', background: '#f8f7f8', border: '1px solid #ececed', borderRadius: 12, padding: '20px 24px' }}>{t.no_results}</p>
+              <p style={{ color: '#5f666e', background: '#f8f7f8', border: '1px solid #ececed', borderRadius: 12, padding: '20px 24px' }}>{t.no_results}</p>
+            )}
+
+            {(budget !== 'all' || month !== 'all') && (
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap', marginBottom: 18 }}>
+                <span style={{ fontSize: 14, fontWeight: 700, color: '#1d2733' }}>{nm('النتائج', 'Results')} · {filtered.length}</span>
+                {budget !== 'all' && (
+                  <button type="button" onClick={() => setBudget('all')} className="qa-dest-chip" style={{ background: '#fff' }}>
+                    <Icon name="x" size={13} /> {nm(BUDGETS.find((b) => b.id === budget).ar, BUDGETS.find((b) => b.id === budget).en)}
+                  </button>
+                )}
+                {month !== 'all' && (
+                  <button type="button" onClick={() => { setMonth('all'); setPreferredDates(''); }} className="qa-dest-chip" style={{ background: '#fff' }}>
+                    <Icon name="x" size={13} /> {monthLabel(month, lang === 'en')}
+                  </button>
+                )}
+              </div>
             )}
 
             {country !== 'all' && (
@@ -565,7 +648,7 @@ export default function PackagesPage({ initialPackages = null }) {
           {regionGroups.length > 0 && (
             <section className="qa-sec" style={{ maxWidth: 1240, margin: '0 auto', padding: '32px 24px 56px' }}>
               <h2 style={{ fontSize: 'clamp(20px,3vw,26px)', margin: '0 0 6px' }}>{lang === 'en' ? 'Destinations by region' : 'الوجهات حسب المنطقة'}</h2>
-              <p style={{ margin: '0 0 22px', color: '#7b8087', fontSize: 14 }}>{lang === 'en' ? 'Pick a country to see its packages.' : 'اختر الدولة لتظهر باقاتها.'}</p>
+              <p style={{ margin: '0 0 22px', color: '#5f666e', fontSize: 14 }}>{lang === 'en' ? 'Pick a country to see its packages.' : 'اختر الدولة لتظهر باقاتها.'}</p>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(260px,1fr))', gap: 18 }}>
                 {regionGroups.map((g) => (
                   <div key={g.id} className="qa-card" style={{ display: 'flex', flexDirection: 'column', gap: 12, padding: 20 }}>
@@ -575,7 +658,7 @@ export default function PackagesPage({ initialPackages = null }) {
                         <button key={c.iso} type="button" onClick={() => pickCountry(c.iso)} className="qa-dest-chip">
                           {/* eslint-disable-next-line @next/next/no-img-element */}
                           <img src={flagUrl(c.iso)} alt="" width="20" height="14" loading="lazy" />
-                          {nm(c.ar, c.en)} <span style={{ color: '#7b8087', fontWeight: 500 }}>({c.count})</span>
+                          {nm(c.ar, c.en)} <span style={{ color: '#5f666e', fontWeight: 500 }}>({c.count})</span>
                         </button>
                       ))}
                     </div>
@@ -590,7 +673,7 @@ export default function PackagesPage({ initialPackages = null }) {
             <section style={{ background: '#f8f7f8', padding: '48px clamp(16px,4vw,32px)' }}>
               <div style={{ maxWidth: 1240, margin: '0 auto', display: 'grid', gridTemplateColumns: 'minmax(280px,1fr) minmax(260px,1fr)', gap: 24, alignItems: 'stretch' }}>
                 <div style={{ background: '#eaf8fd', borderRadius: 24, padding: 'clamp(28px,4vw,44px)', display: 'flex', flexDirection: 'column', gap: 16, position: 'relative', overflow: 'hidden' }}>
-                  <span style={{ fontSize: 12, fontWeight: 700, color: '#7b8087' }}>{lang === 'en' ? 'Our testimonials' : 'آراء عملائنا'}</span>
+                  <span style={{ fontSize: 12, fontWeight: 700, color: '#5f666e' }}>{lang === 'en' ? 'Our testimonials' : 'آراء عملائنا'}</span>
                   <h2 style={{ margin: 0, fontSize: 'clamp(20px,3vw,28px)', color: '#1d2733' }}>{lang === 'en' ? 'What our customers say' : 'ماذا يقول عملاؤنا عنا'}</h2>
                   <div style={{ display: 'flex', gap: 2 }}>
                     {Array.from({ length: 5 }).map((_, i) => (
@@ -649,7 +732,7 @@ export default function PackagesPage({ initialPackages = null }) {
                   </span>
                   <div>
                     <div style={{ fontSize: 17, fontWeight: 800, color: '#1d2733' }}>{s.value} <span style={{ fontWeight: 600, fontSize: 14, color: '#3d4650' }}>{s.label}</span></div>
-                    <div style={{ fontSize: 12.5, color: '#7b8087', marginTop: 3 }}>{s.sub}</div>
+                    <div style={{ fontSize: 12.5, color: '#5f666e', marginTop: 3 }}>{s.sub}</div>
                   </div>
                 </div>
               ))}
@@ -660,7 +743,7 @@ export default function PackagesPage({ initialPackages = null }) {
           <section style={{ background: '#f8f7f8', padding: '56px clamp(16px,4vw,32px)' }}>
             <div style={{ maxWidth: 700, margin: '0 auto', textAlign: 'center', display: 'flex', flexDirection: 'column', gap: 12, alignItems: 'center' }}>
               <h3 style={{ margin: 0, fontSize: 22 }}>{t.custom_title}</h3>
-              <p style={{ margin: 0, color: '#7b8087', lineHeight: 1.7 }}>{t.custom_body}</p>
+              <p style={{ margin: 0, color: '#5f666e', lineHeight: 1.7 }}>{t.custom_body}</p>
               <a href="/contact?topic=package" className="qa-btn qa-cyan" style={{ textDecoration: 'none', marginTop: 8 }}>{t.custom_cta}</a>
             </div>
           </section>

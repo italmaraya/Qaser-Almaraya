@@ -111,7 +111,7 @@ export default function AchievementSpread({ items = [], active, onSelect, assetB
                 padding: '14px 20px',
                 borderTop: '1px solid #ececed',
                 fontSize: 14,
-                color: '#7b8087',
+                color: '#5f666e',
               }}
             >
               <span style={{ display: 'inline-flex', alignItems: 'center', gap: 5 }}>
@@ -180,7 +180,7 @@ export default function AchievementSpread({ items = [], active, onSelect, assetB
                   cursor: 'pointer',
                 }}
               >
-                <span style={{ fontSize: 13, fontWeight: 700, color: isActive ? '#049dc5' : '#7b8087' }}>
+                <span style={{ fontSize: 13, fontWeight: 700, color: isActive ? '#049dc5' : '#5f666e' }}>
                   {it.year} · {pad2(i + 1)}
                 </span>
                 <span style={{ fontSize: 14, fontWeight: 700, color: '#1d2733' }}>{it.short || it.title}</span>

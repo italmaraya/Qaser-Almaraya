@@ -29,7 +29,7 @@ export default function SiteHeader({ active = 'التأشيرات' }) {
           <img src="/assets/logo-mark-tight.webp" alt="" style={{ height: 38, width: 38, objectFit: 'contain', display: 'block', flex: 'none' }} />
           <span style={{ display: 'flex', flexDirection: 'column', gap: 1, lineHeight: 1.05 }}>
             <span style={{ fontSize: 19, fontWeight: 700, color: '#22a9d4', whiteSpace: 'nowrap' }}>قصر المرايا</span>
-            <span style={{ fontSize: 10.5, fontWeight: 600, letterSpacing: '.02em', color: '#7b8087', whiteSpace: 'nowrap' }}>للسفر و السياحة</span>
+            <span style={{ fontSize: 10.5, fontWeight: 600, letterSpacing: '.02em', color: '#5f666e', whiteSpace: 'nowrap' }}>للسفر و السياحة</span>
           </span>
         </Link>
 

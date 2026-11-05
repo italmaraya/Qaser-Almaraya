@@ -1,4 +1,4 @@
-import { pageMeta, seoPackage, nightsText } from '../../../lib/seo';
+import { pageMeta, seoPackage, nightsText, packageJsonLd } from '../../../lib/seo';
 
 // Gives each package page its own title, description and share picture
 // (the page itself draws in the browser, so the title has to come from here).
@@ -15,4 +15,13 @@ export async function generateMetadata({ params }) {
   });
 }
 
-export default function PackageLayout({ children }) { return children; }
+export default async function PackageLayout({ children, params }) {
+  const { id } = await params;
+  const ld = packageJsonLd(await seoPackage(id));
+  return (
+    <>
+      {ld ? <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(ld).replace(/</g, '\\u003c') }} /> : null}
+      {children}
+    </>
+  );
+}
