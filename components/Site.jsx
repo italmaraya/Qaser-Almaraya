@@ -1,7 +1,8 @@
 'use client';
-import { APPLY_FLOW_ENABLED, WHATSAPP_NUMBER, openWhatsApp, visaMessage } from '../lib/whatsapp';
+import { APPLY_FLOW_ENABLED, WHATSAPP_NUMBER, openWhatsApp, visaMessage, waLink } from '../lib/whatsapp';
 import { WA_ICON } from './WhatsAppButton';
 import HomeHero from './HomeHero';
+import HomeOffers from './HomeOffers';
 import AirlinesMarquee from './AirlinesMarquee';
 import React, { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
@@ -170,7 +171,7 @@ export default function Site(props) {
     files: { cv: '', cover: '', work: '' },
     fileUrls: { cv: '', cover: '', work: '' },
     fileUploading: { cv: false, cover: false, work: false },
-    contact: { name: '', phone: '', email: '', company: '', subject: 'حجز طيران', message: '' },
+    contact: { name: '', phone: '', email: '', company: '', subject: props.contactSubject || 'حجز طيران', message: '' },
     contactSending: false, contactSent: false, contactError: '' });
   const patch = (o) => setSt((s) => (typeof o === 'function' ? { ...s, ...o(s) } : { ...s, ...o }));
 
@@ -513,6 +514,8 @@ function   renderVals(){
       contact: st.contact,
       contactSending: st.contactSending,
       contactSent: st.contactSent,
+      // Same message, ready to send on WhatsApp (the 784 line feeds Zoho Desk)
+      contactWaHref: st.contactLast ? waLink(['مرحباً قصر المرايا، أرسلت رسالة من الموقع:', 'الاسم: ' + st.contactLast.name, 'الهاتف: ' + st.contactLast.phone, 'الموضوع: ' + (st.contactLast.subject || '-'), st.contactLast.message].join('\n')) : null,
       contactError: st.contactError,
       setContactField: field => e => patch((s) => ({ contact: { ...s.contact, [field]: e.target.value }, contactError: '' })),
       submitContact: async e => {
@@ -524,7 +527,7 @@ function   renderVals(){
         try {
           const res = await fetch('/api/contact', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(c) });
           if(!res.ok) { const d = await res.json().catch(() => ({})); throw new Error(d.error || 'تعذر إرسال الرسالة، حاول لاحقاً'); }
-          patch({ contactSent: true, contactSending: false, contact: { name: '', phone: '', email: '', company: '', subject: 'حجز طيران', message: '' } });
+          patch({ contactSent: true, contactSending: false, contactLast: c, contact: { name: '', phone: '', email: '', company: '', subject: 'حجز طيران', message: '' } });
         } catch(err) {
           patch({ contactError: err.message, contactSending: false });
         }
@@ -576,6 +579,7 @@ function   renderVals(){
       isVisaApply: page === 'visa-apply',
       goVisaApply: e => { if(e) e.preventDefault(); go('visa-apply'); },
       goVisas: e => { if(e) e.preventDefault(); router.push('/visa'); },
+      goPackages: e => { if(e) e.preventDefault(); router.push('/packages'); },
     };
     return Object.assign(out, visaVals(country));
   }
@@ -822,8 +826,8 @@ function   visaVals(country){
   }
 
   const V = renderVals();
-  const { achievement, achievements, addAdult, addChild, adultPrice, afBring, afEmail, afName, afPhone, appAccept, appDone, appDoneCount, appEmail, appError, appErrorOn, appForm, appNo, appPay, appPhone, appProgress, appSavedAt, appSteps, appTotal, appTotalLines, appTravellerCount, applyError, applyErrorText, applyForm, applyJob, applyOpen, applySending, applySent, askKind, backToForm, cancelAsk, cardRows, chevronRotate, childPrice, childrenAr, clearCountryQuery, closeApply, closeCountryPanel, closeTrack, closeVisaDetail, copyGroup, copyVisa, country, countryPanelOpen, countryQuery, coverName, cvName, decChildren, decTravellers, docCount, docRows, exportOn, featured, feeTotal, fileUploading, filteredCountries, flowSteps, fromAdult, fromChild, fromIssuing, goAbout, goContact, goFaq, goFlights, goGroups, goHome, goInsurance, goJobs, goPrivacy, goTerms, goVisaApplyDetail, goVisas, groupLabel, groups, hasCountryMatches, hasFeatured, hotelQuery, incChildren, incTravellers, isAbout, isContact, isFaq, isFlights, isGroups, isHome, isInsurance, isJobs, isPackages, isPrivacy, isTerms, isVisaApply, isVisaDetail, isVisas, issuingLabel, langLabel, loading, navItems, noCountryMatch, noPackages, noResults, notAsking, notGuaranteed, onPaid, openApply, openAsk, openTrack, packages, pdfGroup, pdfVisa, pickCover, pickCv, pickWork, priceRows, regionTiles, resetTrack, resultCount, resultKinds, results, roomType, runVisaSearch, scrollToPackages, selectAchievement, setAfBring, setAfEmail, setAfName, setAfPhone, setAppEmail, setAppPhone, setCountryQuery, setHotelQuery, setRoomType, setTrackInput, setTripDate, showResults, showSearchPrompt, showVisaRail, statusLegend, stayLabel, stepsOn, stopClose, stopTrack, submitApp, submitApply, submitTrack, suggestedCountries, ticks, toggleAccept, toggleCountryPanel, toggleLang, trackData, trackError, trackForm, trackInput, trackOpen, trackQuery, trackResult, trackSending, trackSteps, travellersAr, travellersList, tripDate, typesLabel, upcomingEvents, visa, visaCardCount, visaCount, visaExportOn, visaTypes, workName,
-    contact, contactSending, contactSent, contactError, setContactField, submitContact, openWhatsapp } = V;
+  const { achievement, achievements, addAdult, addChild, adultPrice, afBring, afEmail, afName, afPhone, appAccept, appDone, appDoneCount, appEmail, appError, appErrorOn, appForm, appNo, appPay, appPhone, appProgress, appSavedAt, appSteps, appTotal, appTotalLines, appTravellerCount, applyError, applyErrorText, applyForm, applyJob, applyOpen, applySending, applySent, askKind, backToForm, cancelAsk, cardRows, chevronRotate, childPrice, childrenAr, clearCountryQuery, closeApply, closeCountryPanel, closeTrack, closeVisaDetail, copyGroup, copyVisa, country, countryPanelOpen, countryQuery, coverName, cvName, decChildren, decTravellers, docCount, docRows, exportOn, featured, feeTotal, fileUploading, filteredCountries, flowSteps, fromAdult, fromChild, fromIssuing, goAbout, goContact, goFaq, goFlights, goGroups, goHome, goInsurance, goJobs, goPrivacy, goTerms, goVisaApplyDetail, goVisas, goPackages, groupLabel, groups, hasCountryMatches, hasFeatured, hotelQuery, incChildren, incTravellers, isAbout, isContact, isFaq, isFlights, isGroups, isHome, isInsurance, isJobs, isPackages, isPrivacy, isTerms, isVisaApply, isVisaDetail, isVisas, issuingLabel, langLabel, loading, navItems, noCountryMatch, noPackages, noResults, notAsking, notGuaranteed, onPaid, openApply, openAsk, openTrack, packages, pdfGroup, pdfVisa, pickCover, pickCv, pickWork, priceRows, regionTiles, resetTrack, resultCount, resultKinds, results, roomType, runVisaSearch, scrollToPackages, selectAchievement, setAfBring, setAfEmail, setAfName, setAfPhone, setAppEmail, setAppPhone, setCountryQuery, setHotelQuery, setRoomType, setTrackInput, setTripDate, showResults, showSearchPrompt, showVisaRail, statusLegend, stayLabel, stepsOn, stopClose, stopTrack, submitApp, submitApply, submitTrack, suggestedCountries, ticks, toggleAccept, toggleCountryPanel, toggleLang, trackData, trackError, trackForm, trackInput, trackOpen, trackQuery, trackResult, trackSending, trackSteps, travellersAr, travellersList, tripDate, typesLabel, upcomingEvents, visa, visaCardCount, visaCount, visaExportOn, visaTypes, workName,
+    contact, contactSending, contactSent, contactError, setContactField, submitContact, openWhatsapp, contactWaHref } = V;
 
   return (
     <>
@@ -910,37 +914,38 @@ function   visaVals(country){
 
 {isHome ? (<>
 <div className="qa-page">
-<HomeHero hero={props.content && props.content.hero} lang={st.lang} onPrimary={goFlights}>
+<HomeHero hero={props.content && props.content.hero} lang={st.lang} onPrimary={goPackages}>
 <section style={{ position: "relative", background: "var(--tw-band,#34bbe1)" }}>
 <img src="/assets/cover-website.webp" alt="ذكرياتك تبدأ معنا — قصر المرايا للسفر و السياحة" style={{ display: "block", width: "100%", height: "auto" }} />
 <div className="qa-cover-copy" style={{ position: "absolute", right: "3%", top: "50%", transform: "translateY(-50%)", width: "34%", maxHeight: "94%", display: "flex", flexDirection: "column", alignItems: "flex-start", textAlign: "start", gap: "clamp(12px,1.3vw,22px)" }}>
 <h1 style={{ margin: "0", fontSize: "clamp(30px,3.4vw,62px)", fontWeight: "700", lineHeight: "1.12", color: "#0e88ad", textWrap: "pretty" }}>رحلتك تبدأ معنا!</h1>
 <p style={{ margin: "0", fontSize: "clamp(16px,1.25vw,24px)", lineHeight: "1.65", color: "#1d5f76", fontWeight: "500", textWrap: "pretty" }}>مع قصر المرايا للسفر والسياحة، نأخذك في رحلات لا تُنسى، بخدمات احترافية وتجارب مصممة خصيصًا لك.</p>
-<button className="qa-btn qa-amber" onClick={goFlights} style={{ alignSelf: "center", display: "inline-flex", alignItems: "center", whiteSpace: "nowrap", gap: "9px", color: "#012a37", fontWeight: "700", fontSize: "clamp(15px,1.05vw,19px)", padding: "clamp(11px,.9vw,16px) clamp(24px,2vw,38px)" }}>ابدأ رحلتك الآن
+<button className="qa-btn qa-amber" onClick={goPackages} style={{ alignSelf: "center", display: "inline-flex", alignItems: "center", whiteSpace: "nowrap", gap: "9px", color: "#012a37", fontWeight: "700", fontSize: "clamp(15px,1.05vw,19px)", padding: "clamp(11px,.9vw,16px) clamp(24px,2vw,38px)" }}>ابدأ رحلتك الآن
 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"></path></svg>
 </button>
 </div>
 </section>
 </HomeHero>
+<HomeOffers lang={st.lang} />
 <section className="qa-sec" style={{ display: "flex", flexDirection: "column", gap: "32px" }}>
 <div style={{ maxWidth: "680px", margin: "0 auto", textAlign: "center", display: "flex", flexDirection: "column", gap: "16px" }}>
 <h2 style={{ fontSize: "36px", fontWeight: "700" }}>نُعيد صياغة مفهوم السفر</h2>
 <p style={{ fontSize: "18px", lineHeight: "1.75", color: "#22a9d4" }}>من تصميم الباقات المخصصة إلى إدارة وتنظيم حركة السفر للفعاليات الكبرى، تمثّل قصر المرايا جسراً من الثقة والاحترافية.</p>
 </div>
 <div className="qa-grid qa-swipe" style={{ gridTemplateColumns: "repeat(4,1fr)" }}>
+<div className="qa-card" style={{ display: "flex", flexDirection: "column", gap: "12px", cursor: "pointer" }} onClick={goPackages}>
+<h4 style={{ fontSize: "20px", fontWeight: "700", color: "#1d2733" }}>الباقات السياحية</h4>
+<p style={{ fontSize: "14px", lineHeight: "1.45", color: "#7b8087" }}>رحلات جاهزة بسعر واحد للفرد: طيران وفندق وجولات من بغداد.</p>
+<span style={{ marginTop: "auto", fontSize: "14px", fontWeight: "600", color: "#22a9d4" }}>اعرف أكثر ←</span>
+</div>
+<div className="qa-card" style={{ display: "flex", flexDirection: "column", gap: "12px", cursor: "pointer" }} onClick={goVisas}>
+<h4 style={{ fontSize: "20px", fontWeight: "700", color: "#1d2733" }}>التأشيرات</h4>
+<p style={{ fontSize: "14px", lineHeight: "1.45", color: "#7b8087" }}>المستندات المطلوبة ومدة الإصدار والسعر لكل دولة، ونتابع طلبك حتى الإصدار.</p>
+<span style={{ marginTop: "auto", fontSize: "14px", fontWeight: "600", color: "#22a9d4" }}>اعرف أكثر ←</span>
+</div>
 <div className="qa-card" style={{ display: "flex", flexDirection: "column", gap: "12px", cursor: "pointer" }} onClick={goFlights}>
 <h4 style={{ fontSize: "20px", fontWeight: "700", color: "#1d2733" }}>الطيران والفنادق</h4>
 <p style={{ fontSize: "14px", lineHeight: "1.45", color: "#7b8087" }}>شريكنا Flamingo يتولى الحجز المباشر، وفريقنا يتابع طلبك خطوة بخطوة.</p>
-<span style={{ marginTop: "auto", fontSize: "14px", fontWeight: "600", color: "#22a9d4" }}>اعرف أكثر ←</span>
-</div>
-<div className="qa-card" style={{ display: "flex", flexDirection: "column", gap: "12px", cursor: "pointer" }} onClick={goJobs}>
-<h4 style={{ fontSize: "20px", fontWeight: "700", color: "#1d2733" }}>الوظائف</h4>
-<p style={{ fontSize: "14px", lineHeight: "1.45", color: "#7b8087" }}>فرص مهنية لمن يحب السفر ويجيد خدمة الناس — انضم إلى فريقنا.</p>
-<span style={{ marginTop: "auto", fontSize: "14px", fontWeight: "600", color: "#22a9d4" }}>اعرف أكثر ←</span>
-</div>
-<div className="qa-card" style={{ display: "flex", flexDirection: "column", gap: "12px", cursor: "pointer" }} onClick={goFaq}>
-<h4 style={{ fontSize: "20px", fontWeight: "700", color: "#1d2733" }}>الأسئلة الشائعة</h4>
-<p style={{ fontSize: "14px", lineHeight: "1.45", color: "#7b8087" }}>إجابات سريعة عن الحجز والدفع والمتابعة قبل أن تسأل.</p>
 <span style={{ marginTop: "auto", fontSize: "14px", fontWeight: "600", color: "#22a9d4" }}>اعرف أكثر ←</span>
 </div>
 <div className="qa-card" style={{ display: "flex", flexDirection: "column", gap: "12px", cursor: "pointer" }} onClick={goContact}>
@@ -1841,7 +1846,7 @@ function   visaVals(country){
 <div style={{ display: "flex", alignItems: "center", gap: "24px", flexWrap: "wrap", background: "#e4f5fb", border: "1px solid #bfe9f6", borderRadius: "18px", padding: "24px 28px" }}>
 <img src="/assets/mascot-skylo-suit.webp" alt="" style={{ height: "130px", width: "auto" }} />
 <p style={{ flex: "1", minWidth: "260px", fontSize: "18px", lineHeight: "1.75", color: "#046f8c" }}>لا تجد ما يناسبك؟ أخبرنا بعدد المسافرين والوجهة والميزانية، وسنبني لك باقة خاصة من الصفر.</p>
-<button className="qa-btn qa-amber" onClick={goContact}>اطلب باقة مخصصة</button>
+<button className="qa-btn qa-amber" onClick={e => { if(e) e.preventDefault(); router.push('/contact?topic=package'); }}>اطلب باقة مخصصة</button>
 </div>
 </section>
 </div>
@@ -2621,6 +2626,10 @@ function   visaVals(country){
 <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "14px", textAlign: "center", padding: "20px 0" }}>
 <span style={{ fontSize: "22px", fontWeight: "700", color: "#036f8c" }}>شكراً لتواصلك معنا!</span>
 <p style={{ margin: 0, fontSize: "16px", color: "#3d4650" }}>استلمنا رسالتك وسيتواصل فريقنا معك في أقرب وقت.</p>
+{contactWaHref ? (<>
+<p style={{ margin: 0, fontSize: "14.5px", color: "#7b8087" }}>للرد أسرع، أرسل نفس الرسالة لنا على واتساب.</p>
+<a href={contactWaHref} target="_blank" rel="noopener" className="qa-btn qa-amber" style={{ color: "#012a37" }}>أكمل المحادثة على واتساب</a>
+</>) : null}
 <button className="qa-btn qa-cyan" onClick={() => window.location.reload()}>إرسال رسالة أخرى</button>
 </div>
 </>) : (<>

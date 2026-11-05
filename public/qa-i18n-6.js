@@ -1,4 +1,14 @@
 (window.QA_I18N ? function(o){ window.QA_I18N.add(o); } : function(o){ (window.QA_I18N_PENDING = window.QA_I18N_PENDING || []).push(o); })({
+  "الباقات السياحية": "Holiday packages",
+  "رحلات جاهزة بسعر واحد للفرد: طيران وفندق وجولات من بغداد.": "Ready-made trips at one price per person: flights, hotel and tours from Baghdad.",
+  "المستندات المطلوبة ومدة الإصدار والسعر لكل دولة، ونتابع طلبك حتى الإصدار.": "Required documents, processing time and price for each country, and we follow your application until it is issued.",
+  "رقم الهاتف *": "Phone number *",
+  "بريدك الإلكتروني (اختياري)": "Your email (optional)",
+  "يرجى تعبئة الاسم ورقم الهاتف والسؤال.": "Please fill in your name, phone number and question.",
+  "يرجى كتابة رقم هاتف صحيح.": "Please enter a valid phone number.",
+  "أكمل المحادثة على واتساب": "Continue on WhatsApp",
+  "للرد أسرع، أرسل نفس الرسالة لنا على واتساب.": "For a faster reply, send the same message to us on WhatsApp.",
+
   "د.ع": "IQD",
   "الكترونية": "Electronic",
   "إلكترونية": "Electronic",

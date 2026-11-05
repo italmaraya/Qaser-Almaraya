@@ -7,7 +7,11 @@ export const metadata = pageMeta({ title: 'تواصل معنا', description: '�
 
 export const dynamic = 'force-dynamic'; // content can change any time via the admin dashboard
 
-export default async function ContactPage() {
+// ?topic=package (from "Request a custom package") pre-selects the subject
+const TOPICS = { package: 'باقة أو جولة', visa: 'تأشيرة', hotel: 'حجز فندق', flight: 'حجز طيران' };
+
+export default async function ContactPage({ searchParams }) {
+  const sp = await searchParams;
   const [content, legacy] = await Promise.all([getContent(), getLegacyVisaData()]);
-  return <Site content={{ ...content, ...legacy }} initialPage="contact" />;
+  return <Site content={{ ...content, ...legacy }} initialPage="contact" contactSubject={TOPICS[sp?.topic] || undefined} />;
 }

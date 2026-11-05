@@ -38,11 +38,19 @@ const LABEL = {
   en: { title: 'Chat with us 💬', sub: 'Skylo is here to help' },
 };
 
+const GREET_DELAY_MS = 3000;
+const GREET_SHOW_MS = 8000;
+
 export default function LiveChat() {
   const path = usePathname() || '/';
   const hidden = isHiddenPath(path);
   const [lang, setLang] = useState('ar');
   const [pos, setPos] = useState(null); // where the label sits, next to the button
+  // The label is a short greeting, not a permanent fixture: it appears a few
+  // seconds after the first page loads, stays ~8 s, and then only the Skylo
+  // button remains, so it never keeps covering the page. Once per visit;
+  // the visitor can also close it.
+  const [greet, setGreet] = useState(false);
 
   // Load the widget once, on the first public page the visitor opens.
   useEffect(() => {
@@ -75,6 +83,19 @@ export default function LiveChat() {
     return () => window.removeEventListener('qa-lang-change', on);
   }, []);
 
+  useEffect(() => {
+    if (hidden) return undefined;
+    let seen = false;
+    try { seen = sessionStorage.getItem('qa_chat_greeted') === '1'; } catch { /* storage blocked */ }
+    if (seen) return undefined;
+    const showT = setTimeout(() => {
+      setGreet(true);
+      try { sessionStorage.setItem('qa_chat_greeted', '1'); } catch { /* storage blocked */ }
+    }, GREET_DELAY_MS);
+    const hideT = setTimeout(() => setGreet(false), GREET_DELAY_MS + GREET_SHOW_MS);
+    return () => { clearTimeout(showT); clearTimeout(hideT); };
+  }, [hidden]);
+
   // Keep the label next to the button; hide it while the chat window is open.
   useEffect(() => {
     if (hidden) { setPos(null); return undefined; }
@@ -97,18 +118,20 @@ export default function LiveChat() {
 
   if (hidden) return null;
   const t = LABEL[lang];
+  const on = !!pos && greet;
   return (
-    <button
-      type="button"
-      className={'qa-chat-label' + (pos ? ' on' : '')}
+    <div
+      className={'qa-chat-label' + (on ? ' on' : '')}
       data-no-i18n=""
       dir={lang === 'en' ? 'ltr' : 'rtl'}
       style={pos ? { right: pos.right, bottom: pos.bottom, transform: 'translateY(50%)' } : undefined}
-      onClick={openChat}
-      aria-label={t.title}
+      aria-hidden={!on}
     >
-      <b>{t.title}</b>
-      <span>{t.sub}</span>
-    </button>
+      <button type="button" className="qa-chat-open" onClick={() => { setGreet(false); openChat(); }} aria-label={t.title} tabIndex={on ? 0 : -1}>
+        <b>{t.title}</b>
+        <span>{t.sub}</span>
+      </button>
+      <button type="button" className="qa-chat-x" onClick={() => setGreet(false)} aria-label={lang === 'en' ? 'Close' : 'إغلاق'} tabIndex={on ? 0 : -1}>×</button>
+    </div>
   );
 }

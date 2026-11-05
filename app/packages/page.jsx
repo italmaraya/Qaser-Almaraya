@@ -681,7 +681,7 @@ export default function PackagesPage() {
             <div style={{ maxWidth: 700, margin: '0 auto', textAlign: 'center', display: 'flex', flexDirection: 'column', gap: 12, alignItems: 'center' }}>
               <h3 style={{ margin: 0, fontSize: 22 }}>{t.custom_title}</h3>
               <p style={{ margin: 0, color: '#7b8087', lineHeight: 1.7 }}>{t.custom_body}</p>
-              <a href="/contact" className="qa-btn qa-cyan" style={{ textDecoration: 'none', marginTop: 8 }}>{t.custom_cta}</a>
+              <a href="/contact?topic=package" className="qa-btn qa-cyan" style={{ textDecoration: 'none', marginTop: 8 }}>{t.custom_cta}</a>
             </div>
           </section>
         </div>
