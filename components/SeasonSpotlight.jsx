@@ -11,42 +11,16 @@ import { nightsLabel, destinationLabel } from '../lib/destinations';
 // before each, as "coming soon"); hidden the rest of the year.
 // Preview: add ?season=ramadan (eid_fitr, eid_adha, newyear, off).
 
-function Decor({ icon, accent }) {
-  if (icon === 'crescent') {
-    return (
-      <svg className="qa-ss-art" viewBox="0 0 220 160" aria-hidden="true">
-        <path d="M150 30a46 46 0 1 0 38 72 38 38 0 1 1-38-72Z" fill={accent} opacity=".95" />
-        {[[40, 0, 46], [78, 0, 70], [112, 0, 38]].map(([x, , h], i) => (
-          <g key={i} className="qa-ss-swing" style={{ transformOrigin: x + 'px 0px', animationDelay: i * 0.4 + 's' }}>
-            <line x1={x} y1="0" x2={x} y2={h} stroke={accent} strokeWidth="1.5" />
-            <path d={`M${x - 9} ${h + 6}h18l-3 22h-12z`} fill={accent} />
-            <rect x={x - 6} y={h + 2} width="12" height="5" rx="2" fill={accent} />
-            <rect x={x - 4} y={h + 11} width="8" height="12" rx="2" fill="#fff6d6" opacity=".85" />
-          </g>
-        ))}
-        {[[20, 120], [190, 20], [200, 140], [60, 140]].map(([x, y], i) => <circle key={i} className="qa-ss-twinkle" style={{ animationDelay: i * 0.5 + 's' }} cx={x} cy={y} r="2.4" fill="#fff" />)}
-      </svg>
-    );
-  }
-  if (icon === 'sun') {
-    return (
-      <svg className="qa-ss-art" viewBox="0 0 220 160" aria-hidden="true">
-        <g className="qa-ss-spin" style={{ transformOrigin: '150px 70px' }}>
-          {Array.from({ length: 12 }).map((_, i) => <rect key={i} x="147" y="6" width="6" height="22" rx="3" fill="#fff" opacity=".8" transform={`rotate(${i * 30} 150 70)`} />)}
-        </g>
-        <circle cx="150" cy="70" r="30" fill="#fff" />
-        <path d="M0 140c30-14 60-14 90 0s60 14 90 0 30-10 40-6v26H0z" fill="#fff" opacity=".35" />
-      </svg>
-    );
-  }
-  // stars (Eid) and sparkles (New Year)
-  const pts = icon === 'sparkle' ? [[40, 30, 10], [100, 60, 16], [170, 30, 12], [150, 110, 18], [60, 120, 9], [200, 80, 8]] : [[50, 40, 14], [120, 30, 10], [180, 70, 18], [90, 110, 12], [160, 130, 9]];
+// Artwork: Microsoft Fluent Emoji, Flat style (MIT, public/decor/CREDITS.txt).
+const ART = { crescent: 'crescent_moon', star: 'party_popper', sparkle: 'christmas_tree' };
+
+function Decor({ icon }) {
+  const main = ART[icon] || 'glowing_star';
   return (
-    <svg className="qa-ss-art" viewBox="0 0 220 160" aria-hidden="true">
-      {pts.map(([x, y, r], i) => (
-        <path key={i} className="qa-ss-twinkle" style={{ animationDelay: i * 0.35 + 's', transformOrigin: x + 'px ' + y + 'px' }} d={`M${x} ${y - r}Q${x} ${y} ${x + r} ${y}Q${x} ${y} ${x} ${y + r}Q${x} ${y} ${x - r} ${y}Q${x} ${y} ${x} ${y - r}Z`} fill={i % 2 ? '#fff' : accent} />
-      ))}
-    </svg>
+    <div className="qa-ss-art" aria-hidden="true">
+      <img className="qa-ss-main" src={'/decor/' + main + '.svg'} alt="" draggable="false" />
+      <img className="qa-ss-sub qa-ss-twinkle" src="/decor/sparkles.svg" alt="" draggable="false" />
+    </div>
   );
 }
 
@@ -80,19 +54,19 @@ export default function SeasonSpotlight({ lang = 'ar' }) {
 .qa-ss h2{font-size:34px;font-weight:700;color:inherit}
 .qa-ss-art{position:absolute;inset-inline-end:10px;top:0;width:260px;height:190px;pointer-events:none;opacity:.95}
 [dir=rtl] .qa-ss-art{transform:scaleX(-1)}
-.qa-ss-swing{animation:qa-ss-swing 3.2s ease-in-out infinite}
-@keyframes qa-ss-swing{0%,100%{transform:rotate(-5deg)}50%{transform:rotate(5deg)}}
 .qa-ss-twinkle{animation:qa-ss-tw 2.4s ease-in-out infinite}
+.qa-ss-art img{position:absolute;display:block;user-select:none}
+.qa-ss-main{right:14%;top:12%;width:46%;height:auto;filter:drop-shadow(0 10px 18px rgba(0,0,0,.25));animation:qa-ss-float 5s ease-in-out infinite}
+.qa-ss-sub{right:66%;top:10%;width:16%;height:auto}
+@keyframes qa-ss-float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
 @keyframes qa-ss-tw{0%,100%{opacity:.25;transform:scale(.8)}50%{opacity:1;transform:scale(1.1)}}
-.qa-ss-spin{animation:qa-ss-spin 24s linear infinite}
-@keyframes qa-ss-spin{to{transform:rotate(360deg)}}
 .qa-ss-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;position:relative}
 .qa-ss-card{display:flex;gap:10px;background:#fff;color:#1d2733;border-radius:14px;overflow:hidden;min-height:84px}
 .qa-ss-card:hover{color:#1d2733;transform:translateY(-2px)}
 .qa-ss-card img{width:84px;flex-shrink:0;object-fit:cover}
 .qa-ss .qa-btn{white-space:nowrap!important;min-height:0!important;line-height:1.3}
 @media (max-width:820px){.qa-ss .qa-btn{padding:10px 20px!important;font-size:14.5px!important}.qa-ss{padding:22px 18px;border-radius:20px}.qa-ss h2{font-size:23px!important}.qa-ss-art{width:150px;height:110px;opacity:.55}.qa-ss-grid{display:flex!important;flex-direction:column}}
-@media (prefers-reduced-motion:reduce){.qa-ss,.qa-ss-swing,.qa-ss-twinkle,.qa-ss-spin{animation:none}}
+@media (prefers-reduced-motion:reduce){.qa-ss,.qa-ss-twinkle,.qa-ss-main{animation:none}}
 `}</style>
       <div className="qa-ss" style={{ background: season.bg, color: season.fg }}>
         <Decor icon={season.icon} accent={season.accent} />
