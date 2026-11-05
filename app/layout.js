@@ -2,6 +2,7 @@ import './site.css';
 import MobileBottomBar from '../components/MobileBottomBar';
 import LiveChat from '../components/LiveChat';
 import AirportChime from '../components/AirportChime';
+import FlyingPlane from '../components/FlyingPlane';
 import { SITE_URL, DEFAULT_OG, ORG_JSON_LD } from '../lib/seo';
 
 export const viewport = {
@@ -45,6 +46,7 @@ export default function RootLayout({ children }) {
         <MobileBottomBar />
         <LiveChat />
         <AirportChime />
+        <FlyingPlane />
       </body>
     </html>
   );
