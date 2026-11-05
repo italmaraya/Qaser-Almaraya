@@ -1,6 +1,6 @@
 'use client';
 import { useEffect, useState } from 'react';
-import { packageUrgency } from '../lib/packageUrgency';
+import { siteUrgency } from '../lib/packageUrgency';
 
 // Package page: live countdown to the next departure + seats left.
 // Shows nothing when the package has no departure date and no seat count.
@@ -14,7 +14,7 @@ const pad = (n) => String(n).padStart(2, '0');
 
 export default function UrgencyPanel({ pkg, lang = 'ar' }) {
   const en = lang === 'en';
-  const u = packageUrgency(pkg, lang);
+  const u = siteUrgency(pkg, lang);
   const target = u && u.date && u.days !== null && u.days >= 1 && u.days <= COUNTDOWN_DAYS ? new Date(u.date + 'T00:00:00+03:00').getTime() : null;
   const [now, setNow] = useState(null);
 

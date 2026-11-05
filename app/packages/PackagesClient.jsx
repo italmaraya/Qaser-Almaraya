@@ -2,7 +2,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { useRouter } from 'next/navigation';
-import { packageUrgency } from '../../lib/packageUrgency';
+import { siteUrgency } from '../../lib/packageUrgency';
 import dynamic from 'next/dynamic';
 import SiteHeader from '../../components/SiteHeader';
 import SiteFooter from '../../components/SiteFooter';
@@ -607,7 +607,7 @@ export default function PackagesPage({ initialPackages = null }) {
                       flights={p.flights || []}
                       lang={lang}
                       rating={p.rating || 4.8}
-                      urgency={packageUrgency(p, lang)}
+                      urgency={siteUrgency(p, lang)}
                       onDetails={() => router.push(`/packages/${p.id}`)}
                     />
                   ))}

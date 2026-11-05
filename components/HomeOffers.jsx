@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { formatPrice } from '../lib/currency';
 import { nightsLabel, destinationLabel } from '../lib/destinations';
 import { loadPackages } from '../lib/publicPackages';
-import { packageUrgency } from '../lib/packageUrgency';
+import { siteUrgency } from '../lib/packageUrgency';
 
 // "Featured offers" strip on the homepage: the first packages in the order
 // set in the dashboard, with photo, duration and starting price. Hidden when
@@ -52,7 +52,7 @@ export default function HomeOffers({ lang = 'ar' }) {
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 {p.image_url ? <img src={p.image_url} alt={nm(p.title_ar, p.title_en)} loading="lazy" /> : null}
                 {(() => {
-                  const u = packageUrgency(p, lang);
+                  const u = siteUrgency(p, lang);
                   if (!u || !u.label) return null;
                   return <span className={'qa-offer-urg' + (u.hot && !u.soldOut ? ' qa-urg-badge' : '')} style={{ background: u.soldOut ? '#1d2733' : u.hot ? '#e0364f' : '#faab18' }}>{u.soldOut ? '⛔' : '⏳'} {u.label}</span>;
                 })()}
