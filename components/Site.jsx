@@ -4,7 +4,9 @@ import { WA_ICON } from './WhatsAppButton';
 import HomeHero from './HomeHero';
 import HomeOffers from './HomeOffers';
 import SeasonSpotlight from './SeasonSpotlight';
+import SeasonDecor from './SeasonDecor';
 import TripFinder from './TripFinder';
+import VisaChecker from './VisaChecker';
 import AirlinesMarquee from './AirlinesMarquee';
 import React, { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
@@ -130,7 +132,7 @@ const ACHIEVEMENTS=[
   body:['تفخر شركة قصر المرايا للسفر والسياحة بدورها في دعم الرياضة العراقية وجماهيرها العريقة، وذلك من خلال تنظيم رحلات خاصة لنقل مشجعي منتخبنا الوطني إلى مختلف البطولات والمباريات.',
    'نواصل التزامنا بدعم رياضتنا ومشجعينا، وسنبقى دائمًا شريككم في كل رحلة انتصار، لنرسم معًا لحظات الفخر ونصنع التاريخ بوقوفنا خلف منتخبنا العظيم!']}];
 
-const NAV=[{id:'home',label:'الرئيسية'},{id:'flights',label:'الطيران والفنادق'},{id:'packages',label:'المجموعات والباقات'},{id:'visas',label:'التأشيرات'},{id:'jobs',label:'الوظائف'},{id:'faq',label:'الأسئلة الشائعة'},{id:'contact',label:'تواصل معنا'}];
+const NAV=[{id:'home',label:'الرئيسية'},{id:'flights',label:'الطيران والفنادق'},{id:'packages',label:'المجموعات والباقات'},{id:'visas',label:'التأشيرات'},{id:'guide',label:'دليل الوجهات'},{id:'jobs',label:'الوظائف'},{id:'faq',label:'الأسئلة الشائعة'},{id:'contact',label:'تواصل معنا'}];
 const GROUPS=['الكل','عائلي','شبابي','رجال أعمال','حج وعمرة'];
 
 export default function Site(props) {
@@ -141,7 +143,7 @@ export default function Site(props) {
     document.body.style.overflow = qaMobileMenuOpen ? 'hidden' : '';
     return () => { document.body.style.overflow = ''; };
   }, [qaMobileMenuOpen]);
-  const ROUTE_MAP = { home: '/', packages: '/packages', flights: '/flights', visas: '/visa', jobs: '/jobs', faq: '/faq', contact: '/contact' };
+  const ROUTE_MAP = { home: '/', packages: '/packages', flights: '/flights', visas: '/visa', guide: '/guide', jobs: '/jobs', faq: '/faq', contact: '/contact' };
   const [odooJobsData, setOdooJobsData] = useState(null);
   const contentJobs = (odooJobsData && odooJobsData.jobs && odooJobsData.jobs.length ? odooJobsData.jobs : null) || (props.content && props.content.jobs) || null;
   const contentFaq = (props.content && props.content.faq) || null;
@@ -374,8 +376,8 @@ function   renderVals(){
     const navItems = NAV.map(n => {
       const isOn = page === n.id;
       return {
-        label: n.id === 'packages' && st.lang === 'en' ? 'Groups & Packages' : n.label,
-        noI18n: n.id === 'packages',
+        label: n.id === 'packages' && st.lang === 'en' ? 'Groups & Packages' : n.id === 'guide' && st.lang === 'en' ? 'Travel guides' : n.label,
+        noI18n: n.id === 'packages' || n.id === 'guide',
         weight: isOn ? 700 : 500,
         color: isOn ? '#049dc5' : '#3d4650',
         border: isOn ? '#049dc5' : 'transparent',
@@ -813,6 +815,7 @@ function   visaVals(country){
 
 <div dir="rtl" style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
 <header style={{ position: "sticky", top: "0", zIndex: "40", background: "#fff", borderBottom: "1px solid #ececed", boxShadow: "0 1px 2px rgba(29,39,51,.06)" }}>
+<SeasonDecor />
 <div className="qa-head" style={{ maxWidth: "1240px", margin: "0 auto", padding: "12px 32px", display: "flex", alignItems: "center", gap: "24px" }}>
 <a href="#" onClick={goHome} aria-label="قصر المرايا للسفر و السياحة" className="qa-logo" style={{ display: "flex", alignItems: "center", gap: "9px", textDecoration: "none", flex: "none" }}>
 <img src="/assets/logo-mark-tight.webp" alt="" style={{ height: "38px", width: "38px", objectFit: "contain", display: "block", flex: "none" }} />
@@ -906,6 +909,7 @@ function   visaVals(country){
 <SeasonSpotlight lang={st.lang} />
 <HomeOffers lang={st.lang} />
 <TripFinder lang={st.lang} />
+<VisaChecker lang={st.lang} />
 <section className="qa-sec" style={{ display: "flex", flexDirection: "column", gap: "32px" }}>
 <div style={{ maxWidth: "680px", margin: "0 auto", textAlign: "center", display: "flex", flexDirection: "column", gap: "16px" }}>
 <h2 style={{ fontSize: "36px", fontWeight: "700" }}>نُعيد صياغة مفهوم السفر</h2>

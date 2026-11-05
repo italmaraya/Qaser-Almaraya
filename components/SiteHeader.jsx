@@ -2,12 +2,14 @@
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import { useLangToggle } from '../lib/i18n';
+import SeasonDecor from './SeasonDecor';
 
 const NAV = [
   { href: '/', label: 'الرئيسية' },
   { href: '/flights', label: 'الطيران والفنادق' },
   { href: '/packages', label: 'المجموعات والباقات', labelEn: 'Groups & Packages' },
   { href: '/visa', label: 'التأشيرات' },
+  { href: '/guide', label: 'دليل الوجهات', labelEn: 'Travel guides' },
   { href: '/jobs', label: 'الوظائف' },
   { href: '/faq', label: 'الأسئلة الشائعة' },
   { href: '/contact', label: 'تواصل معنا' },
@@ -24,6 +26,7 @@ export default function SiteHeader({ active = 'التأشيرات' }) {
 
   return (
     <header style={{ position: 'sticky', top: 0, zIndex: 40, background: '#fff', borderBottom: '1px solid #ececed', boxShadow: '0 1px 2px rgba(29,39,51,.06)' }}>
+      <SeasonDecor />
       <div className="qa-head" style={{ maxWidth: 1240, margin: '0 auto', padding: '12px 32px', display: 'flex', alignItems: 'center', gap: 24 }}>
         <Link href="/" aria-label="قصر المرايا للسفر و السياحة" className="qa-logo" style={{ display: 'flex', alignItems: 'center', gap: 9, textDecoration: 'none', flex: 'none' }}>
           <img src="/assets/logo-mark-tight.webp" alt="" style={{ height: 38, width: 38, objectFit: 'contain', display: 'block', flex: 'none' }} />

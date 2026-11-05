@@ -6,7 +6,8 @@ import SiteHeader from '../../../../components/SiteHeader';
 import SiteFooter from '../../../../components/SiteFooter';
 import MascotLoader from '../../../../components/MascotLoader';
 import { printDoc, visaTableHtml, combinedDocsLine, esc } from '../../../../lib/printDoc';
-import { buildVisaPdfHtml } from '../../../../lib/visaPdf';
+import { buildVisaPdfHtml, findCountryIso } from '../../../../lib/visaPdf';
+import { guideFor } from '../../../../lib/destinationGuide';
 import CountryHero from '../../../../components/CountryHero';
 import { useLangToggle } from '../../../../lib/i18n';
 import { formatPrice, formatRawAmount } from '../../../../lib/currency';
@@ -157,6 +158,15 @@ export default function CountryVisaListPage() {
 
           {country && (
             <>
+              {(() => {
+                const iso = findCountryIso(country);
+                if (!iso || !guideFor(iso)) return null;
+                return (
+                  <Link href={'/guide/' + iso} style={{ alignSelf: 'flex-start', display: 'inline-flex', alignItems: 'center', gap: 8, fontSize: 14, fontWeight: 700, color: '#036f8c', background: '#eaf8fd', border: '1px solid #bfe9f6', borderRadius: 999, padding: '8px 16px', textDecoration: 'none' }}>
+                    🧭 {nm('دليل السفر: الطقس والعملة وفرق التوقيت والنصائح', 'Travel guide: weather, money, time and tips')}
+                  </Link>
+                );
+              })()}
 
               {travelDate && (
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 12.5, color: '#5f666e' }}>

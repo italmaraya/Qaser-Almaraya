@@ -2,6 +2,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { siteUrgency } from '../../lib/packageUrgency';
 import dynamic from 'next/dynamic';
 import SiteHeader from '../../components/SiteHeader';
@@ -25,6 +26,7 @@ import { COUNTRY_GEO } from '../../lib/geoData';
 import { REGIONS, countryInfo, flagUrl, groupPackagesByCountry, packageCountries, packageCountry, nightsLabel, destinationLabel, isoFromName } from '../../lib/destinations';
 
 import { BUDGETS } from '../../lib/budgets';
+import { upcomingDates } from '../../lib/publicPackages';
 
 // Month helpers for the filters.
 const MONTHS_AR = ['كانون الثاني', 'شباط', 'آذار', 'نيسان', 'أيار', 'حزيران', 'تموز', 'آب', 'أيلول', 'تشرين الأول', 'تشرين الثاني', 'كانون الأول'];
@@ -154,6 +156,25 @@ export default function PackagesPage({ initialPackages = null }) {
       return g ? { lat: g[0], lng: g[1], name: nm(c.ar, c.en), iso: c.iso } : null;
     })
     .filter(Boolean), [destCountries, lang]);
+
+  // Next departures across all packages (one per package), for the globe panel.
+  const upcoming = useMemo(() => {
+    const today = new Date().toISOString().slice(0, 10);
+    return (packages || [])
+      .map((p) => ({ p, date: upcomingDates(p, today).find((d) => d > today) }))
+      .filter((x) => x.date)
+      .sort((a, b) => (a.date < b.date ? -1 : a.date > b.date ? 1 : 0))
+      // One row per destination, so the list shows variety instead of four
+      // Istanbul packages leaving the same day.
+      .filter((x, i, arr) => {
+        const key = (x.p.dest_ar || x.p.title_ar || '').split(/[،,]/)[0].trim();
+        return arr.findIndex((y) => (y.p.dest_ar || y.p.title_ar || '').split(/[،,]/)[0].trim() === key) === i;
+      })
+      .slice(0, 5);
+  }, [packages]);
+  const fmtDay = (d) => {
+    try { return new Intl.DateTimeFormat(lang === 'en' ? 'en-GB' : 'ar-IQ-u-nu-latn', { weekday: 'short', day: 'numeric', month: 'short', timeZone: 'UTC' }).format(new Date(d + 'T00:00:00Z')); } catch { return d; }
+  };
 
   function pickCountry(iso) {
     setCountry(iso);
@@ -507,6 +528,9 @@ export default function PackagesPage({ initialPackages = null }) {
               .qa-pkg-row > :global(*) { flex: 0 0 84%; scroll-snap-align: start; }
               .qa-pkg-group-head button { margin-inline-start: 0; width: 100%; text-align: start; }
             }
+:global(.qa-upc-row) { display: flex; align-items: center; gap: 10px; color: #fff; font-size: 13.5px; padding: 7px 10px; border-radius: 10px; background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.12); text-decoration: none; transition: background .15s; min-width: 0; }
+            :global(.qa-upc-row:hover) { background: rgba(255,255,255,.16); color: #fff; }
+            :global(.qa-upc-date) { flex-shrink: 0; font-weight: 700; color: #bfe9f6; min-width: 92px; }
             .qa-pill {
               flex: none; cursor: pointer; font-family: inherit; white-space: nowrap; padding: 9px 16px; border-radius: 999px;
               border: 1px solid #ececed; background: #fff; color: #3d4650; font-size: 13.5px; font-weight: 600;
@@ -631,6 +655,17 @@ export default function PackagesPage({ initialPackages = null }) {
                     ? 'Spin the globe and tap a pin to jump straight to that destination — every country we travel to, in one view.'
                     : 'أدر الكرة الأرضية واضغط على أي نقطة للانتقال مباشرة إلى تلك الوجهة — كل الدول التي نسافر إليها في مكان واحد.'}
                 </p>
+                {upcoming.length > 0 && (
+                  <div data-no-i18n="" style={{ display: 'flex', flexDirection: 'column', gap: 6, marginTop: 4 }}>
+                    <span style={{ fontSize: 13, fontWeight: 700, color: '#faab18' }}>✈️ {lang === 'en' ? 'Our next departures from Baghdad' : 'رحلاتنا القادمة من بغداد'}</span>
+                    {upcoming.map(({ p, date }) => (
+                      <Link key={p.id} href={'/packages/' + p.id} className="qa-upc-row">
+                        <span className="qa-upc-date">{fmtDay(date)}</span>
+                        <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', minWidth: 0 }}>{nm(p.title_ar, p.title_en)}</span>
+                      </Link>
+                    ))}
+                  </div>
+                )}
                 <button
                   type="button"
                   onClick={() => { setQuery(''); setCat('all'); setCountry('all'); document.getElementById('qa-pkg-results')?.scrollIntoView({ behavior: 'smooth' }); }}
@@ -643,6 +678,9 @@ export default function PackagesPage({ initialPackages = null }) {
               <div style={{ position: 'relative' }}>
                 <Globe3D
                   pins={globePins}
+                  origin={{ lat: 33.31, lng: 44.36 }}
+                  startLng={32}
+                  startLat={26}
                   onSelectPin={(p) => (p.iso ? pickCountry(p.iso) : setQuery(p.name))}
                   height={340}
                 />
