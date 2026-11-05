@@ -3,6 +3,8 @@ import { APPLY_FLOW_ENABLED, WHATSAPP_NUMBER, openWhatsApp, visaMessage, waLink 
 import { WA_ICON } from './WhatsAppButton';
 import HomeHero from './HomeHero';
 import HomeOffers from './HomeOffers';
+import SeasonSpotlight from './SeasonSpotlight';
+import TripFinder from './TripFinder';
 import AirlinesMarquee from './AirlinesMarquee';
 import React, { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
@@ -901,7 +903,9 @@ function   visaVals(country){
 </div>
 </section>
 </HomeHero>
+<SeasonSpotlight lang={st.lang} />
 <HomeOffers lang={st.lang} />
+<TripFinder lang={st.lang} />
 <section className="qa-sec" style={{ display: "flex", flexDirection: "column", gap: "32px" }}>
 <div style={{ maxWidth: "680px", margin: "0 auto", textAlign: "center", display: "flex", flexDirection: "column", gap: "16px" }}>
 <h2 style={{ fontSize: "36px", fontWeight: "700" }}>نُعيد صياغة مفهوم السفر</h2>

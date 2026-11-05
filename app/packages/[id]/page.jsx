@@ -13,7 +13,7 @@ import { printDoc, copyText } from '../../../lib/printDoc';
 import WhatsAppButton from '../../../components/WhatsAppButton';
 import { APPLY_FLOW_ENABLED, packageMessage } from '../../../lib/whatsapp';
 import { buildPackageVoucherHtml, stripFlags } from '../../../lib/packagePdf';
-import { packageUrgency } from '../../../lib/packageUrgency';
+import UrgencyPanel from '../../../components/UrgencyPanel';
 import { TRAVELLER_TYPES, computeTotals, unitPrice, durationLabel } from '../../../lib/packagePricing';
 import { useProviderReveal } from '../../../lib/useProviderReveal';
 import WorldClocks, { destinationTz } from '../../../components/WorldClocks';
@@ -132,6 +132,26 @@ export default function PackageDetailPage() {
     lines.push('');
     lines.push('قصر المرايا للسفر والسياحة');
     return lines;
+  }
+
+  // Share the package with family and friends: the phone's own share sheet
+  // when it has one, otherwise WhatsApp (any contact, not the company line).
+  async function handleShare() {
+    const en = lang === 'en';
+    const url = window.location.origin + '/packages/' + pkg.id;
+    const title = nm(pkg.title_ar, pkg.title_en);
+    const text = [
+      '✈️ ' + title + (destinationLabel(pkg, lang) ? ' — ' + destinationLabel(pkg, lang) : ''),
+      nightsLabel(pkg, lang),
+      Number(pkg.price) > 0 ? (en ? 'From ' : 'يبدأ من ') + formatPrice(pkg.price, 'IQD', lang) + (en ? ' per person' : ' للشخص') : '',
+      en ? 'Qaser Almaraya Travel & Tourism' : 'قصر المرايا للسفر والسياحة',
+    ].filter(Boolean).join('\n');
+    if (navigator.share) {
+      try { await navigator.share({ title, text, url }); return; } catch (e) { if (e && e.name === 'AbortError') return; }
+    }
+    const wa = 'https://wa.me/?text=' + encodeURIComponent(text + '\n' + url);
+    const w = window.open(wa, '_blank', 'noopener');
+    if (!w) window.location.href = wa;
   }
 
   function handleCopy() {
@@ -287,16 +307,7 @@ export default function PackageDetailPage() {
                 </div>
               </div>
 
-              {(() => {
-                const u = packageUrgency(pkg, lang);
-                if (!u || !u.label) return null;
-                return (
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 10, borderRadius: 12, padding: '10px 14px', background: u.soldOut ? '#1d2733' : u.hot ? '#fdecef' : '#fff4dc', color: u.soldOut ? '#fff' : u.hot ? '#c02643' : '#8a5a00', fontWeight: 700, fontSize: 14 }}>
-                    <span style={{ fontSize: 20 }}>{u.soldOut ? '⛔' : '⏳'}</span>
-                    <span>{u.label}{u.soldOut ? (lang === 'en' ? ' — message us to join the waiting list' : ' — راسلنا للانضمام لقائمة الانتظار') : ''}</span>
-                  </div>
-                );
-              })()}
+              <UrgencyPanel pkg={pkg} lang={lang} />
               {staffMode && (
                 <div style={{ border: '2px dashed #faab18', background: '#fffaf0', borderRadius: 14, padding: 12, display: 'flex', flexDirection: 'column', gap: 8 }}>
                   <b style={{ fontSize: 13.5, color: '#8a5a00' }}>🧾 عرض سعر مخصص (وضع الموظفين)</b>
@@ -358,6 +369,15 @@ export default function PackageDetailPage() {
                   {t.copy_btn}
                 </button>
               </div>
+              <button
+                type="button"
+                onClick={handleShare}
+                className="qa-share-btn"
+                style={{ cursor: 'pointer', border: '1px solid #b9eccd', borderRadius: 999, padding: '10px 14px', fontSize: 13.5, fontWeight: 700, fontFamily: 'inherit', background: '#eafaf0', color: '#11804a', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 7 }}
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><circle cx="18" cy="5" r="3" /><circle cx="6" cy="12" r="3" /><circle cx="18" cy="19" r="3" /><path d="m8.6 13.5 6.8 4M15.4 6.5l-6.8 4" /></svg>
+                {lang === 'en' ? 'Share this package with family & friends' : 'شارك الباقة مع أهلك وأصدقائك'}
+              </button>
               {toast && (
                 <span style={{ fontSize: 12.5, fontWeight: 700, color: '#036f8c', background: '#eaf8fd', border: '1px solid #bfe9f6', borderRadius: 8, padding: '6px 10px', textAlign: 'center' }}>{toast}</span>
               )}

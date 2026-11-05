@@ -24,13 +24,9 @@ import { formatPrice } from '../../lib/currency';
 import { COUNTRY_GEO } from '../../lib/geoData';
 import { REGIONS, countryInfo, flagUrl, groupPackagesByCountry, packageCountries, packageCountry, nightsLabel, destinationLabel, isoFromName } from '../../lib/destinations';
 
-// Budget buckets (IQD per adult) and month helpers for the filters.
-const BUDGETS = [
-  { id: 'b1', ar: 'أقل من مليون', en: 'Under 1M', min: 0, max: 1000000 },
-  { id: 'b2', ar: 'مليون – مليونين', en: '1M – 2M', min: 1000000, max: 2000000 },
-  { id: 'b3', ar: 'مليونين – 3 ملايين', en: '2M – 3M', min: 2000000, max: 3000000 },
-  { id: 'b4', ar: 'أكثر من 3 ملايين', en: 'Over 3M', min: 3000000, max: Infinity },
-];
+import { BUDGETS } from '../../lib/budgets';
+
+// Month helpers for the filters.
 const MONTHS_AR = ['كانون الثاني', 'شباط', 'آذار', 'نيسان', 'أيار', 'حزيران', 'تموز', 'آب', 'أيلول', 'تشرين الأول', 'تشرين الثاني', 'كانون الأول'];
 const MONTHS_EN = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 function monthLabel(ym, en) {
@@ -61,7 +57,10 @@ export default function PackagesPage({ initialPackages = null }) {
   // Opened from the homepage globe as /packages?q=<country name>
   useEffect(() => {
     try {
-      const q = new URLSearchParams(window.location.search).get('q');
+      const sp = new URLSearchParams(window.location.search);
+      const c = sp.get('cat');
+      if (c && CATS.some((x) => x.id === c)) setCat(c);
+      const q = sp.get('q');
       if (q) {
         const iso = isoFromName(q);
         if (iso) setCountry(iso); else setQuery(q);
