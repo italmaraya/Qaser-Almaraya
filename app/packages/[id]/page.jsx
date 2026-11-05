@@ -18,6 +18,7 @@ import { TRAVELLER_TYPES, computeTotals, unitPrice, durationLabel } from '../../
 import { useProviderReveal } from '../../../lib/useProviderReveal';
 import WorldClocks, { destinationTz } from '../../../components/WorldClocks';
 import { COUNTRY_GEO } from '../../../lib/geoData';
+import { nightsLabel, destinationLabel } from '../../../lib/destinations';
 
 const optStyle = (on) => ({
   display: 'flex', alignItems: 'center', gap: 14, padding: '14px 16px', borderRadius: 14,
@@ -98,8 +99,8 @@ export default function PackageDetailPage() {
   function packageSummaryLines() {
     const en = lang === 'en';
     const lines = [
-      nm(pkg.title_ar, pkg.title_en) + ' — ' + nm(pkg.dest_ar, pkg.dest_en),
-      (en ? 'Duration: ' : 'المدة: ') + nm(pkg.nights_ar, pkg.nights_en),
+      nm(pkg.title_ar, pkg.title_en) + ' — ' + destinationLabel(pkg, lang),
+      (en ? 'Duration: ' : 'المدة: ') + nightsLabel(pkg, lang),
       (en ? 'Departures: ' : 'الانطلاق: ') + nm(pkg.departs_ar, pkg.departs_en),
     ];
     if (hotels[hotelIdx]) lines.push((en ? 'Hotel: ' : 'الفندق: ') + nm(hotels[hotelIdx].nameAr, hotels[hotelIdx].nameEn));
@@ -159,7 +160,7 @@ export default function PackageDetailPage() {
       pageUrl: window.location.href,
       quote: staffMode ? { customer: quote.customer.trim(), discount, discountLabel: quote.discountType === 'percent' && Number(quote.discount) > 0 ? Math.min(Number(quote.discount), 100) + '%' : '', validUntil: quote.validUntil, note: quote.note.trim() } : null,
     });
-    printDoc(nm(pkg.title_ar, pkg.title_en) + ' — ' + nm(pkg.dest_ar, pkg.dest_en) + (staffMode && quote.customer.trim() ? ' — ' + quote.customer.trim() : ''), bodyHtml, lang);
+    printDoc(nm(pkg.title_ar, pkg.title_en) + ' — ' + destinationLabel(pkg, lang) + (staffMode && quote.customer.trim() ? ' — ' + quote.customer.trim() : ''), bodyHtml, lang);
   }
 
   if (error) {
@@ -301,8 +302,8 @@ export default function PackageDetailPage() {
                     const en = lang === 'en';
                     return packageMessage({
                       title: nm(pkg.title_ar, pkg.title_en),
-                      dest: nm(pkg.dest_ar, pkg.dest_en),
-                      nights: nm(pkg.nights_ar, pkg.nights_en),
+                      dest: destinationLabel(pkg, lang),
+                      nights: nightsLabel(pkg, lang),
                       hotel: h ? nm(h.nameAr, h.nameEn) + ((h.notesAr || h.notesEn) ? ' (' + nm(h.notesAr, h.notesEn) + ')' : '') : '',
                       flight: f ? nm(f.nameAr, f.nameEn) : '',
                       travellers: travellerSummary(en),
@@ -349,10 +350,10 @@ export default function PackageDetailPage() {
               {(() => {
                 const cs = Array.isArray(pkg.countries) ? pkg.countries : [];
                 const iso = cs[0] ? String(cs[0]).toLowerCase() : null;
-                const tz = destinationTz(iso, cs.length === 1 ? nm(pkg.dest_ar, pkg.dest_en) + ' ' + (hotels[hotelIdx]?.location || '') : '');
+                const tz = destinationTz(iso, cs.length === 1 ? destinationLabel(pkg, lang) + ' ' + (hotels[hotelIdx]?.location || '') : '');
                 if (!tz || iso === 'iq') return null;
                 const g = COUNTRY_GEO[iso];
-                const place = cs.length === 1 ? nm(pkg.dest_ar, pkg.dest_en) : g ? (lang === 'en' ? g[4] : g[3]) : nm(pkg.dest_ar, pkg.dest_en);
+                const place = cs.length === 1 ? destinationLabel(pkg, lang) : g ? (lang === 'en' ? g[4] : g[3]) : destinationLabel(pkg, lang);
                 const f = flights[flightIdx];
                 return <WorldClocks tz={tz} place={place} lang={lang} compact flight={f ? { arrive: f.outArriveTime, depart: f.retDepartTime } : null} />;
               })()}
@@ -370,7 +371,7 @@ export default function PackageDetailPage() {
                 <div style={{ position: 'relative', zIndex: 1 }}>
                   <span style={{ fontSize: 12.5, fontWeight: 700, letterSpacing: '.06em', color: 'rgba(255,255,255,.85)' }}>{catLabel(pkg.cat, lang).toUpperCase()}</span>
                   <h1 style={{ margin: '4px 0 0', fontSize: 28, color: '#fff' }}>{nm(pkg.title_ar, pkg.title_en)}</h1>
-                  <span style={{ fontSize: 14.5, color: 'rgba(255,255,255,.9)' }}>{nm(pkg.dest_ar, pkg.dest_en)} · {nm(pkg.nights_ar, pkg.nights_en)}</span>
+                  <span style={{ fontSize: 14.5, color: 'rgba(255,255,255,.9)' }}>{destinationLabel(pkg, lang)} · {nightsLabel(pkg, lang)}</span>
                 </div>
               </div>
 
@@ -378,8 +379,8 @@ export default function PackageDetailPage() {
                 <h4 style={{ margin: '0 0 14px' }}>{t.overview_title}</h4>
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(160px,1fr))', gap: 12 }}>
                   {[
-                    [lang === 'en' ? 'Destination' : 'الوجهة', nm(pkg.dest_ar, pkg.dest_en)],
-                    [lang === 'en' ? 'Duration' : 'المدة', durationLabel(pkg, lang) || nm(pkg.nights_ar, pkg.nights_en)],
+                    [lang === 'en' ? 'Destination' : 'الوجهة', destinationLabel(pkg, lang)],
+                    [lang === 'en' ? 'Duration' : 'المدة', durationLabel(pkg, lang) || nightsLabel(pkg, lang)],
                     [lang === 'en' ? 'Departures' : 'المغادرة', nm(pkg.departs_ar, pkg.departs_en)],
                     [t.detail_base, formatPrice(Number(pkg.price) || 0, 'IQD', lang)],
                   ].map(([label, value]) => (

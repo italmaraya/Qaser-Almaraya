@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { formatPrice } from '../lib/currency';
+import { nightsLabel, destinationLabel } from '../lib/destinations';
 
 // "Featured offers" strip on the homepage: the first packages in the order
 // set in the dashboard, with photo, duration and starting price. Hidden when
@@ -52,7 +53,7 @@ export default function HomeOffers({ lang = 'ar' }) {
                 {p.image_url ? <img src={p.image_url} alt={nm(p.title_ar, p.title_en)} loading="lazy" /> : null}
               </div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 6, padding: '14px 16px 16px', flex: 1 }}>
-                <span style={{ fontSize: 13, color: '#7b8087' }}>{[nm(p.dest_ar, p.dest_en), nm(p.nights_ar, p.nights_en)].filter(Boolean).join(' · ')}</span>
+                <span style={{ fontSize: 13, color: '#7b8087' }}>{[destinationLabel(p, lang), nightsLabel(p, lang)].filter(Boolean).join(' · ')}</span>
                 <h3 style={{ fontSize: 18, fontWeight: 700, color: '#1d2733', lineHeight: 1.35 }}>{nm(p.title_ar, p.title_en)}</h3>
                 <div style={{ marginTop: 'auto', paddingTop: 10, display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: 8 }}>
                   <span style={{ fontSize: 13, color: '#7b8087' }}>{en ? 'From' : 'يبدأ من'}</span>

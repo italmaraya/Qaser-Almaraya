@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { sql, ensureSchema } from '../../../../../lib/db';
+import { normalizeVisaCountry } from '../../../../../lib/destinations';
 
 export async function GET(request, { params }) {
   await ensureSchema();
@@ -24,5 +25,5 @@ export async function GET(request, { params }) {
     SELECT * FROM visa_documents WHERE visa_card_id = ${id} ORDER BY sort_order ASC, id ASC
   `;
 
-  return NextResponse.json({ ...cards[0], documents });
+  return NextResponse.json({ ...normalizeVisaCountry(cards[0]), documents });
 }

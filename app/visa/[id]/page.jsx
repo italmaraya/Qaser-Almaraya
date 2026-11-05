@@ -14,6 +14,7 @@ import { useLangToggle } from '../../../lib/i18n';
 import { formatPrice, formatRawAmount } from '../../../lib/currency';
 import { flagSrc } from '../../../lib/flags';
 import { useProviderReveal } from '../../../lib/useProviderReveal';
+import { workDaysLabel } from '../../../lib/destinations';
 
 const WHY_US = [
   'مراجعة كاملة لمستنداتك قبل التقديم',
@@ -89,7 +90,7 @@ export default function VisaDetailPage() {
               <h3 style={{ margin: 0, fontSize: 19 }}>{nm(card.visa_type_name_ar, card.visa_type_name_en)} — {nm(card.country_name_ar, card.country_name_en)}</h3>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 6, fontSize: 14 }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between' }}><span style={{ color: '#7b8087' }}>مدة الإقامة</span><span>{card.stay_duration || '—'}</span></div>
-                <div style={{ display: 'flex', justifyContent: 'space-between' }}><span style={{ color: '#7b8087' }}>مدة الإصدار</span><span>{card.issuing_time_days || '—'} أيام عمل</span></div>
+                <div style={{ display: 'flex', justifyContent: 'space-between' }}><span style={{ color: '#7b8087' }}>مدة الإصدار</span><span>{workDaysLabel(card.issuing_time_days) || '—'}</span></div>
                 <div style={{ display: 'flex', justifyContent: 'space-between' }}><span style={{ color: '#7b8087' }}>صلاحية قبل السفر</span><span>{card.validity_before_travel || '—'}</span></div>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', borderTop: '1px solid #ececed', paddingTop: 12 }}>
@@ -111,7 +112,7 @@ export default function VisaDetailPage() {
                     type: nm(card.visa_type_name_ar, card.visa_type_name_en),
                     country: nm(card.country_name_ar, card.country_name_en),
                     stay: card.stay_duration,
-                    issuing: card.issuing_time_days ? card.issuing_time_days + ' أيام عمل' : '',
+                    issuing: workDaysLabel(card.issuing_time_days),
                     validity: card.validity_before_travel,
                     url: window.location.href,
                   })}
@@ -204,7 +205,7 @@ export default function VisaDetailPage() {
                     ['مدة الإقامة', card.stay_duration || '—'],
                     ['سعر البالغ', Number(card.adult_price).toLocaleString() + ' د.ع'],
                     ['صلاحية قبل السفر', card.validity_before_travel || '—'],
-                    ['مدة الإصدار', (card.issuing_time_days || '—') + ' أيام عمل'],
+                    ['مدة الإصدار', workDaysLabel(card.issuing_time_days) || '—'],
                     ['سعر الطفل', Number(card.child_price).toLocaleString() + ' د.ع'],
                   ].map(([label, value]) => (
                     <div key={label} style={{ border: '1px solid #ececed', borderRadius: 10, padding: '12px 14px' }}>

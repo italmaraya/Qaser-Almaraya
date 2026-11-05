@@ -13,6 +13,7 @@ import { formatPrice, formatRawAmount } from '../../../../lib/currency';
 import { flagSrc } from '../../../../lib/flags';
 import { useProviderReveal } from '../../../../lib/useProviderReveal';
 import Icon from '../../../../components/Icon';
+import { workDaysLabel } from '../../../../lib/destinations';
 
 // Give each visa type its own personality instead of one flat blue box —
 // matched by keyword against the type's Arabic name, since types are
@@ -285,7 +286,7 @@ export default function CountryVisaListPage() {
                               className="qa-btn qa-cyan"
                               style={{ textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: 6, padding: '8px 16px', fontSize: 13, flex: 1, justifyContent: 'center' }}
                             >
-                              {lang === 'en' ? 'View deal' : 'عرض العرض'}
+                              {lang === 'en' ? 'View details' : 'عرض التفاصيل'}
                               <span style={{ width: 15, height: 15, borderRadius: '50%', background: 'rgba(255,255,255,.3)', display: 'grid', placeItems: 'center', flex: 'none' }}>
                                 <Icon name="check" size={9} />
                               </span>
@@ -297,7 +298,7 @@ export default function CountryVisaListPage() {
                       <div style={{ display: 'flex', gap: 0, borderTop: '1px solid #f0f0f0', paddingTop: 10, flexWrap: 'wrap' }}>
                         {[
                           { icon: 'shield-check', label: lang === 'en' ? 'Type' : 'النوع', value: nm(c.visa_type_name_ar, c.visa_type_name_en) },
-                          { icon: 'clock', label: lang === 'en' ? 'Issuance' : 'مدة الإصدار', value: c.issuing_time_days ? c.issuing_time_days + (lang === 'en' ? ' working days' : ' أيام عمل') : '—' },
+                          { icon: 'clock', label: lang === 'en' ? 'Issuance' : 'مدة الإصدار', value: c.issuing_time_days ? workDaysLabel(c.issuing_time_days, lang) : '—' },
                           { icon: 'calendar-check', label: lang === 'en' ? 'Validity' : 'الصلاحية', value: c.validity_before_travel || '—' },
                         ].map((s, i) => (
                           <div key={s.label} style={{ display: 'flex', alignItems: 'center', gap: 8, flex: '1 1 150px', padding: '2px 14px', borderInlineStart: i > 0 ? '1px solid #f0f0f0' : 'none' }}>
