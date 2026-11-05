@@ -2721,7 +2721,7 @@ function   visaVals(country){
 </div>
 <div style={{ borderTop: "1px solid rgba(255,255,255,.16)" }}>
 <div style={{ maxWidth: "1240px", margin: "0 auto", padding: "12px 32px", display: "flex", alignItems: "center", justifyContent: "center" }}>
-<span style={{ fontSize: "14px", color: "rgba(255,255,255,.6)" }}>© 2026 قصر المرايا للسفر و السياحة — جميع الحقوق محفوظة</span>
+<span style={{ fontSize: "14px", color: "rgba(255,255,255,.6)" }}>© 2026 قصر المرايا للسفر و السياحة — رقم الإجازة 784 — جميع الحقوق محفوظة</span>
 
 </div>
 </div>

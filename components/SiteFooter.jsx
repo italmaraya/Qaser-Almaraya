@@ -44,7 +44,7 @@ export default function SiteFooter() {
         <PaymentBadges />
       </div>
       <div style={{ borderTop: '1px solid rgba(255,255,255,.2)', textAlign: 'center', padding: '14px 20px', fontSize: 13.5, color: 'rgba(255,255,255,.8)' }}>
-        © 2026 قصر المرايا للسفر و السياحة — جميع الحقوق محفوظة
+        © 2026 قصر المرايا للسفر و السياحة — رقم الإجازة 784 — جميع الحقوق محفوظة
       </div>
     </footer>
   );
