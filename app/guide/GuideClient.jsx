@@ -21,7 +21,7 @@ export default function GuideClient({ iso = null }) {
 
   return (
     <div dir={en ? 'ltr' : 'rtl'} style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
-      <SiteHeader active="" />
+      <SiteHeader active="دليل الوجهات" />
       <main className="qa-page" style={{ flex: 1 }} data-no-i18n="">
         <section className="qa-sec" style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
           {iso ? (

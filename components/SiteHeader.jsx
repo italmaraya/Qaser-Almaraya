@@ -8,6 +8,7 @@ const NAV = [
   { href: '/flights', label: 'الطيران والفنادق' },
   { href: '/packages', label: 'المجموعات والباقات', labelEn: 'Groups & Packages' },
   { href: '/visa', label: 'التأشيرات' },
+  { href: '/guide', label: 'دليل الوجهات', labelEn: 'Travel guides' },
   { href: '/jobs', label: 'الوظائف' },
   { href: '/faq', label: 'الأسئلة الشائعة' },
   { href: '/contact', label: 'تواصل معنا' },

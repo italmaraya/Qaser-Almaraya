@@ -9,7 +9,7 @@ import { printDoc } from '../lib/printDoc';
 import { openWhatsApp, visaMessage } from '../lib/whatsapp';
 import { flagSrc } from '../lib/flags';
 
-// Homepage "visa checker": pick nationality + destination and see at once the
+// Homepage "visa checker" (Iraqi passport only): pick a destination and see at once the
 // visa types, price, processing time and the documents to prepare, with a
 // printable checklist (PDF) and a WhatsApp button. Read-only: it uses the
 // same public visa APIs as the visa pages.
@@ -17,8 +17,6 @@ export default function VisaChecker({ lang = 'ar' }) {
   const en = lang === 'en';
   const nm = (ar, enText) => (en && enText ? enText : ar);
   const [cards, setCards] = useState(null);
-  const [nats, setNats] = useState([]);
-  const [nat, setNat] = useState('');
   const [countryId, setCountryId] = useState('');
   const [cardId, setCardId] = useState('');
   const [detail, setDetail] = useState(null);
@@ -27,11 +25,6 @@ export default function VisaChecker({ lang = 'ar' }) {
   useEffect(() => {
     let alive = true;
     fetch('/api/visa/cards').then((r) => (r.ok ? r.json() : [])).catch(() => []).then((l) => { if (alive) setCards(Array.isArray(l) ? l : []); });
-    fetch('/api/visa/nationalities').then((r) => (r.ok ? r.json() : [])).catch(() => []).then((l) => {
-      if (!alive || !Array.isArray(l)) return;
-      setNats(l);
-      if (l.length) setNat(String(l[0].id));
-    });
     return () => { alive = false; };
   }, []);
 
@@ -63,7 +56,7 @@ export default function VisaChecker({ lang = 'ar' }) {
   }, [cardId]);
 
   if (cards && cards.length === 0) return null;
-  const natName = (() => { const n = nats.find((x) => String(x.id) === nat); return n ? nm(n.name_ar, n.name_en) : ''; })();
+  const natName = en ? 'Iraqi' : 'عراقي';
   const docs = (detail && Array.isArray(detail.documents)) ? detail.documents : [];
   const req = docs.filter((d) => d.required);
   const opt = docs.filter((d) => !d.required);
@@ -98,6 +91,7 @@ export default function VisaChecker({ lang = 'ar' }) {
 .qa-vc h2{font-size:32px;font-weight:700}
 .qa-vc-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.6fr);gap:12px}
 .qa-vc select{width:100%;font-family:inherit;font-size:15.5px;padding:12px 14px;border-radius:12px;border:1px solid #d9e9ef;background:#f8fcfd;color:#1d2733}
+.qa-vc-fixed{display:flex;align-items:center;gap:8px;font-size:15.5px;font-weight:600;padding:12px 14px;border-radius:12px;border:1px solid #d9e9ef;background:#eef3f5;color:#1d2733}
 .qa-vc label{display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:700;color:#3d4650}
 .qa-vc-types{display:flex;flex-wrap:wrap;gap:8px}
 .qa-vc-type{font-family:inherit;cursor:pointer;display:flex;flex-direction:column;align-items:flex-start;gap:2px;padding:10px 14px;border-radius:14px;border:1px solid #d9e9ef;background:#fff;color:#1d2733;text-align:start}
@@ -123,9 +117,7 @@ export default function VisaChecker({ lang = 'ar' }) {
         </div>
         <div className="qa-vc-row">
           <label>{en ? 'Nationality' : 'الجنسية'}
-            <select value={nat} onChange={(e) => setNat(e.target.value)}>
-              {nats.map((n) => <option key={n.id} value={String(n.id)}>{nm(n.name_ar, n.name_en)}</option>)}
-            </select>
+            <span className="qa-vc-fixed"><img src="https://flagcdn.com/w80/iq.png" alt="" width="26" height="18" style={{ width: 26, height: 18, objectFit: 'cover', borderRadius: 3, border: '1px solid #ececed' }} onError={(e) => { e.currentTarget.style.display = 'none'; }} />{natName}</span>
           </label>
           <label>{en ? 'Destination' : 'الوجهة'}
             <select value={countryId} onChange={(e) => setCountryId(e.target.value)}>

@@ -114,3 +114,7 @@ html{overflow-x:hidden}
 
 /* Compact button that never wraps or stretches on phones (guide pages). */
 .qa-btn.qa-btn-fit{white-space:nowrap!important;min-height:0!important;line-height:1.3!important}
+
+/* Desktop nav: 8 links. Tighten spacing on narrower laptops so the menu stays on one line. */
+@media (min-width:821px) and (max-width:1279px){.qa-navrow{gap:12px!important;font-size:15px!important}}
+@media (min-width:821px) and (max-width:1120px){.qa-navrow{gap:10px!important;font-size:14px!important}.qa-head{gap:16px!important}}

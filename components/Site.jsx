@@ -131,7 +131,7 @@ const ACHIEVEMENTS=[
   body:['تفخر شركة قصر المرايا للسفر والسياحة بدورها في دعم الرياضة العراقية وجماهيرها العريقة، وذلك من خلال تنظيم رحلات خاصة لنقل مشجعي منتخبنا الوطني إلى مختلف البطولات والمباريات.',
    'نواصل التزامنا بدعم رياضتنا ومشجعينا، وسنبقى دائمًا شريككم في كل رحلة انتصار، لنرسم معًا لحظات الفخر ونصنع التاريخ بوقوفنا خلف منتخبنا العظيم!']}];
 
-const NAV=[{id:'home',label:'الرئيسية'},{id:'flights',label:'الطيران والفنادق'},{id:'packages',label:'المجموعات والباقات'},{id:'visas',label:'التأشيرات'},{id:'jobs',label:'الوظائف'},{id:'faq',label:'الأسئلة الشائعة'},{id:'contact',label:'تواصل معنا'}];
+const NAV=[{id:'home',label:'الرئيسية'},{id:'flights',label:'الطيران والفنادق'},{id:'packages',label:'المجموعات والباقات'},{id:'visas',label:'التأشيرات'},{id:'guide',label:'دليل الوجهات'},{id:'jobs',label:'الوظائف'},{id:'faq',label:'الأسئلة الشائعة'},{id:'contact',label:'تواصل معنا'}];
 const GROUPS=['الكل','عائلي','شبابي','رجال أعمال','حج وعمرة'];
 
 export default function Site(props) {
@@ -142,7 +142,7 @@ export default function Site(props) {
     document.body.style.overflow = qaMobileMenuOpen ? 'hidden' : '';
     return () => { document.body.style.overflow = ''; };
   }, [qaMobileMenuOpen]);
-  const ROUTE_MAP = { home: '/', packages: '/packages', flights: '/flights', visas: '/visa', jobs: '/jobs', faq: '/faq', contact: '/contact' };
+  const ROUTE_MAP = { home: '/', packages: '/packages', flights: '/flights', visas: '/visa', guide: '/guide', jobs: '/jobs', faq: '/faq', contact: '/contact' };
   const [odooJobsData, setOdooJobsData] = useState(null);
   const contentJobs = (odooJobsData && odooJobsData.jobs && odooJobsData.jobs.length ? odooJobsData.jobs : null) || (props.content && props.content.jobs) || null;
   const contentFaq = (props.content && props.content.faq) || null;
@@ -375,8 +375,8 @@ function   renderVals(){
     const navItems = NAV.map(n => {
       const isOn = page === n.id;
       return {
-        label: n.id === 'packages' && st.lang === 'en' ? 'Groups & Packages' : n.label,
-        noI18n: n.id === 'packages',
+        label: n.id === 'packages' && st.lang === 'en' ? 'Groups & Packages' : n.id === 'guide' && st.lang === 'en' ? 'Travel guides' : n.label,
+        noI18n: n.id === 'packages' || n.id === 'guide',
         weight: isOn ? 700 : 500,
         color: isOn ? '#049dc5' : '#3d4650',
         border: isOn ? '#049dc5' : 'transparent',
