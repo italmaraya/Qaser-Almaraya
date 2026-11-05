@@ -8,7 +8,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import Icon from './Icon';
 import { GoalServices, GoalTrust, GoalExpansion, GoalTech, GoalHeritage, GoalSafety } from './GoalIcons';
-import { getStoredLang, i18nReady, onI18nReady } from '../lib/i18n';
+import { getStoredLang, i18nReady, onI18nReady, initialLang, applyLangToDOM } from '../lib/i18n';
 import AchievementSpread from './AchievementSpread';
 import MascotLoader from './MascotLoader';
 import PackageCard from './PackageCard';
@@ -163,7 +163,7 @@ export default function Site(props) {
   const COUNTRIES = filteredCountriesList.length ? filteredCountriesList : COUNTRIES_DEFAULT;
   const VISAS = filteredCountriesList.length ? legacyVisasRaw : VISAS_DEFAULT;
   const DEFAULT_ACTIVE_COUNTRY = (COUNTRIES[0] && COUNTRIES[0].code) || 'tr';
-  const [st, setSt] = useState({ lang: 'ar', page: props.initialPage || 'home', active: DEFAULT_ACTIVE_COUNTRY, group: 'الكل', achievement: 'forum', pkg: '', loading: false, toast: '',
+  const [st, setSt] = useState(() => ({ lang: initialLang(), page: props.initialPage || 'home', active: DEFAULT_ACTIVE_COUNTRY, group: 'الكل', achievement: 'forum', pkg: '', loading: false, toast: '',
     travellers: 1, children: 0, tripDate: '', visaType: 'الكل', resultKind: 'الكل', visaDetailOpen: false, searched: false, visaId: '', appStage: 'form', ask: false, app: null, appError: '', appNo: '',
     countryPanelOpen: false, countryQuery: '',
     trackOpen: false, trackInput: '', trackQuery: '', trackSending: false, trackError: '', trackData: null,
@@ -173,7 +173,7 @@ export default function Site(props) {
     fileUrls: { cv: '', cover: '', work: '' },
     fileUploading: { cv: false, cover: false, work: false },
     contact: { name: '', phone: '', email: '', company: '', subject: props.contactSubject || 'حجز طيران', message: '' },
-    contactSending: false, contactSent: false, contactError: '' });
+    contactSending: false, contactSent: false, contactError: '' }));
   const patch = (o) => setSt((s) => (typeof o === 'function' ? { ...s, ...o(s) } : { ...s, ...o }));
 
   // Keep language in sync with the shared preference used by every other
@@ -226,58 +226,16 @@ export default function Site(props) {
   useEffect(() => () => clearTimeout(goRef.current), []);
 
   // Arabic -> English runtime swap (public/qa-i18n*.js provide window.QA_I18N)
-  const orig = useRef(null);
   const busy = useRef(false);
   // The dictionaries load deferred; re-render once they arrive so the
   // English swap (and the visa dictionary below) can run.
   const [, setI18nTick] = useState(0);
   useEffect(() => onI18nReady(() => setI18nTick((x) => x + 1)), []);
+  // Same DOM swap as every other page (lib/i18n applyLangToDOM), sharing one
+  // map of the original Arabic text so switching back always restores it.
   const applyLang = () => {
-    const I = i18nReady() && window.QA_I18N;
-    if (!I) return;
-    const en = st.lang === 'en';
-    if (!orig.current) orig.current = new WeakMap();
     busy.current = true;
-    const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, {
-      acceptNode: (n) => {
-        const p = n.parentElement;
-        if (!p || p.closest('[data-no-i18n]')) return NodeFilter.FILTER_REJECT;
-        if (p.tagName === 'SCRIPT' || p.tagName === 'STYLE') return NodeFilter.FILTER_REJECT;
-        return NodeFilter.FILTER_ACCEPT;
-      },
-    });
-    const nodes = [];
-    let n;
-    while ((n = walker.nextNode())) nodes.push(n);
-    nodes.forEach((node) => {
-      if (en) {
-        if (!orig.current.has(node)) orig.current.set(node, node.nodeValue);
-        const p = node.parentElement;
-        const out = (p && p.closest('[data-i18n-short]') ? I.ts : I.t)(orig.current.get(node));
-        if (node.nodeValue !== out) node.nodeValue = out;
-      } else if (orig.current.has(node)) {
-        const o = orig.current.get(node);
-        if (node.nodeValue !== o) node.nodeValue = o;
-      }
-    });
-    ['alt', 'title', 'placeholder', 'aria-label'].forEach((attr) => {
-      const key = 'ar' + attr.replace(/-(\w)/g, (m, c) => c.toUpperCase());
-      document.body.querySelectorAll('[' + attr + ']').forEach((el) => {
-        if (el.closest('[data-no-i18n]')) return;
-        if (en) {
-          if (el.dataset[key] == null) el.dataset[key] = el.getAttribute(attr) || '';
-          const out = I.t(el.dataset[key]);
-          if (el.getAttribute(attr) !== out) el.setAttribute(attr, out);
-        } else if (el.dataset[key] != null && el.getAttribute(attr) !== el.dataset[key]) {
-          el.setAttribute(attr, el.dataset[key]);
-        }
-      });
-    });
-    document.querySelectorAll('[dir]').forEach((el) => {
-      if (!el.hasAttribute('data-keep-dir')) el.setAttribute('dir', en ? 'ltr' : 'rtl');
-    });
-    document.documentElement.setAttribute('lang', en ? 'en' : 'ar');
-    document.documentElement.setAttribute('dir', en ? 'ltr' : 'rtl');
+    applyLangToDOM(st.lang);
     busy.current = false;
   };
 
@@ -285,11 +243,11 @@ export default function Site(props) {
     applyLang();
     const obs = new MutationObserver(() => {
       if (st.lang !== 'en' || busy.current) return;
-      clearTimeout(obs._tm);
-      obs._tm = setTimeout(applyLang, 40);
+      if (obs._raf) return;
+      obs._raf = requestAnimationFrame(() => { obs._raf = 0; applyLang(); }); // before the next paint
     });
     obs.observe(document.body, { childList: true, subtree: true, characterData: true });
-    return () => { obs.disconnect(); clearTimeout(obs._tm); };
+    return () => { obs.disconnect(); cancelAnimationFrame(obs._raf); };
   });
 
   const dictRef = useRef(false);
