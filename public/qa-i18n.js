@@ -11,6 +11,7 @@
     [/^(\d+)\s*يوم عمل$/, '$1 working day'], [/^(\d+)\s*ساعة$/, '$1 hours'],
     [/^(\d+)\s*\$$/, '$$$1'], [/^\$\s*(\d+)$/, '$$$1'],
     [/^(\d+)\s*دولة$/, '$1 countries'],
+    [/^(\d+)\s*أنواع$/, '$1 types'], [/^(\d+)\s*نوع$/, '$1 type'],
     [/^(\d+)\s*يوم$/, '$1 days'], [/^(\d+)\s*أيام$/, '$1 days'],
     [/^(\d+)\s*اشهر$/, '$1 months'], [/^(\d+)\s*أشهر$/, '$1 months'],
     [/^(\d+)\s*شهر$/, '$1 month'], [/^(\d+)\s*شهور$/, '$1 months'],
@@ -22,6 +23,7 @@
   var PATTERNS = [
     [/^(.+?) مصممة لتسهيل رحلتك من العراق — (.+?)، وصلاحية (.+?) من تاريخ الإصدار، مع مدة إقامة (.+?) داخل الدولة\. يتولى فريقنا مراجعة مستنداتك والتقديم بالكامل نيابة عنك\.$/,
       function (m) { return name(m[1]) + ' visa is designed to make your trip from Iraq easier — ' + m[2] + ', valid ' + m[3] + ' from issuance, with a stay of ' + m[4] + ' in the country. Our team handles reviewing your documents and submitting on your behalf.'; }],
+    [/^الرقم المختصر (\d+)، أو الهاتف (.+?)، أو البريد (.+)$/, function (m) { return 'Short number ' + m[1] + ', phone ' + m[2] + ', or email ' + m[3]; }],
     [/^مدة الإنجاز المتوقعة: (.+?)$/, function (m) { return 'Expected processing time: ' + m[1]; }],
     [/^نوع الدخول: (.+?)$/, function (m) { return 'Entry type: ' + m[1]; }],
     [/^صلاحية التأشيرة: (.+?) من الإصدار$/, function (m) { return 'Visa validity: ' + m[1] + ' from issuance'; }],
@@ -57,5 +59,20 @@
   var pend = window.QA_I18N_PENDING || []; window.QA_I18N_PENDING = [];
   var prev = window.QA_I18N && window.QA_I18N.map; if (prev) { for (var pk in prev) map[pk] = prev[pk]; }
   pend.forEach(function (o) { for (var k in o) map[k] = o[k]; });
+  // Strings that had no English yet (5 Nov 2026): footer slogan, package
+  // card button, visa search labels and FAQ answers saved in the dashboard.
+  var EXTRA = {
+    'رحلتك تبدأ وياّنا': 'Your journey starts with us',
+    'تفاصيل الباقة': 'Package details',
+    'الجنسية': 'Nationality',
+    'اختر جنسية': 'Choose nationality',
+    'تاريخ السفر': 'Travel date',
+    'الحجز المباشر يتم عبر شريكنا Flamingo على Flamingo.iq، وفريقنا يتابع طلبك خطوة بخطوة حتى إصدار التذكرة. يمكنك أيضًا الاتصال بالرقم المختصر 6393 وسنكمل الحجز عنك.': 'You can book directly through our partner Flamingo at Flamingo.iq, and our team follows your request step by step until the ticket is issued. You can also call our short number 6393 and we will complete the booking for you.',
+    'التحويل على حساب الشركة، أو الدفع عبر Zain Cash، أو نقدًا في مكتبنا.': 'Bank transfer to the company account, payment via Zain Cash, or cash at our office.',
+    'يتواصل معك أحد موظفينا لتأكيد التفاصيل، ويبقى معك على القناة التي تفضّلها حتى انتهاء الرحلة.': 'One of our staff contacts you to confirm the details and stays with you on the channel you prefer until the end of your trip.',
+    'نعم، نعمل مع المسافرين من داخل العراق وخارجه.': 'Yes, we work with travellers both inside and outside Iraq.'
+  };
+  for (var ek in EXTRA) if (map[ek] == null) map[ek] = EXTRA[ek];
+
   window.QA_I18N = { map: map, short: short, ts: function (raw) { var k = String(raw == null ? '' : raw).trim(); return short[k] != null ? String(raw).replace(k, short[k]) : t(raw); }, t: t, west: west, add: function (o) { for (var k in o) { map[k] = o[k]; var w = west(k); if (map[w] == null) map[w] = o[k]; } } };
 })();
