@@ -40,8 +40,8 @@ const TYPE_TICKS=[
  {key:'guaranteed',label:'النتيجة مضمونة',icon:'check'}];
 /* BRD §5 — document builder lines: kind, required, who, showIf */
 const D=(id,ar,en,kind,o)=>Object.assign({id,ar,en,kind,required:true,who:'all'},o||{});
-const L_PASS=D('passport','جواز سفر صالح لأكثر من ٦ أشهر','Passport valid for more than 6 months','file');
-const L_PHOTO=D('photo','صورة شخصية حديثة','Recent personal photo','photo',{rules:'خلفية بيضاء، بدون نظارات، حجم ٤×٦',rulesEn:'White background, no glasses, 4×6'});
+const L_PASS=D('passport','جواز سفر صالح لأكثر من 6 أشهر','Passport valid for more than 6 months','file');
+const L_PHOTO=D('photo','صورة شخصية حديثة','Recent personal photo','photo',{rules:'خلفية بيضاء، بدون نظارات، حجم 4×6',rulesEn:'White background, no glasses, 4×6'});
 const L_EXPIRY=D('expiry','تاريخ انتهاء الجواز','Passport expiry date','date');
 const L_JOB=D('job','اسم جهة العمل','Employer name','text',{who:'adult'});
 const L_MARITAL=D('marital','الحالة الاجتماعية','Marital status','choice',{who:'adult',options:['أعزب','متزوج'],optionsEn:['Single','Married']});
@@ -50,8 +50,8 @@ const L_REFUSED=D('refused','هل سبق أن رُفضت لك تأشيرة؟','H
 const L_REFUSAL=D('refusal','تفاصيل الرفض السابق','Details of the previous refusal','text',{who:'adult',showIf:{line:'refused',equals:'yes'}});
 const L_SALARY=D('salary','تأييد عمل يُذكر فيه مقدار الراتب','Employment letter stating the salary','file',{who:'adult'});
 const L_SALARYNUM=D('salaryNum','الراتب الشهري (د.ع)','Monthly salary (IQD)','number',{who:'adult',required:false});
-const L_BANK=D('bank','كشف حساب بنكي لآخر ٣ أشهر','Bank statement, last 3 months','file',{who:'adult'});
-const L_VISITED=D('visited','الدول التي زرتها في آخر ٥ سنوات','Countries visited in the last 5 years','repeat',{who:'adult',required:false});
+const L_BANK=D('bank','كشف حساب بنكي لآخر 3 أشهر','Bank statement, last 3 months','file',{who:'adult'});
+const L_VISITED=D('visited','الدول التي زرتها في آخر 5 سنوات','Countries visited in the last 5 years','repeat',{who:'adult',required:false});
 const L_BIRTH=D('birth','شهادة ولادة الطفل','Child birth certificate','file',{who:'child'});
 const L_CONSENT=D('consent','موافقة ولي الأمر للطفل','Parental consent for the child','file',{who:'child'});
 const L_HOTEL=D('hotel','حجز فندقي','Hotel reservation','file',{required:false});
@@ -59,12 +59,12 @@ const L_TICKET=D('ticket','تذكرة عودة مؤكدة','Confirmed return tic
 const L_PREVJO=D('prevjo','هل زرت الأردن سابقاً؟','Have you visited Jordan before?','yesno',{who:'adult'});
 const L_PREVJODATE=D('prevjodate','تاريخ آخر زيارة','Date of last visit','date',{who:'adult',showIf:{line:'prevjo',equals:'yes'}});
 const L_DS160=D('ds160','صفحة تأكيد استمارة DS-160','DS-160 confirmation page','file',{rules:'نعبّئها معك — أو ارفع التأكيد إن كانت لديك',rulesEn:'We fill it with you — or upload the confirmation if you have it'});
-const L_USPHOTO=D('usphoto','صورة شخصية بمقاييس السفارة الأمريكية','Photo to US embassy specifications','photo',{rules:'٥×٥ سم، خلفية بيضاء، خلال آخر ٦ أشهر',rulesEn:'5×5 cm, white background, taken in the last 6 months'});
+const L_USPHOTO=D('usphoto','صورة شخصية بمقاييس السفارة الأمريكية','Photo to US embassy specifications','photo',{rules:'5×5 سم، خلفية بيضاء، خلال آخر 6 أشهر',rulesEn:'5×5 cm, white background, taken in the last 6 months'});
 const L_PURPOSE=D('purpose','الغرض من الزيارة','Purpose of the visit','choice',{options:['سياحة','زيارة عائلية','عمل','علاج','دراسة'],optionsEn:['Tourism','Family visit','Business','Medical','Study']});
 const L_INVITE=D('invite','رسالة دعوة من المضيف','Invitation letter from the host','file',{required:false,showIf:{line:'purpose',equals:'زيارة عائلية'}});
 const L_USPREV=D('usprev','هل حصلت على تأشيرة أمريكية سابقاً؟','Have you had a US visa before?','yesno',{who:'adult'});
 const L_USPREVFILE=D('usprevfile','نسخة التأشيرة الأمريكية السابقة','Copy of the previous US visa','file',{who:'adult',showIf:{line:'usprev',equals:'yes'}});
-const L_TRAVEL=D('travel','رحلاتك خارج العراق في آخر ٥ سنوات','Trips outside Iraq in the last 5 years','repeat',{who:'adult'});
+const L_TRAVEL=D('travel','رحلاتك خارج العراق في آخر 5 سنوات','Trips outside Iraq in the last 5 years','repeat',{who:'adult'});
 const L_PROPERTY=D('property','سند ملكية أو عقد إيجار','Property deed or rental contract','file',{who:'adult',required:false});
 const E_DOCS=[L_PASS,L_PHOTO,L_EXPIRY,L_REFUSED,L_REFUSAL,L_BIRTH];
 const N_DOCS=[L_PASS,L_PHOTO,L_EXPIRY,L_JOB,L_MARITAL,L_MARRIAGE,L_REFUSED,L_REFUSAL,L_BANK,L_BIRTH];
@@ -78,20 +78,20 @@ const REFUND_NONE='الرسوم غير قابلة للاسترداد بعد ال
 const REFUND_NONE_EN='Fees are non-refundable after sending to the provider, whether the visa is issued or refused.';
 const V=(id,country,type,o)=>Object.assign({id,country,type,refund:REFUND_STD,refundEn:REFUND_STD_EN},o);
 const VISAS_DEFAULT=[
- V('tr-e','tr','electronic',{stay:'٣٠ يوماً',issuing:'٣ أيام عمل',validity:'١٨٠ يوماً',adult:95000,child:50000,docs:E_DOCS,notes:'التأشيرة الإلكترونية تصل على بريدك، ولا تحتاج زيارة السفارة. الدخول متعدد.',notesEn:'The e-visa arrives by email — no embassy visit needed. Multiple entry.'}),
- V('tr-n','tr','normal',{stay:'٣٠ يوماً',issuing:'١٠ أيام عمل',validity:'٩٠ يوماً',adult:180000,child:95000,docs:N_DOCS,notes:'تأشيرة ملصقة على الجواز. نستلم جوازك ونعيده مع التأشيرة.',notesEn:'Sticker visa on the passport. We collect your passport and return it with the visa.'}),
- V('jo-e','jo','electronic',{stay:'٣٠ يوماً',issuing:'٥ أيام عمل',validity:'٩٠ يوماً',adult:120000,child:60000,docs:JO_DOCS,notes:'تأشيرة إلكترونية تصلك على بريدك، دخول مفرد.',notesEn:'E-visa delivered by email, single entry.'}),
- V('jo-1','jo','normal',{tier:'الأسرع',tierEn:'Fastest',stay:'٣٠ يوماً',issuing:'٢٤ ساعة',validity:'٩٠ يوماً',adult:260000,child:130000,docs:JO_DOCS,notes:'المسار الأسرع — يُقدَّم الملف في نفس اليوم ويصدر خلال ٢٤ ساعة. يلزم اكتمال المستندات قبل الساعة ١١ صباحاً.',notesEn:'Fastest track — filed the same day, issued within 24 hours. Documents must be complete before 11 AM.'}),
- V('jo-2','jo','normal',{tier:'سريعة',tierEn:'Fast',stay:'٣٠ يوماً',issuing:'٣ أيام عمل',validity:'٩٠ يوماً',adult:190000,child:95000,docs:JO_DOCS,notes:'المسار السريع — إصدار خلال ٣ أيام عمل.',notesEn:'Fast track — issued within 3 working days.'}),
- V('jo-3','jo','normal',{tier:'بطيئة',tierEn:'Slow',stay:'٣٠ يوماً',issuing:'٧ أيام عمل',validity:'٩٠ يوماً',adult:140000,child:70000,docs:JO_DOCS,notes:'المسار الاعتيادي — إصدار خلال أسبوع عمل.',notesEn:'Regular track — issued within one working week.'}),
- V('jo-4','jo','normal',{tier:'بطيئة جداً',tierEn:'Very slow',stay:'٣٠ يوماً',issuing:'١٥ يوم عمل',validity:'٩٠ يوماً',adult:105000,child:55000,docs:JO_DOCS,notes:'المسار الاقتصادي — للمسافر الذي لا يستعجل. إصدار خلال ١٥ يوم عمل.',notesEn:'Economy track — for travellers in no hurry. Issued within 15 working days.'}),
- V('ae-e','ae','electronic',{stay:'٣٠ يوماً',issuing:'٤٨ ساعة',validity:'٦٠ يوماً',adult:160000,child:90000,docs:[L_PASS,L_PHOTO,L_EXPIRY,L_TICKET,L_REFUSED,L_REFUSAL,L_BIRTH],notes:'إمكانية التمديد داخل الدولة لمدة ٣٠ يوماً إضافية.',notesEn:'Can be extended inside the country for an extra 30 days.'}),
- V('us-a','us','appointment',{stay:'تحدده السفارة',stayEn:'Set by the embassy',issuing:'٣ – ٦ أشهر للموعد',issuingEn:'3 – 6 months to the appointment',validity:'حسب قرار السفارة',validityEn:'Per the embassy decision',adult:450000,child:300000,docs:US_DOCS,refund:REFUND_NONE,refundEn:REFUND_NONE_EN,notes:'نحن لا نصدر تأشيرة أمريكا. نجهّز ملفك بالكامل (استمارة DS-160، الحجوزات، الترجمة) ونحجز لك موعد المقابلة. حضورك الشخصي في السفارة إلزامي، وتُدفع رسوم السفارة (MRV) بشكل منفصل. القرار النهائي للسفارة وحدها.',notesEn:'We do not issue a US visa. We prepare your full file (DS-160, reservations, translation) and book your interview appointment. Attending the embassy in person is mandatory, and the embassy MRV fee is paid separately. The final decision is the embassy’s alone.'}),
- V('ge-e','ge','electronic',{stay:'٣٠ يوماً',issuing:'٥ أيام عمل',validity:'٩٠ يوماً',adult:110000,child:60000,docs:[L_PASS,L_PHOTO,L_EXPIRY,L_HOTEL,L_BANK,L_REFUSED,L_REFUSAL,L_BIRTH],notes:'تصدر عن وزارة الخارجية الجورجية إلكترونياً. دخول مفرد.',notesEn:'Issued electronically by the Georgian MFA. Single entry.'}),
- V('az-e','az','electronic',{stay:'٣٠ يوماً',issuing:'٣ أيام عمل',validity:'٩٠ يوماً',adult:90000,child:45000,docs:E_DOCS,notes:'تأشيرة ASAN الإلكترونية، دخول لمرة واحدة.',notesEn:'ASAN e-visa, single entry.'}),
- V('eg-s','eg','embassy',{stay:'٣٠ يوماً',issuing:'٧ أيام عمل',validity:'٩٠ يوماً',adult:80000,child:45000,docs:EMB_DOCS,refund:REFUND_NONE,refundEn:REFUND_NONE_EN,notes:'تُقدَّم عبر السفارة في بغداد. نحجز الموعد ونجهّز الملف، ونستلم الجواز.',notesEn:'Filed through the embassy in Baghdad. We book the appointment, prepare the file and collect the passport.'}),
- V('th-s','th','embassy',{stay:'٦٠ يوماً',issuing:'٧ أيام عمل',validity:'٩٠ يوماً',adult:140000,child:75000,docs:EMB_DOCS,refund:REFUND_NONE,refundEn:REFUND_NONE_EN,notes:'تُقدَّم عبر السفارة في عمّان. نستلم الجواز ونعيده مع التأشيرة.',notesEn:'Filed through the embassy in Amman. We collect the passport and return it with the visa.'}),
- V('am-e','am','electronic',{stay:'٢١ يوماً',issuing:'٤ أيام عمل',validity:'١٢٠ يوماً',adult:75000,child:40000,docs:[L_PASS,L_PHOTO,L_EXPIRY,L_HOTEL,L_REFUSED,L_REFUSAL,L_BIRTH],notes:'خيار مناسب للرحلات القصيرة والعطل الأسبوعية. دخول متعدد.',notesEn:'A good fit for short trips and weekends. Multiple entry.'})];
+ V('tr-e','tr','electronic',{stay:'30 يوماً',issuing:'3 أيام عمل',validity:'180 يوماً',adult:95000,child:50000,docs:E_DOCS,notes:'التأشيرة الإلكترونية تصل على بريدك، ولا تحتاج زيارة السفارة. الدخول متعدد.',notesEn:'The e-visa arrives by email — no embassy visit needed. Multiple entry.'}),
+ V('tr-n','tr','normal',{stay:'30 يوماً',issuing:'10 أيام عمل',validity:'90 يوماً',adult:180000,child:95000,docs:N_DOCS,notes:'تأشيرة ملصقة على الجواز. نستلم جوازك ونعيده مع التأشيرة.',notesEn:'Sticker visa on the passport. We collect your passport and return it with the visa.'}),
+ V('jo-e','jo','electronic',{stay:'30 يوماً',issuing:'5 أيام عمل',validity:'90 يوماً',adult:120000,child:60000,docs:JO_DOCS,notes:'تأشيرة إلكترونية تصلك على بريدك، دخول مفرد.',notesEn:'E-visa delivered by email, single entry.'}),
+ V('jo-1','jo','normal',{tier:'الأسرع',tierEn:'Fastest',stay:'30 يوماً',issuing:'24 ساعة',validity:'90 يوماً',adult:260000,child:130000,docs:JO_DOCS,notes:'المسار الأسرع — يُقدَّم الملف في نفس اليوم ويصدر خلال 24 ساعة. يلزم اكتمال المستندات قبل الساعة 11 صباحاً.',notesEn:'Fastest track — filed the same day, issued within 24 hours. Documents must be complete before 11 AM.'}),
+ V('jo-2','jo','normal',{tier:'سريعة',tierEn:'Fast',stay:'30 يوماً',issuing:'3 أيام عمل',validity:'90 يوماً',adult:190000,child:95000,docs:JO_DOCS,notes:'المسار السريع — إصدار خلال 3 أيام عمل.',notesEn:'Fast track — issued within 3 working days.'}),
+ V('jo-3','jo','normal',{tier:'بطيئة',tierEn:'Slow',stay:'30 يوماً',issuing:'7 أيام عمل',validity:'90 يوماً',adult:140000,child:70000,docs:JO_DOCS,notes:'المسار الاعتيادي — إصدار خلال أسبوع عمل.',notesEn:'Regular track — issued within one working week.'}),
+ V('jo-4','jo','normal',{tier:'بطيئة جداً',tierEn:'Very slow',stay:'30 يوماً',issuing:'15 يوم عمل',validity:'90 يوماً',adult:105000,child:55000,docs:JO_DOCS,notes:'المسار الاقتصادي — للمسافر الذي لا يستعجل. إصدار خلال 15 يوم عمل.',notesEn:'Economy track — for travellers in no hurry. Issued within 15 working days.'}),
+ V('ae-e','ae','electronic',{stay:'30 يوماً',issuing:'48 ساعة',validity:'60 يوماً',adult:160000,child:90000,docs:[L_PASS,L_PHOTO,L_EXPIRY,L_TICKET,L_REFUSED,L_REFUSAL,L_BIRTH],notes:'إمكانية التمديد داخل الدولة لمدة 30 يوماً إضافية.',notesEn:'Can be extended inside the country for an extra 30 days.'}),
+ V('us-a','us','appointment',{stay:'تحدده السفارة',stayEn:'Set by the embassy',issuing:'3 – 6 أشهر للموعد',issuingEn:'3 – 6 months to the appointment',validity:'حسب قرار السفارة',validityEn:'Per the embassy decision',adult:450000,child:300000,docs:US_DOCS,refund:REFUND_NONE,refundEn:REFUND_NONE_EN,notes:'نحن لا نصدر تأشيرة أمريكا. نجهّز ملفك بالكامل (استمارة DS-160، الحجوزات، الترجمة) ونحجز لك موعد المقابلة. حضورك الشخصي في السفارة إلزامي، وتُدفع رسوم السفارة (MRV) بشكل منفصل. القرار النهائي للسفارة وحدها.',notesEn:'We do not issue a US visa. We prepare your full file (DS-160, reservations, translation) and book your interview appointment. Attending the embassy in person is mandatory, and the embassy MRV fee is paid separately. The final decision is the embassy’s alone.'}),
+ V('ge-e','ge','electronic',{stay:'30 يوماً',issuing:'5 أيام عمل',validity:'90 يوماً',adult:110000,child:60000,docs:[L_PASS,L_PHOTO,L_EXPIRY,L_HOTEL,L_BANK,L_REFUSED,L_REFUSAL,L_BIRTH],notes:'تصدر عن وزارة الخارجية الجورجية إلكترونياً. دخول مفرد.',notesEn:'Issued electronically by the Georgian MFA. Single entry.'}),
+ V('az-e','az','electronic',{stay:'30 يوماً',issuing:'3 أيام عمل',validity:'90 يوماً',adult:90000,child:45000,docs:E_DOCS,notes:'تأشيرة ASAN الإلكترونية، دخول لمرة واحدة.',notesEn:'ASAN e-visa, single entry.'}),
+ V('eg-s','eg','embassy',{stay:'30 يوماً',issuing:'7 أيام عمل',validity:'90 يوماً',adult:80000,child:45000,docs:EMB_DOCS,refund:REFUND_NONE,refundEn:REFUND_NONE_EN,notes:'تُقدَّم عبر السفارة في بغداد. نحجز الموعد ونجهّز الملف، ونستلم الجواز.',notesEn:'Filed through the embassy in Baghdad. We book the appointment, prepare the file and collect the passport.'}),
+ V('th-s','th','embassy',{stay:'60 يوماً',issuing:'7 أيام عمل',validity:'90 يوماً',adult:140000,child:75000,docs:EMB_DOCS,refund:REFUND_NONE,refundEn:REFUND_NONE_EN,notes:'تُقدَّم عبر السفارة في عمّان. نستلم الجواز ونعيده مع التأشيرة.',notesEn:'Filed through the embassy in Amman. We collect the passport and return it with the visa.'}),
+ V('am-e','am','electronic',{stay:'21 يوماً',issuing:'4 أيام عمل',validity:'120 يوماً',adult:75000,child:40000,docs:[L_PASS,L_PHOTO,L_EXPIRY,L_HOTEL,L_REFUSED,L_REFUSAL,L_BIRTH],notes:'خيار مناسب للرحلات القصيرة والعطل الأسبوعية. دخول متعدد.',notesEn:'A good fit for short trips and weekends. Multiple entry.'})];
 /* BRD §8 — the eight steps */
 const FLOW=[
  {role:'customer',title:'تختار التأشيرة',hint:'ترى السعر والمدة وقائمة المستندات'},
@@ -104,12 +104,12 @@ const FLOW=[
  {role:'customer',title:'تحمّلها',hint:'تصبح الحالة: جاهزة للتحميل'}];
 
 const PACKAGES=[
- {title:'إستانبول للعائلة',destination:'إستانبول',nights:'٦ ليالٍ',groupType:'عائلي',departs:'كل خميس',price:'٧٤٠ $',badge:'الأكثر طلباً',includes:['طيران ذهاب وعودة','إقامة ٤ نجوم مع إفطار','جولة البوسفور','مرشد يتحدث العربية']},
- {title:'جورجيا الخضراء',destination:'تبليسي وباتومي',nights:'٧ ليالٍ',groupType:'شبابي',departs:'كل سبت',price:'٨٩٠ $',includes:['طيران ذهاب وعودة','إقامة في وسط المدينة','جولات يومية','تنقلات المطار']},
- {title:'دبي في نهاية الأسبوع',destination:'دبي',nights:'٣ ليالٍ',groupType:'رجال أعمال',departs:'كل أربعاء',price:'٥٩٠ $',includes:['طيران ذهاب وعودة','فندق ٥ نجوم','تأشيرة زيارة','خدمة استقبال خاصة']},
- {title:'عمرة رمضان',destination:'مكة والمدينة',nights:'١٠ ليالٍ',groupType:'حج وعمرة',departs:'مواعيد محددة',price:'١٢٥٠ $',badge:'مقاعد محدودة',includes:['طيران ذهاب وعودة','إقامة قريبة من الحرم','تنقلات بالباص','مشرف ديني']},
- {title:'ماليزيا وسنغافورة',destination:'كوالالمبور',nights:'٩ ليالٍ',groupType:'عائلي',departs:'كل اثنين',price:'١٣٩٠ $',includes:['طيران داخلي','إقامة ٤ نجوم','جولات المدينتين','تذاكر الحدائق']},
- {title:'أذربيجان الشتوية',destination:'باكو',nights:'٥ ليالٍ',groupType:'شبابي',departs:'كل جمعة',price:'٦٤٠ $',includes:['طيران ذهاب وعودة','إقامة وسط باكو','جولة قوبوستان','تنقلات المطار']}];
+ {title:'إستانبول للعائلة',destination:'إستانبول',nights:'6 ليالٍ',groupType:'عائلي',departs:'كل خميس',price:'740 $',badge:'الأكثر طلباً',includes:['طيران ذهاب وعودة','إقامة 4 نجوم مع إفطار','جولة البوسفور','مرشد يتحدث العربية']},
+ {title:'جورجيا الخضراء',destination:'تبليسي وباتومي',nights:'7 ليالٍ',groupType:'شبابي',departs:'كل سبت',price:'890 $',includes:['طيران ذهاب وعودة','إقامة في وسط المدينة','جولات يومية','تنقلات المطار']},
+ {title:'دبي في نهاية الأسبوع',destination:'دبي',nights:'3 ليالٍ',groupType:'رجال أعمال',departs:'كل أربعاء',price:'590 $',includes:['طيران ذهاب وعودة','فندق 5 نجوم','تأشيرة زيارة','خدمة استقبال خاصة']},
+ {title:'عمرة رمضان',destination:'مكة والمدينة',nights:'10 ليالٍ',groupType:'حج وعمرة',departs:'مواعيد محددة',price:'1250 $',badge:'مقاعد محدودة',includes:['طيران ذهاب وعودة','إقامة قريبة من الحرم','تنقلات بالباص','مشرف ديني']},
+ {title:'ماليزيا وسنغافورة',destination:'كوالالمبور',nights:'9 ليالٍ',groupType:'عائلي',departs:'كل اثنين',price:'1390 $',includes:['طيران داخلي','إقامة 4 نجوم','جولات المدينتين','تذاكر الحدائق']},
+ {title:'أذربيجان الشتوية',destination:'باكو',nights:'5 ليالٍ',groupType:'شبابي',departs:'كل جمعة',price:'640 $',includes:['طيران ذهاب وعودة','إقامة وسط باكو','جولة قوبوستان','تنقلات المطار']}];
 
 const ACHIEVEMENTS=[
  {id:'forum',title:'ملتقى شركات السفر و السياحة',short:'ملتقى شركات السفر و السياحة',year:'2025',stamp:'بغداد',place:'معرض بغداد الدولي',photo:'ach-forum-baghdad.webp',
@@ -304,7 +304,7 @@ function   buildCalendar(departsLabel){
       cells.push({ n: toArabic(d), w: on ? 700 : 400, bg: on ? '#049dc5' : 'transparent', ink: on ? '#fff' : '#3d4650' });
     }
     return {
-      label: first.toLocaleDateString('ar', { month: 'long', year: 'numeric' }),
+      label: first.toLocaleDateString('ar-u-nu-latn', { month: 'long', year: 'numeric' }),
       dow: ['أحد', 'إثنين', 'ثلاثاء', 'أربعاء', 'خميس', 'جمعة', 'سبت'],
       cells
     };
@@ -1175,9 +1175,9 @@ function   visaVals(country){
 </section>
 <section className="qa-sec" style={{ paddingTop: "0", display: "flex", flexDirection: "column", gap: "24px" }}>
 <div className="qa-grid">
-<div className="qa-card" style={{ display: "flex", flexDirection: "column", gap: "10px" }}><h4 style={{ display: "flex", alignItems: "center", gap: "8px", fontSize: "20px", fontWeight: "700", color: "#1d2733" }}>١. ابحث على <img src="/assets/logo-flamingo.webp" alt="flamingo.iq" style={{ height: "22px", width: "auto" }} /></h4><p style={{ fontSize: "14px", lineHeight: "1.45", color: "#5f666e" }}>كل شركات الطيران وسلاسل الفنادق التي نتعامل معها متاحة على المنصة بأسعارنا التعاقدية.</p></div>
-<div className="qa-card" style={{ display: "flex", flexDirection: "column", gap: "10px" }}><h4 style={{ fontSize: "20px", fontWeight: "700", color: "#1d2733" }}>٢. أكمل الحجز</h4><p style={{ fontSize: "14px", lineHeight: "1.45", color: "#5f666e" }}>دفع آمن وتأكيد فوري على بريدك الإلكتروني وواتساب.</p></div>
-<div className="qa-card" style={{ display: "flex", flexDirection: "column", gap: "10px" }}><h4 style={{ fontSize: "20px", fontWeight: "700", color: "#1d2733" }}>٣. نتابع نحن الباقي</h4><p style={{ fontSize: "14px", lineHeight: "1.45", color: "#5f666e" }}>تغيير موعد، أمتعة إضافية، أو تأشيرة — كلّم قصر المرايا وسنتولى الأمر.</p></div>
+<div className="qa-card" style={{ display: "flex", flexDirection: "column", gap: "10px" }}><h4 style={{ display: "flex", alignItems: "center", gap: "8px", fontSize: "20px", fontWeight: "700", color: "#1d2733" }}>1. ابحث على <img src="/assets/logo-flamingo.webp" alt="flamingo.iq" style={{ height: "22px", width: "auto" }} /></h4><p style={{ fontSize: "14px", lineHeight: "1.45", color: "#5f666e" }}>كل شركات الطيران وسلاسل الفنادق التي نتعامل معها متاحة على المنصة بأسعارنا التعاقدية.</p></div>
+<div className="qa-card" style={{ display: "flex", flexDirection: "column", gap: "10px" }}><h4 style={{ fontSize: "20px", fontWeight: "700", color: "#1d2733" }}>2. أكمل الحجز</h4><p style={{ fontSize: "14px", lineHeight: "1.45", color: "#5f666e" }}>دفع آمن وتأكيد فوري على بريدك الإلكتروني وواتساب.</p></div>
+<div className="qa-card" style={{ display: "flex", flexDirection: "column", gap: "10px" }}><h4 style={{ fontSize: "20px", fontWeight: "700", color: "#1d2733" }}>3. نتابع نحن الباقي</h4><p style={{ fontSize: "14px", lineHeight: "1.45", color: "#5f666e" }}>تغيير موعد، أمتعة إضافية، أو تأشيرة — كلّم قصر المرايا وسنتولى الأمر.</p></div>
 </div>
 <div style={{ display: "flex", alignItems: "center", gap: "24px", flexWrap: "wrap", background: "#e4f5fb", border: "1px solid #bfe9f6", borderRadius: "18px", padding: "24px 28px" }}>
 <span style={{ flex: "none", width: "132px", height: "132px", borderRadius: "50%", background: "#fff", overflow: "hidden", display: "grid", placeItems: "center", boxShadow: "0 10px 22px rgba(1,42,55,.14)" }}><img src="/assets/mascot-skylo-passport-hq.webp" alt="" style={{ width: "100%", height: "100%", objectFit: "contain" }} /></span>
@@ -2385,7 +2385,7 @@ function   visaVals(country){
 <section className="qa-sec" style={{ display: "flex", flexDirection: "column", gap: "18px", maxWidth: "1000px", margin: "0 auto" }}>
 <div className="qa-card" style={{ display: "flex", flexDirection: "column", gap: "14px", padding: "30px 32px" }}>
 <div style={{ display: "flex", alignItems: "center", gap: "14px" }}>
-<span style={{ width: "38px", height: "38px", flex: "none", borderRadius: "50%", background: "#e4f5fb", color: "#22a9d4", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "17px", fontWeight: "700" }}>١</span>
+<span style={{ width: "38px", height: "38px", flex: "none", borderRadius: "50%", background: "#e4f5fb", color: "#22a9d4", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "17px", fontWeight: "700" }}>1</span>
 <h3 style={{ fontSize: "23px", fontWeight: "700", color: "#1d2733", lineHeight: "1.35", margin: "0" }}>مقدمة</h3>
 </div>
 <p style={{ fontSize: "16.5px", lineHeight: "1.85", color: "#3d4650", margin: "0", textWrap: "pretty" }}>تحدد هذه السياسة كيفية جمع واستخدام وحماية المعلومات الشخصية الخاصة بك عند التعامل معنا، سواء عبر موقعنا الإلكتروني أو عبر مكاتبنا وقنوات الاتصال الرسمية.</p>
@@ -2393,7 +2393,7 @@ function   visaVals(country){
 </div>
 <div className="qa-card" style={{ display: "flex", flexDirection: "column", gap: "14px", padding: "30px 32px" }}>
 <div style={{ display: "flex", alignItems: "center", gap: "14px" }}>
-<span style={{ width: "38px", height: "38px", flex: "none", borderRadius: "50%", background: "#e4f5fb", color: "#22a9d4", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "17px", fontWeight: "700" }}>٢</span>
+<span style={{ width: "38px", height: "38px", flex: "none", borderRadius: "50%", background: "#e4f5fb", color: "#22a9d4", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "17px", fontWeight: "700" }}>2</span>
 <h3 style={{ fontSize: "23px", fontWeight: "700", color: "#1d2733", lineHeight: "1.35", margin: "0" }}>المعلومات التي يتم جمعها</h3>
 </div>
 
@@ -2401,7 +2401,7 @@ function   visaVals(country){
 </div>
 <div className="qa-card" style={{ display: "flex", flexDirection: "column", gap: "14px", padding: "30px 32px" }}>
 <div style={{ display: "flex", alignItems: "center", gap: "14px" }}>
-<span style={{ width: "38px", height: "38px", flex: "none", borderRadius: "50%", background: "#e4f5fb", color: "#22a9d4", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "17px", fontWeight: "700" }}>٣</span>
+<span style={{ width: "38px", height: "38px", flex: "none", borderRadius: "50%", background: "#e4f5fb", color: "#22a9d4", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "17px", fontWeight: "700" }}>3</span>
 <h3 style={{ fontSize: "23px", fontWeight: "700", color: "#1d2733", lineHeight: "1.35", margin: "0" }}>كيفية استخدام المعلومات</h3>
 </div>
 
@@ -2409,7 +2409,7 @@ function   visaVals(country){
 </div>
 <div className="qa-card" style={{ display: "flex", flexDirection: "column", gap: "14px", padding: "30px 32px" }}>
 <div style={{ display: "flex", alignItems: "center", gap: "14px" }}>
-<span style={{ width: "38px", height: "38px", flex: "none", borderRadius: "50%", background: "#e4f5fb", color: "#22a9d4", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "17px", fontWeight: "700" }}>٤</span>
+<span style={{ width: "38px", height: "38px", flex: "none", borderRadius: "50%", background: "#e4f5fb", color: "#22a9d4", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "17px", fontWeight: "700" }}>4</span>
 <h3 style={{ fontSize: "23px", fontWeight: "700", color: "#1d2733", lineHeight: "1.35", margin: "0" }}>حماية المعلومات</h3>
 </div>
 
@@ -2417,7 +2417,7 @@ function   visaVals(country){
 </div>
 <div className="qa-card" style={{ display: "flex", flexDirection: "column", gap: "14px", padding: "30px 32px" }}>
 <div style={{ display: "flex", alignItems: "center", gap: "14px" }}>
-<span style={{ width: "38px", height: "38px", flex: "none", borderRadius: "50%", background: "#e4f5fb", color: "#22a9d4", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "17px", fontWeight: "700" }}>٥</span>
+<span style={{ width: "38px", height: "38px", flex: "none", borderRadius: "50%", background: "#e4f5fb", color: "#22a9d4", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "17px", fontWeight: "700" }}>5</span>
 <h3 style={{ fontSize: "23px", fontWeight: "700", color: "#1d2733", lineHeight: "1.35", margin: "0" }}>حقوق المستخدمين</h3>
 </div>
 
@@ -2425,7 +2425,7 @@ function   visaVals(country){
 </div>
 <div className="qa-card" style={{ display: "flex", flexDirection: "column", gap: "14px", padding: "30px 32px" }}>
 <div style={{ display: "flex", alignItems: "center", gap: "14px" }}>
-<span style={{ width: "38px", height: "38px", flex: "none", borderRadius: "50%", background: "#e4f5fb", color: "#22a9d4", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "17px", fontWeight: "700" }}>٦</span>
+<span style={{ width: "38px", height: "38px", flex: "none", borderRadius: "50%", background: "#e4f5fb", color: "#22a9d4", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "17px", fontWeight: "700" }}>6</span>
 <h3 style={{ fontSize: "23px", fontWeight: "700", color: "#1d2733", lineHeight: "1.35", margin: "0" }}>مشاركة المعلومات مع أطراف ثالثة</h3>
 </div>
 
@@ -2433,7 +2433,7 @@ function   visaVals(country){
 </div>
 <div className="qa-card" style={{ display: "flex", flexDirection: "column", gap: "14px", padding: "30px 32px" }}>
 <div style={{ display: "flex", alignItems: "center", gap: "14px" }}>
-<span style={{ width: "38px", height: "38px", flex: "none", borderRadius: "50%", background: "#e4f5fb", color: "#22a9d4", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "17px", fontWeight: "700" }}>٧</span>
+<span style={{ width: "38px", height: "38px", flex: "none", borderRadius: "50%", background: "#e4f5fb", color: "#22a9d4", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "17px", fontWeight: "700" }}>7</span>
 <h3 style={{ fontSize: "23px", fontWeight: "700", color: "#1d2733", lineHeight: "1.35", margin: "0" }}>التعديلات على سياسة الخصوصية</h3>
 </div>
 
@@ -2441,7 +2441,7 @@ function   visaVals(country){
 </div>
 <div className="qa-card" style={{ display: "flex", flexDirection: "column", gap: "14px", padding: "30px 32px" }}>
 <div style={{ display: "flex", alignItems: "center", gap: "14px" }}>
-<span style={{ width: "38px", height: "38px", flex: "none", borderRadius: "50%", background: "#e4f5fb", color: "#22a9d4", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "17px", fontWeight: "700" }}>٨</span>
+<span style={{ width: "38px", height: "38px", flex: "none", borderRadius: "50%", background: "#e4f5fb", color: "#22a9d4", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "17px", fontWeight: "700" }}>8</span>
 <h3 style={{ fontSize: "23px", fontWeight: "700", color: "#1d2733", lineHeight: "1.35", margin: "0" }}>القوانين المعمول بها</h3>
 </div>
 
@@ -2470,7 +2470,7 @@ function   visaVals(country){
 <section className="qa-sec" style={{ display: "flex", flexDirection: "column", gap: "18px", maxWidth: "1000px", margin: "0 auto" }}>
 <div className="qa-card" style={{ display: "flex", flexDirection: "column", gap: "14px", padding: "30px 32px" }}>
 <div style={{ display: "flex", alignItems: "center", gap: "14px" }}>
-<span style={{ width: "38px", height: "38px", flex: "none", borderRadius: "50%", background: "#e4f5fb", color: "#22a9d4", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "17px", fontWeight: "700" }}>١</span>
+<span style={{ width: "38px", height: "38px", flex: "none", borderRadius: "50%", background: "#e4f5fb", color: "#22a9d4", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "17px", fontWeight: "700" }}>1</span>
 <h3 style={{ fontSize: "23px", fontWeight: "700", color: "#1d2733", lineHeight: "1.35", margin: "0" }}>مقدمة</h3>
 </div>
 <p style={{ fontSize: "16.5px", lineHeight: "1.85", color: "#3d4650", margin: "0", textWrap: "pretty" }}>ترحب بكم شركة قصر المرايا للسفر والسياحة، وهي شركة محدودة المسؤولية مسجلة رسميًا في كل من جمهورية العراق وسلطنة عمان. تقدم الشركة مجموعة واسعة من الخدمات السياحية التي تشمل حجوزات تذاكر الطيران والفنادق، خدمات استخراج التأشيرات، وتنظيم الجولات السياحية والرحلات الجماعية والفردية. إن استخدامكم لخدماتنا يعني موافقتكم الكاملة على جميع الشروط والأحكام الواردة في هذه الاتفاقية.</p>
@@ -2478,7 +2478,7 @@ function   visaVals(country){
 </div>
 <div className="qa-card" style={{ display: "flex", flexDirection: "column", gap: "14px", padding: "30px 32px" }}>
 <div style={{ display: "flex", alignItems: "center", gap: "14px" }}>
-<span style={{ width: "38px", height: "38px", flex: "none", borderRadius: "50%", background: "#e4f5fb", color: "#22a9d4", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "17px", fontWeight: "700" }}>٢</span>
+<span style={{ width: "38px", height: "38px", flex: "none", borderRadius: "50%", background: "#e4f5fb", color: "#22a9d4", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "17px", fontWeight: "700" }}>2</span>
 <h3 style={{ fontSize: "23px", fontWeight: "700", color: "#1d2733", lineHeight: "1.35", margin: "0" }}>شروط الحجز والدفع</h3>
 </div>
 
@@ -2486,7 +2486,7 @@ function   visaVals(country){
 </div>
 <div className="qa-card" style={{ display: "flex", flexDirection: "column", gap: "14px", padding: "30px 32px" }}>
 <div style={{ display: "flex", alignItems: "center", gap: "14px" }}>
-<span style={{ width: "38px", height: "38px", flex: "none", borderRadius: "50%", background: "#e4f5fb", color: "#22a9d4", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "17px", fontWeight: "700" }}>٣</span>
+<span style={{ width: "38px", height: "38px", flex: "none", borderRadius: "50%", background: "#e4f5fb", color: "#22a9d4", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "17px", fontWeight: "700" }}>3</span>
 <h3 style={{ fontSize: "23px", fontWeight: "700", color: "#1d2733", lineHeight: "1.35", margin: "0" }}>سياسة الإلغاء والاسترداد</h3>
 </div>
 
@@ -2494,7 +2494,7 @@ function   visaVals(country){
 </div>
 <div className="qa-card" style={{ display: "flex", flexDirection: "column", gap: "14px", padding: "30px 32px" }}>
 <div style={{ display: "flex", alignItems: "center", gap: "14px" }}>
-<span style={{ width: "38px", height: "38px", flex: "none", borderRadius: "50%", background: "#e4f5fb", color: "#22a9d4", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "17px", fontWeight: "700" }}>٤</span>
+<span style={{ width: "38px", height: "38px", flex: "none", borderRadius: "50%", background: "#e4f5fb", color: "#22a9d4", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "17px", fontWeight: "700" }}>4</span>
 <h3 style={{ fontSize: "23px", fontWeight: "700", color: "#1d2733", lineHeight: "1.35", margin: "0" }}>التأشيرات والمسؤولية القانونية</h3>
 </div>
 
@@ -2502,7 +2502,7 @@ function   visaVals(country){
 </div>
 <div className="qa-card" style={{ display: "flex", flexDirection: "column", gap: "14px", padding: "30px 32px" }}>
 <div style={{ display: "flex", alignItems: "center", gap: "14px" }}>
-<span style={{ width: "38px", height: "38px", flex: "none", borderRadius: "50%", background: "#e4f5fb", color: "#22a9d4", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "17px", fontWeight: "700" }}>٥</span>
+<span style={{ width: "38px", height: "38px", flex: "none", borderRadius: "50%", background: "#e4f5fb", color: "#22a9d4", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "17px", fontWeight: "700" }}>5</span>
 <h3 style={{ fontSize: "23px", fontWeight: "700", color: "#1d2733", lineHeight: "1.35", margin: "0" }}>مسؤوليات الشركة والعميل</h3>
 </div>
 
@@ -2510,7 +2510,7 @@ function   visaVals(country){
 </div>
 <div className="qa-card" style={{ display: "flex", flexDirection: "column", gap: "14px", padding: "30px 32px" }}>
 <div style={{ display: "flex", alignItems: "center", gap: "14px" }}>
-<span style={{ width: "38px", height: "38px", flex: "none", borderRadius: "50%", background: "#e4f5fb", color: "#22a9d4", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "17px", fontWeight: "700" }}>٦</span>
+<span style={{ width: "38px", height: "38px", flex: "none", borderRadius: "50%", background: "#e4f5fb", color: "#22a9d4", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "17px", fontWeight: "700" }}>6</span>
 <h3 style={{ fontSize: "23px", fontWeight: "700", color: "#1d2733", lineHeight: "1.35", margin: "0" }}>خدمات ما بعد البيع والدعم</h3>
 </div>
 
@@ -2518,7 +2518,7 @@ function   visaVals(country){
 </div>
 <div className="qa-card" style={{ display: "flex", flexDirection: "column", gap: "14px", padding: "30px 32px" }}>
 <div style={{ display: "flex", alignItems: "center", gap: "14px" }}>
-<span style={{ width: "38px", height: "38px", flex: "none", borderRadius: "50%", background: "#e4f5fb", color: "#22a9d4", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "17px", fontWeight: "700" }}>٧</span>
+<span style={{ width: "38px", height: "38px", flex: "none", borderRadius: "50%", background: "#e4f5fb", color: "#22a9d4", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "17px", fontWeight: "700" }}>7</span>
 <h3 style={{ fontSize: "23px", fontWeight: "700", color: "#1d2733", lineHeight: "1.35", margin: "0" }}>تسوية النزاعات والقوانين المطبقة</h3>
 </div>
 
@@ -2526,7 +2526,7 @@ function   visaVals(country){
 </div>
 <div className="qa-card" style={{ display: "flex", flexDirection: "column", gap: "14px", padding: "30px 32px" }}>
 <div style={{ display: "flex", alignItems: "center", gap: "14px" }}>
-<span style={{ width: "38px", height: "38px", flex: "none", borderRadius: "50%", background: "#e4f5fb", color: "#22a9d4", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "17px", fontWeight: "700" }}>٨</span>
+<span style={{ width: "38px", height: "38px", flex: "none", borderRadius: "50%", background: "#e4f5fb", color: "#22a9d4", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "17px", fontWeight: "700" }}>8</span>
 <h3 style={{ fontSize: "23px", fontWeight: "700", color: "#1d2733", lineHeight: "1.35", margin: "0" }}>سياسة الخصوصية وحماية البيانات</h3>
 </div>
 
@@ -2534,7 +2534,7 @@ function   visaVals(country){
 </div>
 <div className="qa-card" style={{ display: "flex", flexDirection: "column", gap: "14px", padding: "30px 32px" }}>
 <div style={{ display: "flex", alignItems: "center", gap: "14px" }}>
-<span style={{ width: "38px", height: "38px", flex: "none", borderRadius: "50%", background: "#e4f5fb", color: "#22a9d4", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "17px", fontWeight: "700" }}>٩</span>
+<span style={{ width: "38px", height: "38px", flex: "none", borderRadius: "50%", background: "#e4f5fb", color: "#22a9d4", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "17px", fontWeight: "700" }}>9</span>
 <h3 style={{ fontSize: "23px", fontWeight: "700", color: "#1d2733", lineHeight: "1.35", margin: "0" }}>الأحكام العامة</h3>
 </div>
 

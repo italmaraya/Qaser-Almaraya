@@ -55,7 +55,7 @@ export default function HomeGlobe({ lang = 'ar', mode = 'all' }) {
   if (!pins.length) return null;
 
   return (
-    <section className="qa-sec" style={{ display: 'grid', gridTemplateColumns: 'minmax(260px,.8fr) 1.2fr', gap: 32, alignItems: 'center' }} dir={en ? 'ltr' : 'rtl'}>
+    <section className="qa-sec qa-2col" style={{ display: 'grid', gridTemplateColumns: 'minmax(260px,.8fr) 1.2fr', gap: 32, alignItems: 'center' }} dir={en ? 'ltr' : 'rtl'}>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
         <span style={{ fontSize: 13, fontWeight: 700, color: visaOnly ? '#faab18' : '#049dc5' }}>{en ? 'From Baghdad to the world' : 'من بغداد إلى العالم'}</span>
         <h2 style={{ margin: 0, fontSize: 'clamp(24px,3vw,34px)', lineHeight: 1.25 }}>

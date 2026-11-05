@@ -10,7 +10,7 @@ export const QA_PAYMENT_METHODS = [
     rows: [['رقم الوكيل', '530181'], ['طريقة الاستلام', 'من خلال عمل سحب أموال — مكتب قصر المرايا'], ['رقم الهاتف', '07835073219']],
     body: 'أرسل المبلغ عبر تطبيق زين كاش إلى رقم الوكيل أعلاه (سحب أموال)، واحتفظ برمز العملية لإرساله إلى موظف الحجز.' },
   { id: 'office', icon: 'building-2', label: 'الدفع في المكتب', hint: 'نقداً — خلال يوم واحد', warn: true,
-    rows: [['العنوان', 'بغداد — حي السلام، شارع 14 رمضان'], ['أوقات العمل', 'السبت – الخميس · ٩:٠٠ – ١٨:٠٠']],
+    rows: [['العنوان', 'بغداد — حي السلام، شارع 14 رمضان'], ['أوقات العمل', 'السبت – الخميس · 9:00 – 18:00']],
     body: 'إذا اخترت هذه الطريقة يجب دفع المبلغ خلال يوم واحد من تاريخ الطلب، وإلا سيُرفض طلبك تلقائياً.' }
 ];
 
@@ -74,7 +74,7 @@ export default function PaymentMethods({ title, note, methods, defaultOpen = 'ca
             </span>
           )}
           <span style={{ fontSize: 15, lineHeight: 1.7, color: '#036f8c' }}>
-            استلمنا إشعار الدفع{receiptName ? ' («' + receiptName + '»)' : ''}. يتحقق فريقنا منه ويعود إليك على واتساب خلال ٢٤ ساعة بتأكيد الطلب.
+            استلمنا إشعار الدفع{receiptName ? ' («' + receiptName + '»)' : ''}. يتحقق فريقنا منه ويعود إليك على واتساب خلال 24 ساعة بتأكيد الطلب.
           </span>
           <span style={{ fontSize: 13, color: '#3d4650' }}>الرقم المختصر 6393 · sales@almarayagroup.com</span>
         </div>
@@ -126,7 +126,7 @@ export default function PaymentMethods({ title, note, methods, defaultOpen = 'ca
         <div style={{ display: 'flex', flexDirection: 'column', gap: 16, padding: 18, borderRadius: 14, border: '1.5px dashed #049dc5', background: '#eaf8fd' }}>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
             <span style={{ fontSize: 15, fontWeight: 600, color: '#1d2733' }}>{atOffice ? 'تأكيد الدفع في المكتب' : 'أرفق إشعار الدفع — ' + chosen.label}</span>
-            <span style={{ fontSize: 12, color: '#3d4650' }}>{atOffice ? 'أكِّد اختيارك، وادفع المبلغ في المكتب خلال يوم واحد — لا حاجة لإرفاق أي ملف.' : 'صورة أو PDF لإشعار التحويل — حتى ٥ ميغابايت.'}</span>
+            <span style={{ fontSize: 12, color: '#3d4650' }}>{atOffice ? 'أكِّد اختيارك، وادفع المبلغ في المكتب خلال يوم واحد — لا حاجة لإرفاق أي ملف.' : 'صورة أو PDF لإشعار التحويل — حتى 5 ميغابايت.'}</span>
           </div>
           {confirmError && (
             <p style={{ margin: 0, padding: '10px 14px', borderRadius: 10, background: '#fdecef', border: '1px solid #f7c3cc', color: '#d2324f', fontSize: 13 }}>{confirmError}</p>

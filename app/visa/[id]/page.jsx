@@ -85,7 +85,7 @@ export default function VisaDetailPage() {
             <Link href={`/visa/country/${card.country_id}`} style={{ fontSize: 13.5, fontWeight: 600, color: '#036f8c', textDecoration: 'none' }}>← رجوع</Link>
           </div>
 
-          <section className="qa-sec qa-2col" style={{ display: 'grid', gridTemplateColumns: 'minmax(240px,320px) 1fr', gap: 28, alignItems: 'flex-start' }}>
+          <section className="qa-sec qa-2col qa-detail" style={{ display: 'grid', gridTemplateColumns: 'minmax(240px,320px) 1fr', gap: 28, alignItems: 'flex-start' }}>
             <div className="qa-card qa-visa-side" style={{ position: 'sticky', top: 90, display: 'flex', flexDirection: 'column', gap: 14 }}>
               <h3 style={{ margin: 0, fontSize: 19 }}>{nm(card.visa_type_name_ar, card.visa_type_name_en)} — {nm(card.country_name_ar, card.country_name_en)}</h3>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 6, fontSize: 14 }}>
@@ -146,8 +146,8 @@ export default function VisaDetailPage() {
               </div>
             </div>
 
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
-              <div style={{ position: 'relative', height: 260, borderRadius: 20, overflow: 'hidden', background: (card.image_url || card.card_image_url) ? `url("${card.image_url || card.card_image_url}") center/cover no-repeat, linear-gradient(135deg,#34bbe1,#049dc5)` : 'linear-gradient(135deg,#34bbe1,#049dc5)', display: 'flex', alignItems: 'flex-end', padding: 20 }}>
+            <div className="qa-detail-main" style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+              <div className="qa-detail-hero" style={{ position: 'relative', height: 260, borderRadius: 20, overflow: 'hidden', background: (card.image_url || card.card_image_url) ? `url("${card.image_url || card.card_image_url}") center/cover no-repeat, linear-gradient(135deg,#34bbe1,#049dc5)` : 'linear-gradient(135deg,#34bbe1,#049dc5)', display: 'flex', alignItems: 'flex-end', padding: 20 }}>
                 {(card.image_url || card.card_image_url) && (
                   <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(1,30,40,.78) 0%, rgba(1,30,40,.25) 55%, rgba(1,30,40,.05) 100%)' }} />
                 )}

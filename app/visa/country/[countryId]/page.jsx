@@ -272,7 +272,7 @@ export default function CountryVisaListPage() {
                           ) : null}
                         </div>
 
-                        <div style={{ background: '#f8fbfc', borderRadius: 14, padding: '12px 16px', display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 4, flex: 'none', minWidth: 168 }}>
+                        <div className="qa-visa-pricebox" style={{ background: '#f8fbfc', borderRadius: 14, padding: '12px 16px', display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 4, flex: 'none', minWidth: 168 }}>
                           <span style={{ fontSize: 10, color: '#5f666e' }}>{lang === 'en' ? 'Travel visa provided' : 'التأشيرة السياحية متوفرة'}</span>
                           <span style={{ fontSize: 12, color: '#3d4650' }}>{formatPrice(c.child_price, 'IQD', lang)} <span style={{ color: '#5f666e', fontSize: 10.5 }}>{lang === 'en' ? '/ per child' : '/ للطفل'}</span></span>
                           <span style={{ fontSize: 18, fontWeight: 800, color: '#1d2733' }}>{formatPrice(c.adult_price, 'IQD', lang)}</span>
@@ -384,9 +384,9 @@ export default function CountryVisaListPage() {
                     <span style={{ fontSize: 12.5, fontWeight: 700, color: '#5f666e' }}>{nm('سرعة الإصدار', 'Issuance speed')}</span>
                     {[
                       ['all', nm('الكل', 'All')],
-                      ['fast', nm('سريعة (٣ أيام أو أقل)', 'Fast (≤3 days)')],
-                      ['normal', nm('متوسطة (٤-٧ أيام)', 'Normal (4-7 days)')],
-                      ['slow', nm('طويلة (٨ أيام فأكثر)', 'Slow (8+ days)')],
+                      ['fast', nm('سريعة (3 أيام أو أقل)', 'Fast (≤3 days)')],
+                      ['normal', nm('متوسطة (4-7 أيام)', 'Normal (4-7 days)')],
+                      ['slow', nm('طويلة (8 أيام فأكثر)', 'Slow (8+ days)')],
                     ].map(([key, label]) => (
                       <button
                         key={key}

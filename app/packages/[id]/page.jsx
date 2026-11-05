@@ -224,7 +224,7 @@ export default function PackageDetailPage() {
             <Link href="/packages" style={{ fontSize: 13.5, fontWeight: 600, color: '#036f8c', textDecoration: 'none' }}>{t.back_to_results}</Link>
           </div>
 
-          <section className="qa-sec qa-2col" style={{ display: 'grid', gridTemplateColumns: 'minmax(240px,340px) 1fr', gap: 28, alignItems: 'flex-start' }}>
+          <section className="qa-sec qa-2col qa-detail" style={{ display: 'grid', gridTemplateColumns: 'minmax(240px,340px) 1fr', gap: 28, alignItems: 'flex-start' }}>
             {/* Sticky price summary */}
             <div className="qa-card" style={{ position: 'sticky', top: 90, display: 'flex', flexDirection: 'column', gap: 14 }}>
               <h3 style={{ margin: 0, fontSize: 18 }}>{t.price_title}</h3>
@@ -243,7 +243,7 @@ export default function PackageDetailPage() {
                     {availableDates.map((d, i) => (
                       <button key={d.date} type="button" onClick={() => setDateIdx(i)}
                         style={{ borderRadius: 10, padding: '8px 12px', cursor: 'pointer', fontFamily: 'inherit', fontSize: 13.5, fontWeight: 700, border: i === dateIdx ? '2px solid #049dc5' : '1px solid #ececed', background: i === dateIdx ? '#eaf8fd' : '#fff', color: '#1d2733' }}>
-                        <span dir="ltr">{new Date(d.date).toLocaleDateString(lang === 'en' ? 'en-GB' : 'ar-IQ', { day: 'numeric', month: 'short', year: 'numeric' })}</span>
+                        <span dir="ltr">{new Date(d.date).toLocaleDateString(lang === 'en' ? 'en-GB' : 'ar-IQ-u-nu-latn', { day: 'numeric', month: 'short', year: 'numeric' })}</span>
                         {d.adjust ? <span style={{ display: 'block', fontSize: 11, color: d.adjust > 0 ? '#c27a00' : '#1a7f47' }}>{formatSignedPrice(d.adjust, 'IQD', lang)}</span> : null}
                       </button>
                     ))}
@@ -376,8 +376,8 @@ export default function PackageDetailPage() {
             </div>
 
             {/* Main content */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
-              <div style={{ position: 'relative', minHeight: 200, borderRadius: 20, overflow: 'hidden', background: pkg.image_url ? `url(${pkg.image_url}) center/cover` : 'linear-gradient(135deg,#34bbe1,#049dc5)', display: 'flex', alignItems: 'flex-end', padding: 24 }}>
+            <div className="qa-detail-main" style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+              <div className="qa-detail-hero" style={{ position: 'relative', minHeight: 200, borderRadius: 20, overflow: 'hidden', background: pkg.image_url ? `url(${pkg.image_url}) center/cover` : 'linear-gradient(135deg,#34bbe1,#049dc5)', display: 'flex', alignItems: 'flex-end', padding: 24 }}>
                 {pkg.image_url && <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(1,42,55,.6), transparent 60%)' }} />}
                 {(pkg.badge_ar || pkg.badge_en) && (
                   <span style={{ position: 'absolute', top: 20, insetInlineStart: 20, padding: '4px 14px', borderRadius: 999, background: '#faab18', color: '#012a37', fontSize: 12.5, fontWeight: 700, zIndex: 2 }}>
@@ -466,16 +466,16 @@ export default function PackageDetailPage() {
                   <h4 style={{ margin: '0 0 14px' }}>{t.hotel_title}</h4>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
                     {hotels.map((h, idx) => (
-                      <div key={idx} style={optStyle(hotelIdx === idx)} onClick={() => setHotelIdx(idx)}>
+                      <div key={idx} className="qa-opt-hotel" style={optStyle(hotelIdx === idx)} onClick={() => setHotelIdx(idx)}>
                         <input type="radio" checked={hotelIdx === idx} onChange={() => setHotelIdx(idx)} style={{ flex: 'none' }} />
                         {h.imageUrl ? (
                           <img src={h.imageUrl} alt="" style={{ width: 44, height: 44, borderRadius: 8, objectFit: 'cover', flex: 'none' }} />
                         ) : null}
-                        <span style={{ flex: 1, fontSize: 14.5, color: '#1d2733' }}>
+                        <span className="qa-opt-name" style={{ flex: 1, fontSize: 14.5, color: '#1d2733' }}>
                           {nm(h.nameAr, h.nameEn)}
                           {(h.notesAr || h.notesEn) && <span style={{ display: 'block', fontSize: 12.5, color: '#1a7f47', fontWeight: 600, marginTop: 2 }}>🍽 {nm(h.notesAr, h.notesEn)}</span>}
                         </span>
-                        <span style={{ fontSize: 13.5, fontWeight: 700, color: (h.extras?.adult ?? h.diff) ? '#049dc5' : '#5f666e' }}>{(h.extras?.adult ?? h.diff) ? formatSignedPrice(h.extras?.adult ?? h.diff, 'IQD', lang) : (lang === 'en' ? 'Included' : 'مشمول')}</span>
+                        <span className="qa-opt-price" style={{ fontSize: 13.5, fontWeight: 700, color: (h.extras?.adult ?? h.diff) ? '#049dc5' : '#5f666e' }}>{(h.extras?.adult ?? h.diff) ? formatSignedPrice(h.extras?.adult ?? h.diff, 'IQD', lang) : (lang === 'en' ? 'Included' : 'مشمول')}</span>
                       </div>
                     ))}
                   </div>

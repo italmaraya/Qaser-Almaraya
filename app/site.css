@@ -76,3 +76,17 @@ a:hover{color:#036f8c}
   body:has(.qa-pkg-mbar.on) #zsiq_float{bottom:calc(170px + env(safe-area-inset-bottom,0px))!important}
 }
 body.qa-drawer-open .qa-mbar,body.qa-drawer-open #zsiq_float,body.qa-drawer-open .qa-chat-label{display:none!important}
+
+/* Layout audit (5 Nov): same alignment on phones and desktop */
+html{overflow-x:hidden}
+.qa-detail{padding-top:24px!important}
+@media(max-width:820px){
+  .qa-detail{padding-top:14px!important}
+  .qa-detail-main{display:contents!important}
+  .qa-detail-hero{order:-1}
+  .qa-visa-pricebox{flex:1 1 100%!important;min-width:0!important}
+  .qa-opt-hotel{display:grid!important;grid-template-columns:auto auto minmax(0,1fr);column-gap:10px!important;row-gap:4px;padding:12px!important}
+  .qa-opt-hotel>input{grid-column:1;grid-row:1/span 2}
+  .qa-opt-hotel>img{grid-column:2;grid-row:1/span 2}
+  .qa-opt-hotel .qa-opt-name,.qa-opt-hotel .qa-opt-price{grid-column:3}
+}

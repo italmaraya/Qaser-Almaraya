@@ -17,7 +17,7 @@ const CATS = {
 
 const pick = (en, a, b) => (en && b ? b : a || b || '');
 const fmtDate = (d, en) => {
-  try { return new Date(d).toLocaleDateString(en ? 'en-GB' : 'ar-IQ', { day: 'numeric', month: 'long', year: 'numeric' }); } catch { return ''; }
+  try { return new Date(d).toLocaleDateString(en ? 'en-GB' : 'ar-IQ-u-nu-latn', { day: 'numeric', month: 'long', year: 'numeric' }); } catch { return ''; }
 };
 
 const CSS = `

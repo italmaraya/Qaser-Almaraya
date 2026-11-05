@@ -247,7 +247,7 @@ export default function VisaLandingPage({ initialCards = null }) {
           <section style={{ position: 'relative', background: 'linear-gradient(135deg,#34bbe1 0%,#049dc5 100%)', paddingBottom: 50, overflow: 'hidden' }}>
             <img src="/assets/logo-mark-white.webp" alt="" style={{ position: 'absolute', insetInlineEnd: -150, top: -80, height: 480, opacity: 0.1 }} />
             <div className="qa-sec qa-2col" style={{ position: 'relative', paddingTop: 36, paddingBottom: 0, display: 'grid', gridTemplateColumns: 'minmax(0,1.05fr) minmax(0,.95fr)', gap: 28, alignItems: 'center' }}>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 8, alignItems: 'flex-end', textAlign: 'right' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 8, alignItems: 'flex-start', textAlign: 'start' }}>
                 <span style={{ fontSize: 14, fontWeight: 700, letterSpacing: '.06em', color: '#fff' }}>VISAS</span>
                 <h1 style={{ margin: 0, fontSize: 'clamp(28px,3vw,46px)', color: '#fff' }}>التأشيرات</h1>
                 <p style={{ margin: 0, fontSize: 16, lineHeight: 1.6, color: 'rgba(255,255,255,.92)', maxWidth: 600 }}>

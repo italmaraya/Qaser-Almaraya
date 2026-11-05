@@ -20,7 +20,7 @@ function offsetMinutes(tz, at = new Date()) {
 }
 
 function fmtTime(tz, at, lang) {
-  return new Intl.DateTimeFormat(lang === 'en' ? 'en-GB' : 'ar-IQ', { timeZone: tz, hour: '2-digit', minute: '2-digit', hourCycle: 'h23' }).format(at);
+  return new Intl.DateTimeFormat(lang === 'en' ? 'en-GB' : 'ar-IQ-u-nu-latn', { timeZone: tz, hour: '2-digit', minute: '2-digit', hourCycle: 'h23' }).format(at);
 }
 
 // "08:00" in `fromTz` → same moment's clock time in `toTz`.

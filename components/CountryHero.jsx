@@ -71,7 +71,7 @@ export default function CountryHero({ country, count, fastestDays, lang = 'ar', 
   return (
     <section className="qch" style={{ backgroundImage: photo ? `url("${photo}")` : undefined }}>
       <style>{`
-.qch{position:relative;width:100vw;margin-inline:calc(50% - 50vw);min-height:340px;background:#036f8c center/cover no-repeat;color:#fff;overflow:hidden;isolation:isolate}
+.qch{position:relative;width:100%;min-height:340px;background:#036f8c center/cover no-repeat;color:#fff;overflow:hidden;isolation:isolate}
 .qch:before{content:"";position:absolute;inset:0;z-index:0;background:linear-gradient(90deg,rgba(2,40,54,.92) 0%,rgba(2,40,54,.78) 45%,rgba(2,40,54,.35) 100%),linear-gradient(to top,rgba(2,40,54,.55),transparent 60%)}
 [dir=ltr] .qch:before{background:linear-gradient(270deg,rgba(2,40,54,.92) 0%,rgba(2,40,54,.78) 45%,rgba(2,40,54,.35) 100%),linear-gradient(to top,rgba(2,40,54,.55),transparent 60%)}
 .qch-in{position:relative;z-index:2;max-width:1320px;margin:0 auto;padding:28px clamp(18px,4vw,48px) 34px;display:grid;grid-template-columns:1.1fr .9fr;gap:24px;align-items:center}

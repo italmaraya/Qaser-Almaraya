@@ -57,5 +57,5 @@
   var pend = window.QA_I18N_PENDING || []; window.QA_I18N_PENDING = [];
   var prev = window.QA_I18N && window.QA_I18N.map; if (prev) { for (var pk in prev) map[pk] = prev[pk]; }
   pend.forEach(function (o) { for (var k in o) map[k] = o[k]; });
-  window.QA_I18N = { map: map, short: short, ts: function (raw) { var k = String(raw == null ? '' : raw).trim(); return short[k] != null ? String(raw).replace(k, short[k]) : t(raw); }, t: t, west: west, add: function (o) { for (var k in o) map[k] = o[k]; } };
+  window.QA_I18N = { map: map, short: short, ts: function (raw) { var k = String(raw == null ? '' : raw).trim(); return short[k] != null ? String(raw).replace(k, short[k]) : t(raw); }, t: t, west: west, add: function (o) { for (var k in o) { map[k] = o[k]; var w = west(k); if (map[w] == null) map[w] = o[k]; } } };
 })();
