@@ -537,7 +537,7 @@ function   renderVals(){
           patch({ contactError: err.message, contactSending: false });
         }
       },
-      openWhatsapp: e => { if(e) e.preventDefault(); window.open('https://wa.me/' + WHATSAPP_NUMBER, '_blank'); },
+      openWhatsapp: e => { if(e) e.preventDefault(); if(window.qaChime) window.qaChime(); window.open('https://wa.me/' + WHATSAPP_NUMBER, '_blank'); },
       goHome: e => { if(e) e.preventDefault(); router.push('/'); },
       goFlights: e => { if(e) e.preventDefault(); router.push('/flights'); },
       goContact: e => { if(e) e.preventDefault(); router.push('/contact'); },
