@@ -321,11 +321,11 @@ export default function PackageDetailPage() {
               {APPLY_FLOW_ENABLED ? (
                 <button type="button" onClick={goBook} className="qa-btn qa-cyan" style={{ textAlign: 'center' }}>{t.detail_cta}</button>
               ) : (
-                <div ref={ctaRef}>
+                <div ref={ctaRef} style={{ display: 'flex', flexDirection: 'column' }}>
                 <WhatsAppButton
                   label={lang === 'en' ? 'Contact us on WhatsApp to book' : 'تواصل معنا على واتساب للحجز'}
                   getMessage={waMessage}
-                  style={{ width: '100%' }}
+                  style={{ width: '100%', boxSizing: 'border-box' }}
                 />
                 </div>
               )}
