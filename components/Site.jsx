@@ -1,4 +1,5 @@
 'use client';
+import { goWithPlane } from '../lib/pageTransition';
 import { APPLY_FLOW_ENABLED, WHATSAPP_NUMBER, openWhatsApp, visaMessage, waLink } from '../lib/whatsapp';
 import { WA_ICON } from './WhatsAppButton';
 import HomeHero from './HomeHero';
@@ -408,7 +409,7 @@ function   renderVals(){
         color: isOn ? '#049dc5' : '#3d4650',
         border: isOn ? '#049dc5' : 'transparent',
         go: ROUTE_MAP[n.id]
-          ? e => { e.preventDefault(); router.push(ROUTE_MAP[n.id]); }
+          ? e => { e.preventDefault(); goWithPlane(router, ROUTE_MAP[n.id]); }
           : e => { e.preventDefault(); go(n.id); }
       };
     });
@@ -513,8 +514,8 @@ function   renderVals(){
       isGroups: page === 'groups',
       goInsurance: e => { if(e) e.preventDefault(); go('insurance'); },
       goGroups: e => { if(e) e.preventDefault(); go('groups'); },
-      goJobs: e => { if(e) e.preventDefault(); router.push('/jobs'); },
-      goFaq: e => { if(e) e.preventDefault(); router.push('/faq'); },
+      goJobs: e => { if(e) e.preventDefault(); goWithPlane(router, '/jobs'); },
+      goFaq: e => { if(e) e.preventDefault(); goWithPlane(router, '/faq'); },
       isContact: page === 'contact',
       contact: st.contact,
       contactSending: st.contactSending,
@@ -538,9 +539,9 @@ function   renderVals(){
         }
       },
       openWhatsapp: e => { if(e) e.preventDefault(); if(window.qaChime) window.qaChime(); window.open('https://wa.me/' + WHATSAPP_NUMBER, '_blank'); },
-      goHome: e => { if(e) e.preventDefault(); router.push('/'); },
-      goFlights: e => { if(e) e.preventDefault(); router.push('/flights'); },
-      goContact: e => { if(e) e.preventDefault(); router.push('/contact'); },
+      goHome: e => { if(e) e.preventDefault(); goWithPlane(router, '/'); },
+      goFlights: e => { if(e) e.preventDefault(); goWithPlane(router, '/flights'); },
+      goContact: e => { if(e) e.preventDefault(); goWithPlane(router, '/contact'); },
       selectCountry: code => patch({ active: code }),
       achievements: (props.content && props.content.achievements) || ACHIEVEMENTS,
       achievement: st.achievement,
@@ -583,8 +584,8 @@ function   renderVals(){
       isVisas: page === 'visas',
       isVisaApply: page === 'visa-apply',
       goVisaApply: e => { if(e) e.preventDefault(); go('visa-apply'); },
-      goVisas: e => { if(e) e.preventDefault(); router.push('/visa'); },
-      goPackages: e => { if(e) e.preventDefault(); router.push('/packages'); },
+      goVisas: e => { if(e) e.preventDefault(); goWithPlane(router, '/visa'); },
+      goPackages: e => { if(e) e.preventDefault(); goWithPlane(router, '/packages'); },
     };
     return Object.assign(out, visaVals(country));
   }
@@ -1851,7 +1852,7 @@ function   visaVals(country){
 <div style={{ display: "flex", alignItems: "center", gap: "24px", flexWrap: "wrap", background: "#e4f5fb", border: "1px solid #bfe9f6", borderRadius: "18px", padding: "24px 28px" }}>
 <img src="/assets/mascot-skylo-suit.webp" alt="" style={{ height: "130px", width: "auto" }} />
 <p style={{ flex: "1", minWidth: "260px", fontSize: "18px", lineHeight: "1.75", color: "#046f8c" }}>لا تجد ما يناسبك؟ أخبرنا بعدد المسافرين والوجهة والميزانية، وسنبني لك باقة خاصة من الصفر.</p>
-<button className="qa-btn qa-amber" onClick={e => { if(e) e.preventDefault(); router.push('/contact?topic=package'); }}>اطلب باقة مخصصة</button>
+<button className="qa-btn qa-amber" onClick={e => { if(e) e.preventDefault(); goWithPlane(router, '/contact?topic=package'); }}>اطلب باقة مخصصة</button>
 </div>
 </section>
 </div>

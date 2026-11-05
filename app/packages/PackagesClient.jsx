@@ -1,4 +1,5 @@
 'use client';
+import { goWithPlane } from '../../lib/pageTransition';
 import { useEffect, useMemo, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { useRouter } from 'next/navigation';
@@ -609,7 +610,7 @@ export default function PackagesPage({ initialPackages = null }) {
                       lang={lang}
                       rating={p.rating || 4.8}
                       urgency={packageUrgency(p, lang)}
-                      onDetails={() => router.push(`/packages/${p.id}`)}
+                      onDetails={() => goWithPlane(router, `/packages/${p.id}`)}
                     />
                   ))}
                 </div>
