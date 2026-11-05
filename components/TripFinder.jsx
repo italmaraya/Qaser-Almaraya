@@ -81,8 +81,8 @@ export default function TripFinder({ lang = 'ar' }) {
       en ? 'Hello, I am looking for a trip:' : 'مرحباً، أبحث عن رحلة:',
       (en ? 'Budget per person: ' : 'الميزانية للشخص: ') + budgetName(budget),
       (en ? 'Month: ' : 'الشهر: ') + (month === 'any' ? (en ? 'Flexible' : 'مرن') : monthName(month, true)),
-      (en ? 'Trip type: ' : 'نوع الرحلة: ') + catName(cat),
-    ];
+      cat !== 'any' ? (en ? 'Trip type: ' : 'نوع الرحلة: ') + catName(cat) : null,
+    ].filter(Boolean);
     if (picks.length) {
       lines.push('', en ? 'Suggestions from the website:' : 'اقتراحات الموقع:');
       picks.forEach(({ p }, i) => lines.push((i + 1) + ') ' + nm(p.title_ar, p.title_en) + ' — ' + formatPrice(p.price, 'IQD', lang) + '\n' + origin + '/packages/' + p.id));
@@ -118,7 +118,7 @@ export default function TripFinder({ lang = 'ar' }) {
         <div className="qa-tf-deco" aria-hidden="true" />
         <div style={{ display: 'flex', flexDirection: 'column', gap: 6, position: 'relative' }}>
           <h2>{en ? 'Where can I go on my budget?' : 'وين أسافر بميزانيتي؟'}</h2>
-          <p style={{ fontSize: 16, color: '#d6f1fa' }}>{en ? 'Pick three things and we suggest the closest trips for you.' : 'اختر ٣ أشياء ونقترح عليك أقرب الرحلات لك.'}</p>
+          <p style={{ fontSize: 16, color: '#d6f1fa' }}>{en ? 'Pick what suits you and we suggest the closest trips.' : 'اختر اللي يناسبك ونقترح عليك أقرب الرحلات.'}</p>
         </div>
 
         <div className="qa-tf-row">
@@ -135,13 +135,13 @@ export default function TripFinder({ lang = 'ar' }) {
             {months.map((m) => <Chip key={m} on={month === m} onClick={() => setMonth(m)}>{monthName(m, false)}</Chip>)}
           </div>
         </div>
-        <div className="qa-tf-row">
+        {cats.length > 1 && <div className="qa-tf-row">
           <b>{en ? '3. Trip type' : '٣. نوع الرحلة'}</b>
           <div className="qa-tf-chips">
             <Chip on={cat === 'any'} onClick={() => setCat('any')}>{en ? 'Any' : 'أي نوع'}</Chip>
             {cats.map((c) => <Chip key={c.id} on={cat === c.id} onClick={() => setCat(c.id)}>{nm(c.ar, c.en)}</Chip>)}
           </div>
-        </div>
+        </div>}
 
         {!show ? (
           <button type="button" className="qa-btn qa-amber" style={{ alignSelf: 'flex-start', color: '#012a37', fontWeight: 700 }} onClick={() => setAsked(true)}>{en ? 'Suggest trips' : 'اقترح لي'}</button>
