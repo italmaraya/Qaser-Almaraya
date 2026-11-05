@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { formatPrice } from '../lib/currency';
 import { nightsLabel, destinationLabel } from '../lib/destinations';
 import { loadPackages } from '../lib/publicPackages';
+import { packageUrgency } from '../lib/packageUrgency';
 
 // "Featured offers" strip on the homepage: the first packages in the order
 // set in the dashboard, with photo, duration and starting price. Hidden when
@@ -28,7 +29,8 @@ export default function HomeOffers({ lang = 'ar' }) {
       <style>{`
 .qa-offer{display:flex;flex-direction:column;background:#fff;border:1px solid #ececed;border-radius:18px;overflow:hidden;box-shadow:0 2px 8px rgba(29,39,51,.07);color:inherit;transition:transform .2s ease,box-shadow .2s ease}
 .qa-offer:hover{transform:translateY(-3px);box-shadow:0 16px 36px rgba(1,42,55,.14);color:inherit}
-.qa-offer-img{aspect-ratio:16/10;background:#e4f5fb;overflow:hidden}
+.qa-offer-img{position:relative;aspect-ratio:16/10;background:#e4f5fb;overflow:hidden}
+.qa-offer-urg{position:absolute;top:10px;inset-inline-start:10px;display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:999px;color:#fff;font-size:12px;font-weight:700;box-shadow:0 4px 12px rgba(1,42,55,.25)}
 .qa-offer-img img{width:100%;height:100%;object-fit:cover}
 .qa-offer-skel{background:linear-gradient(90deg,#eef6f9 25%,#f7fbfc 50%,#eef6f9 75%);background-size:200% 100%;animation:qa-skel 1.2s linear infinite;min-height:300px;border-radius:18px}
 @keyframes qa-skel{to{background-position:-200% 0}}
@@ -49,6 +51,11 @@ export default function HomeOffers({ lang = 'ar' }) {
               <div className="qa-offer-img">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 {p.image_url ? <img src={p.image_url} alt={nm(p.title_ar, p.title_en)} loading="lazy" /> : null}
+                {(() => {
+                  const u = packageUrgency(p, lang);
+                  if (!u || !u.label) return null;
+                  return <span className={'qa-offer-urg' + (u.hot && !u.soldOut ? ' qa-urg-badge' : '')} style={{ background: u.soldOut ? '#1d2733' : u.hot ? '#e0364f' : '#faab18' }}>{u.soldOut ? '⛔' : '⏳'} {u.label}</span>;
+                })()}
               </div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 6, padding: '14px 16px 16px', flex: 1 }}>
                 <span style={{ fontSize: 13, color: '#5f666e' }}>{[destinationLabel(p, lang), nightsLabel(p, lang)].filter(Boolean).join(' · ')}</span>
