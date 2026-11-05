@@ -6,12 +6,15 @@ import { activeSeason } from '../lib/seasons';
 // Full-page seasonal decoration on the public site (never on /admin):
 //   newyear  → pine garland with lights and swinging bells, falling snow,
 //              reindeer pulling a sleigh across the sky
-//   ramadan  → hanging lanterns, crescents and stars, twinkling stars
+//   ramadan  → hanging lanterns and crescents, stars that glow once and fade
 //   eid_fitr / eid_adha → bunting flags with hanging stars, falling confetti
-//   summer   → sun in the corner, rising bubbles, seagulls crossing
 // Shown only while the season is on (or previewed with ?season=...).
 // Purely decorative: pointer-events off, hidden for print, and still
 // (no motion) when the visitor prefers reduced motion.
+//
+// Light background music per season (public/audio/season-*.mp3). Browsers
+// do not allow sound before the visitor's first tap/click/key, so it starts
+// then, softly, and a small round button turns it off/on (remembered).
 
 const rnd = (a, b) => a + Math.random() * (b - a);
 
@@ -136,16 +139,6 @@ function Sleigh() {
   );
 }
 
-function Seagulls() {
-  return (
-    <svg width="120" height="40" viewBox="0 0 120 40" style={{ display: 'block' }}>
-      {[[0, 14, 1], [38, 4, 0.8], [70, 20, 0.9]].map(([x, y, s], k) => (
-        <path key={k} transform={`translate(${x} ${y}) scale(${s})`} d="M0 8 Q 8 0 16 8 Q 24 0 32 8" stroke="#1d2733" strokeWidth="2.2" fill="none" strokeLinecap="round" opacity=".7" />
-      ))}
-    </svg>
-  );
-}
-
 const SNOW = 'M0 -6 L0 6 M-5.2 -3 L5.2 3 M-5.2 3 L5.2 -3 M0 -6 L-1.5 -4.5 M0 -6 L1.5 -4.5 M0 6 L-1.5 4.5 M0 6 L1.5 4.5';
 
 function Particle({ kind, p }) {
@@ -160,18 +153,15 @@ function Particle({ kind, p }) {
   if (kind === 'confetti') {
     return <span className="sd-fall sd-conf" style={{ left: p.x + 'vw', width: p.size * 0.5, height: p.size, background: p.color, animationDuration: p.d + 's', animationDelay: p.delay + 's', '--sd-drift': p.drift + 'px', borderRadius: 2 }} />;
   }
-  if (kind === 'bubble') {
-    return <span className="sd-rise" style={{ left: p.x + 'vw', width: p.size * 1.6, height: p.size * 1.6, animationDuration: p.d * 1.3 + 's', animationDelay: p.delay + 's', '--sd-drift': p.drift + 'px' }} />;
-  }
-  // twinkling stars (Ramadan)
+  // Ramadan stars: each one fades in once, glows, then disappears for good.
   return (
-    <svg className="sd-star" width={p.size} height={p.size} viewBox="-10 -10 20 20" style={{ left: p.x + 'vw', top: p.y + 'vh', animationDuration: p.d / 4 + 's', animationDelay: p.delay / 4 + 's' }}>
+    <svg className="sd-star" width={p.size} height={p.size} viewBox="-10 -10 20 20" style={{ left: p.x + 'vw', top: p.y + 'vh', animationDuration: 2.4 + p.d / 6 + 's', animationDelay: Math.abs(p.delay) / 4.5 + 's' }}>
       <path d="M0 -10 Q 1.5 -1.5 10 0 Q 1.5 1.5 0 10 Q -1.5 1.5 -10 0 Q -1.5 -1.5 0 -10 Z" fill="#f5c451" />
     </svg>
   );
 }
 
-const KIND = { newyear: 'snow', ramadan: 'star', eid_fitr: 'confetti', eid_adha: 'confetti', summer: 'bubble' };
+const KIND = { newyear: 'snow', ramadan: 'star', eid_fitr: 'confetti', eid_adha: 'confetti' };
 const CONFETTI = ['#faab18', '#e0364f', '#34bbe1', '#11a36a', '#9b5de5', '#f5c451'];
 
 const CSS = `
@@ -180,30 +170,127 @@ const CSS = `
 .sd-layer{position:fixed;inset:0;overflow:hidden;pointer-events:none;z-index:35}
 .sd-fall{position:absolute;top:-24px;animation-name:sd-fall;animation-timing-function:linear;animation-iteration-count:infinite;will-change:transform}
 .sd-conf{display:block;animation-name:sd-fall-spin}
-.sd-rise{position:absolute;bottom:-30px;border-radius:50%;border:1.5px solid rgba(52,187,225,.55);background:radial-gradient(circle at 30% 30%,rgba(255,255,255,.9),rgba(180,230,246,.25) 60%,transparent 70%);animation:sd-rise linear infinite;will-change:transform}
-.sd-star{position:absolute;animation:sd-tw ease-in-out infinite alternate}
+.sd-star{position:absolute;opacity:0;animation:sd-once ease-in-out 1 both}
 .sd-swing{transform-box:fill-box;transform-origin:50% 0;animation:sd-swing 3.2s ease-in-out infinite alternate}
 .sd-twinkle{transform-box:fill-box;transform-origin:center;animation:sd-tw 1.4s ease-in-out infinite alternate}
-.sd-sun-rays{transform-box:view-box}
 .sd-fly{position:absolute;top:var(--sd-fly-top,14vh);right:-480px;animation:sd-fly 26s linear infinite;will-change:transform}
 .sd-fly svg{width:450px;height:auto}
 .sd-fly>*{animation:sd-bob 2.6s ease-in-out infinite alternate}
-.sd-gulls{position:absolute;top:22vh;left:-140px;animation:sd-gulls 30s linear infinite}
-.sd-sun{position:absolute;top:8px;left:18px;width:120px;height:120px;pointer-events:none;z-index:39}
-.sd-sun-rays{transform-origin:60px 60px;animation:sd-spin 40s linear infinite}
 @keyframes sd-fall{0%{transform:translate3d(0,0,0)}100%{transform:translate3d(var(--sd-drift,0),105vh,0)}}
 @keyframes sd-fall-spin{0%{transform:translate3d(0,0,0) rotate(0)}100%{transform:translate3d(var(--sd-drift,0),105vh,0) rotate(720deg)}}
-@keyframes sd-rise{0%{transform:translate3d(0,0,0);opacity:0}10%{opacity:1}100%{transform:translate3d(var(--sd-drift,0),-110vh,0);opacity:.2}}
+@keyframes sd-once{0%{opacity:0;transform:scale(.4)}30%{opacity:1;transform:scale(1.15)}65%{opacity:.9;transform:scale(1)}100%{opacity:0;transform:scale(.5)}}
 @keyframes sd-tw{0%{opacity:.25;transform:scale(.7)}100%{opacity:1;transform:scale(1.1)}}
 @keyframes sd-swing{0%{transform:rotate(-7deg)}100%{transform:rotate(7deg)}}
 @keyframes sd-fly{0%{transform:translateX(0)}55%{transform:translateX(calc(-100vw - 560px))}100%{transform:translateX(calc(-100vw - 560px))}}
 @keyframes sd-bob{0%{transform:translateY(-6px)}100%{transform:translateY(6px)}}
-@keyframes sd-gulls{0%{transform:translateX(0)}60%{transform:translateX(calc(100vw + 160px))}100%{transform:translateX(calc(100vw + 160px))}}
-@keyframes sd-spin{to{transform:rotate(360deg)}}
-@media (max-width:820px){.sd-top{height:80px}.sd-fly{--sd-fly-top:18vh}.sd-fly svg{width:270px;height:auto}.sd-sun{width:84px;height:84px;top:4px;left:8px}}
-@media (prefers-reduced-motion:reduce){.sd-layer{display:none}.sd-swing,.sd-twinkle,.sd-sun-rays{animation:none}}
-@media print{.sd-top,.sd-layer,.sd-sun{display:none!important}}
+@media (max-width:820px){.sd-top{height:80px}.sd-fly{--sd-fly-top:18vh}.sd-fly svg{width:270px;height:auto}}
+@media (prefers-reduced-motion:reduce){.sd-layer{display:none}.sd-swing,.sd-twinkle{animation:none}}
+.sd-music{position:fixed;left:18px;bottom:18px;z-index:880;width:46px;height:46px;border-radius:50%;border:1px solid rgba(4,157,197,.25);background:#fff;color:#049dc5;box-shadow:0 8px 22px rgba(1,42,55,.18);display:grid;place-items:center;cursor:pointer;padding:0;font-family:inherit}
+.sd-music:hover{transform:scale(1.06)}
+.sd-music.on{background:#049dc5;color:#fff;border-color:#049dc5}
+.sd-eq{position:absolute;right:-3px;top:-3px;display:flex;gap:1.5px;align-items:flex-end;height:12px;padding:2px 3px;border-radius:6px;background:#faab18}
+.sd-eq i{display:block;width:2px;background:#fff;border-radius:1px;animation:sd-eq .9s ease-in-out infinite alternate}
+.sd-eq i:nth-child(2){animation-delay:.3s}.sd-eq i:nth-child(3){animation-delay:.6s}
+@keyframes sd-eq{0%{height:2px}100%{height:8px}}
+@media (max-width:820px){.sd-music{left:10px;bottom:auto;top:calc(var(--sd-head,60px) + 10px);width:40px;height:40px}}
+@media print{.sd-top,.sd-layer,.sd-music{display:none!important}}
 `;
+
+// ── Background music ─────────────────────────────────────────────────────
+const MUSIC = { newyear: '/audio/season-newyear.mp3', ramadan: '/audio/season-ramadan.mp3', eid_fitr: '/audio/season-eid.mp3', eid_adha: '/audio/season-eid.mp3' };
+const MUSIC_KEY = 'qa_season_music'; // 'off' once the visitor turns it off
+const VOLUME = 0.22;
+let player = null; // one shared player, kept across client-side page changes
+let users = 0; // how many SeasonDecor instances are mounted
+
+function readPref() {
+  try { return localStorage.getItem(MUSIC_KEY); } catch { return null; }
+}
+function writePref(v) {
+  try { localStorage.setItem(MUSIC_KEY, v); } catch { /* storage blocked */ }
+}
+
+function fade(a, to, ms, done) {
+  const from = a.volume;
+  const t0 = performance.now();
+  const step = (now) => {
+    const k = Math.min(1, (now - t0) / ms);
+    try { a.volume = from + (to - from) * k; } catch { /* iOS: volume is read-only */ }
+    if (k < 1) requestAnimationFrame(step);
+    else if (done) done();
+  };
+  requestAnimationFrame(step);
+}
+
+function startMusic(src) {
+  if (!player || !player.src.endsWith(src)) {
+    if (player) player.pause();
+    player = new Audio(src);
+    player.loop = true;
+    player.preload = 'auto';
+  }
+  if (!player.paused) return Promise.resolve(true);
+  try { player.volume = 0; } catch { /* iOS */ }
+  return player.play().then(() => { fade(player, VOLUME, 1500); return true; }).catch(() => false);
+}
+
+function stopMusic() {
+  if (!player || player.paused) return;
+  const a = player;
+  fade(a, 0, 500, () => a.pause());
+}
+
+function MusicButton({ id }) {
+  const src = MUSIC[id];
+  const [on, setOn] = useState(false);
+
+  useEffect(() => {
+    users += 1;
+    let alive = true;
+    if (player && !player.paused && player.src.endsWith(src)) setOn(true);
+    const first = (e) => {
+      if (e && e.target && e.target.closest && e.target.closest('.sd-music')) return;
+      if (readPref() === 'off') { cleanup(); return; }
+      // A touch that ends a scroll is not a "real" tap for the browser, so
+      // play() can be refused: keep listening until it works.
+      startMusic(src).then((ok) => { if (ok) cleanup(); if (alive && ok) setOn(true); });
+    };
+    const evs = ['pointerup', 'keydown', 'touchend', 'click'];
+    const cleanup = () => evs.forEach((ev) => window.removeEventListener(ev, first, true));
+    if (!(player && !player.paused) && readPref() !== 'off') evs.forEach((ev) => window.addEventListener(ev, first, true));
+    return () => {
+      alive = false;
+      cleanup();
+      users -= 1;
+      // Leaving the public site (e.g. to /admin): stop. Moving between
+      // public pages: the next page mounts again and the music carries on.
+      setTimeout(() => { if (users === 0) stopMusic(); }, 400);
+    };
+  }, [src]);
+
+  const toggle = () => {
+    if (on) {
+      writePref('off');
+      stopMusic();
+      setOn(false);
+    } else {
+      writePref('on');
+      startMusic(src).then(setOn);
+    }
+  };
+
+  return (
+    <button type="button" className={'sd-music' + (on ? ' on' : '')} onClick={toggle} aria-pressed={on} aria-label={on ? 'إيقاف الموسيقى' : 'تشغيل الموسيقى'} title={on ? 'إيقاف الموسيقى' : 'تشغيل الموسيقى'}>
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+        <path d="M9 18V5l11-2v13" />
+        <circle cx="6" cy="18" r="3" />
+        <circle cx="17" cy="16" r="3" />
+        {!on && <path d="M3 3l18 18" />}
+      </svg>
+      {on && <span className="sd-eq" aria-hidden="true"><i /><i /><i /></span>}
+    </button>
+  );
+}
 
 export default function SeasonDecor() {
   const [state, setState] = useState(null);
@@ -222,7 +309,8 @@ export default function SeasonDecor() {
     const measure = () => {
       const h = document.querySelector('header');
       const top = h ? Math.round(h.getBoundingClientRect().bottom + window.scrollY) : 64;
-      setState({ id, parts, top, width: window.innerWidth, mobile: window.innerWidth < 821 });
+      const head = h ? Math.round(h.getBoundingClientRect().height) : 60;
+      setState({ id, parts, top, head, width: window.innerWidth, mobile: window.innerWidth < 821 });
     };
     measure();
     window.addEventListener('resize', measure);
@@ -230,7 +318,7 @@ export default function SeasonDecor() {
   }, []);
 
   if (!state) return null;
-  const { id, parts, top, width, mobile } = state;
+  const { id, parts, top, head, width, mobile } = state;
   const swag = mobile ? 130 : 200;
   const count = Math.ceil(width / swag) + 1;
   const kind = KIND[id];
@@ -263,26 +351,18 @@ export default function SeasonDecor() {
   }
 
   return createPortal(
-    <div aria-hidden="true" data-season-decor={id}>
-      <style>{CSS}</style>
-      {defs}
-      {topRow && <div className="sd-top" style={{ top }}>{topRow}</div>}
-      {id === 'summer' && (
-        <svg className="sd-sun" viewBox="0 0 120 120" style={{ top: top + 8 }}>
-          <g className="sd-sun-rays">
-            {Array.from({ length: 12 }, (_, k) => <rect key={k} x="57" y="2" width="6" height="20" rx="3" fill="#faab18" opacity=".85" transform={`rotate(${k * 30} 60 60)`} />)}
-          </g>
-          <circle cx="60" cy="60" r="28" fill="#ffc94d" stroke="#faab18" strokeWidth="3" />
-          <path d="M48 64 Q 60 74 72 64" stroke="#8a5a00" strokeWidth="3" fill="none" strokeLinecap="round" />
-          <circle cx="51" cy="55" r="3" fill="#8a5a00" /><circle cx="69" cy="55" r="3" fill="#8a5a00" />
-        </svg>
-      )}
-      <div className="sd-layer">
-        {parts.map((p, i) => <Particle key={i} kind={kind} p={p} />)}
-        {id === 'newyear' && <div className="sd-fly"><Sleigh /></div>}
-        {id === 'summer' && <div className="sd-gulls"><Seagulls /></div>}
+    <>
+      <div aria-hidden="true" data-season-decor={id}>
+        <style>{CSS}</style>
+        {defs}
+        {topRow && <div className="sd-top" style={{ top }}>{topRow}</div>}
+        <div className="sd-layer">
+          {parts.map((p, i) => <Particle key={i} kind={kind} p={p} />)}
+          {id === 'newyear' && <div className="sd-fly"><Sleigh /></div>}
+        </div>
       </div>
-    </div>,
+      {MUSIC[id] && <div style={{ '--sd-head': head + 'px' }}><MusicButton id={id} /></div>}
+    </>,
     document.body,
   );
 }

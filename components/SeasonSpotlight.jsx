@@ -7,9 +7,9 @@ import { formatPrice } from '../lib/currency';
 import { nightsLabel, destinationLabel } from '../lib/destinations';
 
 // Homepage seasonal banner + "season offers" strip. Appears by itself for
-// Ramadan, Eid al-Fitr, Eid al-Adha, summer and New Year (and three weeks
+// Ramadan, Eid al-Fitr, Eid al-Adha and New Year (and three weeks
 // before each, as "coming soon"); hidden the rest of the year.
-// Preview: add ?season=ramadan (eid_fitr, eid_adha, summer, newyear, off).
+// Preview: add ?season=ramadan (eid_fitr, eid_adha, newyear, off).
 
 function Decor({ icon, accent }) {
   if (icon === 'crescent') {
