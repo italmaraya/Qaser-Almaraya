@@ -1,5 +1,5 @@
 import Site from '../../components/Site';
-import { getContent } from '../../lib/content';
+import { getSiteContent } from '../../lib/content';
 import { getLegacyVisaData } from '../../lib/legacyVisaTransform';
 import { pageMeta } from '../../lib/seo';
 
@@ -9,6 +9,6 @@ export const revalidate = 60; // cached at the edge for fast page changes; admin
 
 // ?topic=package pre-selects the subject; Site reads it in the browser.
 export default async function ContactPage() {
-  const [content, legacy] = await Promise.all([getContent(), getLegacyVisaData()]);
+  const [content, legacy] = await Promise.all([getSiteContent(), getLegacyVisaData()]);
   return <Site content={{ ...content, ...legacy }} initialPage="contact" />;
 }

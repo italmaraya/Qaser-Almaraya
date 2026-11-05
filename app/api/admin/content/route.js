@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
-import { revalidatePath } from 'next/cache';
-import { getContent, saveContent } from '../../../../lib/content';
+import { revalidatePath, revalidateTag } from 'next/cache';
+import { getContent, saveContent, CONTENT_TAG } from '../../../../lib/content';
 import { requireAdmin } from '../../../../lib/session';
 
 export async function GET() {
@@ -21,6 +21,6 @@ export async function PUT(request) {
   }
 
   const saved = await saveContent(body);
-  try { revalidatePath('/', 'layout'); } catch { /* cached pages refresh within a minute anyway */ }
+  try { revalidateTag(CONTENT_TAG); revalidatePath('/', 'layout'); } catch { /* cached pages refresh within a minute anyway */ }
   return NextResponse.json(saved);
 }
