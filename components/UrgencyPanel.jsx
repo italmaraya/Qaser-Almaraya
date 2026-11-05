@@ -12,6 +12,16 @@ function parts(ms) {
 }
 const pad = (n) => String(n).padStart(2, '0');
 
+// "Next departure: Tuesday 10 November" (shown above the live countdown, so
+// the label and the boxes never disagree by a day around midnight).
+function dateLabel(ymd, en) {
+  let txt = ymd;
+  try {
+    txt = new Intl.DateTimeFormat(en ? 'en-GB' : 'ar-IQ-u-nu-latn', { weekday: 'long', day: 'numeric', month: 'long', timeZone: 'UTC' }).format(new Date(ymd + 'T00:00:00Z'));
+  } catch { /* keep YYYY-MM-DD */ }
+  return (en ? 'Next departure: ' : 'أقرب انطلاق: ') + txt;
+}
+
 export default function UrgencyPanel({ pkg, lang = 'ar' }) {
   const en = lang === 'en';
   const u = siteUrgency(pkg, lang);
@@ -44,7 +54,7 @@ export default function UrgencyPanel({ pkg, lang = 'ar' }) {
       <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontWeight: 700, fontSize: 14 }}>
         {u.soldOut ? <span style={{ fontSize: 18 }}>⛔</span> : <span className="qa-urg-dot" aria-hidden="true" />}
         <span>
-          {u.label}
+          {c && !u.soldOut ? dateLabel(u.date, en) : u.label}
           {u.soldOut ? (en ? ' — message us to join the waiting list' : ' — راسلنا للانضمام لقائمة الانتظار') : ''}
         </span>
       </div>
