@@ -92,11 +92,11 @@ html{overflow-x:hidden}
 }
 
 /* Slide transition between pages and for the phone menu (5 Nov) */
-@keyframes qa-slide-in{from{opacity:0;transform:translateX(-40px)}to{opacity:1;transform:none}}
-@keyframes qa-slide-in-ltr{from{opacity:0;transform:translateX(40px)}to{opacity:1;transform:none}}
+@keyframes qa-slide-in{from{opacity:.35;transform:translateX(-24px)}to{opacity:1;transform:none}}
+@keyframes qa-slide-in-ltr{from{opacity:.35;transform:translateX(24px)}to{opacity:1;transform:none}}
 @keyframes qa-menu-in{from{transform:translateX(-100%)}to{transform:none}}
 @keyframes qa-menu-item{from{opacity:0;transform:translateX(-18px)}to{opacity:1;transform:none}}
-.qa-page{animation:qa-slide-in .48s cubic-bezier(.16,1,.3,1) both}
+.qa-page{animation:qa-slide-in .3s cubic-bezier(.16,1,.3,1) both}
 [dir=ltr] .qa-page{animation-name:qa-slide-in-ltr}
 .qa-mobilemenu{animation:qa-menu-in .34s cubic-bezier(.2,.8,.2,1) both}
 .qa-mobilemenu>*{animation:qa-menu-item .4s cubic-bezier(.2,.8,.2,1) both}
