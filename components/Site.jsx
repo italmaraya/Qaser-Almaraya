@@ -4,6 +4,7 @@ import { WA_ICON } from './WhatsAppButton';
 import HomeHero from './HomeHero';
 import HomeOffers from './HomeOffers';
 import SeasonSpotlight from './SeasonSpotlight';
+import SeasonDecor from './SeasonDecor';
 import TripFinder from './TripFinder';
 import VisaChecker from './VisaChecker';
 import AirlinesMarquee from './AirlinesMarquee';
@@ -814,6 +815,7 @@ function   visaVals(country){
 
 <div dir="rtl" style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
 <header style={{ position: "sticky", top: "0", zIndex: "40", background: "#fff", borderBottom: "1px solid #ececed", boxShadow: "0 1px 2px rgba(29,39,51,.06)" }}>
+<SeasonDecor />
 <div className="qa-head" style={{ maxWidth: "1240px", margin: "0 auto", padding: "12px 32px", display: "flex", alignItems: "center", gap: "24px" }}>
 <a href="#" onClick={goHome} aria-label="قصر المرايا للسفر و السياحة" className="qa-logo" style={{ display: "flex", alignItems: "center", gap: "9px", textDecoration: "none", flex: "none" }}>
 <img src="/assets/logo-mark-tight.webp" alt="" style={{ height: "38px", width: "38px", objectFit: "contain", display: "block", flex: "none" }} />
