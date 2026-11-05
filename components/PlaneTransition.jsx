@@ -1,39 +1,26 @@
 'use client';
 
-import { useCallback, useEffect, useRef, useState } from 'react';
-import { usePathname, useRouter } from 'next/navigation';
+import { useEffect, useRef, useState } from 'react';
+import { usePathname } from 'next/navigation';
 import FlyingPlaneArt from './FlyingPlaneArt';
 
-// Page transition: a plane flies in from the reading side towing a big
-// advertising banner, like the banner planes over a beach. The banner covers
-// the screen, the next page loads behind it, then the plane pulls it away.
-// Off on staff pages and for visitors who ask for reduced motion.
+// When a visitor moves to another page, the page slides in as usual and a
+// plane flies across the screen above it: it swoops, banks and climbs, leaving
+// a vapour trail. It never blocks the page or a tap, does not run on the first
+// page load, skips staff pages and visitors who ask for reduced motion.
 
 const HIDE_ON = ['/admin', '/staff', '/login'];
-const LABELS = [
-  ['/packages', 'الباقات', 'Packages'],
-  ['/visa', 'التأشيرات', 'Visas'],
-  ['/flights', 'الطيران والفنادق', 'Flights & hotels'],
-  ['/contact', 'تواصل معنا', 'Contact us'],
-  ['/faq', 'الأسئلة الشائعة', 'FAQ'],
-  ['/jobs', 'الوظائف', 'Careers'],
-  ['/news', 'المدونة', 'Blog'],
-];
 
-function labelFor(path, en) {
-  const hit = LABELS.find(([p]) => path === p || path.startsWith(p + '/'));
-  if (hit) return en ? hit[2] : hit[1];
-  return en ? 'Qaser Al-Maraya' : 'قصر المرايا';
-}
-
-function whoosh() {
+function whoosh(dur) {
   try {
     const AC = window.AudioContext || window.webkitAudioContext;
     if (!AC) return;
     const ctx = window.__qaPlaneCtx || (window.__qaPlaneCtx = new AC());
     if (ctx.state === 'suspended') ctx.resume();
+    if (ctx.state !== 'running') return; // browser has not allowed sound yet
     const t = ctx.currentTime + 0.02;
-    const len = Math.floor(ctx.sampleRate * 1.8);
+    const s = dur / 1000;
+    const len = Math.floor(ctx.sampleRate * s);
     const buf = ctx.createBuffer(1, len, ctx.sampleRate);
     const d = buf.getChannelData(0);
     for (let i = 0; i < len; i++) d[i] = Math.random() * 2 - 1;
@@ -41,143 +28,116 @@ function whoosh() {
     src.buffer = buf;
     const band = ctx.createBiquadFilter();
     band.type = 'bandpass';
-    band.Q.value = 0.8;
-    band.frequency.setValueAtTime(320, t);
-    band.frequency.exponentialRampToValueAtTime(1300, t + 0.7);
-    band.frequency.exponentialRampToValueAtTime(280, t + 1.7);
+    band.Q.value = 0.9;
+    band.frequency.setValueAtTime(300, t);
+    band.frequency.exponentialRampToValueAtTime(1300, t + s * 0.45);
+    band.frequency.exponentialRampToValueAtTime(260, t + s * 0.97);
+    const low = ctx.createBiquadFilter();
+    low.type = 'lowpass';
+    low.frequency.value = 2200;
     const g = ctx.createGain();
     g.gain.setValueAtTime(0.0001, t);
-    g.gain.exponentialRampToValueAtTime(0.07, t + 0.6);
-    g.gain.exponentialRampToValueAtTime(0.0001, t + 1.75);
-    src.connect(band).connect(g).connect(ctx.destination);
+    g.gain.exponentialRampToValueAtTime(0.07, t + s * 0.42);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + s * 0.98);
+    src.connect(band).connect(low).connect(g).connect(ctx.destination);
     src.start(t);
-    src.stop(t + 1.8);
+    src.stop(t + s);
   } catch {
     /* sound is optional */
   }
 }
 
 export default function PlaneTransition() {
-  const router = useRouter();
   const path = usePathname() || '/';
   const hidden = HIDE_ON.some((p) => path.startsWith(p));
-  const [run, setRun] = useState(null); // { href, label, en }
+  const [flight, setFlight] = useState(0); // bumps on every page change
+  const first = useRef(true);
   const boxRef = useRef(null);
-  const busy = useRef(false);
-  const pathRef = useRef(path);
-  const waiters = useRef([]);
+  const artRef = useRef(null);
 
   useEffect(() => {
-    pathRef.current = path;
-    const w = waiters.current;
-    waiters.current = [];
-    w.forEach((fn) => fn());
-  }, [path]);
-
-  const go = useCallback((href) => {
-    let url;
-    try { url = new URL(href, window.location.href); } catch { router.push(href); return; }
-    const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (busy.current || reduce || url.pathname === window.location.pathname) {
-      if (!busy.current) router.push(url.pathname + url.search + url.hash);
-      return;
-    }
-    let en = false;
-    try { en = localStorage.getItem('qa_lang') === 'en'; } catch { /* ignore */ }
-    busy.current = true;
-    setRun({ href: url.pathname + url.search + url.hash, path: url.pathname, label: labelFor(url.pathname, en), en });
-  }, [router]);
-
-  // Links: catch ordinary same-site clicks before Next's <Link> handles them.
-  useEffect(() => {
-    if (hidden) return undefined;
-    window.qaPlaneGo = go;
-    const onClick = (e) => {
-      if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
-      const a = e.target && e.target.closest ? e.target.closest('a[href]') : null;
-      if (!a || a.target && a.target !== '_self' || a.hasAttribute('download')) return;
-      const raw = a.getAttribute('href') || '';
-      if (!raw.startsWith('/') || raw.startsWith('//')) return;
-      const url = new URL(raw, window.location.href);
-      if (url.pathname === window.location.pathname) return;
-      if (HIDE_ON.some((p) => url.pathname.startsWith(p))) return;
-      e.preventDefault();
-      go(raw);
-    };
-    document.addEventListener('click', onClick, true);
-    return () => {
-      document.removeEventListener('click', onClick, true);
-      if (window.qaPlaneGo === go) delete window.qaPlaneGo;
-    };
-  }, [hidden, go]);
+    if (first.current) { first.current = false; return; }
+    if (hidden) return;
+    try {
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    } catch { /* ignore */ }
+    setFlight((n) => n + 1);
+  }, [path, hidden]);
 
   useEffect(() => {
-    if (!run || !boxRef.current) return undefined;
+    if (!flight || !boxRef.current) return undefined;
     const el = boxRef.current;
     const W = window.innerWidth;
+    const H = window.innerHeight;
     const phone = W < 820;
-    const plane = phone ? 104 : 168;
-    const rope = phone ? 46 : 84;
-    const banner = W + 40;
-    const coverX = -(plane + rope);
-    const endX = -(plane + rope + banner + 40);
-    const en = run.en;
-    // Arabic reads right to left, so the plane comes from the right.
-    const startX = en ? -(plane + rope + banner) - 20 : W + 20;
-    const covX = en ? 0 : coverX; // when flying right, the banner trails on the left
-    const exitX = en ? W + plane + rope + 40 : endX;
-    let cancelled = false;
-    const timers = [];
+    const size = phone ? 104 : 160;
+    const dur = phone ? 2900 : 3400;
+    let en = false;
+    try { en = localStorage.getItem('qa_lang') === 'en'; } catch { /* ignore */ }
+    // Arabic reads right to left, so the plane flies right → left.
+    // [x share of width, y share of height, bank deg, scale]
+    const route = [
+      [1.08, 0.40, 10, 0.82],
+      [0.84, 0.25, -4, 0.94],
+      [0.64, 0.17, -13, 1.04],
+      [0.46, 0.24, 2, 1.12],
+      [0.30, 0.36, 12, 1.06],
+      [0.14, 0.27, -8, 0.96],
+      [-0.12, 0.13, -15, 0.86],
+    ];
+    const frames = route.map(([fx, fy, r, sc], i) => {
+      const x = en ? W - fx * W - size : fx * W;
+      const y = fy * H;
+      return { transform: `translate(${x}px, ${y}px) rotate(${en ? -r : r}deg) scale(${sc})`, offset: i / (route.length - 1) };
+    });
+    let anim;
+    try {
+      anim = el.animate(frames, { duration: dur, easing: 'cubic-bezier(.42,0,.58,1)', fill: 'forwards' });
+      anim.onfinish = () => setTimeout(() => setFlight((f) => (f === flight ? 0 : f)), 1700); // let the vapour fade
+    } catch {
+      setFlight(0);
+      return undefined;
+    }
+    whoosh(dur);
 
-    const a1 = el.animate(
-      [{ transform: `translateX(${startX}px)` }, { transform: `translateX(${covX}px)` }],
-      { duration: phone ? 620 : 720, easing: 'cubic-bezier(.45,.05,.55,.95)', fill: 'forwards' },
-    );
-    whoosh();
-    a1.onfinish = () => {
-      if (cancelled) return;
-      const target = run.path;
-      const release = () => {
-        if (cancelled) return;
-        timers.push(setTimeout(() => {
-          if (cancelled) return;
-          window.scrollTo(0, 0);
-          const a2 = el.animate(
-            [{ transform: `translateX(${covX}px)` }, { transform: `translateX(${exitX}px)` }],
-            { duration: phone ? 680 : 800, easing: 'cubic-bezier(.5,0,.75,.4)', fill: 'forwards' },
-          );
-          a2.onfinish = () => { busy.current = false; setRun(null); };
-        }, 120));
-      };
-      router.push(run.href);
-      if (pathRef.current === target) release();
-      else {
-        waiters.current.push(release);
-        timers.push(setTimeout(release, 4500)); // never stay covered
+    // Vapour trail: puffs left behind the tail; each grows and fades.
+    const layer = el.parentElement;
+    const art = artRef.current;
+    let raf = 0;
+    let last = 0;
+    const tick = (now) => {
+      if (now - last > 18 && art) {
+        last = now;
+        const r = art.getBoundingClientRect();
+        if (r.right > -40 && r.left < W + 40) {
+          const puff = document.createElement('span');
+          puff.className = 'qa-vapor';
+          const s = phone ? 10 : 14;
+          const tailX = en ? r.left + r.width * 0.1 : r.right - r.width * 0.1;
+          puff.style.cssText = `left:${tailX - s / 2}px;top:${r.top + r.height * 0.55 - s / 2}px;width:${s}px;height:${s}px`;
+          layer.appendChild(puff);
+          setTimeout(() => puff.remove(), 1700);
+        }
       }
+      raf = requestAnimationFrame(tick);
     };
-    return () => { cancelled = true; timers.forEach(clearTimeout); };
-  }, [run, router]);
+    raf = requestAnimationFrame(tick);
+    return () => {
+      cancelAnimationFrame(raf);
+      try { anim.cancel(); } catch { /* ignore */ }
+      layer && layer.querySelectorAll('.qa-vapor').forEach((p) => p.remove());
+    };
+  }, [flight]);
 
-  if (hidden || !run) return null;
+  if (hidden || !flight) return null;
   const phone = typeof window !== 'undefined' && window.innerWidth < 820;
-  const planeW = phone ? 104 : 168;
-  const ropeW = phone ? 46 : 84;
+  let en = false;
+  try { en = localStorage.getItem('qa_lang') === 'en'; } catch { /* ignore */ }
   return (
-    <div aria-hidden="true" className="qa-tow-layer">
-      <div ref={boxRef} className={'qa-tow' + (run.en ? ' qa-tow-en' : '')}>
-        <div className="qa-tow-plane" style={{ width: planeW }}>
-          <FlyingPlaneArt width={planeW} style={{ display: 'block', transform: run.en ? 'none' : 'scaleX(-1)' }} />
-        </div>
-        <svg className="qa-tow-rope" width={ropeW} height="100%" viewBox={`0 0 ${ropeW} 100`} preserveAspectRatio="none">
-          <path d={run.en ? `M${ropeW} 50 L0 1 M${ropeW} 50 L0 99` : `M0 50 L${ropeW} 1 M0 50 L${ropeW} 99`} stroke="#1d2733" strokeOpacity=".55" strokeWidth="1.2" vectorEffect="non-scaling-stroke" fill="none" />
-        </svg>
-        <div className="qa-tow-banner">
-          <div className="qa-tow-cloth">
-            <img src="/assets/logo-mark-white.webp" alt="" />
-            <b>{run.label}</b>
-            <span>{run.en ? 'Qaser Al-Maraya Travel & Tourism' : 'قصر المرايا للسفر والسياحة'}</span>
-          </div>
+    <div aria-hidden="true" className="qa-flyplane-layer">
+      <div ref={boxRef} className="qa-flyplane">
+        <div ref={artRef} className="qa-flyplane-art">
+          <FlyingPlaneArt width={phone ? 104 : 160} style={{ display: 'block', transform: en ? 'none' : 'scaleX(-1)' }} />
         </div>
       </div>
     </div>

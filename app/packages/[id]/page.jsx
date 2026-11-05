@@ -1,5 +1,4 @@
 'use client';
-import { goWithPlane } from '../../../lib/pageTransition';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
@@ -99,7 +98,7 @@ export default function PackageDetailPage() {
       adults: String(adults),
       children: String(children),
     });
-    goWithPlane(router, `/packages/${id}/book?${params.toString()}`);
+    router.push(`/packages/${id}/book?${params.toString()}`);
   }
 
   function flashToast(msg) {

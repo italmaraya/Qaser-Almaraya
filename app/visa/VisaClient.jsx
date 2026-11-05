@@ -1,5 +1,4 @@
 'use client';
-import { goWithPlane } from '../../lib/pageTransition';
 import { useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
@@ -202,7 +201,7 @@ export default function VisaLandingPage({ initialCards = null }) {
     e.preventDefault();
     if (selectedCountry) {
       const qs = travelDate ? `?date=${encodeURIComponent(travelDate)}` : '';
-      goWithPlane(router, `/visa/country/${selectedCountry.country_id}${qs}`);
+      router.push(`/visa/country/${selectedCountry.country_id}${qs}`);
     }
   }
 
