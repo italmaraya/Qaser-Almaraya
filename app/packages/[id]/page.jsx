@@ -18,7 +18,9 @@ import { TRAVELLER_TYPES, computeTotals, unitPrice, durationLabel } from '../../
 import { useProviderReveal } from '../../../lib/useProviderReveal';
 import WorldClocks, { destinationTz } from '../../../components/WorldClocks';
 import { COUNTRY_GEO } from '../../../lib/geoData';
-import { nightsLabel, destinationLabel } from '../../../lib/destinations';
+import { nightsLabel, destinationLabel, packageCountries } from '../../../lib/destinations';
+import { GuideCompact } from '../../../components/DestinationGuide';
+import { nextDeparture } from '../../../lib/packageUrgency';
 
 const optStyle = (on) => ({
   display: 'flex', alignItems: 'center', gap: 14, padding: '14px 16px', borderRadius: 14,
@@ -392,6 +394,12 @@ export default function PackageDetailPage() {
                 const place = cs.length === 1 ? destinationLabel(pkg, lang) : g ? (lang === 'en' ? g[4] : g[3]) : destinationLabel(pkg, lang);
                 const f = flights[flightIdx];
                 return <WorldClocks tz={tz} place={place} lang={lang} compact flight={f ? { arrive: f.outArriveTime, depart: f.retDepartTime } : null} />;
+              })()}
+              {(() => {
+                const iso = packageCountries(pkg)[0];
+                const d = tripDate || (selectedDate && String(selectedDate.date || '')) || nextDeparture(pkg);
+                const m = /^\d{4}-\d{2}/.test(d || '') ? Number(d.slice(5, 7)) - 1 : null;
+                return iso ? <GuideCompact iso={iso} lang={lang} month={m} /> : null;
               })()}
             </div>
 

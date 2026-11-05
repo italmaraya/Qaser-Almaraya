@@ -1,5 +1,6 @@
 import { SITE_URL, seoPackages, seoVisaCards } from '../lib/seo';
 import { listPublished } from '../lib/news';
+import { GUIDE_ISOS } from '../lib/destinationGuide';
 
 // /sitemap.xml — every public page, package, visa and blog post, so Google
 // finds them without having to run the site's JavaScript.
@@ -18,6 +19,8 @@ export default async function sitemap() {
     page('/jobs', 0.4, 'monthly'),
     page('/news', 0.5, 'daily'),
   ];
+  out.push(page('/guide', 0.6, 'monthly'));
+  GUIDE_ISOS.forEach((iso) => out.push(page('/guide/' + iso, 0.6, 'monthly')));
   const [packages, cards] = await Promise.all([seoPackages(), seoVisaCards()]);
   packages.forEach((p) => out.push(page('/packages/' + p.id, 0.8)));
   const countries = new Set();
