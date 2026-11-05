@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { clientIp, rateLimit, tooMany } from '../../../lib/security';
 import { sendContactEmail } from '../../../lib/mailer';
+import { sendContactToDesk } from '../../../lib/deskWebForm';
 
 export async function POST(request) {
   {
@@ -19,12 +20,15 @@ export async function POST(request) {
     return NextResponse.json({ error: 'يرجى كتابة رقم هاتف صحيح' }, { status: 400 });
   }
 
-  try {
-    await sendContactEmail({ name, phone, email, company, subject, message });
-    return NextResponse.json({ ok: true });
-  } catch (err) {
-    console.error('Contact form email failed:', err);
-    return NextResponse.json({ error: 'تعذر إرسال الرسالة، حاول لاحقاً' }, { status: 500 });
-  }
+  // Two copies: a Desk ticket (so staff see it with the other customer
+  // conversations) and the existing email. The visitor sees success if either
+  // arrived.
+  const payload = { name, phone, email, company, subject, message };
+  const [desk, mail] = await Promise.allSettled([sendContactToDesk(payload), sendContactEmail(payload)]);
+  if (desk.status === 'rejected') console.error('Contact form → Desk failed:', desk.reason);
+  if (mail.status === 'rejected') console.error('Contact form email failed:', mail.reason);
+  const deskOk = desk.status === 'fulfilled' && !desk.value?.skipped;
+  if (deskOk || mail.status === 'fulfilled') return NextResponse.json({ ok: true, desk: deskOk });
+  return NextResponse.json({ error: 'تعذر إرسال الرسالة، حاول لاحقاً' }, { status: 500 });
 }
  

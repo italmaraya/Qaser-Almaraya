@@ -7,7 +7,8 @@ import AirlinesMarquee from './AirlinesMarquee';
 import React, { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import Icon from './Icon';
-import { getStoredLang } from '../lib/i18n';
+import { GoalServices, GoalTrust, GoalExpansion, GoalTech, GoalHeritage, GoalSafety } from './GoalIcons';
+import { getStoredLang, i18nReady, onI18nReady } from '../lib/i18n';
 import AchievementSpread from './AchievementSpread';
 import MascotLoader from './MascotLoader';
 import PackageCard from './PackageCard';
@@ -215,8 +216,12 @@ export default function Site(props) {
   // Arabic -> English runtime swap (public/qa-i18n*.js provide window.QA_I18N)
   const orig = useRef(null);
   const busy = useRef(false);
+  // The dictionaries load deferred; re-render once they arrive so the
+  // English swap (and the visa dictionary below) can run.
+  const [, setI18nTick] = useState(0);
+  useEffect(() => onI18nReady(() => setI18nTick((x) => x + 1)), []);
   const applyLang = () => {
-    const I = typeof window !== 'undefined' && window.QA_I18N;
+    const I = i18nReady() && window.QA_I18N;
     if (!I) return;
     const en = st.lang === 'en';
     if (!orig.current) orig.current = new WeakMap();
@@ -632,7 +637,7 @@ function   lineDone(line, tv){
   }
 
 function   registerDict(){
-    if(typeof window === 'undefined' || dictRef.current || !window.QA_I18N) return; dictRef.current = true;
+    if(typeof window === 'undefined' || dictRef.current || !i18nReady()) return; dictRef.current = true;
     const m = {};
     COUNTRIES.forEach(c => { m[c.name] = c.en; });
     VISA_TYPES.forEach(t => { m[t.name] = t.en; });
@@ -990,32 +995,32 @@ function   visaVals(country){
 </div>
 <div className="qa-goals qa-swipe" style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: "20px", alignItems: "stretch" }}>
 <div style={{ background: "rgba(255,255,255,.96)", borderRadius: "18px", padding: "26px 24px", display: "flex", flexDirection: "column", gap: "12px", boxShadow: "0 14px 30px rgba(1,58,74,.16)" }}>
-<span style={{ width: "52px", height: "52px", borderRadius: "50%", background: "#e4f5fb", color: "#22a9d4", display: "flex", alignItems: "center", justifyContent: "center" }}><Icon name="plane-takeoff" size={26} /></span>
+<span style={{ width: "56px", height: "56px", borderRadius: "50%", background: "#e4f5fb", color: "#22a9d4", display: "flex", alignItems: "center", justifyContent: "center" }}><GoalServices size={32} /></span>
 <h4 style={{ fontSize: "20px", fontWeight: "700", color: "#1d2733" }}>خدمات سياحية متكاملة</h4>
 <p style={{ fontSize: "15px", lineHeight: "1.7", color: "#7b8087" }}>حجوزات الطيران، حزم العطلات، رحلات جماعية، وتأشيرات — كل شيء من مكان واحد.</p>
 </div>
 <div style={{ background: "rgba(255,255,255,.96)", borderRadius: "18px", padding: "26px 24px", display: "flex", flexDirection: "column", gap: "12px", boxShadow: "0 14px 30px rgba(1,58,74,.16)" }}>
-<span style={{ width: "52px", height: "52px", borderRadius: "50%", background: "#e4f5fb", color: "#22a9d4", display: "flex", alignItems: "center", justifyContent: "center" }}><Icon name="handshake" size={26} /></span>
+<span style={{ width: "56px", height: "56px", borderRadius: "50%", background: "#e4f5fb", color: "#22a9d4", display: "flex", alignItems: "center", justifyContent: "center" }}><GoalTrust size={32} /></span>
 <h4 style={{ fontSize: "20px", fontWeight: "700", color: "#1d2733" }}>رضا العملاء وبناء الثقة</h4>
 <p style={{ fontSize: "15px", lineHeight: "1.7", color: "#7b8087" }}>دعم على مدار الساعة، خدمة شخصية، وعلاقات دائمة مع كل مسافر.</p>
 </div>
 <div style={{ background: "rgba(255,255,255,.96)", borderRadius: "18px", padding: "26px 24px", display: "flex", flexDirection: "column", gap: "12px", boxShadow: "0 14px 30px rgba(1,58,74,.16)" }}>
-<span style={{ width: "52px", height: "52px", borderRadius: "50%", background: "#e4f5fb", color: "#22a9d4", display: "flex", alignItems: "center", justifyContent: "center" }}><Icon name="map-pinned" size={26} /></span>
+<span style={{ width: "56px", height: "56px", borderRadius: "50%", background: "#e4f5fb", color: "#22a9d4", display: "flex", alignItems: "center", justifyContent: "center" }}><GoalExpansion size={32} /></span>
 <h4 style={{ fontSize: "20px", fontWeight: "700", color: "#1d2733" }}>توسع محلي ودولي</h4>
 <p style={{ fontSize: "15px", lineHeight: "1.7", color: "#7b8087" }}>شراكات عالمية وحضور فاعل في المعارض السياحية الدولية.</p>
 </div>
 <div style={{ background: "rgba(255,255,255,.96)", borderRadius: "18px", padding: "26px 24px", display: "flex", flexDirection: "column", gap: "12px", boxShadow: "0 14px 30px rgba(1,58,74,.16)" }}>
-<span style={{ width: "52px", height: "52px", borderRadius: "50%", background: "#fef3dc", color: "#c07f00", display: "flex", alignItems: "center", justifyContent: "center" }}><Icon name="phone" size={26} /></span>
+<span style={{ width: "56px", height: "56px", borderRadius: "50%", background: "#fef3dc", color: "#c07f00", display: "flex", alignItems: "center", justifyContent: "center" }}><GoalTech size={32} /></span>
 <h4 style={{ fontSize: "20px", fontWeight: "700", color: "#1d2733" }}>الابتكار والتطوير التقني</h4>
 <p style={{ fontSize: "15px", lineHeight: "1.7", color: "#7b8087" }}>أحدث تقنيات الحجز وحلول رقمية سهلة الاستخدام في كل خطوة.</p>
 </div>
 <div style={{ background: "rgba(255,255,255,.96)", borderRadius: "18px", padding: "26px 24px", display: "flex", flexDirection: "column", gap: "12px", boxShadow: "0 14px 30px rgba(1,58,74,.16)" }}>
-<span style={{ width: "52px", height: "52px", borderRadius: "50%", background: "#fef3dc", color: "#c07f00", display: "flex", alignItems: "center", justifyContent: "center" }}><Icon name="map-pin" size={26} /></span>
+<span style={{ width: "56px", height: "56px", borderRadius: "50%", background: "#fef3dc", color: "#c07f00", display: "flex", alignItems: "center", justifyContent: "center" }}><GoalHeritage size={32} /></span>
 <h4 style={{ fontSize: "20px", fontWeight: "700", color: "#1d2733" }}>ترويج السياحة المحلية</h4>
 <p style={{ fontSize: "15px", lineHeight: "1.7", color: "#7b8087" }}>رحلات ثقافية فريدة لاكتشاف تاريخ العراق العريق ومعالمه.</p>
 </div>
 <div style={{ background: "rgba(255,255,255,.96)", borderRadius: "18px", padding: "26px 24px", display: "flex", flexDirection: "column", gap: "12px", boxShadow: "0 14px 30px rgba(1,58,74,.16)" }}>
-<span style={{ width: "52px", height: "52px", borderRadius: "50%", background: "#fef3dc", color: "#c07f00", display: "flex", alignItems: "center", justifyContent: "center" }}><Icon name="check" size={26} /></span>
+<span style={{ width: "56px", height: "56px", borderRadius: "50%", background: "#fef3dc", color: "#c07f00", display: "flex", alignItems: "center", justifyContent: "center" }}><GoalSafety size={32} /></span>
 <h4 style={{ fontSize: "20px", fontWeight: "700", color: "#1d2733" }}>توفير تجربة سفر آمنة</h4>
 <p style={{ fontSize: "15px", lineHeight: "1.7", color: "#7b8087" }}>شركاء موثوقون، تأمين شامل، وراحة وأمان من الإقلاع حتى العودة.</p>
 </div>

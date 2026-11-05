@@ -41,3 +41,9 @@
   "ما يشمله هذا النوع": "What this type includes",
   "طرق الدفع": "Payment methods"
 });
+
+/* Last dictionary file: tell the site the dictionary is complete. */
+(function () {
+  window.QA_I18N_READY = true;
+  try { window.dispatchEvent(new Event('qa-i18n-ready')); } catch (e) { /* ignore */ }
+})();

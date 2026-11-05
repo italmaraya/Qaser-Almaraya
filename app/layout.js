@@ -30,13 +30,13 @@ export default function RootLayout({ children }) {
           rel="stylesheet"
         />
         {/* Arabic -> English dictionaries; loaded before hydration so the toggle works on first paint */}
-        <script src="/qa-i18n.js" />
-        <script src="/qa-i18n-1.js" />
-        <script src="/qa-i18n-2.js" />
-        <script src="/qa-i18n-3.js" />
-        <script src="/qa-i18n-4.js" />
-        <script src="/qa-i18n-5.js" />
-        <script src="/qa-i18n-6.js" />
+        <script src="/qa-i18n.js" defer />
+        <script src="/qa-i18n-1.js" defer />
+        <script src="/qa-i18n-2.js" defer />
+        <script src="/qa-i18n-3.js" defer />
+        <script src="/qa-i18n-4.js" defer />
+        <script src="/qa-i18n-5.js" defer />
+        <script src="/qa-i18n-6.js" defer />
       </head>
       <body>
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(ORG_JSON_LD) }} />
