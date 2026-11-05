@@ -95,5 +95,5 @@ html{overflow-x:hidden}
 .qa-flyplane-layer{position:fixed;inset:0;z-index:950;pointer-events:none;overflow:hidden}
 .qa-flyplane{position:absolute;left:0;top:0;display:flex;align-items:center;direction:ltr;will-change:transform;filter:drop-shadow(0 10px 14px rgba(1,42,55,.22))}
 .qa-vapor{position:absolute;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.95) 0,rgba(255,255,255,.75) 45%,rgba(255,255,255,0) 72%);box-shadow:0 0 6px rgba(1,42,55,.06);filter:blur(1px);animation:qa-vapor 1.8s ease-out forwards}
-@keyframes qa-vapor{0%{opacity:.95;transform:scale(.45)}35%{opacity:.75}100%{opacity:0;transform:scale(2.6) translateY(4px)}}
+@keyframes qa-vapor{0%{opacity:.95;transform:scale(.45)}35%{opacity:.75}100%{opacity:0;transform:scale(3.2) translateY(5px)}}
 @media(prefers-reduced-motion:reduce){.qa-flyplane-layer{display:none}}
