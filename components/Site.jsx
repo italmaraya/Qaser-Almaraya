@@ -1,5 +1,5 @@
 'use client';
-import { APPLY_FLOW_ENABLED, openWhatsApp, visaMessage } from '../lib/whatsapp';
+import { APPLY_FLOW_ENABLED, WHATSAPP_NUMBER, openWhatsApp, visaMessage } from '../lib/whatsapp';
 import { WA_ICON } from './WhatsAppButton';
 import HomeHero from './HomeHero';
 import AirlinesMarquee from './AirlinesMarquee';
@@ -529,7 +529,7 @@ function   renderVals(){
           patch({ contactError: err.message, contactSending: false });
         }
       },
-      openWhatsapp: e => { if(e) e.preventDefault(); window.open('https://wa.me/9647749999600', '_blank'); },
+      openWhatsapp: e => { if(e) e.preventDefault(); window.open('https://wa.me/' + WHATSAPP_NUMBER, '_blank'); },
       goHome: e => { if(e) e.preventDefault(); router.push('/'); },
       goFlights: e => { if(e) e.preventDefault(); router.push('/flights'); },
       goContact: e => { if(e) e.preventDefault(); router.push('/contact'); },
