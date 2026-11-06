@@ -83,17 +83,23 @@ export default function WorldMap3D({
 }) {
   const en = lang === 'en';
   const [hover, setHover] = useState(null);
-  const [narrow, setNarrow] = useState(false);
   const scrollRef = useRef(null);
   const centred = useRef(false);
+  const [boxW, setBoxW] = useState(0);
 
+  // What matters is the width of the box the map sits in, not the window:
+  // on the packages page the map shares the row with a text column.
   useEffect(() => {
-    const mq = window.matchMedia('(max-width: 820px)');
-    const sync = () => setNarrow(mq.matches);
-    sync();
-    mq.addEventListener('change', sync);
-    return () => mq.removeEventListener('change', sync);
+    const el = scrollRef.current;
+    if (!el) return;
+    setBoxW(el.clientWidth);
+    const ro = new ResizeObserver(([e]) => setBoxW(Math.round(e.contentRect.width)));
+    ro.observe(el);
+    return () => ro.disconnect();
   }, []);
+
+  // A narrow box pans sideways instead of squeezing the map into a thin strip.
+  const narrow = boxW > 0 && boxW < 900;
 
   const art = useMemo(() => {
     const lats = [origin.lat, ...pins.map((p) => p.lat)];
@@ -229,7 +235,7 @@ export default function WorldMap3D({
   // Start the phone view on Baghdad, wherever it falls in the wide map.
   useEffect(() => {
     const el = scrollRef.current;
-    if (!narrow || !el || centred.current || !art) return;
+    if (!narrow || !el || centred.current) return;
     const max = el.scrollWidth - el.clientWidth;
     if (max <= 0) return;
     centred.current = true;
@@ -238,7 +244,7 @@ export default function WorldMap3D({
     // In a right-to-left box, scrollLeft runs from -max (far left) up to 0.
     const rtl = getComputedStyle(el).direction === 'rtl';
     el.scrollLeft = rtl ? want - max : want;
-  }, [narrow, art]);
+  }, [narrow, art, boxW]);
 
   if (!pins.length) return null;
 
@@ -346,12 +352,13 @@ export default function WorldMap3D({
     </svg>
   );
 
-  if (!narrow) return svg;
   return (
     <div
       className="qa-wmap-scroll"
       ref={scrollRef}
-      style={{ overflowX: 'auto', overflowY: 'hidden', WebkitOverflowScrolling: 'touch', display: 'flex' }}
+      style={narrow
+        ? { overflowX: 'auto', overflowY: 'hidden', WebkitOverflowScrolling: 'touch', display: 'flex' }
+        : { width: '100%' }}
     >
       {svg}
     </div>
