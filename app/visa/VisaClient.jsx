@@ -568,11 +568,11 @@ export default function VisaLandingPage({ initialCards = null }) {
           </section>
 
           <section className="qa-sec" style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
-            <div style={{ maxWidth: 760, marginInline: 'auto', width: '100%', display: 'flex', flexDirection: 'column', gap: 6 }}>
+            <div style={{ maxWidth: 980, marginInline: 'auto', width: '100%', display: 'flex', flexDirection: 'column', gap: 6 }}>
               <span style={{ fontSize: 13, fontWeight: 700, letterSpacing: '.08em', color: '#049dc5' }}>من الاختيار إلى التحميل</span>
               <h2 style={{ fontSize: 'clamp(22px,2.4vw,32px)' }}>كيف تُباع التأشيرة وتُنجَز؟</h2>
             </div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 24, maxWidth: 760, marginInline: 'auto', width: '100%' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 24, maxWidth: 980, marginInline: 'auto', width: '100%' }}>
               {STAGES.map((sg, gi) => (
                 <div key={sg.n} style={{ display: 'flex', alignItems: 'flex-start', gap: 16 }}>
                   <div style={{ position: 'relative', alignSelf: 'stretch', flex: 'none', width: 'clamp(28px,3.4vw,36px)' }}>
