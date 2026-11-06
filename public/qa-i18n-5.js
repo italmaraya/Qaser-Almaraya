@@ -95,6 +95,14 @@
   "واتساب": "WhatsApp",
   "حجز طيران": "Flight booking", "حجز فندق": "Hotel booking", "تأشيرة": "Visa", "باقة أو جولة": "Package or tour", "أخرى": "Other",
 
+  "ترفع المستندات وتدفع": "You upload the documents and pay",
+  "نتابع الطلب": "We follow up on the application",
+  "تستلم النتيجة": "You receive the result",
+  "الدفع يسبق الإرسال: لا يُرسَل الملف إلى الجهة المصدرة قبل إتمام الدفع واكتمال المستندات.": "Payment comes before submission: the file is not sent to the issuing authority until payment is completed and the documents are complete.",
+  "إمّا": "Either", "أو": "Or",
+  "تأشيرة صادرة": "An issued visa",
+  "تأكيد موعد سفارة": "A confirmed embassy appointment",
+
   "تحتاج مساعدة؟": "Need help?",
   "الرقم المختصر 6393 — فريقنا جاهز لخدمتك بكل احترافية وسرعة.": "Shortcode 6393 — our team is ready to help you, professionally and quickly."
 });

@@ -24,6 +24,17 @@ const STEPS = [
   { n: '08', who: 'أنت', title: 'تحمّلها', hint: 'تصبح الحالة جاهزة للتحميل' },
 ];
 
+// The eight steps above are the workflow itself and do not change. They are
+// only *grouped* for reading: four stages, in the same order, with the same
+// owners. Stage 4 keeps the two possible outcomes apart, because an issued
+// visa and a confirmed embassy appointment are not the same result.
+const STAGES = [
+  { n: '1', title: 'تختار التأشيرة', steps: [0] },
+  { n: '2', title: 'ترفع المستندات وتدفع', steps: [1, 2], note: 'الدفع يسبق الإرسال: لا يُرسَل الملف إلى الجهة المصدرة قبل إتمام الدفع واكتمال المستندات.' },
+  { n: '3', title: 'نتابع الطلب', steps: [3, 4, 5] },
+  { n: '4', title: 'تستلم النتيجة', steps: [6, 7], outcomesAfter: 6, outcomes: [{ lead: 'إمّا', text: 'تأشيرة صادرة' }, { lead: 'أو', text: 'تأكيد موعد سفارة' }] },
+];
+
 // Shown on the tracking card when the application's current status is
 // flagged (in "الحالات" → إعدادات الحالة الداخلية) to accept a customer
 // upload — e.g. "مطلوب جواز/مستند". Uploading here attaches the file
@@ -557,25 +568,47 @@ export default function VisaLandingPage({ initialCards = null }) {
           </section>
 
           <section className="qa-sec" style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
-            <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', gap: 6 }}>
-              <span style={{ fontSize: 13, fontWeight: 700, color: '#faab18' }}>من الاختيار إلى التحميل</span>
+            <div style={{ maxWidth: 760, marginInline: 'auto', width: '100%', display: 'flex', flexDirection: 'column', gap: 6 }}>
+              <span style={{ fontSize: 13, fontWeight: 700, letterSpacing: '.08em', color: '#049dc5' }}>من الاختيار إلى التحميل</span>
               <h2 style={{ fontSize: 'clamp(22px,2.4vw,32px)' }}>كيف تُباع التأشيرة وتُنجَز؟</h2>
             </div>
-            <div className="qa-grid qa-swipe" style={{ gridTemplateColumns: 'repeat(auto-fit,minmax(220px,1fr))' }}>
-              {STEPS.map((s) => (
-                <div key={s.n} className="qa-card" style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                    <span style={{ fontSize: 20, fontWeight: 700, color: '#cacbcc' }}>{s.n}</span>
-                    <span style={{ fontSize: 12, fontWeight: 700, color: s.who === 'أنت' ? '#036f8c' : '#a06a00', background: s.who === 'أنت' ? '#eaf8fd' : '#fef3dc', borderRadius: 999, padding: '3px 12px' }}>{s.who}</span>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 24, maxWidth: 760, marginInline: 'auto', width: '100%' }}>
+              {STAGES.map((sg, gi) => (
+                <div key={sg.n} style={{ display: 'flex', alignItems: 'flex-start', gap: 16 }}>
+                  <div style={{ position: 'relative', alignSelf: 'stretch', flex: 'none', width: 'clamp(28px,3.4vw,36px)' }}>
+                    <span data-no-i18n="" style={{ position: 'relative', zIndex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', width: 'clamp(28px,3.4vw,36px)', height: 'clamp(28px,3.4vw,36px)', borderRadius: 999, background: '#049dc5', color: '#fff', fontFamily: "'IBM Plex Sans',system-ui,sans-serif", fontSize: 'clamp(13px,1.1vw,15px)', fontWeight: 700, lineHeight: 1 }}>{sg.n}</span>
+                    {gi < STAGES.length - 1 ? (
+                      <span aria-hidden="true" style={{ position: 'absolute', insetInlineStart: 'calc(50% - 1px)', top: 'clamp(28px,3.4vw,36px)', bottom: -24, width: 2, background: '#e6e9eb' }} />
+                    ) : null}
                   </div>
-                  <span style={{ fontSize: 16, fontWeight: 700, color: '#1d2733' }}>{s.title}</span>
-                  <span style={{ fontSize: 13.5, color: '#5f666e' }}>{s.hint}</span>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 9, flex: '1 1 auto', minWidth: 0, paddingTop: 3 }}>
+                    <h3 style={{ margin: 0, fontSize: 'var(--q-t3,22px)', fontWeight: 700, color: '#1d2733', lineHeight: 1.3 }}>{sg.title}</h3>
+                    {sg.steps.map((si) => {
+                      const st = STEPS[si];
+                      const mine = st.who === 'أنت';
+                      return (
+                        <div key={st.n} style={{ display: 'flex', flexDirection: 'column', gap: 7 }}>
+                          <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'baseline', gap: 7, minWidth: 0 }}>
+                            <span style={{ flex: 'none', padding: '2px 9px', borderRadius: 999, background: mine ? '#eaf8fd' : '#fef3dc', color: mine ? '#036f8c' : '#a06a00', fontSize: 11.5, fontWeight: 700 }}>{st.who}</span>
+                            <span style={{ fontSize: 15, fontWeight: 600, color: '#3d4650' }}>{st.title}</span>
+                            <span style={{ fontSize: 13.5, lineHeight: 1.6, color: '#5f666e' }}>{st.hint}</span>
+                          </div>
+                          {sg.outcomes && sg.outcomesAfter === si ? sg.outcomes.map((o) => (
+                            <div key={o.lead} style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'baseline', gap: 7, paddingInlineStart: 10, minWidth: 0 }}>
+                              <span style={{ flex: 'none', fontSize: 13, fontWeight: 700, color: '#9aa0a6' }}>{o.lead}</span>
+                              <span style={{ fontSize: 15, fontWeight: 600, color: '#3d4650' }}>{o.text}</span>
+                            </div>
+                          )) : null}
+                        </div>
+                      );
+                    })}
+                    {sg.note ? <p style={{ margin: 0, fontSize: 13.5, fontWeight: 600, lineHeight: 1.6, color: '#3d4650' }}>{sg.note}</p> : null}
+                  </div>
                 </div>
               ))}
-            </div>
-            <div className="qa-swipe-hint" aria-hidden="true">اسحب لرؤية المزيد ↔</div>
-            <div style={{ background: '#fef3dc', border: '1px solid #fdd27c', borderRadius: 'var(--tw-radius-sm,10px)', padding: '14px 20px', textAlign: 'center', fontSize: 14, color: '#a06a00', fontWeight: 600 }}>
-              الخطوات لا تتغير — ما يتغير هو المحتوى: الدول والمستندات والأسعار والحالات.
+              <p style={{ margin: 0, fontSize: 13.5, lineHeight: 1.6, color: '#5f666e' }}>
+                الخطوات لا تتغير — ما يتغير هو المحتوى: الدول والمستندات والأسعار والحالات.
+              </p>
             </div>
           </section>
         </div>
