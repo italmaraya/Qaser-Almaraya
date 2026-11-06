@@ -2045,10 +2045,9 @@ function   visaVals(country){
 </div>
 </div>
 <div data-jobs-art="" style={{ position: "relative", alignSelf: "stretch", minHeight: "430px" }}>
-<span aria-hidden="true" className="qa-hero-decor" style={{ position: "absolute", left: "-42%", bottom: "-96px", width: "400px", height: "400px", borderRadius: "50%", background: "radial-gradient(circle at 50% 42%,rgba(255,255,255,.32),rgba(255,255,255,0) 70%)" }}></span>
 <span aria-hidden="true" className="qa-hero-decor" style={{ position: "absolute", left: "-36%", bottom: "-84px", width: "360px", height: "360px", animation: "qa-orbit 26s linear infinite" }}>
 <span style={{ position: "absolute", inset: "0", borderRadius: "50%", border: "1px dashed rgba(255,255,255,.42)" }}></span>
-<span style={{ position: "absolute", top: "-5px", left: "50%", width: "10px", height: "10px", marginLeft: "-5px", borderRadius: "50%", background: "#faab18", boxShadow: "0 6px 16px rgba(250,171,24,.28)" }}></span>
+<span style={{ position: "absolute", top: "-5px", left: "50%", width: "10px", height: "10px", marginLeft: "-5px", borderRadius: "50%", background: "#faab18" }}></span>
 </span>
 <span aria-hidden="true" className="qa-hero-decor" style={{ position: "absolute", left: "-27%", bottom: "-42px", width: "266px", height: "266px", animation: "qa-orbit-rev 34s linear infinite" }}>
 <span style={{ position: "absolute", inset: "0", borderRadius: "50%", border: "1px solid rgba(255,255,255,.26)" }}></span>
@@ -2145,10 +2144,9 @@ function   visaVals(country){
 </div>
 </div>
 <div data-faq-art="" style={{ position: "relative", alignSelf: "stretch", minHeight: "430px" }}>
-<span aria-hidden="true" className="qa-hero-decor" style={{ position: "absolute", left: "-40%", bottom: "-70px", width: "380px", height: "380px", borderRadius: "50%", background: "radial-gradient(circle at 50% 42%,rgba(255,255,255,.32),rgba(255,255,255,0) 70%)" }}></span>
 <span aria-hidden="true" className="qa-hero-decor" style={{ position: "absolute", left: "-34%", bottom: "-64px", width: "344px", height: "344px", animation: "qa-orbit 28s linear infinite" }}>
 <span style={{ position: "absolute", inset: "0", borderRadius: "50%", border: "1px dashed rgba(255,255,255,.42)" }}></span>
-<span style={{ position: "absolute", top: "-5px", left: "50%", width: "10px", height: "10px", marginLeft: "-5px", borderRadius: "50%", background: "#faab18", boxShadow: "0 6px 16px rgba(250,171,24,.28)" }}></span>
+<span style={{ position: "absolute", top: "-5px", left: "50%", width: "10px", height: "10px", marginLeft: "-5px", borderRadius: "50%", background: "#faab18" }}></span>
 </span>
 <span aria-hidden="true" className="qa-hero-decor" style={{ position: "absolute", left: "-25%", bottom: "-28px", width: "256px", height: "256px", animation: "qa-orbit-rev 36s linear infinite" }}>
 <span style={{ position: "absolute", inset: "0", borderRadius: "50%", border: "1px solid rgba(255,255,255,.26)" }}></span>
@@ -2228,10 +2226,9 @@ function   visaVals(country){
 </div>
 </div>
 <div style={{ position: "relative", alignSelf: "stretch", minHeight: "340px" }}>
-<span aria-hidden="true" style={{ position: "absolute", left: "-40%", bottom: "-70px", width: "380px", height: "380px", borderRadius: "50%", background: "radial-gradient(circle at 50% 42%,rgba(255,255,255,.32),rgba(255,255,255,0) 70%)" }}></span>
 <span aria-hidden="true" style={{ position: "absolute", left: "-32%", bottom: "-60px", width: "330px", height: "330px", animation: "qa-orbit 28s linear infinite" }}>
 <span style={{ position: "absolute", inset: "0", borderRadius: "50%", border: "1px dashed rgba(255,255,255,.42)" }}></span>
-<span style={{ position: "absolute", top: "-5px", left: "50%", width: "10px", height: "10px", marginLeft: "-5px", borderRadius: "50%", background: "#faab18", boxShadow: "0 6px 16px rgba(250,171,24,.28)" }}></span>
+<span style={{ position: "absolute", top: "-5px", left: "50%", width: "10px", height: "10px", marginLeft: "-5px", borderRadius: "50%", background: "#faab18" }}></span>
 </span>
 <img src="/assets/mascot-skylo-passport-hq.webp" alt="" style={{ position: "absolute", zIndex: "2", left: "-6%", top: "-10px", bottom: "-18px", display: "block", width: "auto", height: "calc(100% + 28px)", objectFit: "contain", objectPosition: "left bottom", filter: "drop-shadow(0 26px 38px rgba(1,42,55,.3))" }} />
 </div>
@@ -2276,10 +2273,9 @@ function   visaVals(country){
 </div>
 </div>
 <div style={{ position: "relative", alignSelf: "stretch", minHeight: "340px" }}>
-<span aria-hidden="true" style={{ position: "absolute", left: "-40%", bottom: "-70px", width: "380px", height: "380px", borderRadius: "50%", background: "radial-gradient(circle at 50% 42%,rgba(255,255,255,.32),rgba(255,255,255,0) 70%)" }}></span>
 <span aria-hidden="true" style={{ position: "absolute", left: "-32%", bottom: "-60px", width: "330px", height: "330px", animation: "qa-orbit 28s linear infinite" }}>
 <span style={{ position: "absolute", inset: "0", borderRadius: "50%", border: "1px dashed rgba(255,255,255,.42)" }}></span>
-<span style={{ position: "absolute", top: "-5px", left: "50%", width: "10px", height: "10px", marginLeft: "-5px", borderRadius: "50%", background: "#faab18", boxShadow: "0 6px 16px rgba(250,171,24,.28)" }}></span>
+<span style={{ position: "absolute", top: "-5px", left: "50%", width: "10px", height: "10px", marginLeft: "-5px", borderRadius: "50%", background: "#faab18" }}></span>
 </span>
 <img src="/assets/mascot-skylo-suit-hq.webp" alt="" style={{ position: "absolute", zIndex: "2", left: "-6%", top: "-10px", bottom: "-18px", display: "block", width: "auto", height: "calc(100% + 28px)", objectFit: "contain", objectPosition: "left bottom", filter: "drop-shadow(0 26px 38px rgba(1,42,55,.3))" }} />
 </div>

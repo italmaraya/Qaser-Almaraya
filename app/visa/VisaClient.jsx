@@ -256,10 +256,9 @@ export default function VisaLandingPage({ initialCards = null }) {
               </div>
 
               <div data-jobs-art="" className="qa-visa-hero-art" style={{ position: 'relative', alignSelf: 'stretch', minHeight: 250 }}>
-                <span aria-hidden="true" style={{ position: 'absolute', insetInlineStart: '-8%', bottom: -46, width: 210, height: 210, borderRadius: '50%', background: 'radial-gradient(circle at 50% 42%,rgba(255,255,255,.32),rgba(255,255,255,0) 70%)' }} />
                 <span aria-hidden="true" style={{ position: 'absolute', insetInlineStart: '-2%', bottom: -38, width: 190, height: 190, animation: 'qa-orbit 26s linear infinite' }}>
                   <span style={{ position: 'absolute', inset: 0, borderRadius: '50%', border: '1px dashed rgba(255,255,255,.42)' }} />
-                  <span style={{ position: 'absolute', top: -5, insetInlineStart: '50%', width: 10, height: 10, marginInlineStart: -5, borderRadius: '50%', background: '#faab18', boxShadow: '0 6px 16px rgba(250,171,24,.28)' }} />
+                  <span style={{ position: 'absolute', top: -5, insetInlineStart: '50%', width: 10, height: 10, marginInlineStart: -5, borderRadius: '50%', background: '#faab18' }} />
                 </span>
                 <span aria-hidden="true" style={{ position: 'absolute', insetInlineStart: '6%', bottom: -20, width: 140, height: 140, animation: 'qa-orbit-rev 34s linear infinite' }}>
                   <span style={{ position: 'absolute', inset: 0, borderRadius: '50%', border: '1px solid rgba(255,255,255,.26)' }} />
