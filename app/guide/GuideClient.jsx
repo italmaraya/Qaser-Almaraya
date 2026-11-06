@@ -57,7 +57,7 @@ export default function GuideClient({ iso = null }) {
                   return (
                     <Link key={c.iso} href={'/guide/' + c.iso} className="qa-card qa-hover-lift" style={{ display: 'flex', alignItems: 'center', gap: 12, padding: 14, color: '#1d2733' }}>
                       {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img src={flagUrl(c.iso)} alt="" width="40" height="28" loading="lazy" style={{ width: 40, height: 28, objectFit: 'cover', borderRadius: 5, border: '1px solid #ececed' }} />
+                      <img src={flagUrl(c.iso)} alt="" width="40" height="28" loading="lazy" style={{ width: 40, height: 28, objectFit: 'cover', borderRadius: 'var(--tw-radius-xs,8px)', border: '1px solid #ececed' }} />
                       <div style={{ display: 'flex', flexDirection: 'column', minWidth: 0 }}>
                         <b style={{ fontSize: 15.5 }}>{en ? c.en : c.ar}</b>
                         <span style={{ fontSize: 12.5, color: '#5f666e' }}>{gi.city} · {gi.currencyCode}</span>
