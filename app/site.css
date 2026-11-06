@@ -121,12 +121,7 @@ html{overflow-x:hidden}
 
 /* 3D flight map (components/WorldMap3D): flight lines flow out of Baghdad. */
 .qa-wmap{-webkit-tap-highlight-color:transparent}
-.qa-wmap-arc{animation:qa-wmap-dash 2.4s linear infinite}
-@keyframes qa-wmap-dash{from{stroke-dashoffset:32}to{stroke-dashoffset:0}}
-.qa-wmap-home-ring{animation:qa-wmap-ring 2.2s ease-out infinite}
-@keyframes qa-wmap-ring{0%{r:7;opacity:.9}100%{r:20;opacity:0}}
 .qa-wmap-pin{outline:none}
-.qa-wmap-pin:focus-visible>image{filter:drop-shadow(0 0 6px #faab18)}
-@media (prefers-reduced-motion:reduce){.qa-wmap-arc,.qa-wmap-home-ring{animation:none}}
+.qa-wmap-pin:focus-visible>circle{stroke:#ffd98a;stroke-width:2}
 .qa-wmap-scroll{scrollbar-width:none}
 .qa-wmap-scroll::-webkit-scrollbar{display:none}
