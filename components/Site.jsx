@@ -2111,7 +2111,10 @@ function   visaVals(country){
 <div style={{ display: "flex", flexDirection: "column", width: "100%", maxWidth: "var(--q-read,720px)", marginInline: "auto", borderTop: "1px solid var(--q-line,#e6e9eb)" }}>
 {(contentFaq || []).map((item, i) => (
 <details key={item.id || item.q} style={{ paddingBlock: "var(--q-s2,16px)", borderBottom: "1px solid var(--q-line,#e6e9eb)" }} open={i === 0}>
-<summary style={{ cursor: "pointer", fontSize: "var(--q-t4,17px)", fontWeight: "700", color: "var(--q-ink,#1d2733)", lineHeight: "1.5", listStyle: "none" }}>{item.q}</summary>
+<summary style={{ cursor: "pointer", fontSize: "var(--q-t4,17px)", fontWeight: "700", color: "var(--q-ink,#1d2733)", lineHeight: "1.5", listStyle: "none", display: "flex", alignItems: "center", justifyContent: "space-between", gap: "16px" }}>
+<span>{item.q}</span>
+<Icon name="chevron-down" size={16} style={{ flex: "none", color: "var(--q-ink-3,#9aa0a6)" }} />
+</summary>
 <p style={{ margin: "10px 0 0", fontSize: "var(--q-t5,15px)", lineHeight: "1.8", color: "var(--q-ink-2,#5f666e)", textWrap: "pretty" }}>{item.a}</p>
 </details>
 ))}
