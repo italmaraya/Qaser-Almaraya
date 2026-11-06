@@ -41,20 +41,20 @@ export default function HeroCinematic({ slides: allSlides = [], kicker, title, s
   }, []);
   const [reduced, setReduced] = useState(false);
   const [lite, setLite] = useState(false);
-  // Videos get their source only after the page knows the screen size, so a
-  // phone never starts downloading a large hero video it will not show.
+  // Videos get their source only once the client has mounted, so the poster
+  // photo paints first and the download never blocks the first screen.
   const [ready, setReady] = useState(false);
   const videoRefs = useRef([]);
 
   useEffect(() => {
     try { setReduced(window.matchMedia('(prefers-reduced-motion: reduce)').matches); } catch {}
-    // Phones, data saver and slow connections get photos instead of the video
-    // (the video is several MB; on mobile data it delayed the page by ~10 s).
+    // Phones get the video too (the owner asked for it back on 6 Nov 2026).
+    // Only data saver and genuinely slow connections fall back to the poster
+    // photos, because the video is several megabytes.
     try {
       const c = navigator.connection;
-      if (c && (c.saveData || /(^|-)2g|3g/.test(c.effectiveType || ''))) setLite(true);
+      if (c && (c.saveData || /(^|-)2g/.test(c.effectiveType || ''))) setLite(true);
     } catch {}
-    try { if (window.matchMedia('(max-width: 820px)').matches) setLite(true); } catch {}
     setReady(true);
   }, []);
 

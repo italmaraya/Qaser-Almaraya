@@ -62,7 +62,19 @@ export default function Globe3D({ pins = [], onSelectPin, height = 340, origin =
 
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(42, width / heightPx, 0.1, 100);
-    camera.position.set(0, 0, cameraZ);
+
+    // Pull the camera back far enough that the whole globe, its glow and the
+    // route arcs fit the box at any width: at a narrow viewport the horizontal
+    // field is the tighter of the two, which is what used to slice the top and
+    // bottom off the sphere.
+    const FIT_RADIUS = 2.95;
+    const halfFov = Math.tan((42 * Math.PI) / 180 / 2);
+    function fitDistance(aspect) {
+      const forHeight = FIT_RADIUS / halfFov;
+      const forWidth = FIT_RADIUS / (halfFov * Math.max(aspect, 0.0001));
+      return Math.max(cameraZ, forHeight, forWidth);
+    }
+    camera.position.set(0, 0, fitDistance(width / heightPx));
 
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
     renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
@@ -242,6 +254,7 @@ export default function Globe3D({ pins = [], onSelectPin, height = 340, origin =
       const w = container.clientWidth || 320;
       if (w === 0) return;
       camera.aspect = w / heightPx;
+      camera.position.z = fitDistance(camera.aspect);
       camera.updateProjectionMatrix();
       renderer.setSize(w, heightPx);
     }
