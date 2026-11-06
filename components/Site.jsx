@@ -32,6 +32,14 @@ const PHOTO_CREDITS = [
   { file: 'batumi-skyline', subject: 'باتومي — واجهة المدينة', author: 'jagermesh', licence: 'CC BY-SA 2.0', page: 'https://commons.wikimedia.org/wiki/File:Changing_skyline_of_Batumi,_Georgia.jpg' },
   { file: 'sharm-naama-bay', subject: 'شرم الشيخ — خليج نعمة', author: 'Marc Ryckaert', licence: 'CC BY 3.0', page: 'https://commons.wikimedia.org/wiki/File:Naama_Bay_Beach_R01.jpg' },
   { file: 'sharm-ras-mohammed', subject: 'شرم الشيخ — شعاب رأس محمد', author: 'Sovernigo', licence: 'CC BY-SA 4.0', page: 'https://commons.wikimedia.org/wiki/File:Ras_Mohammed_coral_reefs.jpg' },
+  { file: 'istanbul-hagia-sophia', subject: 'إسطنبول — آيا صوفيا', author: 'Arild Vågen', licence: 'CC BY-SA 3.0', page: 'https://commons.wikimedia.org/wiki/File:Hagia_Sophia_Mars_2013.jpg' },
+  { file: 'istanbul-maidens-tower', subject: 'إسطنبول — برج الفتاة', author: 'Sonse', licence: 'CC BY 2.0', page: 'https://commons.wikimedia.org/wiki/File:K%C4%B1z_Kulesi,_Maiden%27s_Tower_(52396926549).jpg' },
+  { file: 'istanbul-spice-bazaar', subject: 'إسطنبول — سوق التوابل', author: 'Miomir Magdevski', licence: 'CC BY-SA 4.0', page: 'https://commons.wikimedia.org/wiki/File:Spices_on_Spice_Bazaar_in_Istanbul_02.jpg' },
+  { file: 'istanbul-galata', subject: 'إسطنبول — برج غلطة', author: 'Alexxx1979', licence: 'CC BY-SA 4.0', page: 'https://commons.wikimedia.org/wiki/File:Istanbul_Galata_Tower_IMG_8211_1920.jpg' },
+  { file: 'beirut-al-amin-mosque', subject: 'بيروت — جامع محمد الأمين', author: 'Radosław Botev', licence: 'CC BY 3.0 PL', page: 'https://commons.wikimedia.org/wiki/File:Mohammad_Al-Amin_Mosque_and_St._George_Maronite_Cathedral,_Beirut_(1).jpg' },
+  { file: 'beirut-nejmeh-square', subject: 'بيروت — ساحة النجمة', author: 'Gregor Rom', licence: 'CC BY-SA 4.0', page: 'https://commons.wikimedia.org/wiki/File:Nejmeh_Square_beirut.jpg' },
+  { file: 'muscat-mutrah-corniche', subject: 'مسقط — كورنيش مطرح', author: 'Eduard Marmet', licence: 'CC BY-SA 2.0', page: 'https://commons.wikimedia.org/wiki/File:Seaside_of_Muttrah_with_Mutrah_Fort_(47953961706).jpg' },
+  { file: 'trabzon-sumela', subject: 'طرابزون — دير سوميلا', author: 'Bjørn Christian Tørrissen', licence: 'CC BY-SA 3.0', page: 'https://commons.wikimedia.org/wiki/File:Sumela_Showing_Location.JPG' },
 ];
 
 const COUNTRIES_DEFAULT=[
