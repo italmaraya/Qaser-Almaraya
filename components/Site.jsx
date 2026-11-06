@@ -953,7 +953,7 @@ function   visaVals(country){
 <div style={{ display: "flex", flexDirection: "column", gap: "18px" }}>
 <span style={{ fontSize: "15px", fontWeight: "600", color: "rgba(255,255,255,.75)" }}>شراكات موثوقة… تجربة سفر مميزة</span>
 <h2 style={{ fontSize: "38px", fontWeight: "700", color: "#fff", lineHeight: "1.3" }}>نحن وكلاء معتمدون</h2>
-<p style={{ fontSize: "18px", lineHeight: "1.75", color: "rgba(255,255,255,.9)", maxWidth: "620px", textWrap: "pretty" }}>تفخر قصر المرايا للسفر والسياحة بكونها وكيلاً معتمدًا للعديد من شركات الطيران والفنادق والوجهات السياحية المرموقة عالميًا. نعمل بالشراكة مع جهات موثوقة لتقديم أفضل العروض والخدمات الحصرية لعملائنا مما يضمن لهم تجربة سفر مريحة ومميزة.</p>
+<p style={{ fontSize: "18px", lineHeight: "1.75", color: "rgba(255,255,255,.9)", maxWidth: "620px", textWrap: "pretty" }}>قصر المرايا وكيل معتمد لدى شركات الطيران والفنادق الموضّحة أدناه، ونحجز معها مباشرة.</p>
 </div>
 <div style={{ position: "relative", justifySelf: "center", width: "100%", maxWidth: "430px" }}>
 <img src="/assets/partners-trusted-global.webp" alt="شركاء قصر المرايا من شركات الطيران العالمية" style={{ position: "relative", display: "block", width: "100%", height: "auto", borderRadius: "var(--tw-radius,16px)", boxShadow: "var(--tw-card-shadow,0 1px 3px rgba(29,39,51,.06))" }} />
@@ -2039,7 +2039,7 @@ function   visaVals(country){
 <div style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
 <span style={{ fontSize: "14px", fontWeight: "600", color: "rgba(255,255,255,.85)" }}>قبل أن تسأل</span>
 <h1 style={{ fontSize: "clamp(34px,3.2vw,46px)", fontWeight: "700", color: "#fff", lineHeight: "1.16", textWrap: "pretty" }}>الأسئلة الشائعة</h1>
-<p style={{ fontSize: "18px", lineHeight: "1.7", color: "rgba(255,255,255,.94)", maxWidth: "600px", textWrap: "pretty" }}>جمعنا لك أكثر ما يسألنا عنه المسافرون. إن لم تجد إجابتك هنا، اتصل بنا وسنجيبك فورًا.</p>
+<p style={{ fontSize: "18px", lineHeight: "1.7", color: "rgba(255,255,255,.94)", maxWidth: "600px", textWrap: "pretty" }}>جمعنا لك أكثر ما يسألنا عنه المسافرون. إن لم تجد إجابتك هنا، اتصل بنا على الرقم المختصر 6393.</p>
 <div style={{ display: "flex", alignItems: "center", gap: "16px", flexWrap: "wrap", paddingTop: "4px" }}>
 <a href="tel:6393" className="qa-btn qa-amber" style={{ textDecoration: "none", fontSize: "17px", padding: "15px 30px" }}>اتصل بالرقم المختصر 6393</a>
 <span data-no-i18n="" style={{ fontSize: "16px", color: "rgba(255,255,255,.9)" }}>sales@almarayagroup.com</span>
@@ -2357,7 +2357,7 @@ function   visaVals(country){
 <div style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
 <span style={{ fontSize: "14px", fontWeight: "600", color: "rgba(255,255,255,.8)" }}>من نحن</span>
 <h1 style={{ fontSize: "40px", fontWeight: "700", color: "#fff", lineHeight: "1.3" }}>رؤيتنا ورسالتنا</h1>
-<p style={{ fontSize: "18.5px", lineHeight: "1.7", color: "rgba(255,255,255,.92)", maxWidth: "640px", textWrap: "pretty" }}>في قصر المرايا للسفر والسياحة، نحن أكثر من مجرد وكالة سفر — نحن بوابتك إلى تجارب استثنائية تلبي تطلعاتك وتضمن لك رحلة خالية من المتاعب.</p>
+<p style={{ fontSize: "18.5px", lineHeight: "1.7", color: "rgba(255,255,255,.92)", maxWidth: "640px", textWrap: "pretty" }}>نرتّب السفر من بغداد: باقات سياحية، تأشيرات، تذاكر طيران وحجوزات فنادق. فريق واحد يتابع طلبك من أول اتصال حتى انتهاء الرحلة.</p>
 </div>
 </div>
 </section>
