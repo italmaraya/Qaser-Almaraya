@@ -87,7 +87,7 @@ export default function HeroCinematic({ slides: allSlides = [], kicker, title, s
 .qh-copy{position:absolute;z-index:4;top:55%;transform:translateY(-50%);inset-inline-start:clamp(20px,5vw,72px);inset-inline-end:auto;max-width:560px;display:flex;flex-direction:column;align-items:flex-start;text-align:start;gap:var(--q-s2,16px);animation:qh-fade .45s ease both}
 @keyframes qh-fade{from{opacity:0}to{opacity:1}}
 .qh-eyebrow{margin:0;font-size:var(--q-t6,13px);font-weight:700;letter-spacing:.08em;color:#5bd0ef}
-.qh-title{margin:0;font-size:clamp(32px,4.4vw,56px);font-weight:700;line-height:1.14;letter-spacing:-.01em}
+.qh-title{margin:0;color:#fff;font-size:clamp(32px,4.4vw,56px);font-weight:700;line-height:1.14;letter-spacing:-.01em}
 .qh-sub{margin:0;max-width:480px;font-size:clamp(16px,1.15vw,19px);line-height:1.75;color:rgba(255,255,255,.92)}
 .qh-ctas{display:flex;gap:var(--q-s1,8px);flex-wrap:wrap;margin-top:var(--q-s1,8px)}
 .qh-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:46px;border-radius:999px;border:1px solid transparent;padding:12px 26px;font-family:inherit;font-size:var(--q-t5,15px);font-weight:700;cursor:pointer;text-decoration:none;transition:background .16s ease,border-color .16s ease,color .16s ease}
@@ -114,6 +114,7 @@ export default function HeroCinematic({ slides: allSlides = [], kicker, title, s
   .qh-scrim,.qh[dir="ltr"] .qh-scrim{background:none}
   .qh-copy{position:static;transform:none;inset:auto;max-width:none;top:auto;padding:var(--q-s3,24px) var(--q-s2,16px) var(--q-s4,40px);gap:var(--q-s2,16px);background:#fff}
   .qh-eyebrow{color:var(--q-cyan-dark,#036f8c)}
+  .qh-title{color:var(--q-ink,#1d2733)}
   .qh-sub{max-width:none;color:var(--q-ink-2,#5f666e)}
   .qh-ctas{flex-direction:column;align-items:stretch;width:100%;gap:10px}
   .qh-btn{width:100%}

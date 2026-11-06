@@ -154,12 +154,24 @@ export default function PackageCard({ title, destination, image, nights, groupTy
     return t;
   })();
 
-  // One quiet meta line: duration · group type · departure · badge words.
+  // A badge is only drawn on the photo when it carries real, time-sensitive
+  // seat data (last seats, sold out). A recurring weekly schedule is useful
+  // information but not urgency, so it reads as plain text in the meta line
+  // instead of a shouting yellow pill on every single card.
+  const hotBadge = urgency && urgency.label && (urgency.soldOut || urgency.hot) ? urgency : null;
+  const scheduleNote = urgency && urgency.label && !hotBadge ? String(urgency.label).trim() : '';
+
+  // One quiet meta line: duration · group type · departure · schedule · badge words.
   // Each part is dropped when its data is missing, so no label is ever orphaned.
+  // The duration is skipped when the sub-title already spells it out, so the
+  // same number is never printed twice on one card.
+  const nightsLabel = nightsText(nights, lang);
+  const subHasDuration = !!nightsLabel && /\d/.test(subTitle) && /(ليال|ليلة|ليلت|night|day|يوم|أيام|ايام)/i.test(subTitle);
   const metaParts = [
-    nightsText(nights, lang),
+    subHasDuration ? '' : nightsLabel,
     String(groupType || '').trim(),
     String(departs || '').trim(),
+    scheduleNote,
     String(badge || '').trim(),
   ].filter(Boolean);
 
@@ -183,17 +195,17 @@ export default function PackageCard({ title, destination, image, nights, groupTy
           )}
 
           {/* The only badge on the card: real, time-sensitive seat data. */}
-          {urgency && urgency.label ? (
+          {hotBadge ? (
             <span
               className="qa-pkg-badge"
               style={{
                 position: 'absolute', top: 12, insetInlineStart: 12, display: 'inline-flex', alignItems: 'center', gap: 5,
-                background: urgency.soldOut ? 'var(--q-ink,#1d2733)' : urgency.hot ? '#e0364f' : 'var(--q-amber,#faab18)',
-                color: urgency.soldOut || urgency.hot ? '#fff' : '#2b1d00',
+                background: hotBadge.soldOut ? 'var(--q-ink,#1d2733)' : '#e0364f',
+                color: '#fff',
                 borderRadius: 999, fontWeight: 700, zIndex: 2,
               }}
             >
-              <Icon name={urgency.soldOut ? 'ban' : 'clock'} size={12} />{urgency.label}
+              <Icon name={hotBadge.soldOut ? 'ban' : 'clock'} size={12} />{hotBadge.label}
             </span>
           ) : null}
         </div>
