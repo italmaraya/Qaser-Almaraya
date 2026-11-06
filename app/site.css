@@ -119,3 +119,54 @@ html{overflow-x:hidden}
 @media (min-width:821px) and (max-width:1279px){.qa-navrow{gap:12px!important;font-size:15px!important}}
 @media (min-width:821px) and (max-width:1120px){.qa-navrow{gap:10px!important;font-size:14px!important}.qa-head{gap:16px!important}}
 
+
+/* ══ Redesign 6 Nov 2026: one design system ═════════════════════
+   Additive only — nothing above is removed, so every existing
+   screen keeps working while sections move over one by one. */
+:root{
+  --q-ink:#1d2733;--q-ink-2:#5f666e;--q-ink-3:#9aa0a6;
+  --q-line:#e6e9eb;--q-surface:#fff;--q-surface-2:#f6f8f9;
+  --q-cyan:#049dc5;--q-cyan-dark:#036f8c;--q-cyan-soft:#eaf8fd;
+  --q-amber:#faab18;--q-amber-ink:#6b4700;
+  --q-r:12px;--q-r-sm:8px;
+  --q-s1:8px;--q-s2:16px;--q-s3:24px;--q-s4:40px;--q-s5:64px;--q-s6:96px;
+  --q-t1:44px;--q-t2:30px;--q-t3:22px;--q-t4:17px;--q-t5:15px;--q-t6:13px;
+  --q-max:1200px;--q-read:720px;
+}
+/* Section shell: 1200px of content, 96px of air, 40px on phones. */
+.q-sec{max-width:var(--q-max);margin:0 auto;padding:var(--q-s6) 32px}
+.q-sec.q-tight{padding-block:var(--q-s5)}
+.q-alt{background:var(--q-surface-2)}
+.q-read{max-width:var(--q-read)}
+/* Six type steps, nothing between them. */
+.q-h1{font-size:var(--q-t1);font-weight:700;line-height:1.14;color:var(--q-ink);letter-spacing:-.01em}
+.q-h2{font-size:var(--q-t2);font-weight:700;line-height:1.25;color:var(--q-ink)}
+.q-h3{font-size:var(--q-t3);font-weight:700;line-height:1.3;color:var(--q-ink)}
+.q-lead{font-size:var(--q-t4);line-height:1.75;color:var(--q-ink-2)}
+.q-body{font-size:var(--q-t5);line-height:1.7;color:var(--q-ink-2)}
+.q-meta{font-size:var(--q-t6);line-height:1.5;color:var(--q-ink-3)}
+.q-eyebrow{font-size:var(--q-t6);font-weight:700;letter-spacing:.08em;color:var(--q-cyan)}
+/* One card: a 1px line, no shadow at rest. */
+.q-card{background:var(--q-surface);border:1px solid var(--q-line);border-radius:var(--q-r);overflow:hidden}
+.q-card-i{transition:border-color .18s ease,box-shadow .18s ease}
+.q-card-i:hover{border-color:#cfd6da;box-shadow:0 6px 18px rgba(1,42,55,.07)}
+/* Buttons: amber is the one most important action per screen. */
+.q-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:1px solid transparent;border-radius:999px;padding:13px 26px;font-family:inherit;font-size:var(--q-t5);font-weight:700;cursor:pointer;text-decoration:none;min-height:46px;transition:background .16s ease,border-color .16s ease,color .16s ease}
+.q-btn-pri{background:var(--q-amber);color:#2b1d00}
+.q-btn-pri:hover{background:#eb9d0c;color:#2b1d00}
+.q-btn-sec{background:transparent;border-color:var(--q-cyan);color:var(--q-cyan-dark)}
+.q-btn-sec:hover{background:var(--q-cyan-soft);color:var(--q-cyan-dark)}
+.q-btn-ghost{background:transparent;border-color:var(--q-line);color:var(--q-ink)}
+.q-btn-ghost:hover{border-color:#cfd6da}
+.q-btn:focus-visible,.q-link:focus-visible{outline:2px solid var(--q-cyan);outline-offset:3px}
+/* Image frames: one ratio per role, top-biased so a vertical poster
+   still shows the landmark rather than its caption. */
+.q-img{display:block;width:100%;height:100%;object-fit:cover;object-position:50% 28%}
+.q-ratio-32{aspect-ratio:3/2}
+.q-ratio-169{aspect-ratio:16/9}
+.q-ratio-45{aspect-ratio:4/5}
+@media(max-width:820px){
+  .q-sec{padding:var(--q-s4) 16px}
+  .q-sec.q-tight{padding-block:var(--q-s3)}
+  :root{--q-t1:30px;--q-t2:23px;--q-t3:19px;--q-t4:16px;--q-t5:14.5px}
+}
