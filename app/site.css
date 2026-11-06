@@ -170,3 +170,8 @@ html{overflow-x:hidden}
   .q-sec.q-tight{padding-block:var(--q-s3)}
   :root{--q-t1:30px;--q-t2:23px;--q-t3:19px;--q-t4:16px;--q-t5:14.5px}
 }
+
+/* A full-bleed band is sized in 100vw, which counts the scrollbar, so the page
+   gained a few pixels of sideways scroll. Clipping the root removes that
+   without the side effects `hidden` has on sticky elements. */
+html{overflow-x:clip}
