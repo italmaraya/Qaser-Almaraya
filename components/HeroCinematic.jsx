@@ -5,34 +5,20 @@ import { useEffect, useRef, useState } from 'react';
 const SLIDE_MS = 7000;
 const FADE_MS = 1400;
 
-// Thin "globe" lines drifting over the footage: meridians are ellipses whose
-// width breathes in and out, which reads as a slowly turning globe.
-function GlobeLines() {
-  const meridians = [0, 1, 2, 3, 4, 5];
-  return (
-    <svg className="qh-lines" viewBox="0 0 1000 1000" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
-      <g fill="none" stroke="rgba(255,255,255,.11)" strokeWidth="1">
-        <circle cx="500" cy="500" r="430" />
-        {meridians.map((i) => (
-          <ellipse key={i} cx="500" cy="500" rx="430" ry="430" className="qh-mer" style={{ animationDelay: `${-i * 4}s` }} />
-        ))}
-        {[-250, 0, 250].map((y) => {
-          const r = Math.sqrt(430 * 430 - y * y);
-          return <ellipse key={y} cx="500" cy={500 + y} rx={r} ry={r * 0.08} />;
-        })}
-      </g>
-    </svg>
-  );
-}
-
 /**
- * Full-screen cinematic hero.
+ * Destination hero: one photograph, one copy column, two actions.
+ *
+ * Desktop  — the photo fills the section; the copy sits on the inline-start
+ *            edge over a one-sided gradient, so the picture stays visible.
+ * Mobile   — a 4:5 crop of the same photo on top, the copy below it on white,
+ *            which is the only way the Arabic stays comfortably readable.
+ *
  * slides: [{ type: 'video'|'image', url, poster?, caption? }]
  */
 export default function HeroCinematic({ slides: allSlides = [], kicker, title, subtitle, primary, secondary, lang = 'ar' }) {
   const [active, setActive] = useState(0);
-  // Pause only while the browser tab is hidden (the hero fills the screen, so
-  // pausing on hover would stop it for good).
+  // Pause only while the browser tab is hidden (the hero owns the first
+  // screen, so pausing on hover would stop it for good).
   const [paused, setPaused] = useState(false);
   useEffect(() => {
     const on = () => setPaused(document.hidden);
@@ -87,32 +73,31 @@ export default function HeroCinematic({ slides: allSlides = [], kicker, title, s
   const dir = lang === 'en' ? 'ltr' : 'rtl';
 
   return (
-    <section className="qh" dir={dir} data-no-i18n="">
+    <section className={'qh' + (paused ? ' paused' : '')} dir={dir} data-no-i18n="">
       <style>{`
-.qh{position:relative;height:min(92vh,860px);min-height:520px;overflow:hidden;background:#04161f;color:#fff;isolation:isolate}
+.qh{position:relative;height:min(78vh,720px);min-height:520px;overflow:hidden;background:#04161f;color:#fff;isolation:isolate}
+.qh-media{position:absolute;inset:0;z-index:0;overflow:hidden;background:#04161f}
 .qh-slide{position:absolute;inset:0;opacity:0;transition:opacity ${FADE_MS}ms ease;z-index:0}
 .qh-slide.on{opacity:1;z-index:1}
-.qh-slide img,.qh-slide video{width:100%;height:100%;object-fit:cover;display:block}
-.qh-slide.on img{animation:qh-zoom ${SLIDE_MS + FADE_MS}ms ease-out forwards}
-@keyframes qh-zoom{from{transform:scale(1.02)}to{transform:scale(1.12)}}
-.qh-shade{position:absolute;inset:0;z-index:2;background:radial-gradient(ellipse at 50% 45%,rgba(4,22,31,.10) 0%,rgba(4,22,31,.45) 70%),linear-gradient(to bottom,rgba(4,22,31,.35) 0%,rgba(4,22,31,.05) 35%,rgba(4,22,31,.55) 100%)}
-.qh-lines{position:absolute;left:50%;top:50%;width:max(118vh,100%);height:max(118vh,100%);transform:translate(-50%,-50%);z-index:3;pointer-events:none}
-.qh-mer{animation:qh-turn 24s linear infinite}
-@keyframes qh-turn{0%{rx:430px}25%{rx:0px}50%{rx:430px}75%{rx:0px}100%{rx:430px}}
-.qh-copy{position:absolute;inset:0;z-index:4;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:clamp(10px,1.4vw,18px);padding:0 6%}
-.qh-logo{width:clamp(60px,5.6vw,88px);height:auto;filter:drop-shadow(0 4px 12px rgba(0,0,0,.35));animation:qh-up .9s ease both}
-.qh-kicker{font-size:clamp(14px,1.25vw,20px);font-weight:500;letter-spacing:.02em;opacity:.95;animation:qh-up .9s .12s ease both}
-.qh-title{margin:0;font-size:clamp(38px,6.4vw,104px);font-weight:700;line-height:1.05;letter-spacing:-.01em;text-shadow:0 2px 12px rgba(0,0,0,.3);animation:qh-up 1s .22s ease both}
-.qh-sub{margin:0;max-width:640px;font-size:clamp(15px,1.2vw,19px);line-height:1.8;opacity:.92;animation:qh-up 1s .34s ease both}
-.qh-ctas{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin-top:6px;animation:qh-up 1s .46s ease both}
-.qh-btn{display:inline-flex;align-items:center;gap:9px;border-radius:999px;padding:clamp(11px,.9vw,15px) clamp(22px,2vw,34px);font-weight:700;font-size:clamp(14px,1vw,17px);cursor:pointer;font-family:inherit;border:0;text-decoration:none;transition:transform .2s,background .2s}
-.qh-btn:hover{transform:translateY(-1px)}
-.qh-btn.pri{background:#faab18;color:#fff;box-shadow:0 6px 16px rgba(250,171,24,.28)}
-.qh-btn.sec{background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(255,255,255,.45);backdrop-filter:blur(6px)}
-@keyframes qh-up{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
-.qh-bottom{position:absolute;z-index:5;left:0;right:0;bottom:clamp(18px,3vh,34px);display:flex;align-items:center;justify-content:space-between;gap:16px;padding:0 5%}
-.qh-cap{display:flex;align-items:center;gap:8px;font-size:14px;font-weight:600;min-height:22px}
-.qh-cap span{animation:qh-up .7s ease both}
+.qh-slide img,.qh-slide video{width:100%;height:100%;object-fit:cover;object-position:50% 40%;display:block}
+/* One-sided scrim: dark at the text edge, gone by 62% across, so the
+   photograph is never veiled and the Arabic still clears 4.5:1. */
+.qh-scrim{position:absolute;inset:0;z-index:2;background:linear-gradient(to left,rgba(4,22,31,.78) 0%,rgba(4,22,31,.62) 26%,rgba(4,22,31,.18) 48%,rgba(4,22,31,0) 62%)}
+.qh[dir="ltr"] .qh-scrim{background:linear-gradient(to right,rgba(4,22,31,.78) 0%,rgba(4,22,31,.62) 26%,rgba(4,22,31,.18) 48%,rgba(4,22,31,0) 62%)}
+.qh-copy{position:absolute;z-index:4;top:55%;transform:translateY(-50%);inset-inline-start:clamp(20px,5vw,72px);inset-inline-end:auto;max-width:560px;display:flex;flex-direction:column;align-items:flex-start;text-align:start;gap:var(--q-s2,16px);animation:qh-fade .45s ease both}
+@keyframes qh-fade{from{opacity:0}to{opacity:1}}
+.qh-eyebrow{margin:0;font-size:var(--q-t6,13px);font-weight:700;letter-spacing:.08em;color:#5bd0ef}
+.qh-title{margin:0;font-size:clamp(32px,4.4vw,56px);font-weight:700;line-height:1.14;letter-spacing:-.01em}
+.qh-sub{margin:0;max-width:480px;font-size:clamp(16px,1.15vw,19px);line-height:1.75;color:rgba(255,255,255,.92)}
+.qh-ctas{display:flex;gap:var(--q-s1,8px);flex-wrap:wrap;margin-top:var(--q-s1,8px)}
+.qh-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:46px;border-radius:999px;border:1px solid transparent;padding:12px 26px;font-family:inherit;font-size:var(--q-t5,15px);font-weight:700;cursor:pointer;text-decoration:none;transition:background .16s ease,border-color .16s ease,color .16s ease}
+.qh-btn.pri{background:var(--q-amber,#faab18);color:#2b1d00}
+.qh-btn.pri:hover{background:#eb9d0c}
+.qh-btn.sec{background:transparent;border-color:rgba(255,255,255,.55);color:#fff}
+.qh-btn.sec:hover{border-color:#fff}
+.qh-btn:focus-visible{outline:2px solid #5bd0ef;outline-offset:3px}
+.qh-foot{position:absolute;z-index:5;inset-inline:0;bottom:var(--q-s3,24px);display:flex;align-items:center;justify-content:space-between;gap:var(--q-s2,16px);padding-inline:clamp(20px,5vw,72px)}
+.qh-cap{display:inline-flex;align-items:center;gap:7px;font-size:var(--q-t5,15px);font-weight:600;min-height:22px}
 .qh-bars{display:flex;gap:6px}
 .qh-bar{width:clamp(26px,3vw,46px);height:3px;border-radius:3px;background:rgba(255,255,255,.3);overflow:hidden;cursor:pointer;border:0;padding:0}
 .qh-bar i{display:block;height:100%;width:0;background:#fff}
@@ -120,38 +105,74 @@ export default function HeroCinematic({ slides: allSlides = [], kicker, title, s
 .qh-bar.on i{animation:qh-fill ${SLIDE_MS}ms linear forwards}
 .qh.paused .qh-bar.on i{animation-play-state:paused}
 @keyframes qh-fill{to{width:100%}}
-.qh-scroll{position:absolute;z-index:5;left:50%;bottom:clamp(14px,2.4vh,26px);transform:translateX(-50%);width:26px;height:40px;border:1.5px solid rgba(255,255,255,.6);border-radius:var(--tw-radius-sm,10px)}
-.qh-scroll:after{content:"";position:absolute;left:50%;top:7px;width:3px;height:8px;margin-left:-1.5px;border-radius:2px;background:#fff;animation:qh-wheel 1.8s ease-in-out infinite}
-@keyframes qh-wheel{0%{opacity:0;transform:translateY(0)}30%{opacity:1}100%{opacity:0;transform:translateY(12px)}}
-@media (max-width:820px){.qh{height:calc(100svh - 150px);min-height:480px;max-height:720px}.qh-scroll{display:none}.qh-bottom{flex-direction:column-reverse;align-items:center;gap:10px;bottom:16px}.qh-ctas{flex-direction:column;align-items:stretch;width:100%;max-width:320px}.qh-btn{justify-content:center}.qh-lines{opacity:.7}}
-@media (prefers-reduced-motion:reduce){.qh-slide.on img,.qh-mer,.qh-bar.on i,.qh *{animation:none!important}}
+/* Phones get a different crop, not a squeeze: a 4:5 portrait of the photo,
+   then the copy on white underneath. */
+@media (max-width:820px){
+  .qh{height:auto;min-height:0;max-height:none;background:#fff;color:var(--q-ink,#1d2733);overflow:visible}
+  .qh-media{position:relative;inset:auto;width:100%;aspect-ratio:4/5}
+  .qh-slide img,.qh-slide video{object-position:50% 30%}
+  .qh-scrim,.qh[dir="ltr"] .qh-scrim{background:none}
+  .qh-copy{position:static;transform:none;inset:auto;max-width:none;top:auto;padding:var(--q-s3,24px) var(--q-s2,16px) var(--q-s4,40px);gap:var(--q-s2,16px);background:#fff}
+  .qh-eyebrow{color:var(--q-cyan-dark,#036f8c)}
+  .qh-sub{max-width:none;color:var(--q-ink-2,#5f666e)}
+  .qh-ctas{flex-direction:column;align-items:stretch;width:100%;gap:10px}
+  .qh-btn{width:100%}
+  .qh-btn.sec{border-color:var(--q-line,#e6e9eb);color:var(--q-ink,#1d2733)}
+  .qh-btn.sec:hover{border-color:#cfd6da}
+  /* Caption and bars move onto the photo's bottom edge. */
+  .qh-foot{bottom:0;padding:28px var(--q-s2,16px) 12px;color:#fff;background:linear-gradient(to top,rgba(4,22,31,.62) 0%,rgba(4,22,31,0) 100%)}
+}
+@media (prefers-reduced-motion:reduce){
+  .qh-copy{animation:none}
+  .qh-slide{transition:none}
+  .qh-bar.on i{animation:none;width:100%}
+}
 `}</style>
-      {slides.map((s, i) => (
-        <div key={i} className={'qh-slide' + (i === active ? ' on' : '')} aria-hidden={i !== active}>
-          {s.type === 'video' && !reduced && !(lite && s.poster) ? (
-            <video
-              ref={(el) => { videoRefs.current[i] = el; }}
-              src={ready ? s.url : undefined}
-              poster={s.poster || undefined}
-              muted
-              loop
-              playsInline
-              preload={ready ? (i === 0 ? 'auto' : 'metadata') : 'none'}
-              autoPlay={ready && i === 0}
-            />
-          ) : (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img key={i === active ? 'on' + active : 'off'} src={s.type === 'video' ? s.poster || '' : s.url} alt="" loading={i === 0 ? 'eager' : 'lazy'} fetchPriority={i === 0 ? 'high' : 'auto'} decoding={i === 0 ? 'sync' : 'async'} />
+      <div className="qh-media">
+        {slides.map((s, i) => (
+          <div key={i} className={'qh-slide' + (i === active ? ' on' : '')} aria-hidden={i !== active}>
+            {s.type === 'video' && !reduced && !(lite && s.poster) ? (
+              <video
+                ref={(el) => { videoRefs.current[i] = el; }}
+                src={ready ? s.url : undefined}
+                poster={s.poster || undefined}
+                muted
+                loop
+                playsInline
+                preload={ready ? (i === 0 ? 'auto' : 'metadata') : 'none'}
+                autoPlay={ready && i === 0}
+              />
+            ) : (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={s.type === 'video' ? s.poster || '' : s.url} alt="" loading={i === 0 ? 'eager' : 'lazy'} fetchPriority={i === 0 ? 'high' : 'auto'} decoding={i === 0 ? 'sync' : 'async'} />
+            )}
+          </div>
+        ))}
+        <div className="qh-scrim" />
+
+        <div className="qh-foot">
+          <div className="qh-cap">
+            {current.caption && (
+              <span style={{ display: 'inline-flex', alignItems: 'center', gap: 7 }}>
+                <Icon name="map-pin" size={15} />
+                {current.caption}
+              </span>
+            )}
+          </div>
+          {count > 1 && (
+            <div className="qh-bars" role="tablist">
+              {slides.map((_, i) => (
+                <button key={i} type="button" aria-label={String(i + 1)} className={'qh-bar' + (i === active ? ' on' : i < active ? ' done' : '')} onClick={() => setActive(i)}>
+                  <i key={i === active ? 'a' + active : 'x'} style={paused && i === active ? { animationPlayState: 'paused' } : undefined} />
+                </button>
+              ))}
+            </div>
           )}
         </div>
-      ))}
-      <div className="qh-shade" />
-      <GlobeLines />
+      </div>
 
       <div className="qh-copy">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img className="qh-logo" src="/assets/logo-mark-hero.webp" alt="قصر المرايا" />
-        {kicker && <span className="qh-kicker">{kicker}</span>}
+        {kicker && <p className="qh-eyebrow">{kicker}</p>}
         {title && <h1 className="qh-title">{title}</h1>}
         {subtitle && <p className="qh-sub">{subtitle}</p>}
         <div className="qh-ctas">
@@ -164,27 +185,6 @@ export default function HeroCinematic({ slides: allSlides = [], kicker, title, s
           {secondary && <a className="qh-btn sec" href={secondary.href} {...(/^https?:/.test(secondary.href || '') ? { target: '_blank', rel: 'noopener' } : {})}>{secondary.label}</a>}
         </div>
       </div>
-
-      <div className="qh-bottom">
-        <div className="qh-cap" key={active}>
-          {current.caption && (
-            <span style={{ display: 'inline-flex', alignItems: 'center', gap: 7 }}>
-              <Icon name="map-pin" size={15} />
-              {current.caption}
-            </span>
-          )}
-        </div>
-        {count > 1 && (
-          <div className="qh-bars" role="tablist">
-            {slides.map((_, i) => (
-              <button key={i} type="button" aria-label={String(i + 1)} className={'qh-bar' + (i === active ? ' on' : i < active ? ' done' : '')} onClick={() => setActive(i)}>
-                <i key={i === active ? 'a' + active : 'x'} style={paused && i === active ? { animationPlayState: 'paused' } : undefined} />
-              </button>
-            ))}
-          </div>
-        )}
-      </div>
-      <span className="qh-scroll" aria-hidden="true" />
     </section>
   );
 }
