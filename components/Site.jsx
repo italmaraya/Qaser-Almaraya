@@ -1501,13 +1501,12 @@ function   visaVals(country){
 {isPackages ? (<>
 <div className="qa-page">
 <section style={{ background: "var(--tw-band,#34bbe1)", position: "relative", overflow: "hidden", paddingBottom: "70px" }}>
-<div className="qa-sec qa-2col" style={{ position: "relative", display: "grid", gridTemplateColumns: "1.06fr .94fr", gap: "8px", alignItems: "center", paddingBlock: "0" }}>
+<div className="qa-sec" style={{ position: "relative", paddingBlock: "0" }}>
 <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
 <span style={{ fontSize: "14px", fontWeight: "700", letterSpacing: ".06em", color: "rgba(255,255,255,.85)" }}>PACKAGES &amp; TOURS</span>
 <h1 style={{ fontSize: "54px", fontWeight: "700", lineHeight: "1.15", color: "#fff" }}>الباقات والجولات</h1>
 <p style={{ fontSize: "20px", lineHeight: "1.55", color: "rgba(255,255,255,.92)", maxWidth: "620px" }}>كل باقة تُبنى حول مجموعة محددة — عائلية، شبابية، رجال أعمال، أو حج وعمرة — ولكل مجموعة برنامجها وإيقاعها وميزانيتها.</p>
 </div>
-<img src="/assets/mascot-skylo-tours.webp" alt="سكايلو — باقات المجموعات والجولات" style={{ width: "calc(100% + 90px)", maxWidth: "none", objectFit: "cover", objectPosition: "center", justifySelf: "stretch", marginInlineEnd: "-90px", WebkitMaskImage: "linear-gradient(to left, rgba(0,0,0,0) 0, #000 26%), linear-gradient(to bottom, rgba(0,0,0,0) 0, #000 14%, #000 86%, rgba(0,0,0,0) 100%)", maskImage: "linear-gradient(to left, rgba(0,0,0,0) 0, #000 26%), linear-gradient(to bottom, rgba(0,0,0,0) 0, #000 14%, #000 86%, rgba(0,0,0,0) 100%)", WebkitMaskComposite: "source-in", maskComposite: "intersect", height: "330px" }} />
 </div>
 </section>
 <section className="qa-sec" style={{ display: "flex", flexDirection: "column", gap: "32px" }}>
@@ -2384,14 +2383,11 @@ function   visaVals(country){
 <div className="qa-page">
 <section style={{ background: "var(--tw-band-deep,#049dc5)", position: "relative", overflow: "hidden" }}>
 <img src="/assets/logo-mark-white.webp" alt="" style={{ position: "absolute", insetInlineEnd: "-140px", top: "-90px", height: "460px", opacity: ".1" }} />
-<div className="qa-sec qa-2col" style={{ position: "relative", display: "grid", gridTemplateColumns: "1.25fr .75fr", gap: "44px", alignItems: "center" }}>
+<div className="qa-sec" style={{ position: "relative" }}>
 <div style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
 <span style={{ fontSize: "14px", fontWeight: "600", color: "rgba(255,255,255,.8)" }}>من نحن</span>
 <h1 style={{ fontSize: "40px", fontWeight: "700", color: "#fff", lineHeight: "1.3" }}>رؤيتنا ورسالتنا</h1>
 <p style={{ fontSize: "18.5px", lineHeight: "1.7", color: "rgba(255,255,255,.92)", maxWidth: "640px", textWrap: "pretty" }}>في قصر المرايا للسفر والسياحة، نحن أكثر من مجرد وكالة سفر — نحن بوابتك إلى تجارب استثنائية تلبي تطلعاتك وتضمن لك رحلة خالية من المتاعب.</p>
-</div>
-<div style={{ justifySelf: "center", width: "100%", maxWidth: "270px", aspectRatio: "1", borderRadius: "50%", background: "#fff", boxShadow: "var(--tw-card-shadow,0 1px 3px rgba(29,39,51,.06))", overflow: "hidden", display: "flex", alignItems: "center", justifyContent: "center" }}>
-<img src="/assets/mascot-skylo-pilot-plane.webp" alt="" style={{ width: "106%", height: "106%", objectFit: "cover" }} />
 </div>
 </div>
 </section>
@@ -2443,9 +2439,8 @@ function   visaVals(country){
 </div>
 <img src="/assets/mascot-skylo-imagination.webp" alt="سكايلو — حيث يطير الخيال" style={{ width: "100%", maxWidth: "420px", justifySelf: "center", borderRadius: "var(--tw-radius,16px)" }} />
 </section>
-<section className="qa-sec qa-2col" style={{ paddingTop: "0", display: "grid", gridTemplateColumns: "1fr 1fr", gap: "64px", alignItems: "center" }}>
-<img src="/assets/mascot-skylo-pilot-plane.webp" alt="سكايلو، مرشد قصر المرايا" style={{ width: "100%", maxWidth: "400px", justifySelf: "center" }} />
-<div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
+<section className="qa-sec" style={{ paddingTop: "0" }}>
+<div style={{ maxWidth: "var(--q-read,720px)", display: "flex", flexDirection: "column", gap: "16px" }}>
 <h2 style={{ fontSize: "36px", fontWeight: "700" }}>ما يمكننا فعله من أجلك</h2>
 <p style={{ fontSize: "18px", lineHeight: "1.75", color: "#22a9d4" }}>نحن لا ننظم فقط… نحن نُبدع في صناعة التجربة.</p>
 <p style={{ fontSize: "16px", lineHeight: "1.75" }}>باقات متكاملة تضم وجهات مميزة ومطاعم محلية، أنشطة استثنائية، واستكشاف الأماكن التي لا تزورها الجولات التقليدية.</p>
@@ -2457,8 +2452,8 @@ function   visaVals(country){
 <section style={{ position: "relative" }}>
 <div className="qa-sec" style={{ position: "relative", display: "flex", flexDirection: "column", gap: "32px" }}>
 <div style={{ maxWidth: "680px", margin: "0 auto", textAlign: "center", display: "flex", flexDirection: "column", gap: "16px" }}>
-<h2 style={{ fontSize: "36px", fontWeight: "700", color: "#fff" }}>قيمنا</h2>
-<p style={{ fontSize: "18px", lineHeight: "1.75", color: "rgba(255,255,255,.92)" }}>أربع قيم تحكم كل رحلة نخطّط لها.</p>
+<h2 style={{ fontSize: "36px", fontWeight: "700", color: "#fff" }}>ما نلتزم به في كل رحلة</h2>
+<p style={{ fontSize: "18px", lineHeight: "1.75", color: "rgba(255,255,255,.92)" }}>أربعة التزامات تحكم كل رحلة نخطّط لها.</p>
 </div>
 <div className="qa-swipe" style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: "20px", alignItems: "stretch" }}>
 <div style={{ background: "#fff", borderRadius: "var(--tw-radius,16px)", padding: "24px" }}><h4 style={{ fontSize: "20px", fontWeight: "700", color: "#1b93b8", marginBottom: "8px" }}>المغامرة والاستكشاف</h4><p style={{ fontSize: "14px", lineHeight: "1.45" }}>نُلهم المسافرين لاكتشاف أماكن وتجارب لا تُنسى.</p></div>
