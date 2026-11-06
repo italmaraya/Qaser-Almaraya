@@ -19,28 +19,6 @@ import PackageCard from './PackageCard';
 import PaymentMethods from './PaymentMethods';
 import PaymentBadges from './PaymentBadges';
 
-// Destination photographs whose licence (CC BY-SA) requires the photographer to
-// be named. The CC0 and public-domain photographs are not listed here.
-const PHOTO_CREDITS = [
-  { file: 'istanbul-ortakoy', subject: 'إسطنبول — جامع أورتاكوي', author: 'Dosseman', licence: 'CC BY-SA 4.0', page: 'https://commons.wikimedia.org/wiki/File:Istanbul_Ortak%C3%B6y_Mosque_and_bridge_in_2019_7354.jpg' },
-  { file: 'sousse-ribat', subject: 'سوسة — الرباط', author: 'Noomen9', licence: 'CC BY-SA 4.0', page: 'https://commons.wikimedia.org/wiki/File:Ribat_de_Sousse_2.jpg' },
-  { file: 'muscat-mosque', subject: 'مسقط — جامع السلطان قابوس', author: 'Francesco Bini', licence: 'CC BY-SA 4.0', page: 'https://commons.wikimedia.org/wiki/File:Muscat,_moschea_del_sultano_qaboos,_esterno_01.jpg' },
-  { file: 'bangkok-wat-phra-kaew', subject: 'بانكوك — وات برا كايو', author: 'Basile Morin', licence: 'CC BY-SA 4.0', page: 'https://commons.wikimedia.org/wiki/File:%E0%B8%A7%E0%B8%B1%E0%B8%94%E0%B8%9E%E0%B8%A3%E0%B8%B0%E0%B8%A8%E0%B8%A3%E0%B8%B5%E0%B8%A3%E0%B8%B1%E0%B8%95%E0%B8%99%E0%B8%A8%E0%B8%B2%E0%B8%AA%E0%B8%94%E0%B8%B2%E0%B8%A3%E0%B8%B2%E0%B8%A1_%E0%B8%A7%E0%B8%B1%E0%B8%94%E0%B8%9E%E0%B8%A3%E0%B8%B0%E0%B9%81%E0%B8%81%E0%B9%89%E0%B8%A7_%E0%B8%81%E0%B8%A3%E0%B8%B8%E0%B8%87%E0%B9%80%E0%B8%97%E0%B8%9E%E0%B8%A1%E0%B8%AB%E0%B8%B2%E0%B8%99%E0%B8%84%E0%B8%A3_-_Wat_Phra_Kaew,_Temple_of_Emerald_Buddha,_Bangkok,_Thailand.jpg' },
-  { file: 'port-dickson', subject: 'بورت ديكسون — شاطئ تيلوك كيمانغ', author: 'AyyanD', licence: 'CC BY-SA 3.0', page: 'https://commons.wikimedia.org/wiki/File:Purnama_Beach_Promenade,_Teluk_Kemang,_Port_Dickson_District.jpg' },
-  { file: 'antalya-duden', subject: 'أنطاليا — شلال دودان', author: 'Bestalex', licence: 'CC BY-SA 4.0', page: 'https://commons.wikimedia.org/wiki/File:Antalya._Lower_D%C3%BCden_Waterfall.jpg' },
-  { file: 'srilanka-nine-arch', subject: 'سريلانكا — جسر الأقواس التسعة', author: 'Dr. S. Rajivraja', licence: 'CC BY-SA 4.0', page: 'https://commons.wikimedia.org/wiki/File:Nine_Arch_Bridge,_Demodara_Ella.jpg' },
-  { file: 'batumi-skyline', subject: 'باتومي — واجهة المدينة', author: 'jagermesh', licence: 'CC BY-SA 2.0', page: 'https://commons.wikimedia.org/wiki/File:Changing_skyline_of_Batumi,_Georgia.jpg' },
-  { file: 'sharm-naama-bay', subject: 'شرم الشيخ — خليج نعمة', author: 'Marc Ryckaert', licence: 'CC BY 3.0', page: 'https://commons.wikimedia.org/wiki/File:Naama_Bay_Beach_R01.jpg' },
-  { file: 'sharm-ras-mohammed', subject: 'شرم الشيخ — شعاب رأس محمد', author: 'Sovernigo', licence: 'CC BY-SA 4.0', page: 'https://commons.wikimedia.org/wiki/File:Ras_Mohammed_coral_reefs.jpg' },
-  { file: 'istanbul-hagia-sophia', subject: 'إسطنبول — آيا صوفيا', author: 'Arild Vågen', licence: 'CC BY-SA 3.0', page: 'https://commons.wikimedia.org/wiki/File:Hagia_Sophia_Mars_2013.jpg' },
-  { file: 'istanbul-maidens-tower', subject: 'إسطنبول — برج الفتاة', author: 'Sonse', licence: 'CC BY 2.0', page: 'https://commons.wikimedia.org/wiki/File:K%C4%B1z_Kulesi,_Maiden%27s_Tower_(52396926549).jpg' },
-  { file: 'istanbul-spice-bazaar', subject: 'إسطنبول — سوق التوابل', author: 'Miomir Magdevski', licence: 'CC BY-SA 4.0', page: 'https://commons.wikimedia.org/wiki/File:Spices_on_Spice_Bazaar_in_Istanbul_02.jpg' },
-  { file: 'istanbul-galata', subject: 'إسطنبول — برج غلطة', author: 'Alexxx1979', licence: 'CC BY-SA 4.0', page: 'https://commons.wikimedia.org/wiki/File:Istanbul_Galata_Tower_IMG_8211_1920.jpg' },
-  { file: 'beirut-al-amin-mosque', subject: 'بيروت — جامع محمد الأمين', author: 'Radosław Botev', licence: 'CC BY 3.0 PL', page: 'https://commons.wikimedia.org/wiki/File:Mohammad_Al-Amin_Mosque_and_St._George_Maronite_Cathedral,_Beirut_(1).jpg' },
-  { file: 'beirut-nejmeh-square', subject: 'بيروت — ساحة النجمة', author: 'Gregor Rom', licence: 'CC BY-SA 4.0', page: 'https://commons.wikimedia.org/wiki/File:Nejmeh_Square_beirut.jpg' },
-  { file: 'muscat-mutrah-corniche', subject: 'مسقط — كورنيش مطرح', author: 'Eduard Marmet', licence: 'CC BY-SA 2.0', page: 'https://commons.wikimedia.org/wiki/File:Seaside_of_Muttrah_with_Mutrah_Fort_(47953961706).jpg' },
-  { file: 'trabzon-sumela', subject: 'طرابزون — دير سوميلا', author: 'Bjørn Christian Tørrissen', licence: 'CC BY-SA 3.0', page: 'https://commons.wikimedia.org/wiki/File:Sumela_Showing_Location.JPG' },
-];
 
 const COUNTRIES_DEFAULT=[
  {code:'tr',name:'تركيا',en:'Turkey',region:'تركيا والقوقاز'},
@@ -2587,15 +2565,6 @@ function   visaVals(country){
 </div>
 </div>
 <div className="qa-swipe-hint" aria-hidden="true">اسحب لرؤية المزيد ↔</div>
-</section>
-<section className="qa-sec" style={{ display: "flex", flexDirection: "column", gap: "10px", maxWidth: "var(--q-read,860px)", marginInline: "auto", width: "100%" }}>
-<h2 style={{ fontSize: "var(--q-t3,22px)", margin: 0 }}>مصادر الصور</h2>
-<p style={{ margin: 0, fontSize: "14px", lineHeight: "1.7", color: "var(--q-ink-2,#3d4650)" }}>صور الوجهات مأخوذة من ويكيميديا كومنز. الصور التالية منشورة برخصة المشاع الإبداعي «النسبة — المشاركة بالمثل»، وهذه نسبتها إلى مصوّريها:</p>
-<ul data-no-i18n="" style={{ margin: 0, paddingInlineStart: "18px", display: "flex", flexDirection: "column", gap: "4px", fontSize: "13.5px", lineHeight: "1.7", color: "var(--q-ink-3,#5f666e)" }}>
-{PHOTO_CREDITS.map((c) => (
-<li key={c.file}><a href={c.page} target="_blank" rel="noopener noreferrer nofollow" style={{ color: "var(--q-cyan-dark,#036f8c)" }}>{c.subject}</a> — {c.author} — {c.licence}</li>
-))}
-</ul>
 </section>
 </div>
 </>) : null}

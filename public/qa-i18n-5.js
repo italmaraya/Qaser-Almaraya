@@ -112,8 +112,5 @@
   "واتساب": "WhatsApp",
 
   "تحتاج مساعدة؟": "Need help?",
-  "الرقم المختصر 6393 — فريقنا جاهز لخدمتك بكل احترافية وسرعة.": "Shortcode 6393 — our team is ready to help you, professionally and quickly.",
-
-  "مصادر الصور": "Photo credits",
-  "صور الوجهات مأخوذة من ويكيميديا كومنز. الصور التالية منشورة برخصة المشاع الإبداعي «النسبة — المشاركة بالمثل»، وهذه نسبتها إلى مصوّريها:": "Destination photographs come from Wikimedia Commons. The photographs below are published under the Creative Commons Attribution-ShareAlike licence, and are credited to their photographers:"
+  "الرقم المختصر 6393 — فريقنا جاهز لخدمتك بكل احترافية وسرعة.": "Shortcode 6393 — our team is ready to help you, professionally and quickly."
 });
