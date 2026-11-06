@@ -1,4 +1,5 @@
 'use client';
+import Icon from './Icon';
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { flagSrc } from '../lib/flags';
 
@@ -165,16 +166,16 @@ export default function CountrySelect({ value, onChange, options, placeholder = 
             width: coords.width,
             zIndex: 200,
             background: '#fff',
-            borderRadius: 16,
+            borderRadius: 'var(--tw-radius,16px)',
             border: '1px solid #ececed',
-            boxShadow: '0 20px 46px rgba(1,42,55,.22)',
+            boxShadow: 'var(--tw-pop-shadow,0 6px 20px rgba(1,42,55,.10))',
             overflow: 'hidden',
             animation: 'qa-dropdown-in 160ms cubic-bezier(.16,1,.3,1) both',
             transformOrigin: coords.placement === 'below' ? 'top center' : 'bottom center',
           }}
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '10px 14px', borderBottom: '1px solid #f2f2f3' }}>
-            <span style={{ color: '#5f666e', fontSize: 15 }}>⌕</span>
+            <Icon name="search" size={15} style={{ color: '#5f666e', flex: 'none' }} />
             <input
               ref={inputRef}
               value={query}
@@ -205,7 +206,7 @@ export default function CountrySelect({ value, onChange, options, placeholder = 
                     alignItems: 'center',
                     gap: 10,
                     padding: '10px 10px',
-                    borderRadius: 10,
+                    borderRadius: 'var(--tw-radius-sm,10px)',
                     border: 0,
                     cursor: 'pointer',
                     fontFamily: 'inherit',
@@ -223,7 +224,7 @@ export default function CountrySelect({ value, onChange, options, placeholder = 
                     <span style={{ width: 26, height: 26, borderRadius: '50%', background: '#f2f2f3', flex: 'none' }} />
                   )}
                   <span style={{ flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{o.label}</span>
-                  {isSelected && <span style={{ color: '#049dc5', fontSize: 15, flex: 'none' }}>✓</span>}
+                  {isSelected && <Icon name="check" size={15} style={{ color: '#049dc5', flex: 'none' }} />}
                 </button>
               );
             })}

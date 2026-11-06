@@ -1,4 +1,5 @@
 'use client';
+import Icon from './Icon';
 import { useState } from 'react';
 import Link from 'next/link';
 import SiteHeader from './SiteHeader';
@@ -21,7 +22,7 @@ const fmtDate = (d, en) => {
 };
 
 const CSS = `
-.qn-hero{background:linear-gradient(135deg,#34bbe1 0%,#049dc5 100%);color:#fff;position:relative;overflow:hidden}
+.qn-hero{background:var(--tw-band-deep,#049dc5);color:#fff;position:relative;overflow:hidden}
 .qn-hero-in{max-width:1240px;margin:0 auto;padding:46px 32px 40px;position:relative;display:flex;flex-direction:column;gap:12px}
 .qn-kick{font-size:13px;font-weight:700;letter-spacing:.06em;color:#fff3d6}
 .qn-hero h1{margin:0;font-size:clamp(30px,3.6vw,48px);line-height:1.15;color:#fff}
@@ -30,14 +31,14 @@ const CSS = `
 .qn-chip{padding:7px 15px;border-radius:999px;font-size:13.5px;font-weight:700;text-decoration:none;color:#fff;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.3)}
 .qn-chip.on{background:#fff;color:#036f8c}
 .qn-wrap{max-width:1240px;margin:0 auto;padding:36px 32px 70px}
-.qn-feat{display:grid;grid-template-columns:1.25fr 1fr;border-radius:24px;overflow:hidden;background:#fff;border:1px solid #e8eef1;text-decoration:none;color:inherit;box-shadow:0 18px 40px rgba(1,42,55,.08);margin-bottom:28px;transition:transform .2s}
-.qn-feat:hover{transform:translateY(-3px)}
+.qn-feat{display:grid;grid-template-columns:1.25fr 1fr;border-radius:var(--tw-radius,16px);overflow:hidden;background:#fff;border:1px solid #ececed;text-decoration:none;color:inherit;box-shadow:var(--tw-card-shadow,0 1px 3px rgba(29,39,51,.06));margin-bottom:28px;transition:transform .2s,box-shadow .2s}
+.qn-feat:hover{transform:translateY(-2px);box-shadow:var(--tw-lift-shadow,0 8px 22px rgba(1,42,55,.12))}
 .qn-feat .img{min-height:320px;background:#dff3fa center/cover}
 .qn-feat .txt{padding:30px;display:flex;flex-direction:column;gap:12px;justify-content:center}
 .qn-feat h2{margin:0;font-size:28px;line-height:1.3}
 .qn-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:22px}
-.qn-card{display:flex;flex-direction:column;border-radius:20px;overflow:hidden;background:#fff;border:1px solid #e8eef1;text-decoration:none;color:inherit;transition:transform .2s,box-shadow .2s}
-.qn-card:hover{transform:translateY(-4px);box-shadow:0 16px 34px rgba(1,42,55,.1)}
+.qn-card{display:flex;flex-direction:column;border-radius:var(--tw-radius,16px);overflow:hidden;background:#fff;border:1px solid #ececed;text-decoration:none;color:inherit;box-shadow:var(--tw-card-shadow,0 1px 3px rgba(29,39,51,.06));transition:transform .2s,box-shadow .2s}
+.qn-card:hover{transform:translateY(-2px);box-shadow:var(--tw-lift-shadow,0 8px 22px rgba(1,42,55,.12))}
 .qn-card .img{aspect-ratio:16/9;background:#dff3fa center/cover}
 .qn-card .txt{padding:18px 20px 20px;display:flex;flex-direction:column;gap:9px;flex:1}
 .qn-card h3{margin:0;font-size:19px;line-height:1.4}
@@ -56,7 +57,7 @@ const CSS = `
 .qn-share{display:flex;gap:8px;flex-wrap:wrap;align-items:center;border-top:1px solid #ececed;padding-top:18px;margin-top:10px;font-size:14px;color:#5f666e}
 .qn-share a,.qn-share button{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:8px 14px;font-weight:700;font-size:13.5px;text-decoration:none;cursor:pointer;font-family:inherit;border:1px solid #ececed;background:#fff;color:#1d2733}
 .qn-share .wa{background:#25d366;border-color:#25d366;color:#fff}
-.qn-cta{margin:30px 0 0;border-radius:18px;padding:22px;background:linear-gradient(135deg,#eaf8fd,#fff6df);display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.qn-cta{margin:30px 0 0;border-radius:var(--tw-radius,16px);padding:22px;background:#eaf8fd;border:1px solid #bfe9f6;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
 .qn-cta b{font-size:18px}
 .qn-rel{max-width:1240px;margin:0 auto;padding:10px 32px 70px}
 .qn-rel h2{font-size:24px;margin:0 0 16px}
@@ -68,7 +69,7 @@ function Card({ p, en }) {
   const cat = CATS[p.category] || CATS.news;
   return (
     <Link href={'/news/' + encodeURIComponent(p.slug)} className="qn-card">
-      <div className="img" style={{ backgroundImage: p.cover_url ? `url("${p.cover_url}")` : 'linear-gradient(135deg,#34bbe1,#049dc5)' }} />
+      <div className="img" style={{ backgroundImage: p.cover_url ? `url("${p.cover_url}")` : 'var(--tw-band-deep,#049dc5)' }} />
       <div className="txt">
         <div className="qn-meta"><span className="qn-cat" style={{ background: cat.c }}>{en ? cat.en : cat.ar}</span><span>{fmtDate(p.published_at, en)}</span><span>· {p.minutes} {en ? 'min read' : 'دقائق قراءة'}</span></div>
         <h3>{pick(en, p.title_ar, p.title_en)}</h3>
@@ -106,14 +107,14 @@ export function NewsIndexView({ posts, category }) {
         <div className="qn-wrap">
           {!posts.length && (
             <div className="qn-empty">
-              <span style={{ fontSize: 44 }}>📰</span>
+              <Icon name="newspaper" size={44} strokeWidth={1.4} style={{ color: '#049dc5' }} />
               <b style={{ fontSize: 18, color: '#1d2733' }}>{en ? 'No posts here yet' : 'لا توجد مقالات هنا بعد'}</b>
               <span>{en ? 'Check back soon.' : 'تابعنا قريباً.'}</span>
             </div>
           )}
           {first && (
             <Link href={'/news/' + encodeURIComponent(first.slug)} className="qn-feat">
-              <div className="img" style={{ backgroundImage: first.cover_url ? `url("${first.cover_url}")` : 'linear-gradient(135deg,#34bbe1,#049dc5)' }} />
+              <div className="img" style={{ backgroundImage: first.cover_url ? `url("${first.cover_url}")` : 'var(--tw-band-deep,#049dc5)' }} />
               <div className="txt">
                 <div className="qn-meta"><span className="qn-cat" style={{ background: (CATS[first.category] || CATS.news).c }}>{en ? (CATS[first.category] || CATS.news).en : (CATS[first.category] || CATS.news).ar}</span><span>{fmtDate(first.published_at, en)}</span><span>· {first.minutes} {en ? 'min read' : 'دقائق قراءة'}</span></div>
                 <h2>{pick(en, first.title_ar, first.title_en)}</h2>

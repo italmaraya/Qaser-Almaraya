@@ -1,4 +1,5 @@
 'use client';
+import Icon from './Icon';
 import { useMemo } from 'react';
 import Link from 'next/link';
 import { COUNTRY_GEO } from '../lib/geoData';
@@ -35,7 +36,7 @@ function tzDiffHours(tz) {
 
 /**
  * Top banner for a country's visa list: country photo, animated dotted route
- * from Baghdad, passport stamp and quick facts.
+ * from Baghdad and quick facts.
  */
 export default function CountryHero({ country, count, fastestDays, lang = 'ar', onPdf, downloading }) {
   const en = lang === 'en';
@@ -61,12 +62,12 @@ export default function CountryHero({ country, count, fastestDays, lang = 'ar', 
 
   const chips = [];
   if (info) {
-    chips.push(['📍', en ? 'From Baghdad' : 'من بغداد', Math.round(info.km / 10) * 10 + (en ? ' km' : ' كم')]);
-    chips.push(['✈️', en ? 'Direct flight' : 'مدة الطيران', '≈ ' + info.hh + (en ? 'h' : ' س') + (info.mm ? ' ' + info.mm + (en ? 'm' : ' د') : '')]);
-    if (info.diff !== null) chips.push(['🕐', en ? 'Time difference' : 'فرق التوقيت', info.diff === 0 ? (en ? 'Same as Baghdad' : 'نفس توقيت بغداد') : (info.diff > 0 ? '+' : '−') + Math.abs(info.diff) + (en ? 'h' : ' س')]);
-    if (info.currency) chips.push(['💱', en ? 'Currency' : 'العملة', info.currency]);
+    chips.push(['map-pin', en ? 'From Baghdad' : 'من بغداد', Math.round(info.km / 10) * 10 + (en ? ' km' : ' كم')]);
+    chips.push(['plane', en ? 'Direct flight' : 'مدة الطيران', '≈ ' + info.hh + (en ? 'h' : ' س') + (info.mm ? ' ' + info.mm + (en ? 'm' : ' د') : '')]);
+    if (info.diff !== null) chips.push(['clock', en ? 'Time difference' : 'فرق التوقيت', info.diff === 0 ? (en ? 'Same as Baghdad' : 'نفس توقيت بغداد') : (info.diff > 0 ? '+' : '−') + Math.abs(info.diff) + (en ? 'h' : ' س')]);
+    if (info.currency) chips.push(['banknote', en ? 'Currency' : 'العملة', info.currency]);
   }
-  if (fastestDays) chips.push(['⚡', en ? 'Fastest processing' : 'أسرع إصدار', workDaysLabel(fastestDays, lang)]);
+  if (fastestDays) chips.push(['zap', en ? 'Fastest processing' : 'أسرع إصدار', workDaysLabel(fastestDays, lang)]);
 
   return (
     <section className="qch" style={{ backgroundImage: photo ? `url("${photo}")` : undefined }}>
@@ -80,25 +81,17 @@ export default function CountryHero({ country, count, fastestDays, lang = 'ar', 
 .qch-copy{display:flex;flex-direction:column;gap:14px}
 .qch-back{color:rgba(255,255,255,.85);font-size:13.5px;font-weight:600;text-decoration:none;align-self:flex-start}
 .qch-title{display:flex;align-items:center;gap:14px}
-.qch-flag{width:58px;height:58px;border-radius:50%;object-fit:cover;border:3px solid #fff;box-shadow:0 6px 18px rgba(0,0,0,.3);flex:none}
+.qch-flag{width:58px;height:58px;border-radius:50%;object-fit:cover;border:3px solid #fff;box-shadow:var(--tw-card-shadow,0 1px 3px rgba(29,39,51,.06));flex:none}
 .qch h1{margin:0;font-size:clamp(26px,3.2vw,44px);line-height:1.15;color:#fff}
 .qch-sub{font-size:14px;color:rgba(255,255,255,.8)}
 .qch-chips{display:flex;flex-wrap:wrap;gap:8px}
-.qch-chip{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.22);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-radius:14px;padding:8px 12px}
+.qch-chip{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.22);border-radius:var(--tw-radius-sm,10px);padding:8px 12px}
 .qch-chip span{font-size:11px;color:rgba(255,255,255,.75);display:block}
 .qch-chip b{font-size:14px;display:block;white-space:nowrap}
-.qch-pdf{align-self:flex-start;display:inline-flex;align-items:center;gap:8px;background:#fff;color:#036f8c;border:0;border-radius:999px;padding:11px 20px;font-weight:700;font-size:14px;cursor:pointer;font-family:inherit;box-shadow:0 8px 22px rgba(0,0,0,.18)}
-.qch-stamp{position:absolute;z-index:1;bottom:-18px;inset-inline-start:34%;width:170px;height:170px;color:rgba(255,255,255,.14);transform:rotate(-14deg);pointer-events:none}
-@media (max-width:860px){.qch-in{grid-template-columns:1fr}.qch-map{width:100%;opacity:.45}.qch-stamp{display:none}}
+.qch-pdf{align-self:flex-start;display:inline-flex;align-items:center;gap:8px;background:#fff;color:#036f8c;border:0;border-radius:999px;padding:11px 20px;font-weight:700;font-size:14px;cursor:pointer;font-family:inherit}
+@media (max-width:860px){.qch-in{grid-template-columns:1fr}.qch-map{width:100%;opacity:.45}}
 `}</style>
       {info && <div dangerouslySetInnerHTML={{ __html: info.map }} style={{ display: 'contents' }} />}
-      <svg className="qch-stamp" viewBox="0 0 120 120" aria-hidden="true">
-        <circle cx="60" cy="60" r="56" fill="none" stroke="currentColor" strokeWidth="3.5" />
-        <circle cx="60" cy="60" r="48" fill="none" stroke="currentColor" strokeWidth="1.2" strokeDasharray="3 3" />
-        <text x="60" y="52" textAnchor="middle" fontSize="12" fontWeight="700" fill="currentColor">{name}</text>
-        <text x="60" y="74" textAnchor="middle" fontSize="18" fontWeight="700" fill="currentColor" fontFamily="IBM Plex Sans, sans-serif">VISA</text>
-        <text x="60" y="92" textAnchor="middle" fontSize="6.5" letterSpacing="1.5" fill="currentColor" fontFamily="IBM Plex Sans, sans-serif" fontWeight="700">QASER ALMARAYA</text>
-      </svg>
       <div className="qch-in">
         <div className="qch-copy">
           <Link href="/visa" className="qch-back">{en ? '← Back to visas' : '← رجوع إلى التأشيرات'}</Link>
@@ -113,12 +106,12 @@ export default function CountryHero({ country, count, fastestDays, lang = 'ar', 
           {chips.length > 0 && (
             <div className="qch-chips">
               {chips.map((c) => (
-                <div key={c[1]} className="qch-chip"><span style={{ fontSize: 17, display: 'inline' }}>{c[0]}</span><div><span>{c[1]}</span><b>{c[2]}</b></div></div>
+                <div key={c[1]} className="qch-chip"><Icon name={c[0]} size={18} style={{ flex: 'none', opacity: 0.9 }} /><div><span>{c[1]}</span><b>{c[2]}</b></div></div>
               ))}
             </div>
           )}
           <button type="button" className="qch-pdf" onClick={onPdf} disabled={downloading} style={{ opacity: downloading ? 0.6 : 1 }}>
-            📄 {downloading ? (en ? 'Preparing…' : '...جارٍ التحضير') : en ? `Download PDF of all ${name} visas` : `تحميل PDF لكل تأشيرات ${name}`}
+            <Icon name="file-text" size={15} />{downloading ? (en ? 'Preparing…' : '...جارٍ التحضير') : en ? `Download PDF of all ${name} visas` : `تحميل PDF لكل تأشيرات ${name}`}
           </button>
         </div>
       </div>

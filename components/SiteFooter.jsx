@@ -16,8 +16,7 @@ export default function SiteFooter() {
                 width: 78,
                 height: 78,
                 borderRadius: '50%',
-                background: 'radial-gradient(circle at 34% 28%,#ffffff,#eaf8fd 78%)',
-                boxShadow: '0 12px 28px rgba(1,42,55,.26),inset 0 -2px 6px rgba(4,157,197,.14)',
+                background: '#fff',
                 display: 'grid',
                 placeItems: 'center',
               }}

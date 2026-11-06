@@ -1,4 +1,5 @@
 'use client';
+import Icon from './Icon';
 import { useEffect, useRef, useState } from 'react';
 
 const SLIDE_MS = 7000;
@@ -40,20 +41,20 @@ export default function HeroCinematic({ slides: allSlides = [], kicker, title, s
   }, []);
   const [reduced, setReduced] = useState(false);
   const [lite, setLite] = useState(false);
-  // Videos get their source only after the page knows the screen size, so a
-  // phone never starts downloading a large hero video it will not show.
+  // Videos get their source only once the client has mounted, so the poster
+  // photo paints first and the download never blocks the first screen.
   const [ready, setReady] = useState(false);
   const videoRefs = useRef([]);
 
   useEffect(() => {
     try { setReduced(window.matchMedia('(prefers-reduced-motion: reduce)').matches); } catch {}
-    // Phones, data saver and slow connections get photos instead of the video
-    // (the video is several MB; on mobile data it delayed the page by ~10 s).
+    // Phones get the video too (the owner asked for it back on 6 Nov 2026).
+    // Only data saver and genuinely slow connections fall back to the poster
+    // photos, because the video is several megabytes.
     try {
       const c = navigator.connection;
-      if (c && (c.saveData || /(^|-)2g|3g/.test(c.effectiveType || ''))) setLite(true);
+      if (c && (c.saveData || /(^|-)2g/.test(c.effectiveType || ''))) setLite(true);
     } catch {}
-    try { if (window.matchMedia('(max-width: 820px)').matches) setLite(true); } catch {}
     setReady(true);
   }, []);
 
@@ -99,14 +100,14 @@ export default function HeroCinematic({ slides: allSlides = [], kicker, title, s
 .qh-mer{animation:qh-turn 24s linear infinite}
 @keyframes qh-turn{0%{rx:430px}25%{rx:0px}50%{rx:430px}75%{rx:0px}100%{rx:430px}}
 .qh-copy{position:absolute;inset:0;z-index:4;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:clamp(10px,1.4vw,18px);padding:0 6%}
-.qh-logo{width:clamp(60px,5.6vw,88px);height:auto;filter:drop-shadow(0 0 18px rgba(52,187,225,.55)) drop-shadow(0 6px 16px rgba(0,0,0,.35));animation:qh-up .9s ease both}
+.qh-logo{width:clamp(60px,5.6vw,88px);height:auto;filter:drop-shadow(0 4px 12px rgba(0,0,0,.35));animation:qh-up .9s ease both}
 .qh-kicker{font-size:clamp(14px,1.25vw,20px);font-weight:500;letter-spacing:.02em;opacity:.95;animation:qh-up .9s .12s ease both}
-.qh-title{margin:0;font-size:clamp(38px,6.4vw,104px);font-weight:700;line-height:1.05;letter-spacing:-.01em;text-shadow:0 6px 30px rgba(0,0,0,.35);animation:qh-up 1s .22s ease both}
+.qh-title{margin:0;font-size:clamp(38px,6.4vw,104px);font-weight:700;line-height:1.05;letter-spacing:-.01em;text-shadow:0 2px 12px rgba(0,0,0,.3);animation:qh-up 1s .22s ease both}
 .qh-sub{margin:0;max-width:640px;font-size:clamp(15px,1.2vw,19px);line-height:1.8;opacity:.92;animation:qh-up 1s .34s ease both}
 .qh-ctas{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin-top:6px;animation:qh-up 1s .46s ease both}
 .qh-btn{display:inline-flex;align-items:center;gap:9px;border-radius:999px;padding:clamp(11px,.9vw,15px) clamp(22px,2vw,34px);font-weight:700;font-size:clamp(14px,1vw,17px);cursor:pointer;font-family:inherit;border:0;text-decoration:none;transition:transform .2s,background .2s}
-.qh-btn:hover{transform:translateY(-2px)}
-.qh-btn.pri{background:#faab18;color:#012a37;box-shadow:0 10px 26px rgba(250,171,24,.35)}
+.qh-btn:hover{transform:translateY(-1px)}
+.qh-btn.pri{background:#faab18;color:#fff;box-shadow:0 6px 16px rgba(250,171,24,.28)}
 .qh-btn.sec{background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(255,255,255,.45);backdrop-filter:blur(6px)}
 @keyframes qh-up{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
 .qh-bottom{position:absolute;z-index:5;left:0;right:0;bottom:clamp(18px,3vh,34px);display:flex;align-items:center;justify-content:space-between;gap:16px;padding:0 5%}
@@ -119,7 +120,7 @@ export default function HeroCinematic({ slides: allSlides = [], kicker, title, s
 .qh-bar.on i{animation:qh-fill ${SLIDE_MS}ms linear forwards}
 .qh.paused .qh-bar.on i{animation-play-state:paused}
 @keyframes qh-fill{to{width:100%}}
-.qh-scroll{position:absolute;z-index:5;left:50%;bottom:clamp(14px,2.4vh,26px);transform:translateX(-50%);width:26px;height:40px;border:1.5px solid rgba(255,255,255,.6);border-radius:14px}
+.qh-scroll{position:absolute;z-index:5;left:50%;bottom:clamp(14px,2.4vh,26px);transform:translateX(-50%);width:26px;height:40px;border:1.5px solid rgba(255,255,255,.6);border-radius:var(--tw-radius-sm,10px)}
 .qh-scroll:after{content:"";position:absolute;left:50%;top:7px;width:3px;height:8px;margin-left:-1.5px;border-radius:2px;background:#fff;animation:qh-wheel 1.8s ease-in-out infinite}
 @keyframes qh-wheel{0%{opacity:0;transform:translateY(0)}30%{opacity:1}100%{opacity:0;transform:translateY(12px)}}
 @media (max-width:820px){.qh{height:calc(100svh - 150px);min-height:480px;max-height:720px}.qh-scroll{display:none}.qh-bottom{flex-direction:column-reverse;align-items:center;gap:10px;bottom:16px}.qh-ctas{flex-direction:column;align-items:stretch;width:100%;max-width:320px}.qh-btn{justify-content:center}.qh-lines{opacity:.7}}
@@ -157,7 +158,7 @@ export default function HeroCinematic({ slides: allSlides = [], kicker, title, s
           {primary && (
             <button type="button" className="qh-btn pri" onClick={primary.onClick}>
               {primary.label}
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" style={{ transform: dir === 'ltr' ? 'scaleX(-1)' : undefined }}><path d="M15 18l-6-6 6-6" /></svg>
+              <Icon name="chevron-left" size={14} strokeWidth={2.6} style={{ transform: dir === 'ltr' ? 'scaleX(-1)' : undefined }} />
             </button>
           )}
           {secondary && <a className="qh-btn sec" href={secondary.href} {...(/^https?:/.test(secondary.href || '') ? { target: '_blank', rel: 'noopener' } : {})}>{secondary.label}</a>}
@@ -168,7 +169,7 @@ export default function HeroCinematic({ slides: allSlides = [], kicker, title, s
         <div className="qh-cap" key={active}>
           {current.caption && (
             <span style={{ display: 'inline-flex', alignItems: 'center', gap: 7 }}>
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z" /><circle cx="12" cy="9.5" r="2.5" /></svg>
+              <Icon name="map-pin" size={15} />
               {current.caption}
             </span>
           )}

@@ -1,4 +1,5 @@
 'use client';
+import Icon from '../../../components/Icon';
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
@@ -46,7 +47,7 @@ export default function VisaDetailPage() {
         <SiteHeader active="التأشيرات" />
         <main style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 40 }}>
           <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', gap: 12, alignItems: 'center' }}>
-            <p style={{ color: '#d2324f', background: '#fdecef', border: '1px solid #f7c3cc', borderRadius: 10, padding: '14px 20px' }}>{error}</p>
+            <p style={{ color: '#d2324f', background: '#fdecef', border: '1px solid #f7c3cc', borderRadius: 'var(--tw-radius-sm,10px)', padding: '14px 20px' }}>{error}</p>
             <Link href="/visa" className="qa-btn qa-cyan" style={{ textDecoration: 'none' }}>← رجوع إلى التأشيرات</Link>
           </div>
         </main>
@@ -135,7 +136,7 @@ export default function VisaDetailPage() {
                 const tz = iso && iso !== 'iq' ? destinationTz(iso) : null;
                 return tz ? <WorldClocks tz={tz} place={nm(card.country_name_ar, card.country_name_en)} lang={lang} compact /> : null;
               })()}
-              <div style={{ background: 'linear-gradient(135deg,#0e6f8f,#049dc5)', borderRadius: 14, padding: 18, color: '#fff', display: 'flex', flexDirection: 'column', gap: 10 }}>
+              <div style={{ background: '#0e6f8f', borderRadius: 'var(--tw-radius-sm,10px)', padding: 18, color: '#fff', display: 'flex', flexDirection: 'column', gap: 10 }}>
                 <h4 style={{ margin: 0, fontSize: 15, color: '#fff' }}>لماذا قصر المرايا؟</h4>
                 {WHY_US.map((w, i) => (
                   <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
@@ -147,7 +148,7 @@ export default function VisaDetailPage() {
             </div>
 
             <div className="qa-detail-main" style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
-              <div className="qa-detail-hero" style={{ position: 'relative', height: 260, borderRadius: 20, overflow: 'hidden', background: (card.image_url || card.card_image_url) ? `url("${card.image_url || card.card_image_url}") center/cover no-repeat, linear-gradient(135deg,#34bbe1,#049dc5)` : 'linear-gradient(135deg,#34bbe1,#049dc5)', display: 'flex', alignItems: 'flex-end', padding: 20 }}>
+              <div className="qa-detail-hero" style={{ position: 'relative', height: 260, borderRadius: 'var(--tw-radius,16px)', overflow: 'hidden', background: (card.image_url || card.card_image_url) ? `url("${card.image_url || card.card_image_url}") center/cover no-repeat, var(--tw-band-deep,#049dc5)` : 'var(--tw-band-deep,#049dc5)', display: 'flex', alignItems: 'flex-end', padding: 20 }}>
                 {(card.image_url || card.card_image_url) && (
                   <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(1,30,40,.78) 0%, rgba(1,30,40,.25) 55%, rgba(1,30,40,.05) 100%)' }} />
                 )}
@@ -163,9 +164,9 @@ export default function VisaDetailPage() {
                       fontWeight: 700,
                       color: '#036f8c',
                       background: 'rgba(255,255,255,.96)',
-                      borderRadius: 12,
+                      borderRadius: 'var(--tw-radius-sm,10px)',
                       padding: '6px 12px',
-                      boxShadow: '0 4px 10px rgba(1,42,55,.25)',
+                      boxShadow: 'var(--tw-card-shadow,0 1px 3px rgba(29,39,51,.06))',
                       display: 'flex',
                       flexDirection: 'column',
                       gap: 2,
@@ -186,7 +187,7 @@ export default function VisaDetailPage() {
                   <img
                     src={flagSrc(card.flag_code)}
                     alt=""
-                    style={{ position: 'absolute', top: 20, right: 20, zIndex: 1, width: 52, height: 52, borderRadius: '50%', border: '2px solid #fff', objectFit: 'cover', boxShadow: '0 4px 12px rgba(0,0,0,.25)' }}
+                    style={{ position: 'absolute', top: 20, right: 20, zIndex: 1, width: 52, height: 52, borderRadius: '50%', border: '2px solid #fff', objectFit: 'cover', boxShadow: 'var(--tw-card-shadow,0 1px 3px rgba(29,39,51,.06))' }}
                     onError={(e) => { e.currentTarget.style.display = 'none'; }}
                   />
                 ) : null}
@@ -208,7 +209,7 @@ export default function VisaDetailPage() {
                     ['مدة الإصدار', workDaysLabel(card.issuing_time_days) || '—'],
                     ['سعر الطفل', Number(card.child_price).toLocaleString() + ' د.ع'],
                   ].map(([label, value]) => (
-                    <div key={label} style={{ border: '1px solid #ececed', borderRadius: 10, padding: '12px 14px' }}>
+                    <div key={label} style={{ border: '1px solid #ececed', borderRadius: 'var(--tw-radius-sm,10px)', padding: '12px 14px' }}>
                       <div style={{ fontSize: 12, color: '#5f666e' }}>{label}</div>
                       <div style={{ fontSize: 15, fontWeight: 700, color: '#1d2733' }}>{value}</div>
                     </div>
@@ -231,7 +232,7 @@ export default function VisaDetailPage() {
                   <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
                     {included.filter((f) => f.on).map((f) => (
                       <div key={f.label} className="qa-feat-row" style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                        <span style={{ flex: 'none', color: '#049dc5', fontWeight: 700 }}>✓</span>
+                        <Icon name="check" size={16} style={{ flex: 'none', color: '#049dc5' }} />
                         <span style={{ fontSize: 14.5, color: '#1d2733' }}>{f.label}</span>
                       </div>
                     ))}
@@ -275,12 +276,12 @@ export default function VisaDetailPage() {
       </main>
       <SiteFooter />
       {providerHints && (
-        <div style={{ position: 'fixed', bottom: 18, insetInlineStart: 18, zIndex: 60, background: '#1d2733', color: '#fff', fontSize: 12.5, fontWeight: 700, borderRadius: 999, padding: '8px 16px', boxShadow: '0 10px 24px rgba(1,42,55,.3)' }}>
-          ⌕ وضع الموظفين مفعّل — اكتب نفس الكلمة السرية للإخفاء
+        <div style={{ position: 'fixed', bottom: 18, insetInlineStart: 18, zIndex: 60, background: '#1d2733', color: '#fff', fontSize: 12.5, fontWeight: 700, borderRadius: 999, padding: '8px 16px', boxShadow: 'var(--tw-card-shadow,0 1px 3px rgba(29,39,51,.06))' }}>
+          <Icon name="search" size={13} style={{ verticalAlign: '-2px', marginInlineEnd: 6 }} />وضع الموظفين مفعّل — اكتب نفس الكلمة السرية للإخفاء
         </div>
       )}
       {providerDenied && (
-        <div style={{ position: 'fixed', bottom: 18, insetInlineStart: 18, zIndex: 60, background: '#d2324f', color: '#fff', fontSize: 12.5, fontWeight: 700, borderRadius: 999, padding: '8px 16px', boxShadow: '0 10px 24px rgba(1,42,55,.3)' }}>
+        <div style={{ position: 'fixed', bottom: 18, insetInlineStart: 18, zIndex: 60, background: '#d2324f', color: '#fff', fontSize: 12.5, fontWeight: 700, borderRadius: 999, padding: '8px 16px', boxShadow: 'var(--tw-card-shadow,0 1px 3px rgba(29,39,51,.06))' }}>
           غير مصرح لك بعرض هذه المعلومات
         </div>
       )}

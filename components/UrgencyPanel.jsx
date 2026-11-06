@@ -1,4 +1,5 @@
 'use client';
+import Icon from './Icon';
 import { useEffect, useState } from 'react';
 import { siteUrgency } from '../lib/packageUrgency';
 
@@ -41,18 +42,18 @@ export default function UrgencyPanel({ pkg, lang = 'ar' }) {
   const units = en ? ['days', 'hrs', 'min', 'sec'] : ['يوم', 'ساعة', 'دقيقة', 'ثانية'];
 
   return (
-    <div data-no-i18n="" className={'qa-urg' + (u.hot && !u.soldOut ? ' qa-urg-hot' : '')} style={{ display: 'flex', flexDirection: 'column', gap: 10, borderRadius: 14, padding: '12px 14px', background: tone.bg, color: tone.fg }}>
+    <div data-no-i18n="" className={'qa-urg' + (u.hot && !u.soldOut ? ' qa-urg-hot' : '')} style={{ display: 'flex', flexDirection: 'column', gap: 10, borderRadius: 'var(--tw-radius-sm,10px)', padding: '12px 14px', background: tone.bg, color: tone.fg }}>
       <style>{`
 .qa-urg-dot{width:9px;height:9px;border-radius:50%;background:currentColor;flex-shrink:0}
 .qa-urg-hot .qa-urg-dot{animation:qa-urg-pulse 1.2s ease-out infinite}
-@keyframes qa-urg-pulse{0%{box-shadow:0 0 0 0 rgba(224,54,79,.55)}100%{box-shadow:0 0 0 10px rgba(224,54,79,0)}}
-.qa-urg-box{flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;border-radius:10px;padding:6px 2px}
+@keyframes qa-urg-pulse{0%{box-shadow:none}100%{box-shadow:none}}
+.qa-urg-box{flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;border-radius:var(--tw-radius-sm,10px);padding:6px 2px}
 .qa-urg-box b{font-size:20px;line-height:1.1;font-variant-numeric:tabular-nums}
 .qa-urg-box span{font-size:11px;font-weight:600;opacity:.8}
 @media (prefers-reduced-motion:reduce){.qa-urg-hot .qa-urg-dot{animation:none}}
 `}</style>
       <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontWeight: 700, fontSize: 14 }}>
-        {u.soldOut ? <span style={{ fontSize: 18 }}>⛔</span> : <span className="qa-urg-dot" aria-hidden="true" />}
+        {u.soldOut ? <Icon name="ban" size={16} style={{ flex: 'none' }} /> : <span className="qa-urg-dot" aria-hidden="true" />}
         <span>
           {c && !u.soldOut ? dateLabel(u.date, en) : u.label}
           {u.soldOut ? (en ? ' — message us to join the waiting list' : ' — راسلنا للانضمام لقائمة الانتظار') : ''}

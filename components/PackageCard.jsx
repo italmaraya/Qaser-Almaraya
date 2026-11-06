@@ -17,8 +17,8 @@ function FlightRow({ f, lang, selected, onSelect }) {
   return (
     <div
       style={{
-        border: `1.5px solid ${selected ? '#049dc5' : '#ececed'}`,
-        background: selected ? '#eaf8fd' : '#fff', borderRadius: 14, padding: 14,
+        border: `1px solid ${selected ? '#049dc5' : '#ececed'}`,
+        background: selected ? '#eaf8fd' : '#fff', borderRadius: 'var(--tw-radius-sm,10px)', padding: 14,
         display: 'flex', flexDirection: 'column', gap: 10,
       }}
     >
@@ -86,15 +86,15 @@ function HotelRow({ h, lang, selected, onSelect }) {
     <div
       onClick={onSelect}
       style={{
-        cursor: 'pointer', border: `1.5px solid ${selected ? '#049dc5' : '#ececed'}`,
-        background: selected ? '#eaf8fd' : '#fff', borderRadius: 14, padding: 12,
+        cursor: 'pointer', border: `1px solid ${selected ? '#049dc5' : '#ececed'}`,
+        background: selected ? '#eaf8fd' : '#fff', borderRadius: 'var(--tw-radius-sm,10px)', padding: 12,
         display: 'flex', alignItems: 'center', gap: 12,
       }}
     >
       {h.imageUrl ? (
-        <img src={h.imageUrl} alt="" style={{ width: 56, height: 56, borderRadius: 10, objectFit: 'cover', flex: 'none' }} />
+        <img src={h.imageUrl} alt="" style={{ width: 56, height: 56, borderRadius: 'var(--tw-radius-sm,10px)', objectFit: 'cover', flex: 'none' }} />
       ) : (
-        <div style={{ width: 56, height: 56, borderRadius: 10, background: '#eaf8fd', display: 'grid', placeItems: 'center', flex: 'none' }}>
+        <div style={{ width: 56, height: 56, borderRadius: 'var(--tw-radius-sm,10px)', background: '#eaf8fd', display: 'grid', placeItems: 'center', flex: 'none' }}>
           <Icon name="building-2" size={20} style={{ color: '#049dc5' }} />
         </div>
       )}
@@ -120,7 +120,7 @@ function HotelRow({ h, lang, selected, onSelect }) {
   );
 }
 
-export default function PackageCard({ title, destination, image, nights, groupType, departs, price, includes = [], badge, onDetails, hotels = [], flights = [], lang = 'ar', rating = 4.8, style, urgency = null }) {
+export default function PackageCard({ title, destination, image, nights, groupType, departs, price, includes = [], badge, onDetails, hotels = [], flights = [], lang = 'ar', style, urgency = null }) {
   const [open, setOpen] = useState(false);
   const [tab, setTab] = useState('flights');
   const [flightIdx, setFlightIdx] = useState(0);
@@ -128,10 +128,9 @@ export default function PackageCard({ title, destination, image, nights, groupTy
   const hasFlights = flights.length > 0;
   const hasHotels = hotels.length > 0;
   const canToggle = hasFlights || hasHotels;
-  const roundedRating = Math.round(rating);
 
   return (
-    <div dir={lang === 'en' ? 'ltr' : 'rtl'} className="qa-pkg-card qa-hover-lift" style={{ background: '#fff', border: badge ? '3px solid #049dc5' : '1px solid #ececed', borderRadius: 24, boxShadow: badge ? '0 8px 26px rgba(4,157,197,.22)' : '0 2px 10px rgba(29,39,51,.06)', overflow: 'hidden', display: 'flex', flexDirection: 'column', ...style }}>
+    <div dir={lang === 'en' ? 'ltr' : 'rtl'} className="qa-pkg-card qa-hover-lift" style={{ background: '#fff', border: '1px solid #ececed', borderRadius: 'var(--tw-radius,16px)', boxShadow: 'var(--tw-card-shadow,0 1px 3px rgba(29,39,51,.06))', overflow: 'hidden', display: 'flex', flexDirection: 'column', ...style }}>
       <div className="qa-pkg-hero" style={{ position: 'relative', background: '#0d2b36' }}>
         {image ? (
           <img src={image} alt={title} style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }} />
@@ -143,13 +142,15 @@ export default function PackageCard({ title, destination, image, nights, groupTy
         <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(1,20,28,.9) 0%, rgba(1,20,28,.35) 42%, transparent 68%)' }} />
 
         {urgency && urgency.label && (
-          <span className={'qa-pkg-badge' + (urgency.hot && !urgency.soldOut ? ' qa-urg-badge' : '')} style={{ position: 'absolute', top: 14, insetInlineStart: 14, display: 'inline-flex', alignItems: 'center', gap: 5, background: urgency.soldOut ? '#1d2733' : urgency.hot ? '#e0364f' : '#faab18', color: '#fff', borderRadius: 999, fontWeight: 700, boxShadow: '0 4px 12px rgba(1,42,55,.25)', zIndex: 2 }}>
-            {urgency.soldOut ? '⛔' : '⏳'} {urgency.label}
+          <span className={'qa-pkg-badge' + (urgency.hot && !urgency.soldOut ? ' qa-urg-badge' : '')} style={{ position: 'absolute', top: 14, insetInlineStart: 14, display: 'inline-flex', alignItems: 'center', gap: 5, background: urgency.soldOut ? '#1d2733' : urgency.hot ? '#e0364f' : '#faab18', color: '#fff', borderRadius: 999, fontWeight: 700, boxShadow: 'var(--tw-card-shadow,0 1px 3px rgba(29,39,51,.06))', zIndex: 2 }}>
+            <Icon name={urgency.soldOut ? 'ban' : 'clock'} size={12} />{urgency.label}
           </span>
         )}
-        <span className="qa-pkg-badge" style={{ position: 'absolute', top: 14, insetInlineEnd: 14, display: 'inline-flex', alignItems: 'center', gap: 5, background: '#fff', borderRadius: 999, fontWeight: 700, color: '#1d2733', boxShadow: '0 4px 12px rgba(1,42,55,.25)' }}>
-          <Icon name="star" size={12} style={{ color: '#faab18' }} />{rating}
-        </span>
+        {badge ? (
+          <span className="qa-pkg-badge" style={{ position: 'absolute', top: 14, insetInlineEnd: 14, display: 'inline-flex', alignItems: 'center', background: '#fff', borderRadius: 999, fontWeight: 700, color: '#036f8c' }}>
+            {badge}
+          </span>
+        ) : null}
 
         <button
           type="button"
@@ -158,21 +159,13 @@ export default function PackageCard({ title, destination, image, nights, groupTy
           className="qa-pkg-arrow-btn"
           style={{
             position: 'absolute', bottom: 16, insetInlineEnd: 16, borderRadius: '50%',
-            background: '#fff', border: 'none', cursor: 'pointer', display: 'grid', placeItems: 'center', boxShadow: '0 4px 12px rgba(1,42,55,.3)',
+            background: '#fff', border: 'none', cursor: 'pointer', display: 'grid', placeItems: 'center',
           }}
         >
           <Icon name="arrow-up-right" size={16} style={{ color: '#036f8c' }} />
         </button>
 
         <div className="qa-pkg-hero-text" style={{ position: 'absolute', bottom: 14, insetInlineStart: 14, insetInlineEnd: 56, display: 'flex', flexDirection: 'column', gap: 3, color: '#fff' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-            <span style={{ display: 'flex', gap: 1 }}>
-              {Array.from({ length: 5 }).map((_, i) => (
-                <Icon key={i} name="star" size={10} style={{ color: i < roundedRating ? '#faab18' : 'rgba(255,255,255,.35)' }} />
-              ))}
-            </span>
-            <span style={{ fontSize: 10.5, color: 'rgba(255,255,255,.75)' }}>{rating} {lang === 'en' ? 'Out of 5' : 'من 5'}</span>
-          </div>
           <h4 className="qa-pkg-title" style={{ margin: 0, fontWeight: 700, color: '#fff', lineHeight: 1.3 }}>{title}</h4>
           {nights ? <span className="qa-pkg-subtitle" style={{ color: 'rgba(255,255,255,.8)' }}>{destination}{destination && nights ? ' · ' : ''}{nights}</span> : (
             <span className="qa-pkg-subtitle" style={{ color: 'rgba(255,255,255,.8)' }}>{destination}</span>
@@ -213,16 +206,15 @@ export default function PackageCard({ title, destination, image, nights, groupTy
               type="button"
               onClick={() => setOpen((o) => !o)}
               className="qa-pkg-toggle"
+              aria-expanded={open}
               style={{
                 display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10,
-                width: '100%', borderRadius: 12, cursor: 'pointer', fontFamily: 'inherit',
-                border: `1px solid ${open ? '#049dc5' : '#e7eef1'}`, background: open ? '#eaf8fd' : '#f8fbfc',
+                width: '100%', borderRadius: 0, cursor: 'pointer', fontFamily: 'inherit',
+                border: 0, borderTop: '1px solid #ececed', background: 'transparent',
               }}
             >
               <span style={{ display: 'flex', alignItems: 'center', gap: 9 }}>
-                <span style={{ width: 26, height: 26, borderRadius: '50%', background: '#fff', display: 'grid', placeItems: 'center', flex: 'none', boxShadow: '0 1px 3px rgba(29,39,51,.12)' }}>
-                  <Icon name="plane" size={13} style={{ color: '#049dc5', transform: 'rotate(90deg)' }} />
-                </span>
+                <Icon name="plane" size={15} style={{ color: '#049dc5', flex: 'none' }} />
                 <span style={{ fontSize: 13, fontWeight: 700, color: '#036f8c' }}>
                   {lang === 'en' ? 'Check flights & hotels' : 'تحقق من الطيران والفنادق'}
                 </span>
@@ -281,8 +273,8 @@ export default function PackageCard({ title, destination, image, nights, groupTy
 
       <style jsx>{`
         .qa-pkg-card { transition: transform .22s ease, box-shadow .22s ease; }
-        .qa-hover-lift:hover { transform: translateY(-5px); box-shadow: 0 16px 34px rgba(29,39,51,.14); }
-        .qa-pkg-hero { aspect-ratio: 3 / 4; }
+        .qa-hover-lift:hover { transform: translateY(-2px); box-shadow:var(--tw-lift-shadow, 0 8px 22px rgba(1,42,55,.12)); }
+        .qa-pkg-hero { aspect-ratio: 16 / 10; }
         .qa-pkg-badge { padding: 5px 11px; font-size: 12.5px; }
         .qa-pkg-arrow-btn { width: 34px; height: 34px; }
         .qa-pkg-title { font-size: 17px; }
@@ -295,10 +287,10 @@ export default function PackageCard({ title, destination, image, nights, groupTy
         .qa-pkg-price-label { font-size: 11.5px; }
         .qa-pkg-price { font-size: 18.5px; }
         .qa-pkg-cta { padding: 12px 22px; font-size: 14px; }
-        .qa-pkg-toggle { padding: 10px 12px; }
+        .qa-pkg-toggle { padding: 12px 2px 0; }
 
         @media (max-width: 640px) {
-          .qa-pkg-hero { aspect-ratio: 4 / 3; }
+          .qa-pkg-hero { aspect-ratio: 16 / 10; }
           .qa-pkg-badge { padding: 4px 9px; font-size: 11px; }
           .qa-pkg-arrow-btn { width: 28px; height: 28px; }
           .qa-pkg-title { font-size: 14.5px; }
@@ -311,7 +303,7 @@ export default function PackageCard({ title, destination, image, nights, groupTy
           .qa-pkg-price-label { font-size: 10.5px; }
           .qa-pkg-price { font-size: 16px; }
           .qa-pkg-cta { padding: 10px 16px; font-size: 13px; }
-          .qa-pkg-toggle { padding: 8px 10px; }
+          .qa-pkg-toggle { padding: 10px 2px 0; }
         }
       `}</style>
     </div>

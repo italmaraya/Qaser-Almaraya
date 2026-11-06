@@ -1,32 +1,19 @@
 'use client';
-import PhosphorIcon from './PhosphorIcon';
+import Icon from './Icon';
 
-/*
- * Icons for the "company goals" cards: Phosphor duotone (designer-made, MIT).
- * Colour follows currentColor, so the same icon works on the cyan and the
- * gold badges.
- */
+// The six "goals" icons on the homepage use the same Lucide set as the rest of
+// the site (one icon family everywhere, no second style).
+const goal = (name) => {
+  function Goal({ size = 32 }) {
+    return <Icon name={name} size={size} strokeWidth={1.75} />;
+  }
+  Goal.displayName = 'Goal_' + name;
+  return Goal;
+};
 
-export function GoalServices({ size = 32, label = 'خدمات سياحية متكاملة' }) {
-  return <PhosphorIcon name="suitcase-rolling" size={size} label={label} />;
-}
-
-export function GoalTrust({ size = 32, label = 'رضا العملاء وبناء الثقة' }) {
-  return <PhosphorIcon name="hand-heart" size={size} label={label} />;
-}
-
-export function GoalExpansion({ size = 32, label = 'توسع محلي ودولي' }) {
-  return <PhosphorIcon name="globe-hemisphere-east" size={size} label={label} />;
-}
-
-export function GoalTech({ size = 32, label = 'الابتكار والتطوير التقني' }) {
-  return <PhosphorIcon name="lightbulb" size={size} label={label} />;
-}
-
-export function GoalHeritage({ size = 32, label = 'ترويج السياحة المحلية' }) {
-  return <PhosphorIcon name="mosque" size={size} label={label} />;
-}
-
-export function GoalSafety({ size = 32, label = 'توفير تجربة سفر آمنة' }) {
-  return <PhosphorIcon name="shield-check" size={size} label={label} />;
-}
+export const GoalServices = goal('luggage');
+export const GoalTrust = goal('heart-handshake');
+export const GoalExpansion = goal('globe');
+export const GoalTech = goal('lightbulb');
+export const GoalHeritage = goal('landmark');
+export const GoalSafety = goal('shield-check');

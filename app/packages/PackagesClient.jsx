@@ -4,25 +4,15 @@ import { createPortal } from 'react-dom';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { siteUrgency } from '../../lib/packageUrgency';
-import dynamic from 'next/dynamic';
 import SiteHeader from '../../components/SiteHeader';
 import SiteFooter from '../../components/SiteFooter';
 import MascotLoader from '../../components/MascotLoader';
 import PackageCard from '../../components/PackageCard';
 
-const Globe3D = dynamic(() => import('../../components/Globe3D'), {
-  ssr: false,
-  loading: () => (
-    <div style={{ height: 340, display: 'grid', placeItems: 'center', color: 'rgba(255,255,255,.6)', fontSize: 13 }}>
-      جارٍ تحميل الكرة الأرضية...
-    </div>
-  ),
-});
 import Icon from '../../components/Icon';
 import { useLangToggle } from '../../lib/i18n';
 import { CATS, PREFS, T } from '../../lib/packagesData';
 import { formatPrice } from '../../lib/currency';
-import { COUNTRY_GEO } from '../../lib/geoData';
 import { REGIONS, countryInfo, flagUrl, groupPackagesByCountry, packageCountries, packageCountry, nightsLabel, destinationLabel, isoFromName } from '../../lib/destinations';
 
 import { BUDGETS } from '../../lib/budgets';
@@ -146,18 +136,10 @@ export default function PackagesPage({ initialPackages = null }) {
 
   const currentReview = reviews[reviewIndex] || reviews[0] || null;
 
-  const CAT_EMOJI = { family: '👨‍👩‍👧', honeymoon: '💍', music: '🎵', sports: '⚽', umrah: '🕋' };
 
   const heroImage = '/assets/packages-hero-cliffs.jpg';
 
-  const globePins = useMemo(() => destCountries
-    .map((c) => {
-      const g = COUNTRY_GEO[c.iso];
-      return g ? { lat: g[0], lng: g[1], name: nm(c.ar, c.en), iso: c.iso } : null;
-    })
-    .filter(Boolean), [destCountries, lang]);
-
-  // Next departures across all packages (one per package), for the globe panel.
+  // Next departures across all packages (one per package).
   const upcoming = useMemo(() => {
     const today = new Date().toISOString().slice(0, 10);
     return (packages || [])
@@ -236,12 +218,12 @@ export default function PackagesPage({ initialPackages = null }) {
             {heroImage ? (
               <img src={heroImage} alt="" className="qa-hero-bg-img" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }} />
             ) : (
-              <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(135deg,#34bbe1,#049dc5)' }} />
+              <div style={{ position: 'absolute', inset: 0, background: 'var(--tw-band-deep,#049dc5)' }} />
             )}
             <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(1,20,28,.82) 0%, rgba(1,20,28,.42) 55%, rgba(1,20,28,.18) 100%)' }} />
 
             <div style={{ position: 'relative', zIndex: 1, maxWidth: 860, margin: '0 auto', textAlign: 'center', padding: '0 24px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16 }}>
-              <span style={{ fontSize: 12.5, fontWeight: 700, letterSpacing: '.08em', color: '#fff', background: 'rgba(255,255,255,.16)', border: '1px solid rgba(255,255,255,.35)', borderRadius: 999, padding: '7px 18px', backdropFilter: 'blur(6px)' }}>
+              <span style={{ fontSize: 13, fontWeight: 700, letterSpacing: '.08em', color: 'rgba(255,255,255,.88)' }}>
                 {t.hero_eyebrow}
               </span>
               <h1 style={{ margin: 0, fontSize: 'clamp(32px,6vw,58px)', fontWeight: 800, color: '#fff', lineHeight: 1.08, maxWidth: 760 }}>{t.hero_title}</h1>
@@ -251,7 +233,7 @@ export default function PackagesPage({ initialPackages = null }) {
 
           {/* Floating search bar — overlaps the hero's bottom edge */}
           <div style={{ maxWidth: 1080, margin: 'clamp(-64px,-8vw,-46px) auto 0', padding: '0 20px', position: 'relative', zIndex: 30 }}>
-            <div className="qa-search-bar" style={{ background: '#fff', borderRadius: 24, boxShadow: '0 22px 54px rgba(1,42,55,.28)', display: 'flex', flexWrap: 'wrap', alignItems: 'stretch' }}>
+            <div className="qa-search-bar" style={{ background: '#fff', border: '1px solid #ececed', borderRadius: 'var(--tw-radius,16px)', boxShadow: 'var(--tw-pop-shadow,0 6px 20px rgba(1,42,55,.10))', display: 'flex', flexWrap: 'wrap', alignItems: 'stretch' }}>
               <div className="qa-search-field" style={{ position: 'relative', flex: '1 1 220px', padding: '14px 20px', display: 'flex', flexDirection: 'column', gap: 3, minWidth: 200 }}>
                 <span style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 11, fontWeight: 700, color: '#5f666e', textTransform: 'uppercase', letterSpacing: '.03em' }}>
                   <Icon name="map-pin" size={12} style={{ color: '#049dc5' }} />{lang === 'en' ? 'Destination' : 'الوجهة'}
@@ -269,7 +251,7 @@ export default function PackagesPage({ initialPackages = null }) {
                   <div
                     style={{
                       position: 'absolute', insetInlineStart: 0, insetInlineEnd: 0, top: 'calc(100% + 12px)', zIndex: 20,
-                      background: '#fff', border: '1px solid #ececed', borderRadius: 18, boxShadow: '0 14px 34px rgba(29,39,51,.16)',
+                      background: '#fff', border: '1px solid #ececed', borderRadius: 'var(--tw-radius,16px)', boxShadow: 'var(--tw-card-shadow,0 1px 3px rgba(29,39,51,.06))',
                       padding: 18, display: 'flex', flexDirection: 'column', gap: 14, maxHeight: 360, overflowY: 'auto', textAlign: 'start',
                     }}
                   >
@@ -329,7 +311,7 @@ export default function PackagesPage({ initialPackages = null }) {
                   <div
                     style={{
                       position: 'absolute', insetInlineEnd: 0, top: 'calc(100% + 12px)', zIndex: 20, width: 280, maxWidth: '90vw',
-                      background: '#fff', border: '1px solid #ececed', borderRadius: 18, boxShadow: '0 14px 34px rgba(29,39,51,.16)',
+                      background: '#fff', border: '1px solid #ececed', borderRadius: 'var(--tw-radius,16px)', boxShadow: 'var(--tw-card-shadow,0 1px 3px rgba(29,39,51,.06))',
                       padding: 18, display: 'flex', flexDirection: 'column', gap: 12, textAlign: 'start',
                     }}
                   >
@@ -364,7 +346,7 @@ export default function PackagesPage({ initialPackages = null }) {
                   className="qa-search-cta"
                   aria-label={lang === 'en' ? 'Search' : 'بحث'}
                   style={{
-                    width: 52, height: 52, borderRadius: 18, border: 'none', cursor: 'pointer', background: '#049dc5', color: '#fff',
+                    width: 52, height: 52, borderRadius: 'var(--tw-radius,16px)', border: 'none', cursor: 'pointer', background: '#049dc5', color: '#fff',
                     display: 'grid', placeItems: 'center', flex: 'none', gap: 8,
                   }}
                 >
@@ -391,7 +373,7 @@ export default function PackagesPage({ initialPackages = null }) {
                 ))}
                 {catsWithPackages.length > 1 && catsWithPackages.map((c) => (
                   <button key={c.id} type="button" onClick={() => setCat(cat === c.id ? 'all' : c.id)} className={`qa-pill${cat === c.id ? ' qa-pill-active' : ''}`}>
-                    <span style={{ marginInlineEnd: 5 }}>{CAT_EMOJI[c.id] || ''}</span>{nm(c.ar, c.en)}
+                    {nm(c.ar, c.en)}
                   </button>
                 ))}
               </div>
@@ -407,7 +389,7 @@ export default function PackagesPage({ initialPackages = null }) {
           {drawerOpen && typeof document !== 'undefined' ? createPortal(
             <div dir={lang === 'en' ? 'ltr' : 'rtl'} style={{ position: 'fixed', inset: 0, zIndex: 1000, display: 'flex', justifyContent: 'flex-end' }}>
               <div onClick={() => setDrawerOpen(false)} style={{ position: 'absolute', inset: 0, background: 'rgba(1,20,28,.45)' }} />
-              <div className="qa-drawer" style={{ position: 'relative', width: 'min(360px,88vw)', height: '100%', background: '#fff', boxShadow: '-12px 0 40px rgba(1,42,55,.2)', display: 'flex', flexDirection: 'column', overflowY: 'auto' }}>
+              <div className="qa-drawer" style={{ position: 'relative', width: 'min(360px,88vw)', height: '100%', background: '#fff', boxShadow: 'var(--tw-card-shadow,0 1px 3px rgba(29,39,51,.06))', display: 'flex', flexDirection: 'column', overflowY: 'auto' }}>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '20px 22px', borderBottom: '1px solid #ececed' }}>
                   <h3 style={{ margin: 0, fontSize: 18 }}>{lang === 'en' ? 'Filters' : 'الفلاتر'}</h3>
                   <button type="button" onClick={() => setDrawerOpen(false)} style={{ border: 'none', background: '#f4f4f4', borderRadius: '50%', width: 34, height: 34, cursor: 'pointer', display: 'grid', placeItems: 'center' }}>
@@ -465,7 +447,7 @@ export default function PackagesPage({ initialPackages = null }) {
                       value={query}
                       onChange={(e) => setQuery(e.target.value)}
                       placeholder={t.filter_destination_ph}
-                      style={{ width: '100%', boxSizing: 'border-box', padding: '12px 16px', borderRadius: 12, border: '1px solid #cacbcc', fontSize: 15, fontFamily: 'inherit' }}
+                      style={{ width: '100%', boxSizing: 'border-box', padding: '12px 16px', borderRadius: 'var(--tw-radius-sm,10px)', border: '1px solid #cacbcc', fontSize: 15, fontFamily: 'inherit' }}
                     />
                   </div>
                 </div>
@@ -493,9 +475,9 @@ export default function PackagesPage({ initialPackages = null }) {
           <style jsx>{`
             .qa-showcase-wrap { animation: qa-showcase-reveal .45s ease; }
             @keyframes qa-showcase-reveal { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
-            .qa-hover-lift-sm { transition: transform .2s ease, box-shadow .2s ease; border-radius: 22px; }
-            .qa-hover-lift-sm:hover { transform: translateY(-4px); }
-            .qa-hover-lift-sm:hover .qa-region-banner { box-shadow: 0 14px 30px rgba(1,42,55,.22); }
+            .qa-hover-lift-sm { transition: transform .2s ease, box-shadow .2s ease; border-radius:var(--tw-radius,16px); }
+            .qa-hover-lift-sm:hover { transform: translateY(-2px); }
+            .qa-hover-lift-sm:hover .qa-region-banner { box-shadow:var(--tw-card-shadow,0 1px 3px rgba(29,39,51,.06)); }
             .qa-region-pill { transition: background .15s ease, transform .15s ease; }
             .qa-region-pill:hover { background: rgba(255,255,255,.28) !important; transform: translateY(-1px); }
             .qa-search-divider { width: 1px; background: #ececed; margin: 10px 0; }
@@ -508,10 +490,10 @@ export default function PackagesPage({ initialPackages = null }) {
             .qa-fchip span { font-size: 12px; opacity: .65; }
             .qa-fchip.on { background: #049dc5; border-color: #049dc5; color: #fff; }
             .qa-dest-chip:hover { border-color: #049dc5; background: #eaf8fd; }
-            .qa-dest-chip img { width: 20px; height: 14px; object-fit: cover; border-radius: 2px; box-shadow: 0 0 0 1px rgba(0,0,0,.08); }
+            .qa-dest-chip img { width: 20px; height: 14px; object-fit: cover; border-radius: 2px; box-shadow:var(--tw-card-shadow,0 1px 3px rgba(29,39,51,.06)); }
             .qa-pkg-group { display: flex; flex-direction: column; gap: 16px; margin-bottom: 40px; }
             .qa-pkg-group-head { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; border-bottom: 1px solid #ececed; padding-bottom: 10px; }
-            .qa-pkg-group-head img { width: 28px; height: 20px; object-fit: cover; border-radius: 3px; box-shadow: 0 0 0 1px rgba(0,0,0,.08); }
+            .qa-pkg-group-head img { width: 28px; height: 20px; object-fit: cover; border-radius: 3px; box-shadow:var(--tw-card-shadow,0 1px 3px rgba(29,39,51,.06)); }
             .qa-pkg-group-head h3 { margin: 0; font-size: 20px; color: #1d2733; }
             .qa-pkg-group-head span { font-size: 13px; color: #5f666e; }
             .qa-pkg-group-head button {
@@ -528,7 +510,7 @@ export default function PackagesPage({ initialPackages = null }) {
               .qa-pkg-row > :global(*) { flex: 0 0 84%; scroll-snap-align: start; }
               .qa-pkg-group-head button { margin-inline-start: 0; width: 100%; text-align: start; }
             }
-:global(.qa-upc-row) { display: flex; align-items: center; gap: 10px; color: #fff; font-size: 13.5px; padding: 7px 10px; border-radius: 10px; background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.12); text-decoration: none; transition: background .15s; min-width: 0; }
+:global(.qa-upc-row) { display: flex; align-items: center; gap: 10px; color: #fff; font-size: 13.5px; padding: 7px 10px; border-radius:var(--tw-radius-sm,10px); background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.12); text-decoration: none; transition: background .15s; min-width: 0; }
             :global(.qa-upc-row:hover) { background: rgba(255,255,255,.16); color: #fff; }
             :global(.qa-upc-date) { flex-shrink: 0; font-weight: 700; color: #bfe9f6; min-width: 92px; }
             .qa-pill {
@@ -550,12 +532,12 @@ export default function PackagesPage({ initialPackages = null }) {
               background: #d2324f; color: #fff; font-size: 10.5px; font-weight: 800; padding: 0 4px;
             }
             .qa-search-cta { transition: transform .15s ease, box-shadow .15s ease; }
-            .qa-search-cta:hover { transform: translateY(-2px); box-shadow: 0 10px 24px rgba(4,157,197,.35); }
+            .qa-search-cta:hover { transform: translateY(-1px); }
             @media (max-width: 720px) {
               .qa-search-divider { display: none; }
               .qa-search-field { border-bottom: 1px solid #f0f0f0; }
               .qa-search-cta-wrap { width: 100%; padding: 6px 10px 14px !important; }
-              .qa-search-cta { width: 100% !important; border-radius: 14px !important; display: flex !important; flex-direction: row !important; gap: 8px !important; }
+              .qa-search-cta { width: 100% !important; border-radius:var(--tw-radius-sm,10px) !important; display: flex !important; flex-direction: row !important; gap: 8px !important; }
               .qa-search-cta-label { display: inline !important; }
             }
           `}</style>
@@ -566,12 +548,12 @@ export default function PackagesPage({ initialPackages = null }) {
             <h2 style={{ fontSize: 22, marginBottom: 4 }}>{t.packages_title}</h2>
             <p style={{ color: '#5f666e', marginBottom: 24 }}>{t.packages_sub}</p>
 
-            {error && <p style={{ color: '#d2324f', background: '#fdecef', border: '1px solid #f7c3cc', borderRadius: 10, padding: '14px 20px' }}>{error}</p>}
+            {error && <p style={{ color: '#d2324f', background: '#fdecef', border: '1px solid #f7c3cc', borderRadius: 'var(--tw-radius-sm,10px)', padding: '14px 20px' }}>{error}</p>}
 
             {!packages && !error && <div style={{ padding: 40 }}><MascotLoader assetBase="/assets" /></div>}
 
             {packages && filtered.length === 0 && (
-              <p style={{ color: '#5f666e', background: '#f8f7f8', border: '1px solid #ececed', borderRadius: 12, padding: '20px 24px' }}>{t.no_results}</p>
+              <p style={{ color: '#5f666e', background: '#f8f7f8', border: '1px solid #ececed', borderRadius: 'var(--tw-radius-sm,10px)', padding: '20px 24px' }}>{t.no_results}</p>
             )}
 
             {(budget !== 'all' || month !== 'all') && (
@@ -640,24 +622,24 @@ export default function PackagesPage({ initialPackages = null }) {
             ))}
           </section>
 
-          {/* Discover all destinations — interactive 3D globe */}
+          {/* Discover all destinations */}
           <section className="qa-sec" style={{ maxWidth: 1240, margin: '0 auto', padding: '8px 24px 8px' }}>
-            <div style={{ background: 'linear-gradient(135deg,#0a2530,#0d4a5c)', borderRadius: 28, overflow: 'hidden', display: 'grid', gridTemplateColumns: 'minmax(260px,1fr) minmax(280px,1.1fr)', alignItems: 'center', gap: 8 }}>
-              <div style={{ padding: 'clamp(28px,4vw,44px)', display: 'flex', flexDirection: 'column', gap: 14, color: '#fff' }}>
+            <div style={{ background: '#0d4a5c', borderRadius: 'var(--tw-radius,16px)', overflow: 'hidden' }}>
+              <div style={{ padding: 'clamp(26px,4vw,40px)', display: 'flex', flexDirection: 'column', gap: 14, color: '#fff' }}>
                 <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: '.08em', color: 'rgba(255,255,255,.7)' }}>
                   {lang === 'en' ? 'EXPLORE THE WORLD' : 'استكشف العالم'}
                 </span>
                 <h2 style={{ margin: 0, fontSize: 'clamp(22px,3vw,30px)', color: '#fff' }}>
                   {lang === 'en' ? 'Discover all destinations' : 'اكتشف كل الوجهات'}
                 </h2>
-                <p style={{ margin: 0, fontSize: 14, lineHeight: 1.8, color: 'rgba(255,255,255,.78)', maxWidth: 420 }}>
+                <p style={{ margin: 0, fontSize: 14, lineHeight: 1.8, color: 'rgba(255,255,255,.78)', maxWidth: 620 }}>
                   {lang === 'en'
-                    ? 'Spin the globe and tap a pin to jump straight to that destination — every country we travel to, in one view.'
-                    : 'أدر الكرة الأرضية واضغط على أي نقطة للانتقال مباشرة إلى تلك الوجهة — كل الدول التي نسافر إليها في مكان واحد.'}
+                    ? 'Every country we travel to, in one place: pick a destination below and its packages appear.'
+                    : 'كل الدول التي نسافر إليها في مكان واحد: اختر وجهتك من الأسفل وتظهر باقاتها.'}
                 </p>
                 {upcoming.length > 0 && (
-                  <div data-no-i18n="" style={{ display: 'flex', flexDirection: 'column', gap: 6, marginTop: 4 }}>
-                    <span style={{ fontSize: 13, fontWeight: 700, color: '#faab18' }}>✈️ {lang === 'en' ? 'Our next departures from Baghdad' : 'رحلاتنا القادمة من بغداد'}</span>
+                  <div data-no-i18n="" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(240px,1fr))', gap: 8, marginTop: 4 }}>
+                    <span style={{ gridColumn: '1 / -1', display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 13, fontWeight: 700, color: '#faab18' }}><Icon name="plane-takeoff" size={14} />{lang === 'en' ? 'Our next departures from Baghdad' : 'رحلاتنا القادمة من بغداد'}</span>
                     {upcoming.map(({ p, date }) => (
                       <Link key={p.id} href={'/packages/' + p.id} className="qa-upc-row">
                         <span className="qa-upc-date">{fmtDay(date)}</span>
@@ -674,16 +656,6 @@ export default function PackagesPage({ initialPackages = null }) {
                 >
                   {lang === 'en' ? 'Discover all' : 'استكشاف الكل'}
                 </button>
-              </div>
-              <div style={{ position: 'relative' }}>
-                <Globe3D
-                  pins={globePins}
-                  origin={{ lat: 33.31, lng: 44.36 }}
-                  startLng={32}
-                  startLat={26}
-                  onSelectPin={(p) => (p.iso ? pickCountry(p.iso) : setQuery(p.name))}
-                  height={340}
-                />
               </div>
             </div>
           </section>
@@ -716,7 +688,7 @@ export default function PackagesPage({ initialPackages = null }) {
           {reviews.length > 0 && currentReview && (
             <section style={{ background: '#f8f7f8', padding: '48px clamp(16px,4vw,32px)' }}>
               <div style={{ maxWidth: 1240, margin: '0 auto', display: 'grid', gridTemplateColumns: 'minmax(280px,1fr) minmax(260px,1fr)', gap: 24, alignItems: 'stretch' }}>
-                <div style={{ background: '#eaf8fd', borderRadius: 24, padding: 'clamp(28px,4vw,44px)', display: 'flex', flexDirection: 'column', gap: 16, position: 'relative', overflow: 'hidden' }}>
+                <div style={{ background: '#eaf8fd', borderRadius: 'var(--tw-radius,16px)', padding: 'clamp(28px,4vw,44px)', display: 'flex', flexDirection: 'column', gap: 16, position: 'relative', overflow: 'hidden' }}>
                   <span style={{ fontSize: 12, fontWeight: 700, color: '#5f666e' }}>{lang === 'en' ? 'Our testimonials' : 'آراء عملائنا'}</span>
                   <h2 style={{ margin: 0, fontSize: 'clamp(20px,3vw,28px)', color: '#1d2733' }}>{lang === 'en' ? 'What our customers say' : 'ماذا يقول عملاؤنا عنا'}</h2>
                   <div style={{ display: 'flex', gap: 2 }}>
@@ -750,7 +722,7 @@ export default function PackagesPage({ initialPackages = null }) {
                   )}
                   <span style={{ position: 'absolute', bottom: 14, insetInlineEnd: 28, fontSize: 56, fontWeight: 800, color: 'rgba(4,157,197,.15)', lineHeight: 1, fontFamily: 'Georgia, serif' }}>”</span>
                 </div>
-                <div style={{ borderRadius: 24, overflow: 'hidden', minHeight: 260, background: '#eaf8fd' }}>
+                <div style={{ borderRadius: 'var(--tw-radius,16px)', overflow: 'hidden', minHeight: 260, background: '#eaf8fd' }}>
                   {currentReview.photo_url ? (
                     <img src={currentReview.photo_url} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                   ) : (
@@ -771,7 +743,7 @@ export default function PackagesPage({ initialPackages = null }) {
                 { icon: 'plane', value: lang === 'en' ? '+150' : '+150', label: lang === 'en' ? 'Tours & package types' : 'جولة ونوع باقة', sub: lang === 'en' ? 'For every kind of traveller and group' : 'تناسب كل أنواع المسافرين والمجموعات' },
               ].map((s) => (
                 <div key={s.label} style={{ display: 'flex', alignItems: 'flex-start', gap: 14 }}>
-                  <span style={{ width: 48, height: 48, borderRadius: '50%', background: '#fff', display: 'grid', placeItems: 'center', flex: 'none', boxShadow: '0 4px 12px rgba(4,157,197,.18)' }}>
+                  <span style={{ width: 48, height: 48, borderRadius: '50%', background: '#fff', display: 'grid', placeItems: 'center', flex: 'none', border: '1px solid #bfe9f6' }}>
                     <Icon name={s.icon} size={22} style={{ color: '#049dc5' }} />
                   </span>
                   <div>

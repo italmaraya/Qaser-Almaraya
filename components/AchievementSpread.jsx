@@ -1,4 +1,5 @@
 'use client';
+import Icon from './Icon';
 import React, { useEffect, useRef, useState } from 'react';
 
 export default function AchievementSpread({ items = [], active, onSelect, assetBase = '/assets' }) {
@@ -38,31 +39,6 @@ export default function AchievementSpread({ items = [], active, onSelect, assetB
       <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1.05fr) minmax(0,.95fr)', gap: 44, alignItems: 'center' }}>
         <div style={{ position: 'relative', paddingTop: 22 }}>
           <div
-            aria-hidden="true"
-            style={{
-              position: 'absolute',
-              inset: '30px -10px -14px 10px',
-              background: '#fff',
-              border: '1px solid #ececed',
-              borderRadius: 20,
-              transform: 'rotate(2.5deg)',
-              boxShadow: '0 10px 24px rgba(1,42,55,.10)',
-            }}
-          />
-          <div
-            aria-hidden="true"
-            style={{
-              position: 'absolute',
-              inset: '30px 10px -14px -10px',
-              background: '#fff',
-              border: '1px solid #ececed',
-              borderRadius: 20,
-              transform: 'rotate(-2deg)',
-              boxShadow: '0 10px 24px rgba(1,42,55,.08)',
-            }}
-          />
-
-          <div
             style={{
               position: 'absolute',
               top: 0,
@@ -78,7 +54,6 @@ export default function AchievementSpread({ items = [], active, onSelect, assetB
               alignItems: 'center',
               justifyContent: 'center',
               textAlign: 'center',
-              boxShadow: '0 12px 22px rgba(4,157,197,.35)',
               border: '4px solid #fff',
             }}
           >
@@ -92,9 +67,9 @@ export default function AchievementSpread({ items = [], active, onSelect, assetB
               zIndex: 1,
               background: '#fff',
               border: '1px solid #ececed',
-              borderRadius: 20,
+              borderRadius: 'var(--tw-radius,16px)',
               overflow: 'hidden',
-              boxShadow: '0 18px 40px rgba(1,42,55,.14)',
+              boxShadow: 'var(--tw-card-shadow,0 1px 3px rgba(29,39,51,.06))',
             }}
           >
             <img
@@ -115,10 +90,7 @@ export default function AchievementSpread({ items = [], active, onSelect, assetB
               }}
             >
               <span style={{ display: 'inline-flex', alignItems: 'center', gap: 5 }}>
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M12 21s7-6.5 7-12a7 7 0 1 0-14 0c0 5.5 7 12 7 12z" />
-                  <circle cx="12" cy="9" r="2.5" />
-                </svg>
+                <Icon name="map-pin" size={14} />
                 {current.place}
               </span>
               <span style={{ fontWeight: 700, color: '#3d4650' }}>
@@ -152,7 +124,6 @@ export default function AchievementSpread({ items = [], active, onSelect, assetB
               width: 56,
               height: 56,
               borderRadius: '50%',
-              boxShadow: '0 6px 16px rgba(4,157,197,.28)',
             }}
           />
         </div>
@@ -173,7 +144,7 @@ export default function AchievementSpread({ items = [], active, onSelect, assetB
                   gap: 4,
                   minWidth: 130,
                   padding: '12px 16px',
-                  borderRadius: 14,
+                  borderRadius: 'var(--tw-radius-sm,10px)',
                   border: isActive ? '2px solid #049dc5' : '1px solid #ececed',
                   background: '#fff',
                   fontFamily: 'inherit',

@@ -63,7 +63,7 @@ export default function PaymentMethods({ title, note, methods, defaultOpen = 'ca
 
   if (submitted) {
     return (
-      <div dir="rtl" style={{ display: 'grid', gridTemplateColumns: 'clamp(180px,34%,300px) minmax(240px,1fr)', alignItems: 'stretch', borderRadius: 24, overflow: 'hidden', background: '#eaf8fd', border: '1px solid #bfe9f6', ...style }}>
+      <div dir="rtl" style={{ display: 'grid', gridTemplateColumns: 'clamp(180px,34%,300px) minmax(240px,1fr)', alignItems: 'stretch', borderRadius: 'var(--tw-radius,16px)', overflow: 'hidden', background: '#eaf8fd', border: '1px solid #bfe9f6', ...style }}>
         <img src={thankYouSrc || assetBase + '/mascot-skylo-thankyou.webp'} alt="سكايلو يشكرك" style={{ width: '100%', height: '100%', minHeight: 300, display: 'block', objectFit: 'cover' }} />
         <div style={{ minWidth: 0, display: 'flex', flexDirection: 'column', alignItems: 'flex-start', textAlign: 'start', justifyContent: 'center', gap: 10, padding: 26 }}>
           <span style={{ fontSize: 24, fontWeight: 700, color: '#036f8c' }}>شكراً لك!</span>
@@ -93,7 +93,7 @@ export default function PaymentMethods({ title, note, methods, defaultOpen = 'ca
           const on = open === m.id;
           const accent = m.warn ? '#c07f00' : '#036f8c';
           return (
-            <div key={m.id} style={{ border: '1px solid ' + (on ? accent : '#ececed'), borderRadius: 14, overflow: 'hidden', background: '#fff' }}>
+            <div key={m.id} style={{ border: '1px solid ' + (on ? accent : '#ececed'), borderRadius: 'var(--tw-radius-sm,10px)', overflow: 'hidden', background: '#fff' }}>
               <button onClick={() => setOpen(on ? '' : m.id)} style={{ width: '100%', boxSizing: 'border-box', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 12, padding: '14px 16px', border: 0, background: on ? (m.warn ? '#fef3dc' : '#eaf8fd') : '#f8f7f8', fontFamily: 'inherit', textAlign: 'start' }}>
                 <span style={{ display: 'grid', placeItems: 'center', width: 34, height: 34, flex: 'none', borderRadius: '50%', background: '#fff', border: '1px solid #ececed', color: accent }}>
                   <Icon name={m.icon} size={18} />
@@ -112,7 +112,7 @@ export default function PaymentMethods({ title, note, methods, defaultOpen = 'ca
                       <span dir={/[0-9+]/.test(r[1][0]) ? 'ltr' : 'rtl'} style={{ fontSize: 13.5, fontWeight: 600, color: '#1d2733', letterSpacing: /[0-9+]/.test(r[1][0]) ? '.04em' : 'normal' }}>{r[1]}</span>
                     </div>
                   ))}
-                  <p style={{ display: 'flex', gap: 8, margin: 0, padding: '12px 14px', borderRadius: 10, background: m.warn ? '#fef3dc' : '#f8f7f8', border: '1px solid ' + (m.warn ? '#fdd27c' : '#ececed'), fontSize: 13, lineHeight: 1.6, color: m.warn ? '#a06a00' : '#3d4650' }}>
+                  <p style={{ display: 'flex', gap: 8, margin: 0, padding: '12px 14px', borderRadius: 'var(--tw-radius-sm,10px)', background: m.warn ? '#fef3dc' : '#f8f7f8', border: '1px solid ' + (m.warn ? '#fdd27c' : '#ececed'), fontSize: 13, lineHeight: 1.6, color: m.warn ? '#a06a00' : '#3d4650' }}>
                     <Icon name={m.warn ? 'alert-triangle' : 'info'} size={17} style={{ marginTop: 2, flex: 'none' }} />
                     <span>{m.body}</span>
                   </p>
@@ -123,16 +123,16 @@ export default function PaymentMethods({ title, note, methods, defaultOpen = 'ca
         })}
       </div>
       {chosen ? (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 16, padding: 18, borderRadius: 14, border: '1.5px dashed #049dc5', background: '#eaf8fd' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 16, padding: 18, borderRadius: 'var(--tw-radius-sm,10px)', border: '1.5px dashed #049dc5', background: '#eaf8fd' }}>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
             <span style={{ fontSize: 15, fontWeight: 600, color: '#1d2733' }}>{atOffice ? 'تأكيد الدفع في المكتب' : 'أرفق إشعار الدفع — ' + chosen.label}</span>
             <span style={{ fontSize: 12, color: '#3d4650' }}>{atOffice ? 'أكِّد اختيارك، وادفع المبلغ في المكتب خلال يوم واحد — لا حاجة لإرفاق أي ملف.' : 'صورة أو PDF لإشعار التحويل — حتى 5 ميغابايت.'}</span>
           </div>
           {confirmError && (
-            <p style={{ margin: 0, padding: '10px 14px', borderRadius: 10, background: '#fdecef', border: '1px solid #f7c3cc', color: '#d2324f', fontSize: 13 }}>{confirmError}</p>
+            <p style={{ margin: 0, padding: '10px 14px', borderRadius: 'var(--tw-radius-sm,10px)', background: '#fdecef', border: '1px solid #f7c3cc', color: '#d2324f', fontSize: 13 }}>{confirmError}</p>
           )}
           {uploadError && (
-            <p style={{ margin: 0, padding: '10px 14px', borderRadius: 10, background: '#fdecef', border: '1px solid #f7c3cc', color: '#d2324f', fontSize: 13 }}>{uploadError}</p>
+            <p style={{ margin: 0, padding: '10px 14px', borderRadius: 'var(--tw-radius-sm,10px)', background: '#fdecef', border: '1px solid #f7c3cc', color: '#d2324f', fontSize: 13 }}>{uploadError}</p>
           )}
           <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
             {atOffice ? null : (
