@@ -34,8 +34,8 @@ function openChat() {
 // Text next to the Skylo button. Zoho's own launcher message disappears once
 // a visitor closes it, so the site keeps its own label beside the button.
 const LABEL = {
-  ar: { title: 'تحدّث معنا 💬', sub: 'سكايلو جاهز لمساعدتك' },
-  en: { title: 'Chat with us 💬', sub: 'Skylo is here to help' },
+  ar: { title: 'تحدّث معنا', sub: 'سكايلو جاهز لمساعدتك' },
+  en: { title: 'Chat with us', sub: 'Skylo is here to help' },
 };
 
 const GREET_DELAY_MS = 3000;

@@ -93,7 +93,7 @@ export default function TripFinder({ lang = 'ar' }) {
   return (
     <section className="qa-sec" data-no-i18n="" dir={en ? 'ltr' : 'rtl'}>
       <style>{`
-.qa-tf{position:relative;overflow:hidden;border-radius:26px;background:linear-gradient(135deg,#012a37 0%,#035a73 55%,#049dc5 100%);color:#fff;padding:34px 34px 30px;display:flex;flex-direction:column;gap:22px;box-shadow:0 22px 50px rgba(1,42,55,.22)}
+.qa-tf{position:relative;overflow:hidden;border-radius:var(--tw-radius,16px);background:#035a73;color:#fff;padding:34px 34px 30px;display:flex;flex-direction:column;gap:22px}
 .qa-tf h2{color:#fff;font-size:32px;font-weight:700}
 .qa-tf-row{display:flex;flex-direction:column;gap:9px}
 .qa-tf-row>b{font-size:14px;color:#bfe9f6;font-weight:600}
@@ -102,20 +102,18 @@ export default function TripFinder({ lang = 'ar' }) {
 .qa-tf-chip:hover{background:rgba(255,255,255,.18)}
 .qa-tf-chip.on{background:#faab18;border-color:#faab18;color:#012a37}
 .qa-tf-res{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
-.qa-tf-card{display:flex;gap:12px;align-items:stretch;background:#fff;color:#1d2733;border-radius:16px;overflow:hidden;animation:qa-tf-in .45s cubic-bezier(.16,1,.3,1) both}
-.qa-tf-card:hover{color:#1d2733;box-shadow:0 12px 30px rgba(0,0,0,.25)}
+.qa-tf-card{display:flex;gap:12px;align-items:stretch;background:#fff;color:#1d2733;border-radius:var(--tw-radius-sm,10px);overflow:hidden;animation:qa-tf-in .45s cubic-bezier(.16,1,.3,1) both;transition:box-shadow .2s}
+.qa-tf-card:hover{color:#1d2733;box-shadow:var(--tw-lift-shadow,0 8px 22px rgba(1,42,55,.12))}
 .qa-tf-card img{width:96px;flex-shrink:0;object-fit:cover;background:#e4f5fb}
 .qa-tf-card:nth-child(2){animation-delay:.07s}.qa-tf-card:nth-child(3){animation-delay:.14s}
 @keyframes qa-tf-in{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
 .qa-tf-tag{align-self:flex-start;font-size:11px;font-weight:700;border-radius:999px;padding:2px 8px}
-.qa-tf-wa{display:inline-flex;align-items:center;gap:8px;align-self:flex-start;font-family:inherit;font-size:15px;font-weight:700;border:0;border-radius:999px;padding:12px 22px;background:#25d366;color:#fff;cursor:pointer;box-shadow:0 10px 24px rgba(37,211,102,.3)}
-.qa-tf-deco{position:absolute;inset-inline-end:-40px;top:-40px;width:220px;height:220px;border-radius:50%;background:radial-gradient(circle,rgba(250,171,24,.35),transparent 70%);pointer-events:none}
+.qa-tf-wa{display:inline-flex;align-items:center;gap:8px;align-self:flex-start;font-family:inherit;font-size:15px;font-weight:700;border:0;border-radius:999px;padding:12px 22px;background:#25d366;color:#fff;cursor:pointer}
 .qa-tf .qa-btn{white-space:nowrap!important;min-height:0!important;line-height:1.3}
-@media (max-width:820px){.qa-tf{padding:24px 18px 22px;border-radius:20px;gap:18px}.qa-tf h2{font-size:22px!important}.qa-tf-chips{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}.qa-tf-chips::-webkit-scrollbar{display:none}.qa-tf-chip{white-space:nowrap;flex-shrink:0}.qa-tf-res{display:flex!important;flex-direction:column}.qa-tf-wa{align-self:stretch;justify-content:center}}
+@media (max-width:820px){.qa-tf{padding:24px 18px 22px;gap:18px}.qa-tf h2{font-size:22px!important}.qa-tf-chips{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}.qa-tf-chips::-webkit-scrollbar{display:none}.qa-tf-chip{white-space:nowrap;flex-shrink:0}.qa-tf-res{display:flex!important;flex-direction:column}.qa-tf-wa{align-self:stretch;justify-content:center}}
 @media (prefers-reduced-motion:reduce){.qa-tf-card{animation:none}}
 `}</style>
       <div className="qa-tf">
-        <div className="qa-tf-deco" aria-hidden="true" />
         <div style={{ display: 'flex', flexDirection: 'column', gap: 6, position: 'relative' }}>
           <h2>{en ? 'Where can I go on my budget?' : 'وين أسافر بميزانيتي؟'}</h2>
           <p style={{ fontSize: 16, color: '#d6f1fa' }}>{en ? 'Pick what suits you and we suggest the closest trips.' : 'اختر اللي يناسبك ونقترح عليك أقرب الرحلات.'}</p>

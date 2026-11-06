@@ -1,4 +1,5 @@
 'use client';
+import Icon from './Icon';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -7,12 +8,7 @@ import { waLink } from '../lib/whatsapp';
 
 const HIDE_ON = ['/admin', '/staff', '/login'];
 
-const ICONS = {
-  home: <path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z" />,
-  visa: <><rect x="5" y="3" width="14" height="18" rx="2" /><circle cx="12" cy="10" r="3" /><path d="M9 16h6" /></>,
-  pkg: <><path d="M3 7h18v12a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" /><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" /></>,
-  flight: <path d="M21 15.5v-1.7l-8-5V3.5a1.5 1.5 0 0 0-3 0v5.3l-8 5v1.7l8-2.5v5.2l-2 1.5V21l3.5-1 3.5 1v-1.3l-2-1.5V13z" />,
-};
+const ICONS = { home: 'house', visa: 'id-card', pkg: 'luggage', flight: 'plane' };
 
 // Phone-only bottom navigation with a raised WhatsApp button in the middle.
 export default function MobileBottomBar() {
@@ -52,7 +48,7 @@ export default function MobileBottomBar() {
       {items.map((it, i) =>
         it ? (
           <Link key={it.key} href={it.href} className={'qa-mbar-i' + (it.active ? ' on' : '')}>
-            <svg width="22" height="22" viewBox="0 0 24 24" fill={it.key === 'flight' ? 'currentColor' : 'none'} stroke={it.key === 'flight' ? 'none' : 'currentColor'} strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{ICONS[it.key]}</svg>
+            <Icon name={ICONS[it.key]} size={22} strokeWidth={1.9} />
             <span>{it.label}</span>
           </Link>
         ) : (

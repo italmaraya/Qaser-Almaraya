@@ -1,4 +1,5 @@
 'use client';
+import Icon from './Icon';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { formatPrice } from '../lib/currency';
@@ -27,12 +28,12 @@ export default function HomeOffers({ lang = 'ar' }) {
   return (
     <section className="qa-sec qa-offers" data-no-i18n="" dir={en ? 'ltr' : 'rtl'} style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
       <style>{`
-.qa-offer{display:flex;flex-direction:column;background:#fff;border:1px solid #ececed;border-radius:18px;overflow:hidden;box-shadow:0 2px 8px rgba(29,39,51,.07);color:inherit;transition:transform .2s ease,box-shadow .2s ease}
-.qa-offer:hover{transform:translateY(-3px);box-shadow:0 16px 36px rgba(1,42,55,.14);color:inherit}
+.qa-offer{display:flex;flex-direction:column;background:#fff;border:1px solid #ececed;border-radius:var(--tw-radius,16px);overflow:hidden;box-shadow:var(--tw-card-shadow,0 1px 3px rgba(29,39,51,.06));color:inherit;transition:transform .2s ease,box-shadow .2s ease}
+.qa-offer:hover{transform:translateY(-2px);box-shadow:var(--tw-card-shadow,0 1px 3px rgba(29,39,51,.06));color:inherit}
 .qa-offer-img{position:relative;aspect-ratio:16/10;background:#e4f5fb;overflow:hidden}
-.qa-offer-urg{position:absolute;top:10px;inset-inline-start:10px;display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:999px;color:#fff;font-size:12px;font-weight:700;box-shadow:0 4px 12px rgba(1,42,55,.25)}
+.qa-offer-urg{position:absolute;top:10px;inset-inline-start:10px;display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:999px;color:#fff;font-size:12px;font-weight:700}
 .qa-offer-img img{width:100%;height:100%;object-fit:cover}
-.qa-offer-skel{background:linear-gradient(90deg,#eef6f9 25%,#f7fbfc 50%,#eef6f9 75%);background-size:200% 100%;animation:qa-skel 1.2s linear infinite;min-height:300px;border-radius:18px}
+.qa-offer-skel{background:linear-gradient(90deg,#eef6f9 25%,#f7fbfc 50%,#eef6f9 75%);background-size:200% 100%;animation:qa-skel 1.2s linear infinite;min-height:300px;border-radius:var(--tw-radius,16px)}
 @keyframes qa-skel{to{background-position:-200% 0}}
 @media (max-width:820px){.qa-offers-grid{display:flex!important;overflow-x:auto;scroll-snap-type:x mandatory;gap:12px!important;padding-bottom:8px;scrollbar-width:none}.qa-offers-grid::-webkit-scrollbar{display:none}.qa-offers-grid>*{flex:0 0 78%;scroll-snap-align:start}.qa-offers .qa-btn{white-space:nowrap!important;padding:9px 16px!important;min-height:0!important;font-size:14px!important}}
 `}</style>
@@ -54,7 +55,7 @@ export default function HomeOffers({ lang = 'ar' }) {
                 {(() => {
                   const u = siteUrgency(p, lang);
                   if (!u || !u.label) return null;
-                  return <span className={'qa-offer-urg' + (u.hot && !u.soldOut ? ' qa-urg-badge' : '')} style={{ background: u.soldOut ? '#1d2733' : u.hot ? '#e0364f' : '#faab18' }}>{u.soldOut ? '⛔' : '⏳'} {u.label}</span>;
+                  return <span className="qa-offer-urg" style={{ background: u.soldOut ? '#1d2733' : u.hot ? '#e0364f' : '#faab18', color: u.soldOut || u.hot ? '#fff' : '#012a37' }}><Icon name={u.soldOut ? 'ban' : 'clock'} size={12} />{u.label}</span>;
                 })()}
               </div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 6, padding: '14px 16px 16px', flex: 1 }}>

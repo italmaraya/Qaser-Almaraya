@@ -1,4 +1,5 @@
 'use client';
+import Icon from './Icon';
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import { useLangToggle } from '../lib/i18n';
@@ -25,7 +26,7 @@ export default function SiteHeader({ active = 'التأشيرات' }) {
   }, [open]);
 
   return (
-    <header style={{ position: 'sticky', top: 0, zIndex: 40, background: '#fff', borderBottom: '1px solid #ececed', boxShadow: '0 1px 2px rgba(29,39,51,.06)' }}>
+    <header style={{ position: 'sticky', top: 0, zIndex: 40, background: '#fff', borderBottom: '1px solid #ececed', boxShadow: 'var(--tw-card-shadow,0 1px 3px rgba(29,39,51,.06))' }}>
       <SeasonDecor />
       <div className="qa-head" style={{ maxWidth: 1240, margin: '0 auto', padding: '12px 32px', display: 'flex', alignItems: 'center', gap: 24 }}>
         <Link href="/" aria-label="قصر المرايا للسفر و السياحة" className="qa-logo" style={{ display: 'flex', alignItems: 'center', gap: 9, textDecoration: 'none', flex: 'none' }}>
@@ -65,7 +66,7 @@ export default function SiteHeader({ active = 'التأشيرات' }) {
           className="qa-langbtn"
           style={{ flex: 'none', display: 'flex', alignItems: 'center', gap: 7, padding: '8px 14px', border: '1px solid #ececed', borderRadius: 999, background: '#fff', fontFamily: 'inherit', fontSize: 13, fontWeight: 700, letterSpacing: '.04em', color: '#22a9d4', cursor: 'pointer' }}
         >
-          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"><circle cx="12" cy="12" r="9" /><path d="M3 12h18" /><path d="M12 3c2.5 2.6 2.5 15.4 0 18M12 3c-2.5 2.6-2.5 15.4 0 18" /></svg>
+          <Icon name="globe" size={17} strokeWidth={1.8} />
           <span>{lang === 'ar' ? 'EN' : 'ع'}</span>
         </button>
         <Link href="/contact" className="qa-btn qa-cyan qa-headcta" style={{ flex: 'none', padding: '9px 18px', fontSize: 14, textDecoration: 'none' }}>
@@ -87,18 +88,14 @@ export default function SiteHeader({ active = 'التأشيرات' }) {
             width: 42,
             height: 42,
             border: 0,
-            borderRadius: 10,
+            borderRadius: 'var(--tw-radius-sm,10px)',
             background: '#049dc5',
             color: '#fff',
             cursor: 'pointer',
             marginInlineStart: 'auto',
           }}
         >
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round">
-            <path d="M3 6h18" />
-            <path d="M3 12h18" />
-            <path d="M3 18h18" />
-          </svg>
+          <Icon name="menu" size={22} strokeWidth={2.2} />
         </button>
       </div>
 
@@ -124,7 +121,7 @@ export default function SiteHeader({ active = 'التأشيرات' }) {
               style={{
                 width: 42,
                 height: 42,
-                borderRadius: 10,
+                borderRadius: 'var(--tw-radius-sm,10px)',
                 border: 0,
                 background: 'rgba(255,255,255,.18)',
                 color: '#fff',
@@ -134,10 +131,7 @@ export default function SiteHeader({ active = 'التأشيرات' }) {
                 cursor: 'pointer',
               }}
             >
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round">
-                <path d="M6 6l12 12" />
-                <path d="M18 6L6 18" />
-              </svg>
+              <Icon name="x" size={20} strokeWidth={2.4} />
             </button>
           </div>
 
@@ -186,7 +180,7 @@ export default function SiteHeader({ active = 'التأشيرات' }) {
                 cursor: 'pointer',
               }}
             >
-              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"><circle cx="12" cy="12" r="9" /><path d="M3 12h18" /><path d="M12 3c2.5 2.6 2.5 15.4 0 18M12 3c-2.5 2.6-2.5 15.4 0 18" /></svg>
+              <Icon name="globe" size={17} strokeWidth={1.8} />
               <span>{lang === 'ar' ? 'EN' : 'ع'}</span>
             </button>
             <Link

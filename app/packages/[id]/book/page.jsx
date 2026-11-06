@@ -13,7 +13,7 @@ import { formatPrice } from '../../../../lib/currency';
 import { nightsLabel, destinationLabel } from '../../../../lib/destinations';
 
 const inputStyle = {
-  width: '100%', boxSizing: 'border-box', padding: '10px 12px', borderRadius: 8,
+  width: '100%', boxSizing: 'border-box', padding: '10px 12px', borderRadius: 'var(--tw-radius-xs,8px)',
   border: '1px solid #ececed', fontSize: 15, fontFamily: 'inherit',
 };
 const labelStyle = { display: 'flex', flexDirection: 'column', gap: 6, fontSize: 14, fontWeight: 600, color: '#3d4650' };
@@ -125,7 +125,7 @@ function ArchivedPackageBookingPage() {
         <SiteHeader active="المجموعات والباقات" />
         <main style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 40 }}>
           <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', gap: 12, alignItems: 'center' }}>
-            <p style={{ color: '#d2324f', background: '#fdecef', border: '1px solid #f7c3cc', borderRadius: 10, padding: '14px 20px' }}>{error}</p>
+            <p style={{ color: '#d2324f', background: '#fdecef', border: '1px solid #f7c3cc', borderRadius: 'var(--tw-radius-sm,10px)', padding: '14px 20px' }}>{error}</p>
             <Link href="/packages" className="qa-btn qa-cyan" style={{ textDecoration: 'none' }}>{t.back_to_results}</Link>
           </div>
         </main>
@@ -173,7 +173,7 @@ function ArchivedPackageBookingPage() {
                     <h4 style={{ margin: '0 0 14px' }}>{t.booking_title}</h4>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
                       {travelers.map((tr, idx) => (
-                        <div key={idx} style={{ border: '1px solid #ececed', borderRadius: 12, padding: 14, display: 'flex', flexDirection: 'column', gap: 10 }}>
+                        <div key={idx} style={{ border: '1px solid #ececed', borderRadius: 'var(--tw-radius-sm,10px)', padding: 14, display: 'flex', flexDirection: 'column', gap: 10 }}>
                           <span style={{ fontSize: 13, fontWeight: 700, color: '#036f8c' }}>{tr.traveler_type === 'adult' ? t.pax_adult : t.pax_child} {idx + 1}</span>
                           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(180px,1fr))', gap: 10 }}>
                             <label style={labelStyle}>
@@ -220,7 +220,7 @@ function ArchivedPackageBookingPage() {
                     </div>
                   </div>
 
-                  {submitError && <p style={{ color: '#d2324f', background: '#fdecef', border: '1px solid #f7c3cc', borderRadius: 10, padding: '12px 16px' }}>{submitError}</p>}
+                  {submitError && <p style={{ color: '#d2324f', background: '#fdecef', border: '1px solid #f7c3cc', borderRadius: 'var(--tw-radius-sm,10px)', padding: '12px 16px' }}>{submitError}</p>}
 
                   {!showPayment && (
                     <div style={{ display: 'flex', flexDirection: 'column', gap: 8, alignItems: 'flex-start' }}>

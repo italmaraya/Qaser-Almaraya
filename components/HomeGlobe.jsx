@@ -1,4 +1,5 @@
 'use client';
+import Icon from './Icon';
 import { useEffect, useMemo, useState } from 'react';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
@@ -65,15 +66,15 @@ export default function HomeGlobe({ lang = 'ar', mode = 'all' }) {
         </h2>
         <p style={{ margin: 0, color: '#3d4650', lineHeight: 1.8 }}>
           {visaOnly
-            ? (en ? 'Spin the globe and tap any glowing country to see its visa types.' : 'أدر الكرة الأرضية واضغط على أي دولة مضيئة لتشاهد أنواع تأشيراتها.')
-            : (en ? 'Spin the globe and tap any glowing point to see its visas and trips.' : 'أدر الكرة الأرضية واضغط على أي نقطة مضيئة لتشاهد تأشيراتها ورحلاتها.')}
+            ? (en ? 'Drag the globe and tap any marked country to see its visa types.' : 'حرّك الكرة الأرضية واضغط على أي دولة معلَّمة لتشاهد أنواع تأشيراتها.')
+            : (en ? 'Drag the globe and tap any marked point to see its visas and trips.' : 'حرّك الكرة الأرضية واضغط على أي نقطة معلَّمة لتشاهد تأشيراتها ورحلاتها.')}
         </p>
         {picked ? (
           <div className="qa-card" style={{ display: 'flex', flexDirection: 'column', gap: 10, border: '1px solid #d9e9ef' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
               <img src={picked.flag} alt="" onError={(e) => { e.currentTarget.style.display = 'none'; }} style={{ width: 38, height: 26, objectFit: 'cover', borderRadius: 5, border: '1px solid #ececed' }} />
               <b style={{ fontSize: 18 }}>{picked.name}</b>
-              <button type="button" onClick={() => setPicked(null)} style={{ marginInlineStart: 'auto', border: 0, background: 'none', cursor: 'pointer', fontSize: 18, color: '#5f666e' }} aria-label="close">×</button>
+              <button type="button" onClick={() => setPicked(null)} style={{ marginInlineStart: 'auto', border: 0, background: 'none', cursor: 'pointer', display: 'grid', placeItems: 'center', color: '#5f666e' }} aria-label="close"><Icon name="x" size={18} /></button>
             </div>
             <span style={{ fontSize: 13, color: '#5f666e' }}>
               {picked.visas > 0 && (en ? `${picked.visas} visa type${picked.visas > 1 ? 's' : ''}` : `${picked.visas} نوع تأشيرة`)}
@@ -97,7 +98,7 @@ export default function HomeGlobe({ lang = 'ar', mode = 'all' }) {
           </div>
         )}
       </div>
-      <div style={{ position: 'relative', borderRadius: 24, background: 'radial-gradient(circle at 50% 45%,#0d3d52 0%,#062433 60%,#04161f 100%)', overflow: 'hidden' }}>
+      <div style={{ position: 'relative', borderRadius: 'var(--tw-radius,16px)', background: '#062433', overflow: 'hidden' }}>
         <Globe3D pins={pins} origin={BAGHDAD} startLng={BAGHDAD.lng - 12} startLat={28} cameraZ={7.4} onSelectPin={setPicked} height={420} />
         <span style={{ position: 'absolute', bottom: 12, insetInlineStart: 16, fontSize: 12, color: 'rgba(255,255,255,.75)', display: 'flex', alignItems: 'center', gap: 6 }}>
           <span style={{ width: 9, height: 9, borderRadius: '50%', background: '#ff5a5f', display: 'inline-block' }} /> {en ? 'Baghdad' : 'بغداد'}

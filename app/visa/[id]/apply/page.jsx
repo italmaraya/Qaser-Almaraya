@@ -1,4 +1,5 @@
 'use client';
+import Icon from '../../../../components/Icon';
 import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
@@ -14,7 +15,7 @@ const inputStyle = {
   width: '100%',
   boxSizing: 'border-box',
   padding: '10px 12px',
-  borderRadius: 8,
+  borderRadius: 'var(--tw-radius-xs,8px)',
   border: '1px solid #ececed',
   fontSize: 15,
   fontFamily: 'inherit',
@@ -155,7 +156,7 @@ function TravelerForm({ index, travelerType, documents, onChange, onProgress }) 
                     <input type="file" accept={d.kind === 'photo' ? 'image/*' : undefined} onChange={(e) => handleFile(d, e.target.files[0])} style={{ display: 'none' }} />
                   </label>
                   {uploading[d.id] && <span style={{ fontSize: 13, color: '#5f666e' }}>...جارٍ الرفع</span>}
-                  {!uploading[d.id] && files[d.id] && <span style={{ fontSize: 13, color: '#049dc5' }}>✓ تم الرفع</span>}
+                  {!uploading[d.id] && files[d.id] && <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4, fontSize: 13, color: '#049dc5' }}><Icon name="check" size={14} />تم الرفع</span>}
                 </div>
                 {uploadErrors[d.id] && <span style={{ fontSize: 12.5, color: '#d2324f' }}>{uploadErrors[d.id]}</span>}
               </div>
@@ -178,7 +179,7 @@ function TravelerForm({ index, travelerType, documents, onChange, onProgress }) 
                       cursor: 'pointer',
                       flex: 1,
                       padding: '10px 0',
-                      borderRadius: 8,
+                      borderRadius: 'var(--tw-radius-xs,8px)',
                       border: '1px solid ' + (answers[d.id] === val ? '#049dc5' : '#ececed'),
                       background: answers[d.id] === val ? '#049dc5' : '#fff',
                       color: answers[d.id] === val ? '#fff' : '#3d4650',
@@ -348,7 +349,7 @@ function ArchivedVisaApplyPage() {
       <div dir="rtl" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
         <SiteHeader active="التأشيرات" />
         <main style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 40 }}>
-          <p style={{ color: '#d2324f', background: '#fdecef', border: '1px solid #f7c3cc', borderRadius: 10, padding: '14px 20px' }}>{error}</p>
+          <p style={{ color: '#d2324f', background: '#fdecef', border: '1px solid #f7c3cc', borderRadius: 'var(--tw-radius-sm,10px)', padding: '14px 20px' }}>{error}</p>
         </main>
         <SiteFooter />
       </div>
@@ -385,7 +386,7 @@ function ArchivedVisaApplyPage() {
       <SiteHeader active="التأشيرات" />
       <main style={{ flex: 1 }}>
         <div className="qa-page">
-          <section style={{ background: 'linear-gradient(135deg,#34bbe1,#049dc5)', color: '#fff' }}>
+          <section style={{ background: 'var(--tw-band-deep,#049dc5)', color: '#fff' }}>
             <div className="qa-sec" style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
               <Link href={`/visa/${id}`} style={{ fontSize: 13.5, color: 'rgba(255,255,255,.85)', textDecoration: 'none', alignSelf: 'flex-start' }}>← رجوع إلى التأشيرات</Link>
               <div>
@@ -517,7 +518,7 @@ function ArchivedVisaApplyPage() {
                   ))}
 
                   {error && (
-                    <p style={{ margin: 0, padding: 12, background: '#fdecef', border: '1px solid #f7c3cc', borderRadius: 10, color: '#d2324f', fontSize: 14 }}>{error}</p>
+                    <p style={{ margin: 0, padding: 12, background: '#fdecef', border: '1px solid #f7c3cc', borderRadius: 'var(--tw-radius-sm,10px)', color: '#d2324f', fontSize: 14 }}>{error}</p>
                   )}
                 </>
               )}
@@ -526,7 +527,7 @@ function ArchivedVisaApplyPage() {
                 <div className="qa-card">
                   {submitting && <p style={{ margin: 0, color: '#5f666e', fontSize: 14 }}>...جارٍ إرسال طلبك في الخلفية</p>}
                   {error && (
-                    <p style={{ margin: '0 0 14px', padding: 12, background: '#fdecef', border: '1px solid #f7c3cc', borderRadius: 10, color: '#d2324f', fontSize: 14 }}>{error}</p>
+                    <p style={{ margin: '0 0 14px', padding: 12, background: '#fdecef', border: '1px solid #f7c3cc', borderRadius: 'var(--tw-radius-sm,10px)', color: '#d2324f', fontSize: 14 }}>{error}</p>
                   )}
                   <PaymentMethods
                     submitting={submitting}

@@ -170,7 +170,8 @@ export default function Globe3D({ pins = [], onSelectPin, height = 340, origin =
     // Start with the chosen longitude (e.g. Baghdad) facing the viewer.
     let rotY = typeof startLng === 'number' ? -((startLng + 90) * Math.PI) / 180 : 0.4;
     let rotX = typeof startLat === 'number' ? Math.max(-0.6, Math.min(0.6, (startLat * Math.PI) / 180)) : -0.15;
-    let autoRotate = true;
+    // The globe only moves when the visitor drags it (no idle spinning).
+    let autoRotate = false;
 
     function applyRotation() {
       globeGroup.rotation.y = rotY;
@@ -208,7 +209,6 @@ export default function Globe3D({ pins = [], onSelectPin, height = 340, origin =
         const hit = raycaster.intersectObjects(pinMeshes)[0];
         if (hit && onSelectPin) onSelectPin(hit.object.userData.pin);
       }
-      setTimeout(() => { autoRotate = true; }, 2500);
     }
 
     renderer.domElement.addEventListener('pointerdown', onPointerDown);
@@ -222,17 +222,11 @@ export default function Globe3D({ pins = [], onSelectPin, height = 340, origin =
         rotY += 0.0016;
         applyRotation();
       }
-      cloudsMesh.rotation.y += 0.00035;
-      t += 0.045;
-      comets.forEach((c) => {
-        c.userData.offset = (c.userData.offset + c.userData.speed) % 1;
-        c.position.copy(c.userData.curve.getPoint(c.userData.offset));
-      });
-      if (originSprite) { const os = 0.5 * (1 + Math.sin(t * 1.3) * 0.18); originSprite.scale.set(os, os, os); }
-      pinMeshes.forEach((sprite, i) => {
-        const s = sprite.userData.baseScale * (1 + Math.sin(t + i) * 0.12);
-        sprite.scale.set(s, s, s);
-      });
+      // Static scene: pins, origin and route markers keep their place and size.
+      if (t === 0) {
+        t = 1;
+        comets.forEach((c) => c.position.copy(c.userData.curve.getPoint(c.userData.offset)));
+      }
       renderer.render(scene, camera);
       raf = requestAnimationFrame(tick);
     }

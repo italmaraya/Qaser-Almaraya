@@ -29,7 +29,7 @@ export default function GuideClient({ iso = null }) {
               <Link href="/guide" style={{ fontSize: 14, fontWeight: 600 }}>{en ? '← All destination guides' : '→ كل أدلة الوجهات'}</Link>
               <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={flagUrl(iso)} alt="" width="64" height="44" style={{ width: 64, height: 44, objectFit: 'cover', borderRadius: 8, border: '1px solid #ececed' }} />
+                <img src={flagUrl(iso)} alt="" width="64" height="44" style={{ width: 64, height: 44, objectFit: 'cover', borderRadius: 'var(--tw-radius-xs,8px)', border: '1px solid #ececed' }} />
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
                   <h1 style={{ fontSize: 34, fontWeight: 700 }}>{en ? 'Travel guide: ' + name : 'دليل السفر إلى ' + name}</h1>
                   <p style={{ fontSize: 16, color: '#5f666e' }}>{en ? `Weather, money, time and practical tips for ${g.city} and beyond.` : `الطقس والعملة والتوقيت ونصائح عملية لزيارة ${g.city} وما حولها.`}</p>

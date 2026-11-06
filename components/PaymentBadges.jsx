@@ -5,9 +5,9 @@ export default function PaymentBadges({ assetBase = '/assets' }) {
     justifyContent: 'center',
     height: 34,
     padding: '0 12px',
-    borderRadius: 8,
+    borderRadius: 'var(--tw-radius-xs,8px)',
     background: '#fff',
-    boxShadow: '0 2px 6px rgba(1,42,55,.12)',
+    boxShadow: 'var(--tw-card-shadow,0 1px 3px rgba(29,39,51,.06))',
   };
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>

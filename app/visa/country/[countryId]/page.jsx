@@ -20,12 +20,12 @@ import { workDaysLabel } from '../../../../lib/destinations';
 // matched by keyword against the type's Arabic name, since types are
 // admin-defined free text rather than a fixed enum.
 const VISA_THEMES = [
-  { test: /سريع|مستعجل|urgent|express/i, icon: 'zap', gradient: 'linear-gradient(150deg,#34bbe1,#0e6f8f)', iconColor: '#e8590c' },
-  { test: /متعدد|سنة|سنوات|multiple/i, icon: 'refresh-cw', gradient: 'linear-gradient(150deg,#34bbe1,#0e6f8f)', iconColor: '#5b3df0' },
-  { test: /الكترون|electronic|e-?visa/i, icon: 'laptop', gradient: 'linear-gradient(150deg,#34bbe1,#0e6f8f)', iconColor: '#0e968c' },
-  { test: /أمن|موافق|security|approval/i, icon: 'shield-check', gradient: 'linear-gradient(150deg,#34bbe1,#0e6f8f)', iconColor: '#232f3d' },
+  { test: /سريع|مستعجل|urgent|express/i, icon: 'zap', gradient: '#0e6f8f', iconColor: '#e8590c' },
+  { test: /متعدد|سنة|سنوات|multiple/i, icon: 'refresh-cw', gradient: '#0e6f8f', iconColor: '#5b3df0' },
+  { test: /الكترون|electronic|e-?visa/i, icon: 'laptop', gradient: '#0e6f8f', iconColor: '#0e968c' },
+  { test: /أمن|موافق|security|approval/i, icon: 'shield-check', gradient: '#0e6f8f', iconColor: '#232f3d' },
 ];
-const DEFAULT_VISA_THEME = { icon: 'plane-takeoff', gradient: 'linear-gradient(150deg,#34bbe1,#0e6f8f)', iconColor: '#049dc5' };
+const DEFAULT_VISA_THEME = { icon: 'plane-takeoff', gradient: '#0e6f8f', iconColor: '#049dc5' };
 function getVisaTheme(nameAr) {
   return VISA_THEMES.find((t) => t.test.test(nameAr || '')) || DEFAULT_VISA_THEME;
 }
@@ -154,7 +154,7 @@ export default function CountryVisaListPage() {
         <div className="qa-page qa-sec" style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
           {!country && <Link href="/visa" style={{ fontSize: 13.5, fontWeight: 600, color: '#036f8c', textDecoration: 'none', alignSelf: 'flex-start' }}>← رجوع إلى التأشيرات</Link>}
 
-          {error && <p style={{ color: '#d2324f', background: '#fdecef', border: '1px solid #f7c3cc', borderRadius: 10, padding: '12px 16px' }}>{error}</p>}
+          {error && <p style={{ color: '#d2324f', background: '#fdecef', border: '1px solid #f7c3cc', borderRadius: 'var(--tw-radius-sm,10px)', padding: '12px 16px' }}>{error}</p>}
 
           {country && (
             <>
@@ -163,7 +163,7 @@ export default function CountryVisaListPage() {
                 if (!iso || !guideFor(iso)) return null;
                 return (
                   <Link href={'/guide/' + iso} style={{ alignSelf: 'flex-start', display: 'inline-flex', alignItems: 'center', gap: 8, fontSize: 14, fontWeight: 700, color: '#036f8c', background: '#eaf8fd', border: '1px solid #bfe9f6', borderRadius: 999, padding: '8px 16px', textDecoration: 'none' }}>
-                    🧭 {nm('دليل السفر: الطقس والعملة وفرق التوقيت والنصائح', 'Travel guide: weather, money, time and tips')}
+                    <Icon name="compass" size={16} />{nm('دليل السفر: الطقس والعملة وفرق التوقيت والنصائح', 'Travel guide: weather, money, time and tips')}
                   </Link>
                 );
               })()}
@@ -178,7 +178,7 @@ export default function CountryVisaListPage() {
               )}
 
               {noneFeasible && (
-                <div style={{ background: '#fdecef', border: '1px solid #f7c3cc', borderRadius: 12, padding: '14px 18px', display: 'flex', alignItems: 'center', gap: 10, color: '#8a1f34' }}>
+                <div style={{ background: '#fdecef', border: '1px solid #f7c3cc', borderRadius: 'var(--tw-radius-sm,10px)', padding: '14px 18px', display: 'flex', alignItems: 'center', gap: 10, color: '#8a1f34' }}>
                   <Icon name="alert-triangle" size={18} style={{ flex: 'none' }} />
                   <span style={{ fontSize: 13.5 }}>
                     {nm(
@@ -201,10 +201,9 @@ export default function CountryVisaListPage() {
                         <img src={photo} alt="" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }} />
                       ) : (
                         <>
-                          <div style={{ position: 'absolute', inset: 0, backgroundImage: 'repeating-linear-gradient(135deg, rgba(255,255,255,.07) 0 2px, transparent 2px 16px)' }} />
                           <Icon name={theme.icon} size={130} strokeWidth={1} style={{ position: 'absolute', insetInlineStart: -26, bottom: -30, color: 'rgba(255,255,255,.16)' }} />
                           <span style={{ position: 'absolute', inset: 0, display: 'grid', placeItems: 'center' }}>
-                            <span style={{ width: 68, height: 68, borderRadius: '50%', background: 'rgba(255,255,255,.14)', border: '2px solid rgba(255,255,255,.55)', display: 'grid', placeItems: 'center', boxShadow: '0 12px 26px rgba(1,42,55,.35)' }}>
+                            <span style={{ width: 68, height: 68, borderRadius: '50%', background: 'rgba(255,255,255,.14)', border: '2px solid rgba(255,255,255,.55)', display: 'grid', placeItems: 'center', boxShadow: 'var(--tw-card-shadow,0 1px 3px rgba(29,39,51,.06))' }}>
                               {c.flag_code ? (
                                 <img src={flagSrc(c.flag_code)} alt="" style={{ width: 50, height: 50, borderRadius: '50%', objectFit: 'cover' }} onError={(e) => { e.currentTarget.style.display = 'none'; }} />
                               ) : (
@@ -217,7 +216,7 @@ export default function CountryVisaListPage() {
                       <button
                         type="button"
                         aria-label={lang === 'en' ? 'Save' : 'حفظ'}
-                        style={{ position: 'absolute', top: 10, insetInlineStart: 10, width: 28, height: 28, borderRadius: '50%', border: 'none', cursor: 'pointer', background: '#fff', display: 'grid', placeItems: 'center', boxShadow: '0 3px 8px rgba(1,42,55,.25)' }}
+                        style={{ position: 'absolute', top: 10, insetInlineStart: 10, width: 28, height: 28, borderRadius: '50%', border: 'none', cursor: 'pointer', background: '#fff', display: 'grid', placeItems: 'center', boxShadow: 'var(--tw-card-shadow,0 1px 3px rgba(29,39,51,.06))' }}
                       >
                         <Icon name="heart" size={14} style={{ color: '#1d2733' }} />
                       </button>
@@ -226,7 +225,7 @@ export default function CountryVisaListPage() {
                           dir="ltr"
                           style={{
                             position: 'absolute', bottom: 8, insetInlineStart: 8, insetInlineEnd: 8, zIndex: 2, fontSize: 10, fontWeight: 700, color: '#036f8c',
-                            background: 'rgba(255,255,255,.96)', borderRadius: 10, padding: '4px 8px', boxShadow: '0 4px 10px rgba(1,42,55,.25)',
+                            background: 'rgba(255,255,255,.96)', borderRadius: 'var(--tw-radius-sm,10px)', padding: '4px 8px', boxShadow: 'var(--tw-card-shadow,0 1px 3px rgba(29,39,51,.06))',
                             display: 'flex', flexDirection: 'column', gap: 1, textAlign: 'start',
                           }}
                           title="معلومات داخلية — تظهر لفريق العمل فقط"
@@ -275,14 +274,14 @@ export default function CountryVisaListPage() {
                               : nm('اضغط لمعرفة المتطلبات', 'Click to see requirements')}
                           </button>
                           {!isFeasible(c) ? (
-                            <span style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 11.5, color: '#8a1f34', background: '#fdecef', borderRadius: 8, padding: '5px 9px' }}>
+                            <span style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 11.5, color: '#8a1f34', background: '#fdecef', borderRadius: 'var(--tw-radius-xs,8px)', padding: '5px 9px' }}>
                               <Icon name="alert-triangle" size={12} />
                               {nm('قد لا تكون جاهزة في موعد سفركم', "May not be ready by your travel date")}
                             </span>
                           ) : null}
                         </div>
 
-                        <div className="qa-visa-pricebox" style={{ background: '#f8fbfc', borderRadius: 14, padding: '12px 16px', display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 4, flex: 'none', minWidth: 168 }}>
+                        <div className="qa-visa-pricebox" style={{ background: '#f8fbfc', borderRadius: 'var(--tw-radius-sm,10px)', padding: '12px 16px', display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 4, flex: 'none', minWidth: 168 }}>
                           <span style={{ fontSize: 10, color: '#5f666e' }}>{lang === 'en' ? 'Travel visa provided' : 'التأشيرة السياحية متوفرة'}</span>
                           <span style={{ fontSize: 12, color: '#3d4650' }}>{formatPrice(c.child_price, 'IQD', lang)} <span style={{ color: '#5f666e', fontSize: 10.5 }}>{lang === 'en' ? '/ per child' : '/ للطفل'}</span></span>
                           <span style={{ fontSize: 18, fontWeight: 800, color: '#1d2733' }}>{formatPrice(c.adult_price, 'IQD', lang)}</span>
@@ -312,7 +311,7 @@ export default function CountryVisaListPage() {
                           { icon: 'calendar-check', label: lang === 'en' ? 'Validity' : 'الصلاحية', value: c.validity_before_travel || '—' },
                         ].map((s, i) => (
                           <div key={s.label} style={{ display: 'flex', alignItems: 'center', gap: 8, flex: '1 1 150px', padding: '2px 14px', borderInlineStart: i > 0 ? '1px solid #f0f0f0' : 'none' }}>
-                            <span style={{ width: 27, height: 27, borderRadius: 8, background: '#eaf8fd', display: 'grid', placeItems: 'center', flex: 'none' }}>
+                            <span style={{ width: 27, height: 27, borderRadius: 'var(--tw-radius-xs,8px)', background: '#eaf8fd', display: 'grid', placeItems: 'center', flex: 'none' }}>
                               <Icon name={s.icon} size={13} style={{ color: '#049dc5' }} />
                             </span>
                             <span style={{ display: 'flex', flexDirection: 'column', gap: 0, minWidth: 0 }}>
@@ -362,7 +361,7 @@ export default function CountryVisaListPage() {
                 })}
                 </div>
 
-                <aside style={{ background: '#fff', border: '1px solid #ececed', borderRadius: 16, padding: 18, display: 'flex', flexDirection: 'column', gap: 20, position: 'sticky', top: 90 }}>
+                <aside style={{ background: '#fff', border: '1px solid #ececed', borderRadius: 'var(--tw-radius,16px)', padding: 18, display: 'flex', flexDirection: 'column', gap: 20, position: 'sticky', top: 90 }}>
                   <h4 style={{ margin: 0, fontSize: 15, display: 'flex', alignItems: 'center', gap: 7 }}>
                     <Icon name="layout-grid" size={15} style={{ color: '#049dc5' }} />
                     {nm('الفلاتر', 'Filters')}
@@ -449,12 +448,12 @@ export default function CountryVisaListPage() {
       <SiteFooter />
       {cards == null && !error && <MascotLoader assetBase="/assets" />}
       {providerHints && (
-        <div style={{ position: 'fixed', bottom: 18, insetInlineStart: 18, zIndex: 60, background: '#1d2733', color: '#fff', fontSize: 12.5, fontWeight: 700, borderRadius: 999, padding: '8px 16px', boxShadow: '0 10px 24px rgba(1,42,55,.3)' }}>
-          ⌕ وضع الموظفين مفعّل — اكتب نفس الكلمة السرية للإخفاء
+        <div style={{ position: 'fixed', bottom: 18, insetInlineStart: 18, zIndex: 60, background: '#1d2733', color: '#fff', fontSize: 12.5, fontWeight: 700, borderRadius: 999, padding: '8px 16px', boxShadow: 'var(--tw-card-shadow,0 1px 3px rgba(29,39,51,.06))' }}>
+          <Icon name="search" size={13} style={{ verticalAlign: '-2px', marginInlineEnd: 6 }} />وضع الموظفين مفعّل — اكتب نفس الكلمة السرية للإخفاء
         </div>
       )}
       {providerDenied && (
-        <div style={{ position: 'fixed', bottom: 18, insetInlineStart: 18, zIndex: 60, background: '#d2324f', color: '#fff', fontSize: 12.5, fontWeight: 700, borderRadius: 999, padding: '8px 16px', boxShadow: '0 10px 24px rgba(1,42,55,.3)' }}>
+        <div style={{ position: 'fixed', bottom: 18, insetInlineStart: 18, zIndex: 60, background: '#d2324f', color: '#fff', fontSize: 12.5, fontWeight: 700, borderRadius: 999, padding: '8px 16px', boxShadow: 'var(--tw-card-shadow,0 1px 3px rgba(29,39,51,.06))' }}>
           غير مصرح لك بعرض هذه المعلومات
         </div>
       )}
