@@ -10,7 +10,7 @@ import { useLangToggle } from '../../../lib/i18n';
 import { T, catLabel } from '../../../lib/packagesData';
 import { formatPrice, formatSignedPrice } from '../../../lib/currency';
 import { printDoc, copyText } from '../../../lib/printDoc';
-import WhatsAppButton from '../../../components/WhatsAppButton';
+import WhatsAppButton, { WA_ICON } from '../../../components/WhatsAppButton';
 import { APPLY_FLOW_ENABLED, packageMessage } from '../../../lib/whatsapp';
 import { buildPackageVoucherHtml, stripFlags } from '../../../lib/packagePdf';
 import UrgencyPanel from '../../../components/UrgencyPanel';
@@ -42,6 +42,11 @@ export default function PackageDetailPage() {
   const [dateIdx, setDateIdx] = useState(0);
   const adults = counts.adult + counts.single; // kept for the WhatsApp/booking params below
   const children = counts.childBed + counts.childNoBed + counts.infant;
+  // Every room type may be taken down to 0, but a booking still needs an adult.
+  const noAdults = adults <= 0;
+  const noAdultsMsg = lang === 'en'
+    ? 'Add at least one adult to continue — children and infants cannot travel on their own.'
+    : 'أضف بالغاً واحداً على الأقل لإكمال الحجز — لا يمكن حجز الأطفال والرضّع بدون بالغ.';
   const [toast, setToast] = useState('');
   const [tripDate, setTripDate] = useState('');
   // Phone-only booking bar: shown while the price card's WhatsApp button is off screen.
@@ -94,6 +99,7 @@ export default function PackageDetailPage() {
   const totalPerAdult = unitPrice(pkg || {}, TRAVELLER_TYPES[0], upgrade);
 
   function goBook() {
+    if (noAdults) { flashToast(noAdultsMsg); return; }
     const params = new URLSearchParams({
       hotel: String(hotelIdx),
       flight: String(flightIdx),
@@ -276,7 +282,6 @@ export default function PackageDetailPage() {
               <div style={{ borderTop: '1px solid #ececed', paddingTop: 14, display: 'flex', flexDirection: 'column', gap: 10 }}>
                 <span style={{ fontSize: 14, fontWeight: 700 }}>{lang === 'en' ? 'Travellers' : 'المسافرون'}</span>
                 {TRAVELLER_TYPES.map((tt) => {
-                  const min = tt.key === 'adult' ? 1 : 0;
                   const label = lang === 'en' ? tt.en : tt.ar;
                   const hint = lang === 'en' ? tt.hintEn : tt.hintAr;
                   const unit = totals.units ? totals.units[tt.key] : unitPrice(pkg, tt, upgrade);
@@ -287,13 +292,16 @@ export default function PackageDetailPage() {
                           : counts[tt.key] > 0 && <span style={{ display: 'block', fontSize: 11.5, color: '#5f666e' }}>{formatPrice(unit, 'IQD', lang)}</span>}
                       </span>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                        <button type="button" onClick={() => setCounts((c) => ({ ...c, [tt.key]: Math.max(min, c[tt.key] - 1) }))} style={{ width: 28, height: 28, borderRadius: '50%', border: '1px solid #cacbcc', background: '#fff', cursor: 'pointer' }}>−</button>
+                        <button type="button" disabled={counts[tt.key] <= 0} onClick={() => setCounts((c) => ({ ...c, [tt.key]: Math.max(0, c[tt.key] - 1) }))} style={{ width: 28, height: 28, borderRadius: '50%', border: '1px solid #cacbcc', background: '#fff', cursor: counts[tt.key] <= 0 ? 'not-allowed' : 'pointer', opacity: counts[tt.key] <= 0 ? 0.4 : 1 }}>−</button>
                         <span style={{ minWidth: 18, textAlign: 'center' }}>{counts[tt.key]}</span>
                         <button type="button" disabled={unit == null} onClick={() => setCounts((c) => ({ ...c, [tt.key]: c[tt.key] + 1 }))} style={{ width: 28, height: 28, borderRadius: '50%', border: '1px solid #cacbcc', background: '#fff', cursor: unit == null ? 'not-allowed' : 'pointer', opacity: unit == null ? 0.4 : 1 }}>+</button>
                       </div>
                     </div>
                   );
                 })}
+                {noAdults && (
+                  <span role="alert" style={{ fontSize: 12.5, fontWeight: 700, color: '#d2324f', background: '#fdecef', border: '1px solid #f7c3cc', borderRadius: 'var(--tw-radius-xs,8px)', padding: '8px 10px' }}>{noAdultsMsg}</span>
+                )}
               </div>
 
               <div style={{ borderTop: '1px solid #ececed', paddingTop: 14, display: 'flex', flexDirection: 'column', gap: 6 }}>
@@ -332,14 +340,21 @@ export default function PackageDetailPage() {
                 </div>
               )}
               {APPLY_FLOW_ENABLED ? (
-                <button type="button" onClick={goBook} className="qa-btn qa-cyan" style={{ textAlign: 'center' }}>{t.detail_cta}</button>
+                <button type="button" onClick={goBook} disabled={noAdults} className="qa-btn qa-cyan" style={{ textAlign: 'center', opacity: noAdults ? 0.5 : 1, cursor: noAdults ? 'not-allowed' : 'pointer' }}>{t.detail_cta}</button>
               ) : (
                 <div ref={ctaRef} style={{ display: 'flex', flexDirection: 'column' }}>
+                {noAdults ? (
+                  <button type="button" disabled className="qa-btn" style={{ width: '100%', boxSizing: 'border-box', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, background: '#25d366', color: '#fff', border: 0, fontWeight: 700, opacity: 0.5, cursor: 'not-allowed' }}>
+                    {WA_ICON}
+                    <span>{lang === 'en' ? 'Contact us on WhatsApp to book' : 'تواصل معنا على واتساب للحجز'}</span>
+                  </button>
+                ) : (
                 <WhatsAppButton
                   label={lang === 'en' ? 'Contact us on WhatsApp to book' : 'تواصل معنا على واتساب للحجز'}
                   getMessage={waMessage}
                   style={{ width: '100%', boxSizing: 'border-box' }}
                 />
+                )}
                 </div>
               )}
 
@@ -580,7 +595,14 @@ export default function PackageDetailPage() {
               <span style={{ fontSize: 11.5, color: '#5f666e' }}>{grandTotal > 0 ? (lang === 'en' ? 'Total' : 'المجموع') + ' · ' + travellerSummary(lang === 'en') : t.detail_total_pp}</span>
               <b style={{ fontSize: 16, color: '#036f8c', whiteSpace: 'nowrap' }}>{formatPrice(grandTotal > 0 ? grandTotal : totalPerAdult, 'IQD', lang)}</b>
             </div>
+            {noAdults ? (
+              <button type="button" disabled className="qa-btn" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, background: '#25d366', color: '#fff', border: 0, fontWeight: 700, padding: '10px 16px', fontSize: 14.5, minHeight: 0, whiteSpace: 'nowrap', flexShrink: 0, opacity: 0.5, cursor: 'not-allowed' }}>
+                {WA_ICON}
+                <span>{lang === 'en' ? 'Book on WhatsApp' : 'احجز عبر واتساب'}</span>
+              </button>
+            ) : (
             <WhatsAppButton label={lang === 'en' ? 'Book on WhatsApp' : 'احجز عبر واتساب'} getMessage={waMessage} style={{ padding: '10px 16px', fontSize: 14.5, minHeight: 0, whiteSpace: 'nowrap', flexShrink: 0 }} />
+            )}
           </div>
         )}
       </main>

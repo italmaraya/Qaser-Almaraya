@@ -43,7 +43,8 @@ export default function HomeHero({ hero, lang = 'ar', onPrimary, children }) {
     ? saved.map((s) => ({ ...s, caption: en ? s.captionEn || s.captionAr : s.captionAr || s.captionEn }))
     : auto || [];
 
-  if (!slides.length) return auto === null && !saved.length ? <div style={{ height: 'min(92vh,860px)', background: '#04161f' }} /> : children;
+  // Placeholder matches the hero's new height so the page does not jump.
+  if (!slides.length) return auto === null && !saved.length ? <div style={{ height: 'min(78vh,720px)', minHeight: 520, background: '#04161f' }} /> : children;
 
   const h = hero || {};
   return (

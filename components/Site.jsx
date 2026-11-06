@@ -19,6 +19,7 @@ import PackageCard from './PackageCard';
 import PaymentMethods from './PaymentMethods';
 import PaymentBadges from './PaymentBadges';
 
+
 const COUNTRIES_DEFAULT=[
  {code:'tr',name:'تركيا',en:'Turkey',region:'تركيا والقوقاز'},
  {code:'jo',name:'الأردن',en:'Jordan',region:'الشرق الأوسط وأفريقيا'},
@@ -106,6 +107,14 @@ const FLOW=[
  {role:'system',title:'يراقب الوقت',hint:'أي تأخير يصل لفريقنا فوراً'},
  {role:'team',title:'نرفع التأشيرة',hint:'أو تأكيد موعد السفارة'},
  {role:'customer',title:'تحمّلها',hint:'تصبح الحالة: جاهزة للتحميل'}];
+/* BRD §8 — the same eight steps read as four stages. Grouping only:
+   the order, the payment sequence, the roles and the conditions are untouched. */
+const STAGES=[
+ {title:'تختار التأشيرة',titleIsStage:true,steps:[{i:0}]},
+ {title:'ترفع المستندات وتدفع',steps:[{i:1},{i:2}],
+  note:'الدفع يسبق الإرسال: لا يُرسَل الملف إلى الجهة المصدرة قبل إتمام الدفع واكتمال المستندات.'},
+ {title:'نتابع الطلب',steps:[{i:3},{i:4},{i:5}]},
+ {title:'تستلم النتيجة',steps:[{i:6,outcomes:[{lead:'إمّا',text:'تأشيرة صادرة'},{lead:'أو',text:'تأكيد موعد سفارة'}]},{i:7}]}];
 
 const PACKAGES=[
  {title:'إستانبول للعائلة',destination:'إستانبول',nights:'6 ليالٍ',groupType:'عائلي',departs:'كل خميس',price:'740 $',badge:'الأكثر طلباً',includes:['طيران ذهاب وعودة','إقامة 4 نجوم مع إفطار','جولة البوسفور','مرشد يتحدث العربية']},
@@ -764,7 +773,13 @@ function   visaVals(country){
         if (APPLY_FLOW_ENABLED) { patch({ visaId: visa.id, app: loadApp(visa), appStage: 'form', appError: '', ask: false }); go('visa-apply'); return; }
         openWhatsApp(visaMessage({ type: visa.typeName, country: country.name, stay: visa.stay, issuing: visa.issuing, validity: visa.validity, travellers: st.travellers + ' بالغ' + (st.children ? '، ' + st.children + ' طفل' : ''), url: window.location.href }));
       },
-      flowSteps: FLOW.map((s, i) => ({ n: String(i + 1).padStart(2, '0'), title: s.title, hint: s.hint, role: ROLE[s.role][0], roleBg: ROLE[s.role][1], roleInk: ROLE[s.role][2], bg: ROLE[s.role][3], border: ROLE[s.role][4] })),
+      flowSteps: STAGES.map((g, i) => ({
+        n: String(i + 1), title: g.title, note: g.note || '',
+        items: g.steps.map(k => ({
+          title: g.titleIsStage ? '' : FLOW[k.i].title, hint: FLOW[k.i].hint,
+          role: ROLE[FLOW[k.i].role][0], roleBg: ROLE[FLOW[k.i].role][1], roleInk: ROLE[FLOW[k.i].role][2],
+          outcomes: k.outcomes || [] }))
+      })),
       stepsOn: page === 'visas' && props.visaSteps !== false,
       visaExportOn: page === 'visas' && props.exportActions !== false,
       copyVisa: e => { if(e) e.preventDefault(); copy(visaText(visa, country), L('تم نسخ تفاصيل التأشيرة', 'Visa details copied')); },
@@ -901,12 +916,10 @@ function   visaVals(country){
 </HomeHero>
 <SeasonSpotlight lang={st.lang} />
 <HomeOffers lang={st.lang} />
-<TripFinder lang={st.lang} />
-<VisaChecker lang={st.lang} />
 <section className="qa-sec" style={{ display: "flex", flexDirection: "column", gap: "32px" }}>
-<div style={{ maxWidth: "680px", margin: "0 auto", textAlign: "center", display: "flex", flexDirection: "column", gap: "16px" }}>
-<h2 style={{ fontSize: "36px", fontWeight: "700" }}>نُعيد صياغة مفهوم السفر</h2>
-<p style={{ fontSize: "18px", lineHeight: "1.75", color: "#22a9d4" }}>من تصميم الباقات المخصصة إلى إدارة وتنظيم حركة السفر للفعاليات الكبرى، تمثّل قصر المرايا جسراً من الثقة والاحترافية.</p>
+<div style={{ maxWidth: "var(--q-read,720px)", display: "flex", flexDirection: "column", gap: "10px" }}>
+<h2 style={{ margin: "0", fontSize: "var(--q-t2,30px)", fontWeight: "700", color: "#1d2733" }}>خدماتنا</h2>
+<p style={{ margin: "0", fontSize: "var(--q-t4,17px)", lineHeight: "1.75", color: "#5f666e" }}>باقات سياحية، تأشيرات، وحجوزات طيران وفنادق. تُدار كلها من مكتبنا في بغداد، ويتابع فريق واحد طلبك من أول اتصال حتى انتهاء الرحلة.</p>
 </div>
 <div className="qa-grid qa-swipe" style={{ gridTemplateColumns: "repeat(4,1fr)" }}>
 <div className="qa-card" style={{ display: "flex", flexDirection: "column", gap: "12px", cursor: "pointer" }} onClick={goPackages}>
@@ -932,152 +945,10 @@ function   visaVals(country){
 </div>
 <div className="qa-swipe-hint" aria-hidden="true">اسحب لرؤية المزيد ↔</div>
 </section>
-<section className="qa-sec qa-2col" style={{ paddingTop: "0", display: "grid", gridTemplateColumns: "1fr 1fr", gap: "64px", alignItems: "center" }}>
-<img src="/assets/mascot-skylo-pilot-plane.webp" alt="سكايلو، مرشد قصر المرايا" style={{ width: "100%", maxWidth: "400px", justifySelf: "center" }} />
-<div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
-<h2 style={{ fontSize: "36px", fontWeight: "700" }}>ما يمكننا فعله من أجلك</h2>
-<p style={{ fontSize: "18px", lineHeight: "1.75", color: "#22a9d4" }}>نحن لا ننظم فقط… نحن نُبدع في صناعة التجربة.</p>
-<p style={{ fontSize: "16px", lineHeight: "1.75" }}>باقات متكاملة تضم وجهات مميزة ومطاعم محلية، أنشطة استثنائية، واستكشاف الأماكن التي لا تزورها الجولات التقليدية.</p>
-</div>
-</section>
-<div style={{ background: "var(--tw-band,#34bbe1)", position: "relative", overflow: "hidden" }}>
-<img src="/assets/logo-mark-white.webp" alt="" style={{ position: "absolute", insetInlineStart: "-140px", top: "26%", height: "560px", opacity: "var(--tw-mark,.13)" }} />
-<img src="/assets/logo-mark-white.webp" alt="" style={{ position: "absolute", insetInlineEnd: "-160px", top: "52%", height: "620px", opacity: ".09" }} />
-<section style={{ position: "relative" }}>
-<div className="qa-sec" style={{ position: "relative", display: "flex", flexDirection: "column", gap: "32px" }}>
-<div style={{ maxWidth: "680px", margin: "0 auto", textAlign: "center", display: "flex", flexDirection: "column", gap: "16px" }}>
-<h2 style={{ fontSize: "36px", fontWeight: "700", color: "#fff" }}>قيمنا</h2>
-<p style={{ fontSize: "18px", lineHeight: "1.75", color: "rgba(255,255,255,.92)" }}>أربع قيم تحكم كل رحلة نخطّط لها.</p>
-</div>
-<div className="qa-swipe" style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: "20px", alignItems: "stretch" }}>
-<div style={{ background: "#fff", borderRadius: "var(--tw-radius,16px)", padding: "24px" }}><h4 style={{ fontSize: "20px", fontWeight: "700", color: "#1b93b8", marginBottom: "8px" }}>المغامرة والاستكشاف</h4><p style={{ fontSize: "14px", lineHeight: "1.45" }}>نُلهم المسافرين لاكتشاف أماكن وتجارب لا تُنسى.</p></div>
-<div style={{ background: "#fff", borderRadius: "var(--tw-radius,16px)", padding: "24px" }}><h4 style={{ fontSize: "20px", fontWeight: "700", color: "#1b93b8", marginBottom: "8px" }}>الثقة والاعتمادية</h4><p style={{ fontSize: "14px", lineHeight: "1.45" }}>كل رحلة تُخطَّط بصدق وأمان ومسؤولية كاملة.</p></div>
-<div style={{ background: "#fff", borderRadius: "var(--tw-radius,16px)", padding: "24px" }}><h4 style={{ fontSize: "20px", fontWeight: "700", color: "#1b93b8", marginBottom: "8px" }}>رضا العميل أولاً</h4><p style={{ fontSize: "14px", lineHeight: "1.45" }}>راحتك ودعمك في كل خطوة، بلا تعقيد.</p></div>
-<div style={{ background: "#fff", borderRadius: "var(--tw-radius,16px)", padding: "24px" }}><h4 style={{ fontSize: "20px", fontWeight: "700", color: "#1b93b8", marginBottom: "8px" }}>التميّز في الخدمة</h4><p style={{ fontSize: "14px", lineHeight: "1.45" }}>تخطيط عالي الجودة وحجز سلس وتجربة سفر متكاملة.</p></div>
-</div>
-<div className="qa-swipe-hint" aria-hidden="true">اسحب لرؤية المزيد ↔</div>
-</div>
-</section>
-<section style={{ position: "relative" }}>
-<div className="qa-sec" style={{ paddingTop: "0", position: "relative", display: "flex", flexDirection: "column", gap: "36px" }}>
-<div style={{ maxWidth: "720px", margin: "0 auto", textAlign: "center", display: "flex", flexDirection: "column", gap: "14px" }}>
-<span style={{ fontSize: "14px", fontWeight: "600", color: "rgba(255,255,255,.78)" }}>ما نعمل من أجله كل يوم</span>
-<h2 style={{ fontSize: "38px", fontWeight: "700", color: "#fff", lineHeight: "1.3" }}>أهداف شركة قصر المرايا للسفر والسياحة</h2>
-</div>
-<div className="qa-goals qa-swipe" style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: "20px", alignItems: "stretch" }}>
-<div style={{ background: "#fff", borderRadius: "var(--tw-radius,16px)", padding: "26px 24px", display: "flex", flexDirection: "column", gap: "12px" }}>
-<span style={{ width: "56px", height: "56px", borderRadius: "50%", background: "#e4f5fb", color: "#22a9d4", display: "flex", alignItems: "center", justifyContent: "center" }}><GoalServices size={32} /></span>
-<h4 style={{ fontSize: "20px", fontWeight: "700", color: "#1d2733" }}>خدمات سياحية متكاملة</h4>
-<p style={{ fontSize: "15px", lineHeight: "1.7", color: "#5f666e" }}>حجوزات الطيران، حزم العطلات، رحلات جماعية، وتأشيرات — كل شيء من مكان واحد.</p>
-</div>
-<div style={{ background: "#fff", borderRadius: "var(--tw-radius,16px)", padding: "26px 24px", display: "flex", flexDirection: "column", gap: "12px" }}>
-<span style={{ width: "56px", height: "56px", borderRadius: "50%", background: "#e4f5fb", color: "#22a9d4", display: "flex", alignItems: "center", justifyContent: "center" }}><GoalTrust size={32} /></span>
-<h4 style={{ fontSize: "20px", fontWeight: "700", color: "#1d2733" }}>رضا العملاء وبناء الثقة</h4>
-<p style={{ fontSize: "15px", lineHeight: "1.7", color: "#5f666e" }}>دعم على مدار الساعة، خدمة شخصية، وعلاقات دائمة مع كل مسافر.</p>
-</div>
-<div style={{ background: "#fff", borderRadius: "var(--tw-radius,16px)", padding: "26px 24px", display: "flex", flexDirection: "column", gap: "12px" }}>
-<span style={{ width: "56px", height: "56px", borderRadius: "50%", background: "#e4f5fb", color: "#22a9d4", display: "flex", alignItems: "center", justifyContent: "center" }}><GoalExpansion size={32} /></span>
-<h4 style={{ fontSize: "20px", fontWeight: "700", color: "#1d2733" }}>توسع محلي ودولي</h4>
-<p style={{ fontSize: "15px", lineHeight: "1.7", color: "#5f666e" }}>شراكات عالمية وحضور فاعل في المعارض السياحية الدولية.</p>
-</div>
-<div style={{ background: "#fff", borderRadius: "var(--tw-radius,16px)", padding: "26px 24px", display: "flex", flexDirection: "column", gap: "12px" }}>
-<span style={{ width: "56px", height: "56px", borderRadius: "50%", background: "#fef3dc", color: "#c07f00", display: "flex", alignItems: "center", justifyContent: "center" }}><GoalTech size={32} /></span>
-<h4 style={{ fontSize: "20px", fontWeight: "700", color: "#1d2733" }}>الابتكار والتطوير التقني</h4>
-<p style={{ fontSize: "15px", lineHeight: "1.7", color: "#5f666e" }}>أحدث تقنيات الحجز وحلول رقمية سهلة الاستخدام في كل خطوة.</p>
-</div>
-<div style={{ background: "#fff", borderRadius: "var(--tw-radius,16px)", padding: "26px 24px", display: "flex", flexDirection: "column", gap: "12px" }}>
-<span style={{ width: "56px", height: "56px", borderRadius: "50%", background: "#fef3dc", color: "#c07f00", display: "flex", alignItems: "center", justifyContent: "center" }}><GoalHeritage size={32} /></span>
-<h4 style={{ fontSize: "20px", fontWeight: "700", color: "#1d2733" }}>ترويج السياحة المحلية</h4>
-<p style={{ fontSize: "15px", lineHeight: "1.7", color: "#5f666e" }}>رحلات ثقافية فريدة لاكتشاف تاريخ العراق العريق ومعالمه.</p>
-</div>
-<div style={{ background: "#fff", borderRadius: "var(--tw-radius,16px)", padding: "26px 24px", display: "flex", flexDirection: "column", gap: "12px" }}>
-<span style={{ width: "56px", height: "56px", borderRadius: "50%", background: "#fef3dc", color: "#c07f00", display: "flex", alignItems: "center", justifyContent: "center" }}><GoalSafety size={32} /></span>
-<h4 style={{ fontSize: "20px", fontWeight: "700", color: "#1d2733" }}>توفير تجربة سفر آمنة</h4>
-<p style={{ fontSize: "15px", lineHeight: "1.7", color: "#5f666e" }}>شركاء موثوقون، تأمين شامل، وراحة وأمان من الإقلاع حتى العودة.</p>
-</div>
-</div>
-<div className="qa-swipe-hint" aria-hidden="true">اسحب لرؤية المزيد ↔</div>
-</div>
-</section>
-</div>
-<section className="qa-sec qa-2col" style={{ display: "grid", gridTemplateColumns: ".9fr 1.1fr", gap: "56px", alignItems: "center" }}>
-<div style={{ position: "relative", justifySelf: "center", width: "100%", maxWidth: "430px", display: "flex", alignItems: "center", justifyContent: "center" }}>
-<img src="/assets/vision-plane-cutout3.webp" alt="طائرة قصر المرايا على جوازات السفر" style={{ position: "relative", display: "block", width: "100%", maxWidth: "100%", height: "auto" }} />
-</div>
-<div style={{ display: "flex", flexDirection: "column", gap: "18px" }}>
-<h2 style={{ fontSize: "36px", fontWeight: "700", color: "#22a9d4", lineHeight: "1.3" }}>رؤيتنا المستقبلية في قصر المرايا للسفر والسياحة</h2>
-<p style={{ fontSize: "16px", lineHeight: "1.75", textWrap: "pretty" }}>نطمح لأن نكون الخيار الأول في مجال السفر والسياحة من خلال تقديم خدمات مبتكرة تلبي تطلعات العملاء، وتوسيع نطاق أعمالنا عالميًا لتعزيز تجربة السفر بأساليب حديثة ومتطورة. كما نعمل على بناء شراكات استراتيجية مع كبرى الشركات السياحية والفنادق وشركات الطيران لضمان تقديم أفضل الخدمات بأسعار تنافسية.</p>
-<p style={{ fontSize: "16px", lineHeight: "1.75", textWrap: "pretty" }}>بالإضافة إلى ذلك، نولي اهتمامًا خاصًا لدعم السياحة الداخلية والخارجية عبر توفير حلول سفر متكاملة تتميز بالجودة والموثوقية. ومن منطلق سعينا إلى التطور، نطمح إلى تقديم خدمات إلكترونية حديثة توفر تجربة مستخدم سلسة ولطيفة، تتيح للعملاء حجز رحلاتهم بسهولة وسرعة.</p>
-<p style={{ fontSize: "16px", lineHeight: "1.75", textWrap: "pretty" }}>كما نهدف إلى تنشيط السياحة العكسية من خلال استقبال المسافرين الأجانب وتنظيم جولات سياحية لاكتشاف العراق، وإبراز معالمه التاريخية والثقافية والطبيعية، مما يساهم في تعزيز مكانته كوجهة سياحية متميزة على مستوى العالم.</p>
-</div>
-</section>
-<section style={{ background: "var(--tw-band-deep,#049dc5)", position: "relative", overflow: "hidden" }}>
-<img src="/assets/logo-mark-white.webp" alt="" style={{ position: "absolute", insetInlineStart: "-130px", top: "-70px", height: "440px", opacity: ".09" }} />
-<div className="qa-sec qa-2col" style={{ position: "relative", display: "grid", gridTemplateColumns: ".85fr 1.15fr", gap: "56px", alignItems: "center" }}>
-<div style={{ position: "relative", justifySelf: "center", width: "100%", maxWidth: "420px" }}>
-<img src="/assets/ceo-interview.webp" alt="حمزة سعد، المدير التنفيذي، في مقابلة تلفزيونية" style={{ position: "relative", display: "block", width: "100%", aspectRatio: "4/3", objectFit: "cover", objectPosition: "center 38%", borderRadius: "var(--tw-radius,16px)", boxShadow: "var(--tw-card-shadow,0 1px 3px rgba(29,39,51,.06))" }} />
-<div style={{ position: "relative", marginTop: "-26px", marginInlineStart: "22px", display: "inline-flex", flexDirection: "column", gap: "2px", background: "#fff", borderRadius: "var(--tw-radius-sm,10px)", padding: "13px 24px", boxShadow: "var(--tw-card-shadow,0 1px 3px rgba(29,39,51,.06))" }}>
-<span style={{ fontSize: "19px", fontWeight: "700", color: "#22a9d4" }}>حمــزة سعد</span>
-<span style={{ fontSize: "14px", color: "#5f666e" }}>المدير التنفيذي</span>
-</div>
-</div>
-<div style={{ display: "flex", flexDirection: "column", gap: "18px" }}>
-<h2 style={{ fontSize: "38px", fontWeight: "700", color: "#fff", lineHeight: "1.3" }}>رسالة المدير التنفيذي</h2>
-<p style={{ fontSize: "19px", lineHeight: "1.7", color: "#fff", fontWeight: "600", maxWidth: "640px", textWrap: "pretty" }}>«نحن نؤمن بأن السفر ليس مجرد انتقال من مكان إلى آخر… بل تجربة متكاملة تفتح آفاقًا جديدة وتعزز الروابط بين الثقافات.»</p>
-<p style={{ fontSize: "16px", lineHeight: "1.75", color: "rgba(255,255,255,.9)", maxWidth: "640px", textWrap: "pretty" }}>مرحبًا بكم في قصر المرايا للسفر والسياحة. منذ تأسيس شركتنا وضعنا هدفًا واضحًا يتمثل في تقديم خدمات سياحية متكاملة ترتقي إلى أعلى المعايير العالمية، مع التركيز على الجودة والابتكار في كل ما نقدمه.</p>
-<p style={{ fontSize: "16px", lineHeight: "1.75", color: "rgba(255,255,255,.9)", maxWidth: "640px", textWrap: "pretty" }}>يعمل فريقنا المحترف وشبكة شركائنا القوية على توسيع نطاق خدماتنا لتلبي احتياجات عملائنا داخل العراق وخارجه، ونشارك في الفعاليات الدولية لنكون في طليعة الشركات الرائدة في مجال السفر والسياحة. نحرص على أن تكون كل رحلة مليئة باللحظات التي تبقى في الذاكرة.</p>
-<p style={{ fontSize: "16px", lineHeight: "1.75", color: "rgba(255,255,255,.9)" }}>شكرًا لثقتكم بنا، ونتطلع لأن نكون جزءًا من رحلاتكم القادمة.</p>
-<div style={{ display: "flex", alignItems: "center", gap: "14px", paddingTop: "6px" }}>
-<span style={{ width: "44px", height: "2px", background: "#faab18" }}></span>
-<span style={{ fontSize: "15px", fontWeight: "600", color: "#fff" }}>حمزة سعد — المدير التنفيذي، قصر المرايا للسفر والسياحة</span>
-</div>
-</div>
-</div>
-</section>
-<section className="qa-sec" style={{ display: "flex", flexDirection: "column", gap: "36px" }}>
-<div style={{ maxWidth: "740px", margin: "0 auto", textAlign: "center", display: "flex", flexDirection: "column", gap: "14px" }}>
-<h2 style={{ fontSize: "38px", fontWeight: "700", color: "#22a9d4", lineHeight: "1.3" }}>توصيات العملاء</h2>
-<p style={{ fontSize: "17px", lineHeight: "1.75", color: "#5f666e", textWrap: "pretty" }}>رضا العملاء هو حجر الأساس لنجاحنا. هذه تجارب حقيقية لعملاء وثقوا بنا في تنظيم رحلاتهم.</p>
-</div>
-<div className="qa-2col qa-testi-grid qa-swipe" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(300px,1fr))", gap: "24px", alignItems: "stretch" }}>
-<div className="qa-testi-card" style={{ position: "relative", background: "#fff", border: "1px solid #ececed", borderRadius: "var(--tw-radius,16px)", padding: "30px 30px 26px", display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center", gap: "16px", boxShadow: "var(--tw-card-shadow,0 1px 3px rgba(29,39,51,.06))" }}>
-<span className="qa-testi-avatar" style={{ width: "112px", height: "112px", borderRadius: "50%", flex: "none", overflow: "hidden", background: "#e4f5fb", boxShadow: "var(--tw-card-shadow,0 1px 3px rgba(29,39,51,.06))" }}><img src="/assets/avatar-ibrahim.webp" alt="ابراهيم مناضل" style={{ width: "100%", height: "100%", objectFit: "cover" }} /></span>
-<p style={{ margin: "0", fontSize: "16.5px", lineHeight: "1.8", color: "#1d2733", textWrap: "pretty" }}>حجزتُ رحلة عائلية إلى ماليزيا، وكانت رحلة ممتعة من جميع النواحي — سواء من حيث الطيران، الفنادق، البرامج السياحية، أو حتى حسن التعامل من قبل موظفي الشركة والمندوبين.</p>
-<div style={{ marginTop: "auto", display: "flex", flexDirection: "column", gap: "3px", paddingTop: "12px", borderTop: "1px solid #ececed", width: "100%" }}>
-<span style={{ fontSize: "17px", fontWeight: "700", color: "#1d2733" }}>ابراهيم مناضل</span>
-<span style={{ fontSize: "14px", color: "#5f666e" }}>موظف</span>
-</div>
-</div>
-<div className="qa-testi-card" style={{ position: "relative", background: "#fff", border: "1px solid #ececed", borderRadius: "var(--tw-radius,16px)", padding: "30px 30px 26px", display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center", gap: "16px", boxShadow: "var(--tw-card-shadow,0 1px 3px rgba(29,39,51,.06))" }}>
-<span className="qa-testi-avatar" style={{ width: "112px", height: "112px", borderRadius: "50%", flex: "none", overflow: "hidden", background: "#fef3dc", boxShadow: "var(--tw-card-shadow,0 1px 3px rgba(29,39,51,.06))" }}><img src="/assets/avatar-hasan.webp" alt="م.م. حسن عصام الدليمي" style={{ width: "100%", height: "100%", objectFit: "cover" }} /></span>
-<p style={{ margin: "0", fontSize: "16.5px", lineHeight: "1.8", color: "#1d2733", textWrap: "pretty" }}>تعاملتُ مع شركة قصر المرايا عدة مرات، وقد قاموا باستخراج تأشيرات الدخول لي لعدة دول. بكل صراحة وأمانة، كان تعاملهم راقيًا للغاية وأسعارهم مناسبة جدًا، كما أنهم يوفرون خيارات متعددة للعديد من الوجهات.</p>
-<div style={{ marginTop: "auto", display: "flex", flexDirection: "column", gap: "3px", paddingTop: "12px", borderTop: "1px solid #ececed", width: "100%" }}>
-<span style={{ fontSize: "17px", fontWeight: "700", color: "#1d2733" }}>م.م. حسن عصام الدليمي</span>
-<span style={{ fontSize: "14px", color: "#5f666e" }}>أستاذ جامعي</span>
-</div>
-</div>
-<div className="qa-testi-card" style={{ position: "relative", background: "#fff", border: "1px solid #ececed", borderRadius: "var(--tw-radius,16px)", padding: "30px 30px 26px", display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center", gap: "16px", boxShadow: "var(--tw-card-shadow,0 1px 3px rgba(29,39,51,.06))" }}>
-<span className="qa-testi-avatar" style={{ width: "112px", height: "112px", borderRadius: "50%", flex: "none", overflow: "hidden", background: "#e4f5fb", boxShadow: "var(--tw-card-shadow,0 1px 3px rgba(29,39,51,.06))" }}><img src="/assets/avatar-ali.webp" alt="علي حسين الزبيدي" style={{ width: "100%", height: "100%", objectFit: "cover" }} /></span>
-<p style={{ margin: "0", fontSize: "16.5px", lineHeight: "1.8", color: "#1d2733", textWrap: "pretty" }}>رتّبوا لي رحلة إلى باكو خلال يومين — التأشيرة، الفندق، والجولات. حتى تغيير موعد العودة في اللحظة الأخيرة تولّوه بأنفسهم دون أي عناء عليّ.</p>
-<div style={{ marginTop: "auto", display: "flex", flexDirection: "column", gap: "3px", paddingTop: "12px", borderTop: "1px solid #ececed", width: "100%" }}>
-<span style={{ fontSize: "17px", fontWeight: "700", color: "#1d2733" }}>علي حسين الزبيدي</span>
-<span style={{ fontSize: "14px", color: "#5f666e" }}>رجل أعمال</span>
-</div>
-</div>
-<div className="qa-testi-card" style={{ position: "relative", background: "#fff", border: "1px solid #ececed", borderRadius: "var(--tw-radius,16px)", padding: "30px 30px 26px", display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center", gap: "16px", boxShadow: "var(--tw-card-shadow,0 1px 3px rgba(29,39,51,.06))" }}>
-<span className="qa-testi-avatar" style={{ width: "112px", height: "112px", borderRadius: "50%", flex: "none", overflow: "hidden", background: "#fef3dc", boxShadow: "var(--tw-card-shadow,0 1px 3px rgba(29,39,51,.06))" }}><img src="/assets/avatar-saif.webp" alt="سيف الدين قاسم" style={{ width: "100%", height: "100%", objectFit: "cover" }} /></span>
-<p style={{ margin: "0", fontSize: "16.5px", lineHeight: "1.8", color: "#1d2733", textWrap: "pretty" }}>نتعامل معهم لسفر موظفينا منذ سنتين. الأسعار التعاقدية واضحة، والتعديلات على الحجوزات تُنجَز في نفس اليوم — هذا ما نحتاجه في سفر الأعمال.</p>
-<div style={{ marginTop: "auto", display: "flex", flexDirection: "column", gap: "3px", paddingTop: "12px", borderTop: "1px solid #ececed", width: "100%" }}>
-<span style={{ fontSize: "17px", fontWeight: "700", color: "#1d2733" }}>سيف الدين قاسم</span>
-<span style={{ fontSize: "14px", color: "#5f666e" }}>مدير إداري — شركة مقاولات</span>
-</div>
-</div>
-</div>
-<div className="qa-swipe-hint" aria-hidden="true">اسحب لرؤية المزيد ↔</div>
-</section>
+<TripFinder lang={st.lang} />
+<VisaChecker lang={st.lang} />
 <div data-ach-band="" style={{ '--bw-hairline': "0" }}><AchievementSpread assetBase="/assets" /></div>
 <section dir="rtl" style={{ position: "relative", overflow: "hidden", background: "var(--tw-band-deep,#049dc5)" }}>
-<img src="/assets/logo-mark-white.webp" alt="" style={{ position: "absolute", insetInlineEnd: "-110px", top: "-80px", height: "400px", opacity: ".1" }} />
 <div className="qa-sec qa-2col" style={{ position: "relative", display: "grid", gridTemplateColumns: "1.05fr .95fr", gap: "48px", alignItems: "center", paddingBottom: "28px" }}>
 <div style={{ display: "flex", flexDirection: "column", gap: "18px" }}>
 <span style={{ fontSize: "15px", fontWeight: "600", color: "rgba(255,255,255,.75)" }}>شراكات موثوقة… تجربة سفر مميزة</span>
@@ -1091,6 +962,18 @@ function   visaVals(country){
 <div aria-hidden="true" style={{ position: "relative", height: "1px", background: "rgba(255,255,255,.22)" }}></div>
 <AirlinesMarquee />
 </section>
+<section className="qa-sec" style={{ paddingTop: "0" }}>
+<div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", justifyContent: "space-between", gap: "20px", background: "#f6f8f9", border: "1px solid #e6e9eb", borderRadius: "12px", padding: "28px 32px" }}>
+<div style={{ display: "flex", flexDirection: "column", gap: "6px", minWidth: "260px" }}>
+<h2 style={{ margin: "0", fontSize: "var(--q-t3,22px)", fontWeight: "700", color: "#1d2733" }}>تحتاج مساعدة في الحجز؟</h2>
+<p style={{ margin: "0", fontSize: "var(--q-t5,15px)", lineHeight: "1.7", color: "#5f666e" }}>اتصل بالرقم المختصر <b data-no-i18n="">6393</b> داخل العراق، أو راسلنا على واتساب ونرد عليك في أوقات الدوام.</p>
+</div>
+<div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
+<button type="button" className="qa-btn qa-amber" onClick={goContact}>تواصل معنا</button>
+<a className="qa-btn" href={waLink('مرحباً قصر المرايا، أرغب بالمساعدة في حجز رحلة.')} target="_blank" rel="noopener" style={{ background: "transparent", border: "1px solid #049dc5", color: "#036f8c" }}>واتساب</a>
+</div>
+</div>
+</section>
 </div>
 </>) : null}
 
@@ -1103,7 +986,6 @@ function   visaVals(country){
 </section>
 <section className="qa-sec" style={{ paddingTop: "20px" }}>
 <div style={{ position: "relative", width: "100vw", marginInline: "calc(50% - 50vw)", overflow: "hidden", background: "var(--tw-band-deep,#049dc5)" }} data-partner-band="">
-<img src="/assets/logo-mark-white.webp" alt="" style={{ position: "absolute", insetInlineEnd: "-90px", top: "-70px", height: "360px", opacity: "var(--tw-mark,.14)" }} />
 <div style={{ position: "relative" }}>
 <div style={{ position: "relative", overflow: "hidden" }}><img src="/assets/partners-flamingo-skylo-v3.jpg" alt="فلامنغو وقصر المرايا — شركاء وأصدقاء" style={{ display: "block", width: "100%", height: "auto" }} /></div>
 <div className="qa-2col qa-partner" style={{ display: "grid", gridTemplateColumns: "1.08fr .92fr", gap: "40px", alignItems: "center", padding: "44px 48px 48px" }}>
@@ -1135,10 +1017,30 @@ function   visaVals(country){
 </div>
 </section>
 <section className="qa-sec" style={{ paddingTop: "0", display: "flex", flexDirection: "column", gap: "24px" }}>
-<div className="qa-grid">
-<div className="qa-card" style={{ display: "flex", flexDirection: "column", gap: "10px" }}><h4 style={{ display: "flex", alignItems: "center", gap: "8px", fontSize: "20px", fontWeight: "700", color: "#1d2733" }}>1. ابحث على <img src="/assets/logo-flamingo.webp" alt="flamingo.iq" style={{ height: "22px", width: "auto" }} /></h4><p style={{ fontSize: "14px", lineHeight: "1.45", color: "#5f666e" }}>كل شركات الطيران وسلاسل الفنادق التي نتعامل معها متاحة على المنصة بأسعارنا التعاقدية.</p></div>
-<div className="qa-card" style={{ display: "flex", flexDirection: "column", gap: "10px" }}><h4 style={{ fontSize: "20px", fontWeight: "700", color: "#1d2733" }}>2. أكمل الحجز</h4><p style={{ fontSize: "14px", lineHeight: "1.45", color: "#5f666e" }}>دفع آمن وتأكيد فوري على بريدك الإلكتروني وواتساب.</p></div>
-<div className="qa-card" style={{ display: "flex", flexDirection: "column", gap: "10px" }}><h4 style={{ fontSize: "20px", fontWeight: "700", color: "#1d2733" }}>3. نتابع نحن الباقي</h4><p style={{ fontSize: "14px", lineHeight: "1.45", color: "#5f666e" }}>تغيير موعد، أمتعة إضافية، أو تأشيرة — كلّم قصر المرايا وسنتولى الأمر.</p></div>
+<div style={{ display: "flex", flexDirection: "column", gap: "var(--q-s3,24px)" }}>
+<div style={{ position: "relative", display: "flex", alignItems: "flex-start", gap: "var(--q-s2,16px)" }}>
+<span aria-hidden="true" style={{ position: "absolute", insetInlineStart: "13px", top: "28px", bottom: "calc(-1 * var(--q-s3,24px))", width: "2px", background: "var(--q-line,#e6e9eb)" }}></span>
+<span style={{ position: "relative", zIndex: "1", flex: "none", display: "grid", placeItems: "center", width: "28px", height: "28px", borderRadius: "999px", background: "var(--q-cyan,#049dc5)", color: "#fff", fontFamily: "'IBM Plex Sans',system-ui,sans-serif", fontSize: "var(--q-t6,13px)", fontWeight: "700", lineHeight: "1" }}>1</span>
+<div style={{ display: "flex", flexDirection: "column", gap: "6px", flex: "1 1 auto", minWidth: "0" }}>
+<h4 style={{ margin: "0", display: "flex", alignItems: "center", flexWrap: "wrap", gap: "8px", fontSize: "var(--q-t4,17px)", fontWeight: "700", color: "var(--q-ink,#1d2733)" }}>ابحث على <img src="/assets/logo-flamingo.webp" alt="flamingo.iq" style={{ height: "22px", width: "auto" }} /></h4>
+<p style={{ margin: "0", fontSize: "var(--q-t5,15px)", lineHeight: "1.7", color: "var(--q-ink-2,#5f666e)" }}>كل شركات الطيران وسلاسل الفنادق التي نتعامل معها متاحة على المنصة بأسعارنا التعاقدية.</p>
+</div>
+</div>
+<div style={{ position: "relative", display: "flex", alignItems: "flex-start", gap: "var(--q-s2,16px)" }}>
+<span aria-hidden="true" style={{ position: "absolute", insetInlineStart: "13px", top: "28px", bottom: "calc(-1 * var(--q-s3,24px))", width: "2px", background: "var(--q-line,#e6e9eb)" }}></span>
+<span style={{ position: "relative", zIndex: "1", flex: "none", display: "grid", placeItems: "center", width: "28px", height: "28px", borderRadius: "999px", background: "var(--q-cyan,#049dc5)", color: "#fff", fontFamily: "'IBM Plex Sans',system-ui,sans-serif", fontSize: "var(--q-t6,13px)", fontWeight: "700", lineHeight: "1" }}>2</span>
+<div style={{ display: "flex", flexDirection: "column", gap: "6px", flex: "1 1 auto", minWidth: "0" }}>
+<h4 style={{ margin: "0", display: "flex", alignItems: "center", flexWrap: "wrap", gap: "8px", fontSize: "var(--q-t4,17px)", fontWeight: "700", color: "var(--q-ink,#1d2733)" }}>أكمل الحجز</h4>
+<p style={{ margin: "0", fontSize: "var(--q-t5,15px)", lineHeight: "1.7", color: "var(--q-ink-2,#5f666e)" }}>دفع آمن وتأكيد فوري على بريدك الإلكتروني وواتساب.</p>
+</div>
+</div>
+<div style={{ position: "relative", display: "flex", alignItems: "flex-start", gap: "var(--q-s2,16px)" }}>
+<span style={{ position: "relative", zIndex: "1", flex: "none", display: "grid", placeItems: "center", width: "28px", height: "28px", borderRadius: "999px", background: "var(--q-cyan,#049dc5)", color: "#fff", fontFamily: "'IBM Plex Sans',system-ui,sans-serif", fontSize: "var(--q-t6,13px)", fontWeight: "700", lineHeight: "1" }}>3</span>
+<div style={{ display: "flex", flexDirection: "column", gap: "6px", flex: "1 1 auto", minWidth: "0" }}>
+<h4 style={{ margin: "0", display: "flex", alignItems: "center", flexWrap: "wrap", gap: "8px", fontSize: "var(--q-t4,17px)", fontWeight: "700", color: "var(--q-ink,#1d2733)" }}>نتابع نحن الباقي</h4>
+<p style={{ margin: "0", fontSize: "var(--q-t5,15px)", lineHeight: "1.7", color: "var(--q-ink-2,#5f666e)" }}>تغيير موعد، أمتعة إضافية، أو تأشيرة — كلّم قصر المرايا وسنتولى الأمر.</p>
+</div>
+</div>
 </div>
 <div style={{ display: "flex", alignItems: "center", gap: "24px", flexWrap: "wrap", background: "#e4f5fb", border: "1px solid #bfe9f6", borderRadius: "var(--tw-radius,16px)", padding: "24px 28px" }}>
 <span style={{ flex: "none", width: "132px", height: "132px", borderRadius: "50%", background: "#fff", overflow: "hidden", display: "grid", placeItems: "center", boxShadow: "var(--tw-card-shadow,0 1px 3px rgba(29,39,51,.06))" }}><img src="/assets/mascot-skylo-passport-hq.webp" alt="" style={{ width: "100%", height: "100%", objectFit: "contain" }} /></span>
@@ -1333,16 +1235,16 @@ function   visaVals(country){
 </div>
 </div>
 </>) : null}
-<div style={{ display: "flex", flexDirection: "column", gap: "10px", background: "#fff", border: "1px solid #ececed", borderRadius: "var(--tw-radius,18px)", padding: "22px 24px" }}>
-<h3 style={{ margin: "0", fontSize: "19px", fontWeight: "700", color: "#1d2733" }}>بطاقة التأشيرة</h3>
-<div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(200px,1fr))", gap: "10px" }}>
+<div style={{ display: "flex", flexDirection: "column", gap: "10px", background: "#fff", border: "1px solid var(--q-line,#e6e9eb)", borderRadius: "var(--q-r,12px)", padding: "22px 24px" }}>
+<h3 style={{ margin: "0", fontSize: "19px", fontWeight: "700", color: "var(--q-ink,#1d2733)" }}>بطاقة التأشيرة</h3>
+<dl style={{ margin: "0", display: "flex", flexDirection: "column" }}>
 {(cardRows || []).map((row, $index) => (<React.Fragment key={$index}>
-<div style={{ display: "flex", flexDirection: "column", gap: "3px", padding: "12px 14px", border: "1px solid #ececed", borderRadius: "var(--tw-radius-sm,10px)", background: "#fbfbfb" }}>
-<span style={{ fontSize: "12.5px", color: "#5f666e" }}>{row.label}</span>
-<span data-no-i18n={row.noI18n} style={{ fontSize: "15.5px", fontWeight: "700", color: "#1d2733" }}>{row.value}</span>
+<div style={{ display: "flex", flexWrap: "wrap", alignItems: "baseline", justifyContent: "space-between", gap: "2px var(--q-s2,16px)", paddingBlock: "10px", borderTop: "1px solid var(--q-line,#e6e9eb)" }}>
+<dt style={{ fontSize: "var(--q-t5,15px)", color: "var(--q-ink-2,#5f666e)" }}>{row.label}</dt>
+<dd data-no-i18n={row.noI18n} style={{ margin: "0", fontSize: "var(--q-t5,15px)", fontWeight: "700", color: "var(--q-ink,#1d2733)", textAlign: "end" }}>{row.value}</dd>
 </div>
 </React.Fragment>))}
-</div>
+</dl>
 </div>
 <div style={{ display: "flex", flexDirection: "column", gap: "12px", background: "#fff", border: "1px solid #ececed", borderRadius: "var(--tw-radius,18px)", padding: "22px 24px" }}>
 <h3 style={{ margin: "0", fontSize: "19px", fontWeight: "700", color: "#1d2733" }}>ما يشمله هذا النوع</h3>
@@ -1576,24 +1478,39 @@ function   visaVals(country){
 </>) : null}
 
 {stepsOn ? (<>
-<div style={{ display: "flex", flexDirection: "column", gap: "24px", background: "#eaf8fd", borderRadius: "28px", padding: "36px 34px", marginTop: "8px" }}>
-<div style={{ display: "flex", flexDirection: "column", gap: "4px", textAlign: "center" }}>
-<span style={{ fontSize: "13.5px", fontWeight: "600", color: "#faab18" }}>من الاختيار إلى التحميل</span>
-<h3 style={{ margin: "0", fontSize: "26px", fontWeight: "700", color: "#049dc5" }}>كيف تُباع التأشيرة وتُنجز؟</h3>
+<div style={{ display: "flex", flexDirection: "column", gap: "var(--q-s3)", background: "#fff", border: "1px solid #e6e9eb", borderRadius: "12px", padding: "var(--q-s4)", marginTop: "8px" }}>
+<div style={{ display: "flex", flexDirection: "column", gap: "6px", textAlign: "start" }}>
+<span style={{ fontSize: "13px", fontWeight: "700", letterSpacing: ".08em", color: "#049dc5" }}>من الاختيار إلى التحميل</span>
+<h2 style={{ margin: "0", fontSize: "30px", fontWeight: "700", color: "#1d2733", lineHeight: "1.25" }}>كيف تُباع التأشيرة وتُنجز؟</h2>
 </div>
-<div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(220px,1fr))", gap: "16px" }}>
-{(flowSteps || []).map((st, $index) => (<React.Fragment key={$index}>
-<div style={{ position: "relative", display: "flex", flexDirection: "column", gap: "10px", background: st.bg, border: `1px solid ${st.border}`, borderRadius: "var(--tw-radius,18px)", padding: "20px", boxShadow: "var(--tw-card-shadow,0 2px 8px rgba(29,39,51,.07))" }}>
-<div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "8px" }}>
-<span style={{ padding: "4px 11px", borderRadius: "999px", background: st.roleBg, color: st.roleInk, fontSize: "11.5px", fontWeight: "700", letterSpacing: ".02em" }}>{st.role}</span>
-<span data-no-i18n="" style={{ fontFamily: "'IBM Plex Sans',system-ui,sans-serif", fontSize: "20px", fontWeight: "700", color: "#a6abb0" }}>{st.n}</span>
+<div style={{ display: "flex", flexDirection: "column", gap: "var(--q-s3)" }}>
+{(flowSteps || []).map((sg, $index) => (<React.Fragment key={$index}>
+<div style={{ display: "flex", alignItems: "flex-start", gap: "16px" }}>
+<div style={{ position: "relative", alignSelf: "stretch", flex: "none", width: "clamp(28px,3.4vw,36px)" }}>
+<span data-no-i18n="" style={{ position: "relative", zIndex: "1", display: "flex", alignItems: "center", justifyContent: "center", width: "clamp(28px,3.4vw,36px)", height: "clamp(28px,3.4vw,36px)", borderRadius: "999px", background: "#049dc5", color: "#fff", fontFamily: "'IBM Plex Sans',system-ui,sans-serif", fontSize: "clamp(13px,1.1vw,15px)", fontWeight: "700", lineHeight: "1" }}>{sg.n}</span>
+{$index < (flowSteps || []).length - 1 ? (<span aria-hidden="true" style={{ position: "absolute", insetInlineStart: "calc(50% - 1px)", top: "clamp(28px,3.4vw,36px)", bottom: "calc(-1 * var(--q-s3))", width: "2px", background: "#e6e9eb" }} />) : null}
 </div>
-<h4 style={{ margin: "0", fontSize: "17.5px", fontWeight: "700", color: "#1d2733" }}>{st.title}</h4>
-<p style={{ margin: "0", fontSize: "14px", lineHeight: "1.65", color: "#5f666e", textWrap: "pretty" }}>{st.hint}</p>
+<div style={{ display: "flex", flexDirection: "column", gap: "9px", flex: "1 1 auto", minWidth: "0", paddingTop: "3px" }}>
+<h3 style={{ margin: "0", fontSize: "var(--q-t3)", fontWeight: "700", color: "#1d2733", lineHeight: "1.3" }}>{sg.title}</h3>
+{(sg.items || []).map((it, $i) => (<React.Fragment key={$i}>
+<div style={{ display: "flex", flexWrap: "wrap", alignItems: "baseline", gap: "7px", minWidth: "0" }}>
+<span style={{ flex: "none", padding: "2px 9px", borderRadius: "999px", background: it.roleBg, color: it.roleInk, fontSize: "11.5px", fontWeight: "700" }}>{it.role}</span>
+{it.title ? (<span style={{ fontSize: "15px", fontWeight: "600", color: "#3d4650" }}>{it.title}</span>) : null}
+<span style={{ fontSize: "13.5px", lineHeight: "1.6", color: "#5f666e" }}>{it.hint}</span>
+</div>
+{(it.outcomes || []).map((o, $o) => (<React.Fragment key={$o}>
+<div style={{ display: "flex", flexWrap: "wrap", alignItems: "baseline", gap: "7px", paddingInlineStart: "10px", minWidth: "0" }}>
+<span style={{ flex: "none", fontSize: "13px", fontWeight: "700", color: "#9aa0a6" }}>{o.lead}</span>
+<span style={{ fontSize: "15px", fontWeight: "600", color: "#3d4650" }}>{o.text}</span>
+</div>
+</React.Fragment>))}
+</React.Fragment>))}
+{sg.note ? (<p style={{ margin: "0", fontSize: "13.5px", fontWeight: "600", lineHeight: "1.6", color: "#3d4650" }}>{sg.note}</p>) : null}
+</div>
 </div>
 </React.Fragment>))}
 </div>
-<div style={{ textAlign: "center", padding: "12px 18px", borderRadius: "var(--tw-radius-sm,10px)", background: "#fef3dc", border: "1px solid #fdd27c", color: "#7a5200", fontSize: "14px", fontWeight: "600" }}>الخطوات لا تتغير — ما يتغير هو المحتوى: الدول والمستندات والأسعار والحالات.</div>
+<p style={{ margin: "0", fontSize: "13.5px", lineHeight: "1.6", color: "#5f666e" }}>الخطوات لا تتغير — ما يتغير هو المحتوى: الدول والمستندات والأسعار والحالات.</p>
 </div>
 </>) : null}
 </section>
@@ -1603,13 +1520,12 @@ function   visaVals(country){
 {isPackages ? (<>
 <div className="qa-page">
 <section style={{ background: "var(--tw-band,#34bbe1)", position: "relative", overflow: "hidden", paddingBottom: "70px" }}>
-<div className="qa-sec qa-2col" style={{ position: "relative", display: "grid", gridTemplateColumns: "1.06fr .94fr", gap: "8px", alignItems: "center", paddingBlock: "0" }}>
+<div className="qa-sec" style={{ position: "relative", paddingBlock: "0" }}>
 <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
 <span style={{ fontSize: "14px", fontWeight: "700", letterSpacing: ".06em", color: "rgba(255,255,255,.85)" }}>PACKAGES &amp; TOURS</span>
 <h1 style={{ fontSize: "54px", fontWeight: "700", lineHeight: "1.15", color: "#fff" }}>الباقات والجولات</h1>
 <p style={{ fontSize: "20px", lineHeight: "1.55", color: "rgba(255,255,255,.92)", maxWidth: "620px" }}>كل باقة تُبنى حول مجموعة محددة — عائلية، شبابية، رجال أعمال، أو حج وعمرة — ولكل مجموعة برنامجها وإيقاعها وميزانيتها.</p>
 </div>
-<img src="/assets/mascot-skylo-tours.webp" alt="سكايلو — باقات المجموعات والجولات" style={{ width: "calc(100% + 90px)", maxWidth: "none", objectFit: "cover", objectPosition: "center", justifySelf: "stretch", marginInlineEnd: "-90px", WebkitMaskImage: "linear-gradient(to left, rgba(0,0,0,0) 0, #000 26%), linear-gradient(to bottom, rgba(0,0,0,0) 0, #000 14%, #000 86%, rgba(0,0,0,0) 100%)", maskImage: "linear-gradient(to left, rgba(0,0,0,0) 0, #000 26%), linear-gradient(to bottom, rgba(0,0,0,0) 0, #000 14%, #000 86%, rgba(0,0,0,0) 100%)", WebkitMaskComposite: "source-in", maskComposite: "intersect", height: "330px" }} />
 </div>
 </section>
 <section className="qa-sec" style={{ display: "flex", flexDirection: "column", gap: "32px" }}>
@@ -1685,7 +1601,7 @@ function   visaVals(country){
 <div data-packages-grid="" className="qa-grid" style={{ gridTemplateColumns: "repeat(auto-fit,minmax(300px,1fr))" }}>
 {(packages || []).map((pkg, $index) => (<React.Fragment key={$index}>
 <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-<PackageCard />
+<PackageCard title={pkg.title} destination={pkg.destination} nights={pkg.nights} groupType={pkg.groupType} departs={pkg.departs} price={pkg.price} includes={pkg.includes} badge={pkg.badge} onDetails={pkg.onDetails} />
 <button type="button" onClick={pkg.toggle} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "8px", padding: "13px 16px", borderRadius: "var(--tw-radius-sm,10px)", border: "1px solid #bfe9f6", background: "#eaf8fd", fontFamily: "inherit", fontSize: "14px", fontWeight: "700", color: "#036f8c", cursor: "pointer" }}>
 <span style={{ display: "flex", alignItems: "center", gap: "8px" }}>
 <span style={{ display: "grid", placeItems: "center", width: "26px", height: "26px", borderRadius: "50%", background: "#049dc5", color: "#fff" }}>
@@ -2193,11 +2109,14 @@ function   visaVals(country){
 </div>
 </section>
 <section className="qa-sec" style={{ display: "flex", flexDirection: "column", gap: "26px" }}>
-<div style={{ display: "flex", flexDirection: "column", gap: "12px", width: "100%", maxWidth: "860px", marginInline: "auto" }}>
+<div style={{ display: "flex", flexDirection: "column", width: "100%", maxWidth: "var(--q-read,720px)", marginInline: "auto", borderTop: "1px solid var(--q-line,#e6e9eb)" }}>
 {(contentFaq || []).map((item, i) => (
-<details key={item.id || item.q} style={{ background: "#fff", border: "1px solid #ececed", borderRadius: "var(--tw-radius,16px)", padding: "22px 26px", boxShadow: "var(--tw-card-shadow,0 1px 3px rgba(29,39,51,.06))" }} open={i === 0}>
-<summary style={{ cursor: "pointer", fontSize: "19px", fontWeight: "700", color: "#1d2733", lineHeight: "1.5", listStyle: "none" }}>{item.q}</summary>
-<p style={{ margin: "14px 0 0", fontSize: "16px", lineHeight: "1.8", color: "#3d4650", textWrap: "pretty" }}>{item.a}</p>
+<details key={item.id || item.q} style={{ paddingBlock: "var(--q-s2,16px)", borderBottom: "1px solid var(--q-line,#e6e9eb)" }} open={i === 0}>
+<summary style={{ cursor: "pointer", fontSize: "var(--q-t4,17px)", fontWeight: "700", color: "var(--q-ink,#1d2733)", lineHeight: "1.5", listStyle: "none", display: "flex", alignItems: "center", justifyContent: "space-between", gap: "16px" }}>
+<span>{item.q}</span>
+<Icon name="chevron-down" size={16} style={{ flex: "none", color: "var(--q-ink-3,#9aa0a6)" }} />
+</summary>
+<p style={{ margin: "10px 0 0", fontSize: "var(--q-t5,15px)", lineHeight: "1.8", color: "var(--q-ink-2,#5f666e)", textWrap: "pretty" }}>{item.a}</p>
 </details>
 ))}
 </div>
@@ -2213,7 +2132,6 @@ function   visaVals(country){
 {isInsurance ? (<>
 <div className="qa-page">
 <section style={{ background: "var(--tw-band-deep,#049dc5)", position: "relative", overflow: "hidden" }}>
-<img src="/assets/logo-mark-white.webp" alt="" style={{ position: "absolute", insetInlineEnd: "-150px", top: "-80px", height: "460px", opacity: ".1" }} />
 <div className="qa-sec qa-2col" style={{ position: "relative", paddingBlock: "30px", display: "grid", gridTemplateColumns: "minmax(0,1.05fr) minmax(0,.95fr)", gap: "36px", alignItems: "center" }}>
 <div style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
 <span style={{ fontSize: "14px", fontWeight: "600", color: "rgba(255,255,255,.85)" }}>خدمة إضافية</span>
@@ -2234,23 +2152,25 @@ function   visaVals(country){
 </div>
 </div>
 </section>
-<section className="qa-sec" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(280px,1fr))", gap: "20px" }}>
-<div className="qa-card" style={{ display: "flex", flexDirection: "column", gap: "10px", background: "#fff", border: "1px solid #ececed", borderRadius: "var(--tw-radius,16px)", padding: "24px 26px" }}>
-<h3 style={{ margin: "0", fontSize: "20px", fontWeight: "700", color: "#1d2733" }}>ما الذي يغطيه التأمين؟</h3>
-<p style={{ margin: "0", fontSize: "16.5px", lineHeight: "1.8", color: "#3d4650", textWrap: "pretty" }}>تغطية طبية طارئة أثناء السفر، وإلغاء أو تأخير الرحلة، وفقدان الأمتعة — حسب الوثيقة التي تختارها.</p>
+<section className="qa-sec">
+<dl style={{ margin: "0", maxWidth: "var(--q-read,720px)", display: "flex", flexDirection: "column", borderTop: "1px solid var(--q-line,#e6e9eb)" }}>
+<div style={{ display: "flex", flexDirection: "column", gap: "6px", paddingBlock: "var(--q-s2,16px)", borderBottom: "1px solid var(--q-line,#e6e9eb)" }}>
+<dt style={{ fontSize: "var(--q-t3,22px)", fontWeight: "700", lineHeight: "1.3", color: "var(--q-ink,#1d2733)" }}>ما الذي يغطيه التأمين؟</dt>
+<dd style={{ margin: "0", fontSize: "var(--q-t4,17px)", lineHeight: "1.75", color: "var(--q-ink-2,#5f666e)", textWrap: "pretty" }}>تغطية طبية طارئة أثناء السفر، وإلغاء أو تأخير الرحلة، وفقدان الأمتعة — حسب الوثيقة التي تختارها.</dd>
 </div>
-<div className="qa-card" style={{ display: "flex", flexDirection: "column", gap: "10px", background: "#fff", border: "1px solid #ececed", borderRadius: "var(--tw-radius,16px)", padding: "24px 26px" }}>
-<h3 style={{ margin: "0", fontSize: "20px", fontWeight: "700", color: "#1d2733" }}>لمن نصدره؟</h3>
-<p style={{ margin: "0", fontSize: "16.5px", lineHeight: "1.8", color: "#3d4650", textWrap: "pretty" }}>للأفراد والعائلات وموظفي الشركات، ولرحلات التأشيرات التي تشترط وثيقة تأمين سارية.</p>
+<div style={{ display: "flex", flexDirection: "column", gap: "6px", paddingBlock: "var(--q-s2,16px)", borderBottom: "1px solid var(--q-line,#e6e9eb)" }}>
+<dt style={{ fontSize: "var(--q-t3,22px)", fontWeight: "700", lineHeight: "1.3", color: "var(--q-ink,#1d2733)" }}>لمن نصدره؟</dt>
+<dd style={{ margin: "0", fontSize: "var(--q-t4,17px)", lineHeight: "1.75", color: "var(--q-ink-2,#5f666e)", textWrap: "pretty" }}>للأفراد والعائلات وموظفي الشركات، ولرحلات التأشيرات التي تشترط وثيقة تأمين سارية.</dd>
 </div>
-<div className="qa-card" style={{ display: "flex", flexDirection: "column", gap: "10px", background: "#fff", border: "1px solid #ececed", borderRadius: "var(--tw-radius,16px)", padding: "24px 26px" }}>
-<h3 style={{ margin: "0", fontSize: "20px", fontWeight: "700", color: "#1d2733" }}>كيف تطلبه؟</h3>
-<p style={{ margin: "0", fontSize: "16.5px", lineHeight: "1.8", color: "#3d4650", textWrap: "pretty" }}>تواصل معنا على الرقم المختصر 6393 أو عبر البريد، وسنرسل لك عرض السعر والتغطية خلال وقت قصير.</p>
+<div style={{ display: "flex", flexDirection: "column", gap: "6px", paddingBlock: "var(--q-s2,16px)", borderBottom: "1px solid var(--q-line,#e6e9eb)" }}>
+<dt style={{ fontSize: "var(--q-t3,22px)", fontWeight: "700", lineHeight: "1.3", color: "var(--q-ink,#1d2733)" }}>كيف تطلبه؟</dt>
+<dd style={{ margin: "0", fontSize: "var(--q-t4,17px)", lineHeight: "1.75", color: "var(--q-ink-2,#5f666e)", textWrap: "pretty" }}>تواصل معنا على الرقم المختصر 6393 أو عبر البريد، وسنرسل لك عرض السعر والتغطية خلال وقت قصير.</dd>
 </div>
+</dl>
 </section>
 <section className="qa-sec" style={{ paddingTop: "0" }}>
-<div style={{ display: "flex", alignItems: "center", gap: "24px", flexWrap: "wrap", background: "#e4f5fb", border: "1px solid #bfe9f6", borderRadius: "var(--tw-radius,16px)", padding: "24px 28px" }}>
-<p style={{ flex: "1", minWidth: "260px", fontSize: "18px", lineHeight: "1.75", color: "#1b93b8" }}>هل ترغب بتأمين لرحلتك القادمة؟ تواصل معنا وسنرتّب لك أفضل وثيقة سعراً وتغطية.</p>
+<div style={{ display: "flex", alignItems: "center", gap: "24px", flexWrap: "wrap", background: "var(--q-surface-2,#f6f8f9)", border: "1px solid var(--q-line,#e6e9eb)", borderRadius: "var(--q-r,12px)", padding: "24px 28px" }}>
+<p style={{ flex: "1", minWidth: "260px", fontSize: "var(--q-t4,17px)", lineHeight: "1.75", color: "var(--q-ink-2,#5f666e)" }}>هل ترغب بتأمين لرحلتك القادمة؟ تواصل معنا وسنرتّب لك أفضل وثيقة سعراً وتغطية.</p>
 <button className="qa-btn qa-cyan" onClick={goContact}>تواصل معنا</button>
 </div>
 </section>
@@ -2260,7 +2180,6 @@ function   visaVals(country){
 {isGroups ? (<>
 <div className="qa-page">
 <section style={{ background: "var(--tw-band-deep,#049dc5)", position: "relative", overflow: "hidden" }}>
-<img src="/assets/logo-mark-white.webp" alt="" style={{ position: "absolute", insetInlineEnd: "-150px", top: "-80px", height: "460px", opacity: ".1" }} />
 <div className="qa-sec qa-2col" style={{ position: "relative", paddingBlock: "30px", display: "grid", gridTemplateColumns: "minmax(0,1.05fr) minmax(0,.95fr)", gap: "36px", alignItems: "center" }}>
 <div style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
 <span style={{ fontSize: "14px", fontWeight: "600", color: "rgba(255,255,255,.85)" }}>حلول للمؤسسات</span>
@@ -2281,23 +2200,25 @@ function   visaVals(country){
 </div>
 </div>
 </section>
-<section className="qa-sec" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(280px,1fr))", gap: "20px" }}>
-<div className="qa-card" style={{ display: "flex", flexDirection: "column", gap: "10px", background: "#fff", border: "1px solid #ececed", borderRadius: "var(--tw-radius,16px)", padding: "24px 26px" }}>
-<h3 style={{ margin: "0", fontSize: "20px", fontWeight: "700", color: "#1d2733" }}>التذاكر الجماعية</h3>
-<p style={{ margin: "0", fontSize: "16.5px", lineHeight: "1.8", color: "#3d4650", textWrap: "pretty" }}>أسعار تعاقدية للمجموعات مع مرونة في الأسماء والمواعيد قبل الإصدار.</p>
+<section className="qa-sec">
+<dl style={{ margin: "0", maxWidth: "var(--q-read,720px)", display: "flex", flexDirection: "column", borderTop: "1px solid var(--q-line,#e6e9eb)" }}>
+<div style={{ display: "flex", flexDirection: "column", gap: "6px", paddingBlock: "var(--q-s2,16px)", borderBottom: "1px solid var(--q-line,#e6e9eb)" }}>
+<dt style={{ fontSize: "var(--q-t3,22px)", fontWeight: "700", lineHeight: "1.3", color: "var(--q-ink,#1d2733)" }}>التذاكر الجماعية</dt>
+<dd style={{ margin: "0", fontSize: "var(--q-t4,17px)", lineHeight: "1.75", color: "var(--q-ink-2,#5f666e)", textWrap: "pretty" }}>أسعار تعاقدية للمجموعات مع مرونة في الأسماء والمواعيد قبل الإصدار.</dd>
 </div>
-<div className="qa-card" style={{ display: "flex", flexDirection: "column", gap: "10px", background: "#fff", border: "1px solid #ececed", borderRadius: "var(--tw-radius,16px)", padding: "24px 26px" }}>
-<h3 style={{ margin: "0", fontSize: "20px", fontWeight: "700", color: "#1d2733" }}>الإقامة والتنقلات</h3>
-<p style={{ margin: "0", fontSize: "16.5px", lineHeight: "1.8", color: "#3d4650", textWrap: "pretty" }}>عقود فندقية مباشرة، وتنقلات مطار وباصات داخلية منظّمة حسب برنامج الفوج.</p>
+<div style={{ display: "flex", flexDirection: "column", gap: "6px", paddingBlock: "var(--q-s2,16px)", borderBottom: "1px solid var(--q-line,#e6e9eb)" }}>
+<dt style={{ fontSize: "var(--q-t3,22px)", fontWeight: "700", lineHeight: "1.3", color: "var(--q-ink,#1d2733)" }}>الإقامة والتنقلات</dt>
+<dd style={{ margin: "0", fontSize: "var(--q-t4,17px)", lineHeight: "1.75", color: "var(--q-ink-2,#5f666e)", textWrap: "pretty" }}>عقود فندقية مباشرة، وتنقلات مطار وباصات داخلية منظّمة حسب برنامج الفوج.</dd>
 </div>
-<div className="qa-card" style={{ display: "flex", flexDirection: "column", gap: "10px", background: "#fff", border: "1px solid #ececed", borderRadius: "var(--tw-radius,16px)", padding: "24px 26px" }}>
-<h3 style={{ margin: "0", fontSize: "20px", fontWeight: "700", color: "#1d2733" }}>فعاليات ومؤتمرات</h3>
-<p style={{ margin: "0", fontSize: "16.5px", lineHeight: "1.8", color: "#3d4650", textWrap: "pretty" }}>تنسيق كامل لحركة الوفود والمشجعين والمؤتمرات، مع مسؤول حساب مخصص لمجموعتك.</p>
+<div style={{ display: "flex", flexDirection: "column", gap: "6px", paddingBlock: "var(--q-s2,16px)", borderBottom: "1px solid var(--q-line,#e6e9eb)" }}>
+<dt style={{ fontSize: "var(--q-t3,22px)", fontWeight: "700", lineHeight: "1.3", color: "var(--q-ink,#1d2733)" }}>فعاليات ومؤتمرات</dt>
+<dd style={{ margin: "0", fontSize: "var(--q-t4,17px)", lineHeight: "1.75", color: "var(--q-ink-2,#5f666e)", textWrap: "pretty" }}>تنسيق كامل لحركة الوفود والمشجعين والمؤتمرات، مع مسؤول حساب مخصص لمجموعتك.</dd>
 </div>
+</dl>
 </section>
 <section className="qa-sec" style={{ paddingTop: "0" }}>
-<div style={{ display: "flex", alignItems: "center", gap: "24px", flexWrap: "wrap", background: "#e4f5fb", border: "1px solid #bfe9f6", borderRadius: "var(--tw-radius,16px)", padding: "24px 28px" }}>
-<p style={{ flex: "1", minWidth: "260px", fontSize: "18px", lineHeight: "1.75", color: "#1b93b8" }}>لديك فوج أو فعالية قادمة؟ تواصل معنا وسنبني لك برنامجاً متكاملاً.</p>
+<div style={{ display: "flex", alignItems: "center", gap: "24px", flexWrap: "wrap", background: "var(--q-surface-2,#f6f8f9)", border: "1px solid var(--q-line,#e6e9eb)", borderRadius: "var(--q-r,12px)", padding: "24px 28px" }}>
+<p style={{ flex: "1", minWidth: "260px", fontSize: "var(--q-t4,17px)", lineHeight: "1.75", color: "var(--q-ink-2,#5f666e)" }}>لديك فوج أو فعالية قادمة؟ تواصل معنا وسنبني لك برنامجاً متكاملاً.</p>
 <button className="qa-btn qa-cyan" onClick={goContact}>تواصل معنا</button>
 </div>
 </section>
@@ -2307,7 +2228,6 @@ function   visaVals(country){
 {isPrivacy ? (<>
 <div className="qa-page">
 <section style={{ background: "var(--tw-band-deep,#049dc5)", position: "relative", overflow: "hidden" }}>
-<img src="/assets/logo-mark-white.webp" alt="" style={{ position: "absolute", insetInlineEnd: "-140px", top: "-90px", height: "460px", opacity: ".1" }} />
 <div className="qa-sec qa-2col" style={{ position: "relative", display: "grid", gridTemplateColumns: "1.25fr .75fr", gap: "44px", alignItems: "center" }}>
 <div style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
 <span style={{ fontSize: "14px", fontWeight: "600", color: "rgba(255,255,255,.8)" }}>حماية بياناتك</span>
@@ -2319,72 +2239,48 @@ function   visaVals(country){
 </div>
 </div>
 </section>
-<section className="qa-sec" style={{ display: "flex", flexDirection: "column", gap: "18px", maxWidth: "1000px", margin: "0 auto" }}>
-<div className="qa-card" style={{ display: "flex", flexDirection: "column", gap: "14px", padding: "30px 32px" }}>
-<div style={{ display: "flex", alignItems: "center", gap: "14px" }}>
-<span style={{ width: "38px", height: "38px", flex: "none", borderRadius: "50%", background: "#e4f5fb", color: "#22a9d4", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "17px", fontWeight: "700" }}>1</span>
-<h3 style={{ fontSize: "23px", fontWeight: "700", color: "#1d2733", lineHeight: "1.35", margin: "0" }}>مقدمة</h3>
-</div>
+<section className="qa-sec" style={{ display: "flex", flexDirection: "column", gap: "var(--q-s3,24px)", maxWidth: "var(--q-read,720px)", margin: "0 auto" }}>
+<div style={{ display: "flex", flexDirection: "column", gap: "14px", }}>
+<h3 style={{ margin: "0", display: "flex", alignItems: "baseline", gap: "10px", fontSize: "var(--q-t3,22px)", fontWeight: "700", color: "var(--q-ink,#1d2733)", lineHeight: "1.35" }}><span aria-hidden="true" style={{ flex: "none", fontSize: "var(--q-t5,15px)", fontWeight: "700", color: "var(--q-cyan,#049dc5)" }}>1</span>مقدمة</h3>
 <p style={{ fontSize: "16.5px", lineHeight: "1.85", color: "#3d4650", margin: "0", textWrap: "pretty" }}>تحدد هذه السياسة كيفية جمع واستخدام وحماية المعلومات الشخصية الخاصة بك عند التعامل معنا، سواء عبر موقعنا الإلكتروني أو عبر مكاتبنا وقنوات الاتصال الرسمية.</p>
 
 </div>
-<div className="qa-card" style={{ display: "flex", flexDirection: "column", gap: "14px", padding: "30px 32px" }}>
-<div style={{ display: "flex", alignItems: "center", gap: "14px" }}>
-<span style={{ width: "38px", height: "38px", flex: "none", borderRadius: "50%", background: "#e4f5fb", color: "#22a9d4", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "17px", fontWeight: "700" }}>2</span>
-<h3 style={{ fontSize: "23px", fontWeight: "700", color: "#1d2733", lineHeight: "1.35", margin: "0" }}>المعلومات التي يتم جمعها</h3>
-</div>
+<div style={{ display: "flex", flexDirection: "column", gap: "14px", paddingTop: "var(--q-s3,24px)", borderTop: "1px solid var(--q-line,#e6e9eb)", }}>
+<h3 style={{ margin: "0", display: "flex", alignItems: "baseline", gap: "10px", fontSize: "var(--q-t3,22px)", fontWeight: "700", color: "var(--q-ink,#1d2733)", lineHeight: "1.35" }}><span aria-hidden="true" style={{ flex: "none", fontSize: "var(--q-t5,15px)", fontWeight: "700", color: "var(--q-cyan,#049dc5)" }}>2</span>المعلومات التي يتم جمعها</h3>
 
 <ul style={{ display: "flex", flexDirection: "column", gap: "10px", margin: "0", paddingInlineStart: "20px", fontSize: "16.5px", lineHeight: "1.8", color: "#3d4650" }}><li style={{ textWrap: "pretty" }}>البيانات الشخصية التي يقدمها المستخدم عند الحجز مثل الاسم، رقم الجواز، وبيانات الاتصال.</li><li style={{ textWrap: "pretty" }}>معلومات الدفع والمعاملات المالية عند إجراء عمليات الحجز والدفع.</li><li style={{ textWrap: "pretty" }}>البيانات التقنية مثل عنوان IP، نوع الجهاز والمتصفح، وسجل التصفح على موقعنا.</li></ul>
 </div>
-<div className="qa-card" style={{ display: "flex", flexDirection: "column", gap: "14px", padding: "30px 32px" }}>
-<div style={{ display: "flex", alignItems: "center", gap: "14px" }}>
-<span style={{ width: "38px", height: "38px", flex: "none", borderRadius: "50%", background: "#e4f5fb", color: "#22a9d4", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "17px", fontWeight: "700" }}>3</span>
-<h3 style={{ fontSize: "23px", fontWeight: "700", color: "#1d2733", lineHeight: "1.35", margin: "0" }}>كيفية استخدام المعلومات</h3>
-</div>
+<div style={{ display: "flex", flexDirection: "column", gap: "14px", paddingTop: "var(--q-s3,24px)", borderTop: "1px solid var(--q-line,#e6e9eb)", }}>
+<h3 style={{ margin: "0", display: "flex", alignItems: "baseline", gap: "10px", fontSize: "var(--q-t3,22px)", fontWeight: "700", color: "var(--q-ink,#1d2733)", lineHeight: "1.35" }}><span aria-hidden="true" style={{ flex: "none", fontSize: "var(--q-t5,15px)", fontWeight: "700", color: "var(--q-cyan,#049dc5)" }}>3</span>كيفية استخدام المعلومات</h3>
 
 <ul style={{ display: "flex", flexDirection: "column", gap: "10px", margin: "0", paddingInlineStart: "20px", fontSize: "16.5px", lineHeight: "1.8", color: "#3d4650" }}><li style={{ textWrap: "pretty" }}>معالجة الحجوزات وتقديم الخدمات المطلوبة من قبل العميل.</li><li style={{ textWrap: "pretty" }}>تحسين تجربة المستخدم على الموقع وتقديم محتوى مخصص.</li><li style={{ textWrap: "pretty" }}>التواصل مع العملاء لإبلاغهم بأي تحديثات أو تغييرات على الحجوزات.</li><li style={{ textWrap: "pretty" }}>الامتثال للمتطلبات القانونية والتنظيمية.</li></ul>
 </div>
-<div className="qa-card" style={{ display: "flex", flexDirection: "column", gap: "14px", padding: "30px 32px" }}>
-<div style={{ display: "flex", alignItems: "center", gap: "14px" }}>
-<span style={{ width: "38px", height: "38px", flex: "none", borderRadius: "50%", background: "#e4f5fb", color: "#22a9d4", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "17px", fontWeight: "700" }}>4</span>
-<h3 style={{ fontSize: "23px", fontWeight: "700", color: "#1d2733", lineHeight: "1.35", margin: "0" }}>حماية المعلومات</h3>
-</div>
+<div style={{ display: "flex", flexDirection: "column", gap: "14px", paddingTop: "var(--q-s3,24px)", borderTop: "1px solid var(--q-line,#e6e9eb)", }}>
+<h3 style={{ margin: "0", display: "flex", alignItems: "baseline", gap: "10px", fontSize: "var(--q-t3,22px)", fontWeight: "700", color: "var(--q-ink,#1d2733)", lineHeight: "1.35" }}><span aria-hidden="true" style={{ flex: "none", fontSize: "var(--q-t5,15px)", fontWeight: "700", color: "var(--q-cyan,#049dc5)" }}>4</span>حماية المعلومات</h3>
 
 <ul style={{ display: "flex", flexDirection: "column", gap: "10px", margin: "0", paddingInlineStart: "20px", fontSize: "16.5px", lineHeight: "1.8", color: "#3d4650" }}><li style={{ textWrap: "pretty" }}>يتم تخزين البيانات الشخصية على خوادم آمنة، مع اتخاذ تدابير أمنية مشددة لمنع الوصول غير المصرح به.</li><li style={{ textWrap: "pretty" }}>تلتزم الشركة بعدم بيع أو مشاركة بيانات العملاء مع أي طرف ثالث إلا في حالات الضرورة لإتمام الحجز أو بموجب طلب قانوني.</li></ul>
 </div>
-<div className="qa-card" style={{ display: "flex", flexDirection: "column", gap: "14px", padding: "30px 32px" }}>
-<div style={{ display: "flex", alignItems: "center", gap: "14px" }}>
-<span style={{ width: "38px", height: "38px", flex: "none", borderRadius: "50%", background: "#e4f5fb", color: "#22a9d4", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "17px", fontWeight: "700" }}>5</span>
-<h3 style={{ fontSize: "23px", fontWeight: "700", color: "#1d2733", lineHeight: "1.35", margin: "0" }}>حقوق المستخدمين</h3>
-</div>
+<div style={{ display: "flex", flexDirection: "column", gap: "14px", paddingTop: "var(--q-s3,24px)", borderTop: "1px solid var(--q-line,#e6e9eb)", }}>
+<h3 style={{ margin: "0", display: "flex", alignItems: "baseline", gap: "10px", fontSize: "var(--q-t3,22px)", fontWeight: "700", color: "var(--q-ink,#1d2733)", lineHeight: "1.35" }}><span aria-hidden="true" style={{ flex: "none", fontSize: "var(--q-t5,15px)", fontWeight: "700", color: "var(--q-cyan,#049dc5)" }}>5</span>حقوق المستخدمين</h3>
 
 <ul style={{ display: "flex", flexDirection: "column", gap: "10px", margin: "0", paddingInlineStart: "20px", fontSize: "16.5px", lineHeight: "1.8", color: "#3d4650" }}><li style={{ textWrap: "pretty" }}>يحق للمستخدمين طلب الاطلاع على بياناتهم الشخصية أو تعديلها.</li><li style={{ textWrap: "pretty" }}>يمكن للعملاء طلب حذف بياناتهم من سجلاتنا، باستثناء السجلات المالية التي تخضع للأنظمة المحاسبية.</li><li style={{ textWrap: "pretty" }}>يحق للمستخدمين إلغاء الاشتراك في الرسائل التسويقية في أي وقت.</li></ul>
 </div>
-<div className="qa-card" style={{ display: "flex", flexDirection: "column", gap: "14px", padding: "30px 32px" }}>
-<div style={{ display: "flex", alignItems: "center", gap: "14px" }}>
-<span style={{ width: "38px", height: "38px", flex: "none", borderRadius: "50%", background: "#e4f5fb", color: "#22a9d4", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "17px", fontWeight: "700" }}>6</span>
-<h3 style={{ fontSize: "23px", fontWeight: "700", color: "#1d2733", lineHeight: "1.35", margin: "0" }}>مشاركة المعلومات مع أطراف ثالثة</h3>
-</div>
+<div style={{ display: "flex", flexDirection: "column", gap: "14px", paddingTop: "var(--q-s3,24px)", borderTop: "1px solid var(--q-line,#e6e9eb)", }}>
+<h3 style={{ margin: "0", display: "flex", alignItems: "baseline", gap: "10px", fontSize: "var(--q-t3,22px)", fontWeight: "700", color: "var(--q-ink,#1d2733)", lineHeight: "1.35" }}><span aria-hidden="true" style={{ flex: "none", fontSize: "var(--q-t5,15px)", fontWeight: "700", color: "var(--q-cyan,#049dc5)" }}>6</span>مشاركة المعلومات مع أطراف ثالثة</h3>
 
 <ul style={{ display: "flex", flexDirection: "column", gap: "10px", margin: "0", paddingInlineStart: "20px", fontSize: "16.5px", lineHeight: "1.8", color: "#3d4650" }}><li style={{ textWrap: "pretty" }}>قد نشارك بعض البيانات مع مزودي الخدمات مثل شركات الطيران والفنادق لتأكيد الحجوزات.</li><li style={{ textWrap: "pretty" }}>نلتزم بعدم مشاركة البيانات لأغراض تسويقية مع أطراف خارجية دون موافقة مسبقة من المستخدم.</li></ul>
 </div>
-<div className="qa-card" style={{ display: "flex", flexDirection: "column", gap: "14px", padding: "30px 32px" }}>
-<div style={{ display: "flex", alignItems: "center", gap: "14px" }}>
-<span style={{ width: "38px", height: "38px", flex: "none", borderRadius: "50%", background: "#e4f5fb", color: "#22a9d4", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "17px", fontWeight: "700" }}>7</span>
-<h3 style={{ fontSize: "23px", fontWeight: "700", color: "#1d2733", lineHeight: "1.35", margin: "0" }}>التعديلات على سياسة الخصوصية</h3>
-</div>
+<div style={{ display: "flex", flexDirection: "column", gap: "14px", paddingTop: "var(--q-s3,24px)", borderTop: "1px solid var(--q-line,#e6e9eb)", }}>
+<h3 style={{ margin: "0", display: "flex", alignItems: "baseline", gap: "10px", fontSize: "var(--q-t3,22px)", fontWeight: "700", color: "var(--q-ink,#1d2733)", lineHeight: "1.35" }}><span aria-hidden="true" style={{ flex: "none", fontSize: "var(--q-t5,15px)", fontWeight: "700", color: "var(--q-cyan,#049dc5)" }}>7</span>التعديلات على سياسة الخصوصية</h3>
 
 <ul style={{ display: "flex", flexDirection: "column", gap: "10px", margin: "0", paddingInlineStart: "20px", fontSize: "16.5px", lineHeight: "1.8", color: "#3d4650" }}><li style={{ textWrap: "pretty" }}>تحتفظ الشركة بحقها في تعديل هذه السياسة في أي وقت وفقًا لمتطلبات التشغيل أو القوانين المعمول بها.</li><li style={{ textWrap: "pretty" }}>سيتم إشعار العملاء بأي تغييرات مهمة عبر موقعنا الإلكتروني أو قنوات الاتصال الرسمية.</li></ul>
 </div>
-<div className="qa-card" style={{ display: "flex", flexDirection: "column", gap: "14px", padding: "30px 32px" }}>
-<div style={{ display: "flex", alignItems: "center", gap: "14px" }}>
-<span style={{ width: "38px", height: "38px", flex: "none", borderRadius: "50%", background: "#e4f5fb", color: "#22a9d4", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "17px", fontWeight: "700" }}>8</span>
-<h3 style={{ fontSize: "23px", fontWeight: "700", color: "#1d2733", lineHeight: "1.35", margin: "0" }}>القوانين المعمول بها</h3>
-</div>
+<div style={{ display: "flex", flexDirection: "column", gap: "14px", paddingTop: "var(--q-s3,24px)", borderTop: "1px solid var(--q-line,#e6e9eb)", }}>
+<h3 style={{ margin: "0", display: "flex", alignItems: "baseline", gap: "10px", fontSize: "var(--q-t3,22px)", fontWeight: "700", color: "var(--q-ink,#1d2733)", lineHeight: "1.35" }}><span aria-hidden="true" style={{ flex: "none", fontSize: "var(--q-t5,15px)", fontWeight: "700", color: "var(--q-cyan,#049dc5)" }}>8</span>القوانين المعمول بها</h3>
 
 <ul style={{ display: "flex", flexDirection: "column", gap: "10px", margin: "0", paddingInlineStart: "20px", fontSize: "16.5px", lineHeight: "1.8", color: "#3d4650" }}><li style={{ textWrap: "pretty" }}>تخضع هذه السياسة لقوانين جمهورية العراق وسلطنة عمان.</li><li style={{ textWrap: "pretty" }}>في حالة حدوث نزاع قانوني، يتم اللجوء إلى المحاكم المختصة لحله.</li></ul>
 </div>
-<div style={{ display: "flex", alignItems: "center", gap: "16px", background: "#fef3dc", border: "1px solid #fdd27c", borderRadius: "var(--tw-radius,16px)", padding: "22px 26px", color: "#c07f00", fontSize: "16.5px", fontWeight: "500", lineHeight: "1.6" }}>لأي استفسارات بخصوص سياسة الخصوصية، يرجى التواصل معنا عبر القنوات الرسمية المدرجة على موقعنا: sales@almarayagroup.com — الرقم المختصر 6393.</div>
+<div style={{ display: "flex", alignItems: "center", gap: "16px", background: "#fef3dc", border: "1px solid #fdd27c", borderRadius: "var(--q-r,12px)", padding: "22px 26px", color: "#c07f00", fontSize: "var(--q-t4,17px)", fontWeight: "500", lineHeight: "1.6" }}>لأي استفسارات بخصوص سياسة الخصوصية، يرجى التواصل معنا عبر القنوات الرسمية المدرجة على موقعنا: sales@almarayagroup.com — الرقم المختصر 6393.</div>
 </section>
 </div>
 </>) : null}
@@ -2392,7 +2288,6 @@ function   visaVals(country){
 {isTerms ? (<>
 <div className="qa-page">
 <section style={{ background: "var(--tw-band-deep,#049dc5)", position: "relative", overflow: "hidden" }}>
-<img src="/assets/logo-mark-white.webp" alt="" style={{ position: "absolute", insetInlineEnd: "-140px", top: "-90px", height: "460px", opacity: ".1" }} />
 <div className="qa-sec qa-2col" style={{ position: "relative", display: "grid", gridTemplateColumns: "1.25fr .75fr", gap: "44px", alignItems: "center" }}>
 <div style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
 <span style={{ fontSize: "14px", fontWeight: "600", color: "rgba(255,255,255,.8)" }}>اتفاقية الاستخدام</span>
@@ -2404,80 +2299,53 @@ function   visaVals(country){
 </div>
 </div>
 </section>
-<section className="qa-sec" style={{ display: "flex", flexDirection: "column", gap: "18px", maxWidth: "1000px", margin: "0 auto" }}>
-<div className="qa-card" style={{ display: "flex", flexDirection: "column", gap: "14px", padding: "30px 32px" }}>
-<div style={{ display: "flex", alignItems: "center", gap: "14px" }}>
-<span style={{ width: "38px", height: "38px", flex: "none", borderRadius: "50%", background: "#e4f5fb", color: "#22a9d4", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "17px", fontWeight: "700" }}>1</span>
-<h3 style={{ fontSize: "23px", fontWeight: "700", color: "#1d2733", lineHeight: "1.35", margin: "0" }}>مقدمة</h3>
-</div>
+<section className="qa-sec" style={{ display: "flex", flexDirection: "column", gap: "var(--q-s3,24px)", maxWidth: "var(--q-read,720px)", margin: "0 auto" }}>
+<div style={{ display: "flex", flexDirection: "column", gap: "14px", }}>
+<h3 style={{ margin: "0", display: "flex", alignItems: "baseline", gap: "10px", fontSize: "var(--q-t3,22px)", fontWeight: "700", color: "var(--q-ink,#1d2733)", lineHeight: "1.35" }}><span aria-hidden="true" style={{ flex: "none", fontSize: "var(--q-t5,15px)", fontWeight: "700", color: "var(--q-cyan,#049dc5)" }}>1</span>مقدمة</h3>
 <p style={{ fontSize: "16.5px", lineHeight: "1.85", color: "#3d4650", margin: "0", textWrap: "pretty" }}>ترحب بكم شركة قصر المرايا للسفر والسياحة، وهي شركة محدودة المسؤولية مسجلة رسميًا في كل من جمهورية العراق وسلطنة عمان. تقدم الشركة مجموعة واسعة من الخدمات السياحية التي تشمل حجوزات تذاكر الطيران والفنادق، خدمات استخراج التأشيرات، وتنظيم الجولات السياحية والرحلات الجماعية والفردية. إن استخدامكم لخدماتنا يعني موافقتكم الكاملة على جميع الشروط والأحكام الواردة في هذه الاتفاقية.</p>
 
 </div>
-<div className="qa-card" style={{ display: "flex", flexDirection: "column", gap: "14px", padding: "30px 32px" }}>
-<div style={{ display: "flex", alignItems: "center", gap: "14px" }}>
-<span style={{ width: "38px", height: "38px", flex: "none", borderRadius: "50%", background: "#e4f5fb", color: "#22a9d4", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "17px", fontWeight: "700" }}>2</span>
-<h3 style={{ fontSize: "23px", fontWeight: "700", color: "#1d2733", lineHeight: "1.35", margin: "0" }}>شروط الحجز والدفع</h3>
-</div>
+<div style={{ display: "flex", flexDirection: "column", gap: "14px", paddingTop: "var(--q-s3,24px)", borderTop: "1px solid var(--q-line,#e6e9eb)", }}>
+<h3 style={{ margin: "0", display: "flex", alignItems: "baseline", gap: "10px", fontSize: "var(--q-t3,22px)", fontWeight: "700", color: "var(--q-ink,#1d2733)", lineHeight: "1.35" }}><span aria-hidden="true" style={{ flex: "none", fontSize: "var(--q-t5,15px)", fontWeight: "700", color: "var(--q-cyan,#049dc5)" }}>2</span>شروط الحجز والدفع</h3>
 
 <ul style={{ display: "flex", flexDirection: "column", gap: "10px", margin: "0", paddingInlineStart: "20px", fontSize: "16.5px", lineHeight: "1.8", color: "#3d4650" }}><li style={{ textWrap: "pretty" }}>يتم تأكيد الحجز بشكل رسمي عند استلام الدفعة المسبقة عبر إحدى وسائل الدفع المتاحة: التحويل المصرفي، الدفع النقدي، أو المحافظ الإلكترونية.</li><li style={{ textWrap: "pretty" }}>قد توفر الشركة إمكانية إبرام عقود آجلة وفواتير مديونية للعملاء الموثوقين والشركات، بناءً على سياسات الائتمان الخاصة بها.</li><li style={{ textWrap: "pretty" }}>لا تفرض الشركة أي رسوم إضافية على عمليات الدفع الإلكتروني، بل تشجع على استخدامها لتسهيل الإجراءات.</li><li style={{ textWrap: "pretty" }}>يحق للعميل تعديل الحجز بعد الدفع وفقًا للشروط والسياسات الخاصة بشركات الطيران أو مزودي الخدمات المعنيين.</li><li style={{ textWrap: "pretty" }}>بالنسبة للحجوزات الجماعية، يخضع عدد المشاركين للحد الأدنى والحد الأقصى الذي تحدده شركات الطيران أو الفنادق أو الشركات المشغلة للرحلات.</li></ul>
 </div>
-<div className="qa-card" style={{ display: "flex", flexDirection: "column", gap: "14px", padding: "30px 32px" }}>
-<div style={{ display: "flex", alignItems: "center", gap: "14px" }}>
-<span style={{ width: "38px", height: "38px", flex: "none", borderRadius: "50%", background: "#e4f5fb", color: "#22a9d4", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "17px", fontWeight: "700" }}>3</span>
-<h3 style={{ fontSize: "23px", fontWeight: "700", color: "#1d2733", lineHeight: "1.35", margin: "0" }}>سياسة الإلغاء والاسترداد</h3>
-</div>
+<div style={{ display: "flex", flexDirection: "column", gap: "14px", paddingTop: "var(--q-s3,24px)", borderTop: "1px solid var(--q-line,#e6e9eb)", }}>
+<h3 style={{ margin: "0", display: "flex", alignItems: "baseline", gap: "10px", fontSize: "var(--q-t3,22px)", fontWeight: "700", color: "var(--q-ink,#1d2733)", lineHeight: "1.35" }}><span aria-hidden="true" style={{ flex: "none", fontSize: "var(--q-t5,15px)", fontWeight: "700", color: "var(--q-cyan,#049dc5)" }}>3</span>سياسة الإلغاء والاسترداد</h3>
 
 <ul style={{ display: "flex", flexDirection: "column", gap: "10px", margin: "0", paddingInlineStart: "20px", fontSize: "16.5px", lineHeight: "1.8", color: "#3d4650" }}><li style={{ textWrap: "pretty" }}>تخضع سياسات الإلغاء والاسترداد بالكامل إلى اللوائح والسياسات المعتمدة من قبل مزودي الخدمات مثل شركات الطيران والفنادق ومنظمي الرحلات.</li><li style={{ textWrap: "pretty" }}>رسوم التأشيرات المدفوعة مقابل معالجة الطلبات تعتبر رسومًا خدمية غير قابلة للاسترداد بمجرد تقديم الطلب.</li><li style={{ textWrap: "pretty" }}>في حال إلغاء الرحلة من قبل العميل، فإن استرداد المبالغ يعتمد على شروط المزود المعتمد.</li><li style={{ textWrap: "pretty" }}>إذا تم إلغاء الرحلة أو الخدمة المحجوزة بسبب ظروف خارجة عن إرادة الشركة، سيتم التعامل مع الموقف وفقًا للوائح الدولة المعنية وسياسات مزودي الخدمات.</li></ul>
 </div>
-<div className="qa-card" style={{ display: "flex", flexDirection: "column", gap: "14px", padding: "30px 32px" }}>
-<div style={{ display: "flex", alignItems: "center", gap: "14px" }}>
-<span style={{ width: "38px", height: "38px", flex: "none", borderRadius: "50%", background: "#e4f5fb", color: "#22a9d4", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "17px", fontWeight: "700" }}>4</span>
-<h3 style={{ fontSize: "23px", fontWeight: "700", color: "#1d2733", lineHeight: "1.35", margin: "0" }}>التأشيرات والمسؤولية القانونية</h3>
-</div>
+<div style={{ display: "flex", flexDirection: "column", gap: "14px", paddingTop: "var(--q-s3,24px)", borderTop: "1px solid var(--q-line,#e6e9eb)", }}>
+<h3 style={{ margin: "0", display: "flex", alignItems: "baseline", gap: "10px", fontSize: "var(--q-t3,22px)", fontWeight: "700", color: "var(--q-ink,#1d2733)", lineHeight: "1.35" }}><span aria-hidden="true" style={{ flex: "none", fontSize: "var(--q-t5,15px)", fontWeight: "700", color: "var(--q-cyan,#049dc5)" }}>4</span>التأشيرات والمسؤولية القانونية</h3>
 
 <ul style={{ display: "flex", flexDirection: "column", gap: "10px", margin: "0", paddingInlineStart: "20px", fontSize: "16.5px", lineHeight: "1.8", color: "#3d4650" }}><li style={{ textWrap: "pretty" }}>تقدم الشركة خدمة استشارية شاملة بشأن طلبات التأشيرات، حيث تعمل كوسيط بين العميل والجهات المختصة بإصدار التأشيرات.</li><li style={{ textWrap: "pretty" }}>لا تضمن الشركة الموافقة النهائية على طلب التأشيرة، إذ تخضع العملية بالكامل إلى إجراءات الدولة المستضيفة وسياساتها الأمنية.</li><li style={{ textWrap: "pretty" }}>في حال تم رفض طلب التأشيرة، لن يكون العميل مؤهلًا لاسترداد الرسوم المدفوعة نظرًا لكونها رسومًا مخصصة لتغطية إجراءات التقديم وليس ضمان القبول.</li><li style={{ textWrap: "pretty" }}>لا تتحمل الشركة مسؤولية أي تأخير ناتج عن أخطاء إدارية أو أمنية من جانبها، وتلتزم بتقديم حلول بديلة مناسبة لتعويض العميل عند الاقتضاء.</li><li style={{ textWrap: "pretty" }}>يمكن للعملاء اختيار خدمات التأمين على السفر المتاحة عبر الشركة، مما يوفر لهم حماية إضافية أثناء رحلاتهم.</li></ul>
 </div>
-<div className="qa-card" style={{ display: "flex", flexDirection: "column", gap: "14px", padding: "30px 32px" }}>
-<div style={{ display: "flex", alignItems: "center", gap: "14px" }}>
-<span style={{ width: "38px", height: "38px", flex: "none", borderRadius: "50%", background: "#e4f5fb", color: "#22a9d4", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "17px", fontWeight: "700" }}>5</span>
-<h3 style={{ fontSize: "23px", fontWeight: "700", color: "#1d2733", lineHeight: "1.35", margin: "0" }}>مسؤوليات الشركة والعميل</h3>
-</div>
+<div style={{ display: "flex", flexDirection: "column", gap: "14px", paddingTop: "var(--q-s3,24px)", borderTop: "1px solid var(--q-line,#e6e9eb)", }}>
+<h3 style={{ margin: "0", display: "flex", alignItems: "baseline", gap: "10px", fontSize: "var(--q-t3,22px)", fontWeight: "700", color: "var(--q-ink,#1d2733)", lineHeight: "1.35" }}><span aria-hidden="true" style={{ flex: "none", fontSize: "var(--q-t5,15px)", fontWeight: "700", color: "var(--q-cyan,#049dc5)" }}>5</span>مسؤوليات الشركة والعميل</h3>
 
 <ul style={{ display: "flex", flexDirection: "column", gap: "10px", margin: "0", paddingInlineStart: "20px", fontSize: "16.5px", lineHeight: "1.8", color: "#3d4650" }}><li style={{ textWrap: "pretty" }}>تلتزم الشركة بإدارة حجوزات العملاء بكفاءة وضمان إتمام إجراءات السفر بالشكل الأمثل، بما يشمل الإبلاغ عن أي تغييرات قد تطرأ على حجوزات الطيران أو الفعاليات السياحية.</li><li style={{ textWrap: "pretty" }}>لا تتحمل الشركة مسؤولية التعديلات أو الإلغاءات التي تصدر عن شركات الطيران أو الفنادق، لكنها ستبذل أقصى جهدها لمساعدة العملاء في إعادة ترتيب خططهم.</li><li style={{ textWrap: "pretty" }}>يتحمل العميل المسؤولية الكاملة عن الامتثال للأنظمة والقوانين المحلية في وجهة السفر، بما في ذلك التأكد من صلاحية وثائق السفر الخاصة به.</li><li style={{ textWrap: "pretty" }}>في حال فقدان الأمتعة أو مواجهة مشكلات أثناء السفر، سيكون العميل ملزمًا بمتابعة الإجراءات القانونية والتواصل المباشر مع الجهات المختصة لحل المشكلة، بينما تقدم الشركة الدعم المناسب في هذا الصدد.</li></ul>
 </div>
-<div className="qa-card" style={{ display: "flex", flexDirection: "column", gap: "14px", padding: "30px 32px" }}>
-<div style={{ display: "flex", alignItems: "center", gap: "14px" }}>
-<span style={{ width: "38px", height: "38px", flex: "none", borderRadius: "50%", background: "#e4f5fb", color: "#22a9d4", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "17px", fontWeight: "700" }}>6</span>
-<h3 style={{ fontSize: "23px", fontWeight: "700", color: "#1d2733", lineHeight: "1.35", margin: "0" }}>خدمات ما بعد البيع والدعم</h3>
-</div>
+<div style={{ display: "flex", flexDirection: "column", gap: "14px", paddingTop: "var(--q-s3,24px)", borderTop: "1px solid var(--q-line,#e6e9eb)", }}>
+<h3 style={{ margin: "0", display: "flex", alignItems: "baseline", gap: "10px", fontSize: "var(--q-t3,22px)", fontWeight: "700", color: "var(--q-ink,#1d2733)", lineHeight: "1.35" }}><span aria-hidden="true" style={{ flex: "none", fontSize: "var(--q-t5,15px)", fontWeight: "700", color: "var(--q-cyan,#049dc5)" }}>6</span>خدمات ما بعد البيع والدعم</h3>
 
 <ul style={{ display: "flex", flexDirection: "column", gap: "10px", margin: "0", paddingInlineStart: "20px", fontSize: "16.5px", lineHeight: "1.8", color: "#3d4650" }}><li style={{ textWrap: "pretty" }}>توفر الشركة خدمات دعم العملاء على مدار الساعة، طيلة أيام الأسبوع، لضمان مساعدة العملاء في جميع الأوقات.</li><li style={{ textWrap: "pretty" }}>يمكن للعملاء التواصل مع خدمة الدعم عبر البريد الإلكتروني الرسمي، أو المكالمات الهاتفية، أو من خلال الحضور الشخصي إلى مكاتب الشركة.</li><li style={{ textWrap: "pretty" }}>في حال وجود شكاوى أو استفسارات، تلتزم الشركة بمعالجة جميع الطلبات بجدية وشفافية، وفق إجراءات واضحة ومحددة.</li></ul>
 </div>
-<div className="qa-card" style={{ display: "flex", flexDirection: "column", gap: "14px", padding: "30px 32px" }}>
-<div style={{ display: "flex", alignItems: "center", gap: "14px" }}>
-<span style={{ width: "38px", height: "38px", flex: "none", borderRadius: "50%", background: "#e4f5fb", color: "#22a9d4", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "17px", fontWeight: "700" }}>7</span>
-<h3 style={{ fontSize: "23px", fontWeight: "700", color: "#1d2733", lineHeight: "1.35", margin: "0" }}>تسوية النزاعات والقوانين المطبقة</h3>
-</div>
+<div style={{ display: "flex", flexDirection: "column", gap: "14px", paddingTop: "var(--q-s3,24px)", borderTop: "1px solid var(--q-line,#e6e9eb)", }}>
+<h3 style={{ margin: "0", display: "flex", alignItems: "baseline", gap: "10px", fontSize: "var(--q-t3,22px)", fontWeight: "700", color: "var(--q-ink,#1d2733)", lineHeight: "1.35" }}><span aria-hidden="true" style={{ flex: "none", fontSize: "var(--q-t5,15px)", fontWeight: "700", color: "var(--q-cyan,#049dc5)" }}>7</span>تسوية النزاعات والقوانين المطبقة</h3>
 
 <ul style={{ display: "flex", flexDirection: "column", gap: "10px", margin: "0", paddingInlineStart: "20px", fontSize: "16.5px", lineHeight: "1.8", color: "#3d4650" }}><li style={{ textWrap: "pretty" }}>تخضع هذه الاتفاقية وتُفسَّر وفقًا للقوانين النافذة في الدول التي تمارس فيها الشركة نشاطها، وهي جمهورية العراق وسلطنة عمان.</li><li style={{ textWrap: "pretty" }}>في حال نشوء أي نزاع قانوني بين العميل والشركة، سيتم اللجوء في البداية إلى سياسة التسوية الودية قبل اتخاذ أي إجراءات قانونية.</li><li style={{ textWrap: "pretty" }}>عند الضرورة، يمكن إحالة النزاعات إلى المحاكم المحلية أو التحكيم الدولي، وفقًا لما تقتضيه طبيعة القضية.</li><li style={{ textWrap: "pretty" }}>تحتفظ الشركة بحق تعديل هذه الاتفاقية في أي وقت وفقًا لمتطلبات السوق أو اللوائح التنظيمية الجديدة، وسيتم إبلاغ العملاء بأي تغييرات عبر القنوات الرسمية.</li></ul>
 </div>
-<div className="qa-card" style={{ display: "flex", flexDirection: "column", gap: "14px", padding: "30px 32px" }}>
-<div style={{ display: "flex", alignItems: "center", gap: "14px" }}>
-<span style={{ width: "38px", height: "38px", flex: "none", borderRadius: "50%", background: "#e4f5fb", color: "#22a9d4", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "17px", fontWeight: "700" }}>8</span>
-<h3 style={{ fontSize: "23px", fontWeight: "700", color: "#1d2733", lineHeight: "1.35", margin: "0" }}>سياسة الخصوصية وحماية البيانات</h3>
-</div>
+<div style={{ display: "flex", flexDirection: "column", gap: "14px", paddingTop: "var(--q-s3,24px)", borderTop: "1px solid var(--q-line,#e6e9eb)", }}>
+<h3 style={{ margin: "0", display: "flex", alignItems: "baseline", gap: "10px", fontSize: "var(--q-t3,22px)", fontWeight: "700", color: "var(--q-ink,#1d2733)", lineHeight: "1.35" }}><span aria-hidden="true" style={{ flex: "none", fontSize: "var(--q-t5,15px)", fontWeight: "700", color: "var(--q-cyan,#049dc5)" }}>8</span>سياسة الخصوصية وحماية البيانات</h3>
 
 <ul style={{ display: "flex", flexDirection: "column", gap: "10px", margin: "0", paddingInlineStart: "20px", fontSize: "16.5px", lineHeight: "1.8", color: "#3d4650" }}><li style={{ textWrap: "pretty" }}>تجمع الشركة المعلومات الشخصية الضرورية مثل الأسماء وأرقام جوازات السفر وبيانات الاتصال، بهدف إتمام الحجوزات بأمان وفعالية.</li><li style={{ textWrap: "pretty" }}>يتم تخزين جميع البيانات الشخصية بطريقة آمنة ضمن أنظمة إدارة العملاء الخاصة بالشركة، مع اتخاذ جميع التدابير التقنية اللازمة لحماية خصوصية العملاء.</li><li style={{ textWrap: "pretty" }}>لا تتم مشاركة بيانات العملاء مع أي جهات خارجية إلا بالقدر اللازم لإتمام إجراءات الحجز مثل شركات الطيران والفنادق.</li><li style={{ textWrap: "pretty" }}>يمكن للعملاء طلب حذف بياناتهم الشخصية من سجلات الشركة باستثناء السجلات المحاسبية التي تخضع للقوانين المالية والمعمول بها.</li></ul>
 </div>
-<div className="qa-card" style={{ display: "flex", flexDirection: "column", gap: "14px", padding: "30px 32px" }}>
-<div style={{ display: "flex", alignItems: "center", gap: "14px" }}>
-<span style={{ width: "38px", height: "38px", flex: "none", borderRadius: "50%", background: "#e4f5fb", color: "#22a9d4", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "17px", fontWeight: "700" }}>9</span>
-<h3 style={{ fontSize: "23px", fontWeight: "700", color: "#1d2733", lineHeight: "1.35", margin: "0" }}>الأحكام العامة</h3>
-</div>
+<div style={{ display: "flex", flexDirection: "column", gap: "14px", paddingTop: "var(--q-s3,24px)", borderTop: "1px solid var(--q-line,#e6e9eb)", }}>
+<h3 style={{ margin: "0", display: "flex", alignItems: "baseline", gap: "10px", fontSize: "var(--q-t3,22px)", fontWeight: "700", color: "var(--q-ink,#1d2733)", lineHeight: "1.35" }}><span aria-hidden="true" style={{ flex: "none", fontSize: "var(--q-t5,15px)", fontWeight: "700", color: "var(--q-cyan,#049dc5)" }}>9</span>الأحكام العامة</h3>
 
 <ul style={{ display: "flex", flexDirection: "column", gap: "10px", margin: "0", paddingInlineStart: "20px", fontSize: "16.5px", lineHeight: "1.8", color: "#3d4650" }}><li style={{ textWrap: "pretty" }}>استخدام أي من خدمات الشركة يعني موافقة العميل الكاملة على جميع البنود الواردة في هذه الاتفاقية.</li><li style={{ textWrap: "pretty" }}>يحق للشركة تعليق أو إنهاء أي خدمة في حال خرق العميل لهذه الشروط أو إساءة استخدام الخدمات.</li><li style={{ textWrap: "pretty" }}>هذه الاتفاقية نافذة المفعول اعتبارًا من تاريخ الموافقة عليها من قبل العميل عند استخدام خدمات الشركة.</li></ul>
 </div>
-<div style={{ display: "flex", alignItems: "center", gap: "16px", background: "#fef3dc", border: "1px solid #fdd27c", borderRadius: "var(--tw-radius,16px)", padding: "22px 26px", color: "#c07f00", fontSize: "16.5px", fontWeight: "500", lineHeight: "1.6" }}>لأي استفسارات إضافية، يمكنكم التواصل معنا عبر القنوات الرسمية المدرجة في موقعنا الإلكتروني: sales@almarayagroup.com — +964 784 999 9600.</div>
+<div style={{ display: "flex", alignItems: "center", gap: "16px", background: "#fef3dc", border: "1px solid #fdd27c", borderRadius: "var(--q-r,12px)", padding: "22px 26px", color: "#c07f00", fontSize: "var(--q-t4,17px)", fontWeight: "500", lineHeight: "1.6" }}>لأي استفسارات إضافية، يمكنكم التواصل معنا عبر القنوات الرسمية المدرجة في موقعنا الإلكتروني: sales@almarayagroup.com — +964 784 999 9600.</div>
 </section>
 </div>
 </>) : null}
@@ -2485,26 +2353,22 @@ function   visaVals(country){
 {isAbout ? (<>
 <div className="qa-page">
 <section style={{ background: "var(--tw-band-deep,#049dc5)", position: "relative", overflow: "hidden" }}>
-<img src="/assets/logo-mark-white.webp" alt="" style={{ position: "absolute", insetInlineEnd: "-140px", top: "-90px", height: "460px", opacity: ".1" }} />
-<div className="qa-sec qa-2col" style={{ position: "relative", display: "grid", gridTemplateColumns: "1.25fr .75fr", gap: "44px", alignItems: "center" }}>
+<div className="qa-sec" style={{ position: "relative" }}>
 <div style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
 <span style={{ fontSize: "14px", fontWeight: "600", color: "rgba(255,255,255,.8)" }}>من نحن</span>
 <h1 style={{ fontSize: "40px", fontWeight: "700", color: "#fff", lineHeight: "1.3" }}>رؤيتنا ورسالتنا</h1>
 <p style={{ fontSize: "18.5px", lineHeight: "1.7", color: "rgba(255,255,255,.92)", maxWidth: "640px", textWrap: "pretty" }}>في قصر المرايا للسفر والسياحة، نحن أكثر من مجرد وكالة سفر — نحن بوابتك إلى تجارب استثنائية تلبي تطلعاتك وتضمن لك رحلة خالية من المتاعب.</p>
 </div>
-<div style={{ justifySelf: "center", width: "100%", maxWidth: "270px", aspectRatio: "1", borderRadius: "50%", background: "#fff", boxShadow: "var(--tw-card-shadow,0 1px 3px rgba(29,39,51,.06))", overflow: "hidden", display: "flex", alignItems: "center", justifyContent: "center" }}>
-<img src="/assets/mascot-skylo-pilot-plane.webp" alt="" style={{ width: "106%", height: "106%", objectFit: "cover" }} />
-</div>
 </div>
 </section>
 <section className="qa-sec" style={{ display: "flex", flexDirection: "column", gap: "22px" }}>
-<div className="qa-2col" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "22px", alignItems: "stretch" }}>
-<div className="qa-card" style={{ padding: "32px", display: "flex", flexDirection: "column", gap: "14px" }}>
+<div className="qa-2col" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--q-s4,40px)", alignItems: "start" }}>
+<div style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
 <h3 style={{ fontSize: "26px", fontWeight: "700", color: "#22a9d4", margin: "0" }}>رؤيتنا</h3>
 <p style={{ fontSize: "16.5px", lineHeight: "1.85", color: "#3d4650", margin: "0", textWrap: "pretty" }}>نطمح لأن نكون الاسم الأول في عالم السفر والسياحة، مقدمين خدمات مبتكرة ذات جودة عالية تلبي احتياجات المسافرين حول العالم. نسعى لخلق تجربة سفر متكاملة يجد فيها العميل كل ما يحتاجه في مكان واحد، بأسلوب احترافي وبأعلى معايير الجودة.</p>
 <p style={{ fontSize: "16.5px", lineHeight: "1.85", color: "#3d4650", margin: "0", textWrap: "pretty" }}>نهدف إلى تعزيز مكانة قصر المرايا كوكالة رائدة تقدم حلول سفر متكاملة، وإلى التوسع إقليميًا ودوليًا وتقديم خدماتنا لأسواق جديدة لنكون الخيار الأول للعملاء الباحثين عن تجربة سفر متميزة.</p>
 </div>
-<div className="qa-card" style={{ padding: "32px", display: "flex", flexDirection: "column", gap: "14px" }}>
+<div style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
 <h3 style={{ fontSize: "26px", fontWeight: "700", color: "#22a9d4", margin: "0" }}>رسالتنا</h3>
 <p style={{ fontSize: "16.5px", lineHeight: "1.85", color: "#3d4650", margin: "0", textWrap: "pretty" }}>نحن ملتزمون بتقديم خدمات سفر متكاملة تلبي توقعات عملائنا وتفوقها، مع التركيز على الراحة والجودة والشفافية في كل خطوة. هدفنا هو جعل تجربة السفر سهلة وممتعة، مع توفير كافة الحلول التي يحتاجها المسافرون — بغرض الترفيه، العمل، أو الزيارات الدينية.</p>
 <ul style={{ display: "flex", flexDirection: "column", gap: "9px", margin: "0", paddingInlineStart: "20px", fontSize: "16px", lineHeight: "1.75", color: "#3d4650" }}>
@@ -2517,15 +2381,33 @@ function   visaVals(country){
 </div>
 </section>
 <section style={{ background: "var(--tw-band-deep,#049dc5)", position: "relative", overflow: "hidden" }}>
-<img src="/assets/logo-mark-white.webp" alt="" style={{ position: "absolute", insetInlineStart: "-120px", bottom: "-140px", height: "420px", opacity: ".1" }} />
 <div className="qa-sec" style={{ position: "relative", display: "flex", flexDirection: "column", gap: "28px" }}>
 <div style={{ maxWidth: "700px", margin: "0 auto", textAlign: "center", display: "flex", flexDirection: "column", gap: "12px" }}>
 <h2 style={{ fontSize: "36px", fontWeight: "700", color: "#fff" }}>قيمنا الأساسية</h2>
 <p style={{ fontSize: "17px", lineHeight: "1.7", color: "rgba(255,255,255,.9)" }}>خمس قيم تشكّل أساس عملنا وتحدد أسلوب تعاملنا مع عملائنا.</p>
 </div>
-<div style={{ display: "grid", gridTemplateColumns: "repeat(5,1fr)", gap: "16px", alignItems: "stretch" }}>
-<div style={{ background: "rgba(255,255,255,.96)", borderRadius: "var(--tw-radius,16px)", padding: "24px", display: "flex", flexDirection: "column", gap: "8px", boxShadow: "none" }}><h4 style={{ fontSize: "20px", fontWeight: "700", color: "#1b93b8", margin: "0" }}>الشفافية</h4><p style={{ fontSize: "15px", lineHeight: "1.7", color: "#3d4650", margin: "0", textWrap: "pretty" }}>نضمن لك وضوح المعلومات حول جميع الخدمات والأسعار، فلا رسوم مخفية أو معلومات مبهمة.</p></div><div style={{ background: "rgba(255,255,255,.96)", borderRadius: "var(--tw-radius,16px)", padding: "24px", display: "flex", flexDirection: "column", gap: "8px", boxShadow: "none" }}><h4 style={{ fontSize: "20px", fontWeight: "700", color: "#1b93b8", margin: "0" }}>الجودة</h4><p style={{ fontSize: "15px", lineHeight: "1.7", color: "#3d4650", margin: "0", textWrap: "pretty" }}>نقدم خدمات عالية المستوى لضمان تجربة سفر سلسة ومميزة.</p></div><div style={{ background: "rgba(255,255,255,.96)", borderRadius: "var(--tw-radius,16px)", padding: "24px", display: "flex", flexDirection: "column", gap: "8px", boxShadow: "none" }}><h4 style={{ fontSize: "20px", fontWeight: "700", color: "#1b93b8", margin: "0" }}>المصداقية</h4><p style={{ fontSize: "15px", lineHeight: "1.7", color: "#3d4650", margin: "0", textWrap: "pretty" }}>نؤمن بأهمية بناء علاقات قائمة على الثقة والاحترام المتبادل مع عملائنا وشركائنا.</p></div><div style={{ background: "rgba(255,255,255,.96)", borderRadius: "var(--tw-radius,16px)", padding: "24px", display: "flex", flexDirection: "column", gap: "8px", boxShadow: "none" }}><h4 style={{ fontSize: "20px", fontWeight: "700", color: "#1b93b8", margin: "0" }}>الابتكار</h4><p style={{ fontSize: "15px", lineHeight: "1.7", color: "#3d4650", margin: "0", textWrap: "pretty" }}>نسعى لتطوير خدماتنا باستخدام أحدث التقنيات وأفضل الممارسات في صناعة السفر.</p></div><div style={{ background: "rgba(255,255,255,.96)", borderRadius: "var(--tw-radius,16px)", padding: "24px", display: "flex", flexDirection: "column", gap: "8px", boxShadow: "none" }}><h4 style={{ fontSize: "20px", fontWeight: "700", color: "#1b93b8", margin: "0" }}>الالتزام</h4><p style={{ fontSize: "15px", lineHeight: "1.7", color: "#3d4650", margin: "0", textWrap: "pretty" }}>نضع راحة العملاء وأمانهم في مقدمة أولوياتنا، ونعمل على تلبية احتياجاتهم بكل احترافية.</p></div>
+<dl style={{ margin: "0", display: "flex", flexDirection: "column", borderTop: "1px solid rgba(255,255,255,.3)" }}>
+<div style={{ display: "grid", gridTemplateColumns: "minmax(0,200px) minmax(0,1fr)", gap: "4px var(--q-s3,24px)", paddingBlock: "var(--q-s2,16px)", borderBottom: "1px solid rgba(255,255,255,.3)" }}>
+<dt style={{ fontSize: "var(--q-t4,17px)", fontWeight: "700", color: "#fff", lineHeight: "1.4" }}>الشفافية</dt>
+<dd style={{ margin: "0", fontSize: "var(--q-t5,15px)", lineHeight: "1.75", color: "rgba(255,255,255,.9)", textWrap: "pretty" }}>نضمن لك وضوح المعلومات حول جميع الخدمات والأسعار، فلا رسوم مخفية أو معلومات مبهمة.</dd>
 </div>
+<div style={{ display: "grid", gridTemplateColumns: "minmax(0,200px) minmax(0,1fr)", gap: "4px var(--q-s3,24px)", paddingBlock: "var(--q-s2,16px)", borderBottom: "1px solid rgba(255,255,255,.3)" }}>
+<dt style={{ fontSize: "var(--q-t4,17px)", fontWeight: "700", color: "#fff", lineHeight: "1.4" }}>الجودة</dt>
+<dd style={{ margin: "0", fontSize: "var(--q-t5,15px)", lineHeight: "1.75", color: "rgba(255,255,255,.9)", textWrap: "pretty" }}>نقدم خدمات عالية المستوى لضمان تجربة سفر سلسة ومميزة.</dd>
+</div>
+<div style={{ display: "grid", gridTemplateColumns: "minmax(0,200px) minmax(0,1fr)", gap: "4px var(--q-s3,24px)", paddingBlock: "var(--q-s2,16px)", borderBottom: "1px solid rgba(255,255,255,.3)" }}>
+<dt style={{ fontSize: "var(--q-t4,17px)", fontWeight: "700", color: "#fff", lineHeight: "1.4" }}>المصداقية</dt>
+<dd style={{ margin: "0", fontSize: "var(--q-t5,15px)", lineHeight: "1.75", color: "rgba(255,255,255,.9)", textWrap: "pretty" }}>نؤمن بأهمية بناء علاقات قائمة على الثقة والاحترام المتبادل مع عملائنا وشركائنا.</dd>
+</div>
+<div style={{ display: "grid", gridTemplateColumns: "minmax(0,200px) minmax(0,1fr)", gap: "4px var(--q-s3,24px)", paddingBlock: "var(--q-s2,16px)", borderBottom: "1px solid rgba(255,255,255,.3)" }}>
+<dt style={{ fontSize: "var(--q-t4,17px)", fontWeight: "700", color: "#fff", lineHeight: "1.4" }}>الابتكار</dt>
+<dd style={{ margin: "0", fontSize: "var(--q-t5,15px)", lineHeight: "1.75", color: "rgba(255,255,255,.9)", textWrap: "pretty" }}>نسعى لتطوير خدماتنا باستخدام أحدث التقنيات وأفضل الممارسات في صناعة السفر.</dd>
+</div>
+<div style={{ display: "grid", gridTemplateColumns: "minmax(0,200px) minmax(0,1fr)", gap: "4px var(--q-s3,24px)", paddingBlock: "var(--q-s2,16px)", borderBottom: "1px solid rgba(255,255,255,.3)" }}>
+<dt style={{ fontSize: "var(--q-t4,17px)", fontWeight: "700", color: "#fff", lineHeight: "1.4" }}>الالتزام</dt>
+<dd style={{ margin: "0", fontSize: "var(--q-t5,15px)", lineHeight: "1.75", color: "rgba(255,255,255,.9)", textWrap: "pretty" }}>نضع راحة العملاء وأمانهم في مقدمة أولوياتنا، ونعمل على تلبية احتياجاتهم بكل احترافية.</dd>
+</div>
+</dl>
 </div>
 </section>
 <section className="qa-sec qa-2col" style={{ display: "grid", gridTemplateColumns: "1.1fr .9fr", gap: "48px", alignItems: "center" }}>
@@ -2537,13 +2419,152 @@ function   visaVals(country){
 <li>خدمة دعم مستمرة لمساعدتك في كل خطوة من رحلتك.</li>
 <li>رحلات مخصصة تناسب احتياجاتك، سواء كانت سياحية، دينية، أو أعمال.</li>
 </ul>
-<p style={{ fontSize: "17px", lineHeight: "1.8", color: "#1b93b8", textWrap: "pretty" }}>مع قصر المرايا، رحلتك تبدأ بثقة وتنتهي بذكريات لا تُنسى. انضم إلينا في رحلتك المليئة بالمفامرات والاكتشافات، ودعنا نهتم بكل التفاصيل من أجلك.</p>
+<p style={{ fontSize: "17px", lineHeight: "1.8", color: "#1b93b8", textWrap: "pretty" }}>مع قصر المرايا، رحلتك تبدأ بثقة وتنتهي بذكريات لا تُنسى. انضم إلينا في رحلتك المليئة بالمغامرات والاكتشافات، ودعنا نهتم بكل التفاصيل من أجلك.</p>
 <div style={{ display: "flex", gap: "12px", flexWrap: "wrap", paddingTop: "4px" }}>
 <button className="qa-btn qa-cyan" onClick={goContact}>تواصل معنا</button>
 <button className="qa-btn qa-amber" onClick={goFlights}>ابدأ رحلتك</button>
 </div>
 </div>
 <img src="/assets/mascot-skylo-imagination.webp" alt="سكايلو — حيث يطير الخيال" style={{ width: "100%", maxWidth: "420px", justifySelf: "center", borderRadius: "var(--tw-radius,16px)" }} />
+</section>
+<section className="qa-sec" style={{ paddingTop: "0" }}>
+<div style={{ maxWidth: "var(--q-read,720px)", display: "flex", flexDirection: "column", gap: "16px" }}>
+<h2 style={{ fontSize: "36px", fontWeight: "700" }}>ما يمكننا فعله من أجلك</h2>
+<p style={{ fontSize: "18px", lineHeight: "1.75", color: "#22a9d4" }}>نحن لا ننظم فقط… نحن نُبدع في صناعة التجربة.</p>
+<p style={{ fontSize: "16px", lineHeight: "1.75" }}>باقات متكاملة تضم وجهات مميزة ومطاعم محلية، أنشطة استثنائية، واستكشاف الأماكن التي لا تزورها الجولات التقليدية.</p>
+</div>
+</section>
+<div style={{ background: "var(--tw-band,#34bbe1)", position: "relative", overflow: "hidden" }}>
+<section style={{ position: "relative" }}>
+<div className="qa-sec" style={{ position: "relative", display: "flex", flexDirection: "column", gap: "32px" }}>
+<div style={{ maxWidth: "680px", margin: "0 auto", textAlign: "center", display: "flex", flexDirection: "column", gap: "16px" }}>
+<h2 style={{ fontSize: "36px", fontWeight: "700", color: "#fff" }}>ما نلتزم به في كل رحلة</h2>
+<p style={{ fontSize: "18px", lineHeight: "1.75", color: "rgba(255,255,255,.92)" }}>أربعة التزامات تحكم كل رحلة نخطّط لها.</p>
+</div>
+<div className="qa-swipe" style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: "20px", alignItems: "stretch" }}>
+<div style={{ background: "#fff", borderRadius: "var(--tw-radius,16px)", padding: "24px" }}><h4 style={{ fontSize: "20px", fontWeight: "700", color: "#1b93b8", marginBottom: "8px" }}>المغامرة والاستكشاف</h4><p style={{ fontSize: "14px", lineHeight: "1.45" }}>نُلهم المسافرين لاكتشاف أماكن وتجارب لا تُنسى.</p></div>
+<div style={{ background: "#fff", borderRadius: "var(--tw-radius,16px)", padding: "24px" }}><h4 style={{ fontSize: "20px", fontWeight: "700", color: "#1b93b8", marginBottom: "8px" }}>الثقة والاعتمادية</h4><p style={{ fontSize: "14px", lineHeight: "1.45" }}>كل رحلة تُخطَّط بصدق وأمان ومسؤولية كاملة.</p></div>
+<div style={{ background: "#fff", borderRadius: "var(--tw-radius,16px)", padding: "24px" }}><h4 style={{ fontSize: "20px", fontWeight: "700", color: "#1b93b8", marginBottom: "8px" }}>رضا العميل أولاً</h4><p style={{ fontSize: "14px", lineHeight: "1.45" }}>راحتك ودعمك في كل خطوة، بلا تعقيد.</p></div>
+<div style={{ background: "#fff", borderRadius: "var(--tw-radius,16px)", padding: "24px" }}><h4 style={{ fontSize: "20px", fontWeight: "700", color: "#1b93b8", marginBottom: "8px" }}>التميّز في الخدمة</h4><p style={{ fontSize: "14px", lineHeight: "1.45" }}>تخطيط عالي الجودة وحجز سلس وتجربة سفر متكاملة.</p></div>
+</div>
+<div className="qa-swipe-hint" aria-hidden="true">اسحب لرؤية المزيد ↔</div>
+</div>
+</section>
+<section style={{ position: "relative" }}>
+<div className="qa-sec" style={{ paddingTop: "0", position: "relative", display: "flex", flexDirection: "column", gap: "36px" }}>
+<div style={{ maxWidth: "720px", margin: "0 auto", textAlign: "center", display: "flex", flexDirection: "column", gap: "14px" }}>
+<span style={{ fontSize: "14px", fontWeight: "600", color: "rgba(255,255,255,.78)" }}>ما نعمل من أجله كل يوم</span>
+<h2 style={{ fontSize: "38px", fontWeight: "700", color: "#fff", lineHeight: "1.3" }}>أهداف شركة قصر المرايا للسفر والسياحة</h2>
+</div>
+<div className="qa-goals qa-swipe" style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: "20px", alignItems: "stretch" }}>
+<div style={{ background: "#fff", borderRadius: "var(--tw-radius,16px)", padding: "26px 24px", display: "flex", flexDirection: "column", gap: "12px" }}>
+<span style={{ width: "56px", height: "56px", borderRadius: "50%", background: "#e4f5fb", color: "#22a9d4", display: "flex", alignItems: "center", justifyContent: "center" }}><GoalServices size={32} /></span>
+<h4 style={{ fontSize: "20px", fontWeight: "700", color: "#1d2733" }}>خدمات سياحية متكاملة</h4>
+<p style={{ fontSize: "15px", lineHeight: "1.7", color: "#5f666e" }}>حجوزات الطيران، حزم العطلات، رحلات جماعية، وتأشيرات — كل شيء من مكان واحد.</p>
+</div>
+<div style={{ background: "#fff", borderRadius: "var(--tw-radius,16px)", padding: "26px 24px", display: "flex", flexDirection: "column", gap: "12px" }}>
+<span style={{ width: "56px", height: "56px", borderRadius: "50%", background: "#e4f5fb", color: "#22a9d4", display: "flex", alignItems: "center", justifyContent: "center" }}><GoalTrust size={32} /></span>
+<h4 style={{ fontSize: "20px", fontWeight: "700", color: "#1d2733" }}>رضا العملاء وبناء الثقة</h4>
+<p style={{ fontSize: "15px", lineHeight: "1.7", color: "#5f666e" }}>دعم على مدار الساعة، خدمة شخصية، وعلاقات دائمة مع كل مسافر.</p>
+</div>
+<div style={{ background: "#fff", borderRadius: "var(--tw-radius,16px)", padding: "26px 24px", display: "flex", flexDirection: "column", gap: "12px" }}>
+<span style={{ width: "56px", height: "56px", borderRadius: "50%", background: "#e4f5fb", color: "#22a9d4", display: "flex", alignItems: "center", justifyContent: "center" }}><GoalExpansion size={32} /></span>
+<h4 style={{ fontSize: "20px", fontWeight: "700", color: "#1d2733" }}>توسع محلي ودولي</h4>
+<p style={{ fontSize: "15px", lineHeight: "1.7", color: "#5f666e" }}>شراكات عالمية وحضور فاعل في المعارض السياحية الدولية.</p>
+</div>
+<div style={{ background: "#fff", borderRadius: "var(--tw-radius,16px)", padding: "26px 24px", display: "flex", flexDirection: "column", gap: "12px" }}>
+<span style={{ width: "56px", height: "56px", borderRadius: "50%", background: "#fef3dc", color: "#c07f00", display: "flex", alignItems: "center", justifyContent: "center" }}><GoalTech size={32} /></span>
+<h4 style={{ fontSize: "20px", fontWeight: "700", color: "#1d2733" }}>الابتكار والتطوير التقني</h4>
+<p style={{ fontSize: "15px", lineHeight: "1.7", color: "#5f666e" }}>أحدث تقنيات الحجز وحلول رقمية سهلة الاستخدام في كل خطوة.</p>
+</div>
+<div style={{ background: "#fff", borderRadius: "var(--tw-radius,16px)", padding: "26px 24px", display: "flex", flexDirection: "column", gap: "12px" }}>
+<span style={{ width: "56px", height: "56px", borderRadius: "50%", background: "#fef3dc", color: "#c07f00", display: "flex", alignItems: "center", justifyContent: "center" }}><GoalHeritage size={32} /></span>
+<h4 style={{ fontSize: "20px", fontWeight: "700", color: "#1d2733" }}>ترويج السياحة المحلية</h4>
+<p style={{ fontSize: "15px", lineHeight: "1.7", color: "#5f666e" }}>رحلات ثقافية فريدة لاكتشاف تاريخ العراق العريق ومعالمه.</p>
+</div>
+<div style={{ background: "#fff", borderRadius: "var(--tw-radius,16px)", padding: "26px 24px", display: "flex", flexDirection: "column", gap: "12px" }}>
+<span style={{ width: "56px", height: "56px", borderRadius: "50%", background: "#fef3dc", color: "#c07f00", display: "flex", alignItems: "center", justifyContent: "center" }}><GoalSafety size={32} /></span>
+<h4 style={{ fontSize: "20px", fontWeight: "700", color: "#1d2733" }}>توفير تجربة سفر آمنة</h4>
+<p style={{ fontSize: "15px", lineHeight: "1.7", color: "#5f666e" }}>شركاء موثوقون، تأمين شامل، وراحة وأمان من الإقلاع حتى العودة.</p>
+</div>
+</div>
+<div className="qa-swipe-hint" aria-hidden="true">اسحب لرؤية المزيد ↔</div>
+</div>
+</section>
+</div>
+<section className="qa-sec qa-2col" style={{ display: "grid", gridTemplateColumns: ".9fr 1.1fr", gap: "56px", alignItems: "center" }}>
+<div style={{ position: "relative", justifySelf: "center", width: "100%", maxWidth: "430px", display: "flex", alignItems: "center", justifyContent: "center" }}>
+<img src="/assets/vision-plane-cutout3.webp" alt="طائرة قصر المرايا على جوازات السفر" style={{ position: "relative", display: "block", width: "100%", maxWidth: "100%", height: "auto" }} />
+</div>
+<div style={{ display: "flex", flexDirection: "column", gap: "18px" }}>
+<h2 style={{ fontSize: "36px", fontWeight: "700", color: "#22a9d4", lineHeight: "1.3" }}>رؤيتنا المستقبلية في قصر المرايا للسفر والسياحة</h2>
+<p style={{ fontSize: "16px", lineHeight: "1.75", textWrap: "pretty" }}>نطمح لأن نكون الخيار الأول في مجال السفر والسياحة من خلال تقديم خدمات مبتكرة تلبي تطلعات العملاء، وتوسيع نطاق أعمالنا عالميًا لتعزيز تجربة السفر بأساليب حديثة ومتطورة. كما نعمل على بناء شراكات استراتيجية مع كبرى الشركات السياحية والفنادق وشركات الطيران لضمان تقديم أفضل الخدمات بأسعار تنافسية.</p>
+<p style={{ fontSize: "16px", lineHeight: "1.75", textWrap: "pretty" }}>بالإضافة إلى ذلك، نولي اهتمامًا خاصًا لدعم السياحة الداخلية والخارجية عبر توفير حلول سفر متكاملة تتميز بالجودة والموثوقية. ومن منطلق سعينا إلى التطور، نطمح إلى تقديم خدمات إلكترونية حديثة توفر تجربة مستخدم سلسة ولطيفة، تتيح للعملاء حجز رحلاتهم بسهولة وسرعة.</p>
+<p style={{ fontSize: "16px", lineHeight: "1.75", textWrap: "pretty" }}>كما نهدف إلى تنشيط السياحة العكسية من خلال استقبال المسافرين الأجانب وتنظيم جولات سياحية لاكتشاف العراق، وإبراز معالمه التاريخية والثقافية والطبيعية، مما يساهم في تعزيز مكانته كوجهة سياحية متميزة على مستوى العالم.</p>
+</div>
+</section>
+<section style={{ background: "var(--tw-band-deep,#049dc5)", position: "relative", overflow: "hidden" }}>
+<div className="qa-sec qa-2col" style={{ position: "relative", display: "grid", gridTemplateColumns: ".85fr 1.15fr", gap: "56px", alignItems: "center" }}>
+<div style={{ position: "relative", justifySelf: "center", width: "100%", maxWidth: "420px" }}>
+<img src="/assets/ceo-interview.webp" alt="حمزة سعد، المدير التنفيذي، في مقابلة تلفزيونية" style={{ position: "relative", display: "block", width: "100%", aspectRatio: "4/3", objectFit: "cover", objectPosition: "center 38%", borderRadius: "var(--tw-radius,16px)", boxShadow: "var(--tw-card-shadow,0 1px 3px rgba(29,39,51,.06))" }} />
+<div style={{ position: "relative", marginTop: "-26px", marginInlineStart: "22px", display: "inline-flex", flexDirection: "column", gap: "2px", background: "#fff", borderRadius: "var(--tw-radius-sm,10px)", padding: "13px 24px", boxShadow: "var(--tw-card-shadow,0 1px 3px rgba(29,39,51,.06))" }}>
+<span style={{ fontSize: "19px", fontWeight: "700", color: "#22a9d4" }}>حمــزة سعد</span>
+<span style={{ fontSize: "14px", color: "#5f666e" }}>المدير التنفيذي</span>
+</div>
+</div>
+<div style={{ display: "flex", flexDirection: "column", gap: "18px" }}>
+<h2 style={{ fontSize: "38px", fontWeight: "700", color: "#fff", lineHeight: "1.3" }}>رسالة المدير التنفيذي</h2>
+<p style={{ fontSize: "19px", lineHeight: "1.7", color: "#fff", fontWeight: "600", maxWidth: "640px", textWrap: "pretty" }}>«نحن نؤمن بأن السفر ليس مجرد انتقال من مكان إلى آخر… بل تجربة متكاملة تفتح آفاقًا جديدة وتعزز الروابط بين الثقافات.»</p>
+<p style={{ fontSize: "16px", lineHeight: "1.75", color: "rgba(255,255,255,.9)", maxWidth: "640px", textWrap: "pretty" }}>مرحبًا بكم في قصر المرايا للسفر والسياحة. منذ تأسيس شركتنا وضعنا هدفًا واضحًا يتمثل في تقديم خدمات سياحية متكاملة ترتقي إلى أعلى المعايير العالمية، مع التركيز على الجودة والابتكار في كل ما نقدمه.</p>
+<p style={{ fontSize: "16px", lineHeight: "1.75", color: "rgba(255,255,255,.9)", maxWidth: "640px", textWrap: "pretty" }}>يعمل فريقنا المحترف وشبكة شركائنا القوية على توسيع نطاق خدماتنا لتلبي احتياجات عملائنا داخل العراق وخارجه، ونشارك في الفعاليات الدولية لنكون في طليعة الشركات الرائدة في مجال السفر والسياحة. نحرص على أن تكون كل رحلة مليئة باللحظات التي تبقى في الذاكرة.</p>
+<p style={{ fontSize: "16px", lineHeight: "1.75", color: "rgba(255,255,255,.9)" }}>شكرًا لثقتكم بنا، ونتطلع لأن نكون جزءًا من رحلاتكم القادمة.</p>
+<div style={{ display: "flex", alignItems: "center", gap: "14px", paddingTop: "6px" }}>
+<span style={{ width: "44px", height: "2px", background: "#faab18" }}></span>
+<span style={{ fontSize: "15px", fontWeight: "600", color: "#fff" }}>حمزة سعد — المدير التنفيذي، قصر المرايا للسفر والسياحة</span>
+</div>
+</div>
+</div>
+</section>
+<section className="qa-sec" style={{ display: "flex", flexDirection: "column", gap: "36px" }}>
+<div style={{ maxWidth: "740px", margin: "0 auto", textAlign: "center", display: "flex", flexDirection: "column", gap: "14px" }}>
+<h2 style={{ fontSize: "38px", fontWeight: "700", color: "#22a9d4", lineHeight: "1.3" }}>توصيات العملاء</h2>
+<p style={{ fontSize: "17px", lineHeight: "1.75", color: "#5f666e", textWrap: "pretty" }}>رضا العملاء هو حجر الأساس لنجاحنا. هذه تجارب حقيقية لعملاء وثقوا بنا في تنظيم رحلاتهم.</p>
+</div>
+<div className="qa-2col qa-testi-grid qa-swipe" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(300px,1fr))", gap: "24px", alignItems: "stretch" }}>
+<div className="qa-testi-card" style={{ position: "relative", background: "#fff", border: "1px solid #ececed", borderRadius: "var(--tw-radius,16px)", padding: "30px 30px 26px", display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center", gap: "16px", boxShadow: "var(--tw-card-shadow,0 1px 3px rgba(29,39,51,.06))" }}>
+<span className="qa-testi-avatar" style={{ width: "112px", height: "112px", borderRadius: "50%", flex: "none", overflow: "hidden", background: "#e4f5fb", boxShadow: "var(--tw-card-shadow,0 1px 3px rgba(29,39,51,.06))" }}><img src="/assets/avatar-ibrahim.webp" alt="ابراهيم مناضل" style={{ width: "100%", height: "100%", objectFit: "cover" }} /></span>
+<p style={{ margin: "0", fontSize: "16.5px", lineHeight: "1.8", color: "#1d2733", textWrap: "pretty" }}>حجزتُ رحلة عائلية إلى ماليزيا، وكانت رحلة ممتعة من جميع النواحي — سواء من حيث الطيران، الفنادق، البرامج السياحية، أو حتى حسن التعامل من قبل موظفي الشركة والمندوبين.</p>
+<div style={{ marginTop: "auto", display: "flex", flexDirection: "column", gap: "3px", paddingTop: "12px", borderTop: "1px solid #ececed", width: "100%" }}>
+<span style={{ fontSize: "17px", fontWeight: "700", color: "#1d2733" }}>ابراهيم مناضل</span>
+<span style={{ fontSize: "14px", color: "#5f666e" }}>موظف</span>
+</div>
+</div>
+<div className="qa-testi-card" style={{ position: "relative", background: "#fff", border: "1px solid #ececed", borderRadius: "var(--tw-radius,16px)", padding: "30px 30px 26px", display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center", gap: "16px", boxShadow: "var(--tw-card-shadow,0 1px 3px rgba(29,39,51,.06))" }}>
+<span className="qa-testi-avatar" style={{ width: "112px", height: "112px", borderRadius: "50%", flex: "none", overflow: "hidden", background: "#fef3dc", boxShadow: "var(--tw-card-shadow,0 1px 3px rgba(29,39,51,.06))" }}><img src="/assets/avatar-hasan.webp" alt="م.م. حسن عصام الدليمي" style={{ width: "100%", height: "100%", objectFit: "cover" }} /></span>
+<p style={{ margin: "0", fontSize: "16.5px", lineHeight: "1.8", color: "#1d2733", textWrap: "pretty" }}>تعاملتُ مع شركة قصر المرايا عدة مرات، وقد قاموا باستخراج تأشيرات الدخول لي لعدة دول. بكل صراحة وأمانة، كان تعاملهم راقيًا للغاية وأسعارهم مناسبة جدًا، كما أنهم يوفرون خيارات متعددة للعديد من الوجهات.</p>
+<div style={{ marginTop: "auto", display: "flex", flexDirection: "column", gap: "3px", paddingTop: "12px", borderTop: "1px solid #ececed", width: "100%" }}>
+<span style={{ fontSize: "17px", fontWeight: "700", color: "#1d2733" }}>م.م. حسن عصام الدليمي</span>
+<span style={{ fontSize: "14px", color: "#5f666e" }}>أستاذ جامعي</span>
+</div>
+</div>
+<div className="qa-testi-card" style={{ position: "relative", background: "#fff", border: "1px solid #ececed", borderRadius: "var(--tw-radius,16px)", padding: "30px 30px 26px", display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center", gap: "16px", boxShadow: "var(--tw-card-shadow,0 1px 3px rgba(29,39,51,.06))" }}>
+<span className="qa-testi-avatar" style={{ width: "112px", height: "112px", borderRadius: "50%", flex: "none", overflow: "hidden", background: "#e4f5fb", boxShadow: "var(--tw-card-shadow,0 1px 3px rgba(29,39,51,.06))" }}><img src="/assets/avatar-ali.webp" alt="علي حسين الزبيدي" style={{ width: "100%", height: "100%", objectFit: "cover" }} /></span>
+<p style={{ margin: "0", fontSize: "16.5px", lineHeight: "1.8", color: "#1d2733", textWrap: "pretty" }}>رتّبوا لي رحلة إلى باكو خلال يومين — التأشيرة، الفندق، والجولات. حتى تغيير موعد العودة في اللحظة الأخيرة تولّوه بأنفسهم دون أي عناء عليّ.</p>
+<div style={{ marginTop: "auto", display: "flex", flexDirection: "column", gap: "3px", paddingTop: "12px", borderTop: "1px solid #ececed", width: "100%" }}>
+<span style={{ fontSize: "17px", fontWeight: "700", color: "#1d2733" }}>علي حسين الزبيدي</span>
+<span style={{ fontSize: "14px", color: "#5f666e" }}>رجل أعمال</span>
+</div>
+</div>
+<div className="qa-testi-card" style={{ position: "relative", background: "#fff", border: "1px solid #ececed", borderRadius: "var(--tw-radius,16px)", padding: "30px 30px 26px", display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center", gap: "16px", boxShadow: "var(--tw-card-shadow,0 1px 3px rgba(29,39,51,.06))" }}>
+<span className="qa-testi-avatar" style={{ width: "112px", height: "112px", borderRadius: "50%", flex: "none", overflow: "hidden", background: "#fef3dc", boxShadow: "var(--tw-card-shadow,0 1px 3px rgba(29,39,51,.06))" }}><img src="/assets/avatar-saif.webp" alt="سيف الدين قاسم" style={{ width: "100%", height: "100%", objectFit: "cover" }} /></span>
+<p style={{ margin: "0", fontSize: "16.5px", lineHeight: "1.8", color: "#1d2733", textWrap: "pretty" }}>نتعامل معهم لسفر موظفينا منذ سنتين. الأسعار التعاقدية واضحة، والتعديلات على الحجوزات تُنجَز في نفس اليوم — هذا ما نحتاجه في سفر الأعمال.</p>
+<div style={{ marginTop: "auto", display: "flex", flexDirection: "column", gap: "3px", paddingTop: "12px", borderTop: "1px solid #ececed", width: "100%" }}>
+<span style={{ fontSize: "17px", fontWeight: "700", color: "#1d2733" }}>سيف الدين قاسم</span>
+<span style={{ fontSize: "14px", color: "#5f666e" }}>مدير إداري — شركة مقاولات</span>
+</div>
+</div>
+</div>
+<div className="qa-swipe-hint" aria-hidden="true">اسحب لرؤية المزيد ↔</div>
 </section>
 </div>
 </>) : null}
