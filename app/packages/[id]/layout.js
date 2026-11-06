@@ -5,7 +5,7 @@ import { pageMeta, seoPackage, nightsText, packageJsonLd } from '../../../lib/se
 export async function generateMetadata({ params }) {
   const { id } = await params;
   const p = await seoPackage(id);
-  if (!p) return pageMeta({ title: 'الباقات السياحية', description: 'باقات سياحية من بغداد.', path: '/packages' });
+  if (!p) return pageMeta({ title: 'الباقات السياحية', description: 'باقات سياحية من بغداد.', path: '/packages', image: '/og/og-packages.jpg' });
   const nights = nightsText(p);
   const price = Number(p.price) > 0 ? 'يبدأ من ' + Number(p.price).toLocaleString('en-US') + ' د.ع للشخص' : '';
   return pageMeta({
@@ -14,7 +14,7 @@ export async function generateMetadata({ params }) {
     // so it leads with the duration and the price.
     description: [[nights, price].filter(Boolean).join(' · '), ['باقة سياحية', p.dest_ar].filter(Boolean).join(' — ')].filter(Boolean).join(' | ') + '. طيران وفندق وجولات من بغداد مع قصر المرايا. احجز عبر واتساب أو الرقم المختصر 6393.',
     path: '/packages/' + p.id,
-    image: p.image_url || undefined,
+    image: p.image_url || '/og/og-packages.jpg',
   });
 }
 
