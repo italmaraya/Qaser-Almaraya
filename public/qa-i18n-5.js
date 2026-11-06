@@ -105,6 +105,8 @@
 
   "خدماتنا": "Our services",
   "باقات سياحية، تأشيرات، وحجوزات طيران وفنادق. تُدار كلها من مكتبنا في بغداد، ويتابع فريق واحد طلبك من أول اتصال حتى انتهاء الرحلة.": "Travel packages, visas, and flight and hotel bookings. All of them are run from our Baghdad office, and one team follows your request from the first call until the trip ends.",
+  "أضف بالغاً واحداً على الأقل لإكمال الحجز — لا يمكن حجز الأطفال والرضّع بدون بالغ.": "Add at least one adult to continue — children and infants cannot travel on their own.",
+
   "تحتاج مساعدة في الحجز؟": "Need help with a booking?",
   "اتصل بالرقم المختصر 6393 داخل العراق، أو راسلنا على واتساب ونرد عليك في أوقات الدوام.": "Call the short number 6393 inside Iraq, or message us on WhatsApp and we will reply during working hours.",
   "واتساب": "WhatsApp",
