@@ -103,6 +103,12 @@
   "تأشيرة صادرة": "An issued visa",
   "تأكيد موعد سفارة": "A confirmed embassy appointment",
 
+  "خدماتنا": "Our services",
+  "باقات سياحية، تأشيرات، وحجوزات طيران وفنادق. تُدار كلها من مكتبنا في بغداد، ويتابع فريق واحد طلبك من أول اتصال حتى انتهاء الرحلة.": "Travel packages, visas, and flight and hotel bookings. All of them are run from our Baghdad office, and one team follows your request from the first call until the trip ends.",
+  "تحتاج مساعدة في الحجز؟": "Need help with a booking?",
+  "اتصل بالرقم المختصر 6393 داخل العراق، أو راسلنا على واتساب ونرد عليك في أوقات الدوام.": "Call the short number 6393 inside Iraq, or message us on WhatsApp and we will reply during working hours.",
+  "واتساب": "WhatsApp",
+
   "تحتاج مساعدة؟": "Need help?",
   "الرقم المختصر 6393 — فريقنا جاهز لخدمتك بكل احترافية وسرعة.": "Shortcode 6393 — our team is ready to help you, professionally and quickly."
 });

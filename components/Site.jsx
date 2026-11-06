@@ -915,12 +915,10 @@ function   visaVals(country){
 </HomeHero>
 <SeasonSpotlight lang={st.lang} />
 <HomeOffers lang={st.lang} />
-<TripFinder lang={st.lang} />
-<VisaChecker lang={st.lang} />
 <section className="qa-sec" style={{ display: "flex", flexDirection: "column", gap: "32px" }}>
-<div style={{ maxWidth: "680px", margin: "0 auto", textAlign: "center", display: "flex", flexDirection: "column", gap: "16px" }}>
-<h2 style={{ fontSize: "36px", fontWeight: "700" }}>نُعيد صياغة مفهوم السفر</h2>
-<p style={{ fontSize: "18px", lineHeight: "1.75", color: "#22a9d4" }}>من تصميم الباقات المخصصة إلى إدارة وتنظيم حركة السفر للفعاليات الكبرى، تمثّل قصر المرايا جسراً من الثقة والاحترافية.</p>
+<div style={{ maxWidth: "var(--q-read,720px)", display: "flex", flexDirection: "column", gap: "10px" }}>
+<h2 style={{ margin: "0", fontSize: "var(--q-t2,30px)", fontWeight: "700", color: "#1d2733" }}>خدماتنا</h2>
+<p style={{ margin: "0", fontSize: "var(--q-t4,17px)", lineHeight: "1.75", color: "#5f666e" }}>باقات سياحية، تأشيرات، وحجوزات طيران وفنادق. تُدار كلها من مكتبنا في بغداد، ويتابع فريق واحد طلبك من أول اتصال حتى انتهاء الرحلة.</p>
 </div>
 <div className="qa-grid qa-swipe" style={{ gridTemplateColumns: "repeat(4,1fr)" }}>
 <div className="qa-card" style={{ display: "flex", flexDirection: "column", gap: "12px", cursor: "pointer" }} onClick={goPackages}>
@@ -946,149 +944,8 @@ function   visaVals(country){
 </div>
 <div className="qa-swipe-hint" aria-hidden="true">اسحب لرؤية المزيد ↔</div>
 </section>
-<section className="qa-sec qa-2col" style={{ paddingTop: "0", display: "grid", gridTemplateColumns: "1fr 1fr", gap: "64px", alignItems: "center" }}>
-<img src="/assets/mascot-skylo-pilot-plane.webp" alt="سكايلو، مرشد قصر المرايا" style={{ width: "100%", maxWidth: "400px", justifySelf: "center" }} />
-<div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
-<h2 style={{ fontSize: "36px", fontWeight: "700" }}>ما يمكننا فعله من أجلك</h2>
-<p style={{ fontSize: "18px", lineHeight: "1.75", color: "#22a9d4" }}>نحن لا ننظم فقط… نحن نُبدع في صناعة التجربة.</p>
-<p style={{ fontSize: "16px", lineHeight: "1.75" }}>باقات متكاملة تضم وجهات مميزة ومطاعم محلية، أنشطة استثنائية، واستكشاف الأماكن التي لا تزورها الجولات التقليدية.</p>
-</div>
-</section>
-<div style={{ background: "var(--tw-band,#34bbe1)", position: "relative", overflow: "hidden" }}>
-<img src="/assets/logo-mark-white.webp" alt="" style={{ position: "absolute", insetInlineStart: "-140px", top: "26%", height: "560px", opacity: "var(--tw-mark,.13)" }} />
-<img src="/assets/logo-mark-white.webp" alt="" style={{ position: "absolute", insetInlineEnd: "-160px", top: "52%", height: "620px", opacity: ".09" }} />
-<section style={{ position: "relative" }}>
-<div className="qa-sec" style={{ position: "relative", display: "flex", flexDirection: "column", gap: "32px" }}>
-<div style={{ maxWidth: "680px", margin: "0 auto", textAlign: "center", display: "flex", flexDirection: "column", gap: "16px" }}>
-<h2 style={{ fontSize: "36px", fontWeight: "700", color: "#fff" }}>قيمنا</h2>
-<p style={{ fontSize: "18px", lineHeight: "1.75", color: "rgba(255,255,255,.92)" }}>أربع قيم تحكم كل رحلة نخطّط لها.</p>
-</div>
-<div className="qa-swipe" style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: "20px", alignItems: "stretch" }}>
-<div style={{ background: "#fff", borderRadius: "var(--tw-radius,16px)", padding: "24px" }}><h4 style={{ fontSize: "20px", fontWeight: "700", color: "#1b93b8", marginBottom: "8px" }}>المغامرة والاستكشاف</h4><p style={{ fontSize: "14px", lineHeight: "1.45" }}>نُلهم المسافرين لاكتشاف أماكن وتجارب لا تُنسى.</p></div>
-<div style={{ background: "#fff", borderRadius: "var(--tw-radius,16px)", padding: "24px" }}><h4 style={{ fontSize: "20px", fontWeight: "700", color: "#1b93b8", marginBottom: "8px" }}>الثقة والاعتمادية</h4><p style={{ fontSize: "14px", lineHeight: "1.45" }}>كل رحلة تُخطَّط بصدق وأمان ومسؤولية كاملة.</p></div>
-<div style={{ background: "#fff", borderRadius: "var(--tw-radius,16px)", padding: "24px" }}><h4 style={{ fontSize: "20px", fontWeight: "700", color: "#1b93b8", marginBottom: "8px" }}>رضا العميل أولاً</h4><p style={{ fontSize: "14px", lineHeight: "1.45" }}>راحتك ودعمك في كل خطوة، بلا تعقيد.</p></div>
-<div style={{ background: "#fff", borderRadius: "var(--tw-radius,16px)", padding: "24px" }}><h4 style={{ fontSize: "20px", fontWeight: "700", color: "#1b93b8", marginBottom: "8px" }}>التميّز في الخدمة</h4><p style={{ fontSize: "14px", lineHeight: "1.45" }}>تخطيط عالي الجودة وحجز سلس وتجربة سفر متكاملة.</p></div>
-</div>
-<div className="qa-swipe-hint" aria-hidden="true">اسحب لرؤية المزيد ↔</div>
-</div>
-</section>
-<section style={{ position: "relative" }}>
-<div className="qa-sec" style={{ paddingTop: "0", position: "relative", display: "flex", flexDirection: "column", gap: "36px" }}>
-<div style={{ maxWidth: "720px", margin: "0 auto", textAlign: "center", display: "flex", flexDirection: "column", gap: "14px" }}>
-<span style={{ fontSize: "14px", fontWeight: "600", color: "rgba(255,255,255,.78)" }}>ما نعمل من أجله كل يوم</span>
-<h2 style={{ fontSize: "38px", fontWeight: "700", color: "#fff", lineHeight: "1.3" }}>أهداف شركة قصر المرايا للسفر والسياحة</h2>
-</div>
-<div className="qa-goals qa-swipe" style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: "20px", alignItems: "stretch" }}>
-<div style={{ background: "#fff", borderRadius: "var(--tw-radius,16px)", padding: "26px 24px", display: "flex", flexDirection: "column", gap: "12px" }}>
-<span style={{ width: "56px", height: "56px", borderRadius: "50%", background: "#e4f5fb", color: "#22a9d4", display: "flex", alignItems: "center", justifyContent: "center" }}><GoalServices size={32} /></span>
-<h4 style={{ fontSize: "20px", fontWeight: "700", color: "#1d2733" }}>خدمات سياحية متكاملة</h4>
-<p style={{ fontSize: "15px", lineHeight: "1.7", color: "#5f666e" }}>حجوزات الطيران، حزم العطلات، رحلات جماعية، وتأشيرات — كل شيء من مكان واحد.</p>
-</div>
-<div style={{ background: "#fff", borderRadius: "var(--tw-radius,16px)", padding: "26px 24px", display: "flex", flexDirection: "column", gap: "12px" }}>
-<span style={{ width: "56px", height: "56px", borderRadius: "50%", background: "#e4f5fb", color: "#22a9d4", display: "flex", alignItems: "center", justifyContent: "center" }}><GoalTrust size={32} /></span>
-<h4 style={{ fontSize: "20px", fontWeight: "700", color: "#1d2733" }}>رضا العملاء وبناء الثقة</h4>
-<p style={{ fontSize: "15px", lineHeight: "1.7", color: "#5f666e" }}>دعم على مدار الساعة، خدمة شخصية، وعلاقات دائمة مع كل مسافر.</p>
-</div>
-<div style={{ background: "#fff", borderRadius: "var(--tw-radius,16px)", padding: "26px 24px", display: "flex", flexDirection: "column", gap: "12px" }}>
-<span style={{ width: "56px", height: "56px", borderRadius: "50%", background: "#e4f5fb", color: "#22a9d4", display: "flex", alignItems: "center", justifyContent: "center" }}><GoalExpansion size={32} /></span>
-<h4 style={{ fontSize: "20px", fontWeight: "700", color: "#1d2733" }}>توسع محلي ودولي</h4>
-<p style={{ fontSize: "15px", lineHeight: "1.7", color: "#5f666e" }}>شراكات عالمية وحضور فاعل في المعارض السياحية الدولية.</p>
-</div>
-<div style={{ background: "#fff", borderRadius: "var(--tw-radius,16px)", padding: "26px 24px", display: "flex", flexDirection: "column", gap: "12px" }}>
-<span style={{ width: "56px", height: "56px", borderRadius: "50%", background: "#fef3dc", color: "#c07f00", display: "flex", alignItems: "center", justifyContent: "center" }}><GoalTech size={32} /></span>
-<h4 style={{ fontSize: "20px", fontWeight: "700", color: "#1d2733" }}>الابتكار والتطوير التقني</h4>
-<p style={{ fontSize: "15px", lineHeight: "1.7", color: "#5f666e" }}>أحدث تقنيات الحجز وحلول رقمية سهلة الاستخدام في كل خطوة.</p>
-</div>
-<div style={{ background: "#fff", borderRadius: "var(--tw-radius,16px)", padding: "26px 24px", display: "flex", flexDirection: "column", gap: "12px" }}>
-<span style={{ width: "56px", height: "56px", borderRadius: "50%", background: "#fef3dc", color: "#c07f00", display: "flex", alignItems: "center", justifyContent: "center" }}><GoalHeritage size={32} /></span>
-<h4 style={{ fontSize: "20px", fontWeight: "700", color: "#1d2733" }}>ترويج السياحة المحلية</h4>
-<p style={{ fontSize: "15px", lineHeight: "1.7", color: "#5f666e" }}>رحلات ثقافية فريدة لاكتشاف تاريخ العراق العريق ومعالمه.</p>
-</div>
-<div style={{ background: "#fff", borderRadius: "var(--tw-radius,16px)", padding: "26px 24px", display: "flex", flexDirection: "column", gap: "12px" }}>
-<span style={{ width: "56px", height: "56px", borderRadius: "50%", background: "#fef3dc", color: "#c07f00", display: "flex", alignItems: "center", justifyContent: "center" }}><GoalSafety size={32} /></span>
-<h4 style={{ fontSize: "20px", fontWeight: "700", color: "#1d2733" }}>توفير تجربة سفر آمنة</h4>
-<p style={{ fontSize: "15px", lineHeight: "1.7", color: "#5f666e" }}>شركاء موثوقون، تأمين شامل، وراحة وأمان من الإقلاع حتى العودة.</p>
-</div>
-</div>
-<div className="qa-swipe-hint" aria-hidden="true">اسحب لرؤية المزيد ↔</div>
-</div>
-</section>
-</div>
-<section className="qa-sec qa-2col" style={{ display: "grid", gridTemplateColumns: ".9fr 1.1fr", gap: "56px", alignItems: "center" }}>
-<div style={{ position: "relative", justifySelf: "center", width: "100%", maxWidth: "430px", display: "flex", alignItems: "center", justifyContent: "center" }}>
-<img src="/assets/vision-plane-cutout3.webp" alt="طائرة قصر المرايا على جوازات السفر" style={{ position: "relative", display: "block", width: "100%", maxWidth: "100%", height: "auto" }} />
-</div>
-<div style={{ display: "flex", flexDirection: "column", gap: "18px" }}>
-<h2 style={{ fontSize: "36px", fontWeight: "700", color: "#22a9d4", lineHeight: "1.3" }}>رؤيتنا المستقبلية في قصر المرايا للسفر والسياحة</h2>
-<p style={{ fontSize: "16px", lineHeight: "1.75", textWrap: "pretty" }}>نطمح لأن نكون الخيار الأول في مجال السفر والسياحة من خلال تقديم خدمات مبتكرة تلبي تطلعات العملاء، وتوسيع نطاق أعمالنا عالميًا لتعزيز تجربة السفر بأساليب حديثة ومتطورة. كما نعمل على بناء شراكات استراتيجية مع كبرى الشركات السياحية والفنادق وشركات الطيران لضمان تقديم أفضل الخدمات بأسعار تنافسية.</p>
-<p style={{ fontSize: "16px", lineHeight: "1.75", textWrap: "pretty" }}>بالإضافة إلى ذلك، نولي اهتمامًا خاصًا لدعم السياحة الداخلية والخارجية عبر توفير حلول سفر متكاملة تتميز بالجودة والموثوقية. ومن منطلق سعينا إلى التطور، نطمح إلى تقديم خدمات إلكترونية حديثة توفر تجربة مستخدم سلسة ولطيفة، تتيح للعملاء حجز رحلاتهم بسهولة وسرعة.</p>
-<p style={{ fontSize: "16px", lineHeight: "1.75", textWrap: "pretty" }}>كما نهدف إلى تنشيط السياحة العكسية من خلال استقبال المسافرين الأجانب وتنظيم جولات سياحية لاكتشاف العراق، وإبراز معالمه التاريخية والثقافية والطبيعية، مما يساهم في تعزيز مكانته كوجهة سياحية متميزة على مستوى العالم.</p>
-</div>
-</section>
-<section style={{ background: "var(--tw-band-deep,#049dc5)", position: "relative", overflow: "hidden" }}>
-<img src="/assets/logo-mark-white.webp" alt="" style={{ position: "absolute", insetInlineStart: "-130px", top: "-70px", height: "440px", opacity: ".09" }} />
-<div className="qa-sec qa-2col" style={{ position: "relative", display: "grid", gridTemplateColumns: ".85fr 1.15fr", gap: "56px", alignItems: "center" }}>
-<div style={{ position: "relative", justifySelf: "center", width: "100%", maxWidth: "420px" }}>
-<img src="/assets/ceo-interview.webp" alt="حمزة سعد، المدير التنفيذي، في مقابلة تلفزيونية" style={{ position: "relative", display: "block", width: "100%", aspectRatio: "4/3", objectFit: "cover", objectPosition: "center 38%", borderRadius: "var(--tw-radius,16px)", boxShadow: "var(--tw-card-shadow,0 1px 3px rgba(29,39,51,.06))" }} />
-<div style={{ position: "relative", marginTop: "-26px", marginInlineStart: "22px", display: "inline-flex", flexDirection: "column", gap: "2px", background: "#fff", borderRadius: "var(--tw-radius-sm,10px)", padding: "13px 24px", boxShadow: "var(--tw-card-shadow,0 1px 3px rgba(29,39,51,.06))" }}>
-<span style={{ fontSize: "19px", fontWeight: "700", color: "#22a9d4" }}>حمــزة سعد</span>
-<span style={{ fontSize: "14px", color: "#5f666e" }}>المدير التنفيذي</span>
-</div>
-</div>
-<div style={{ display: "flex", flexDirection: "column", gap: "18px" }}>
-<h2 style={{ fontSize: "38px", fontWeight: "700", color: "#fff", lineHeight: "1.3" }}>رسالة المدير التنفيذي</h2>
-<p style={{ fontSize: "19px", lineHeight: "1.7", color: "#fff", fontWeight: "600", maxWidth: "640px", textWrap: "pretty" }}>«نحن نؤمن بأن السفر ليس مجرد انتقال من مكان إلى آخر… بل تجربة متكاملة تفتح آفاقًا جديدة وتعزز الروابط بين الثقافات.»</p>
-<p style={{ fontSize: "16px", lineHeight: "1.75", color: "rgba(255,255,255,.9)", maxWidth: "640px", textWrap: "pretty" }}>مرحبًا بكم في قصر المرايا للسفر والسياحة. منذ تأسيس شركتنا وضعنا هدفًا واضحًا يتمثل في تقديم خدمات سياحية متكاملة ترتقي إلى أعلى المعايير العالمية، مع التركيز على الجودة والابتكار في كل ما نقدمه.</p>
-<p style={{ fontSize: "16px", lineHeight: "1.75", color: "rgba(255,255,255,.9)", maxWidth: "640px", textWrap: "pretty" }}>يعمل فريقنا المحترف وشبكة شركائنا القوية على توسيع نطاق خدماتنا لتلبي احتياجات عملائنا داخل العراق وخارجه، ونشارك في الفعاليات الدولية لنكون في طليعة الشركات الرائدة في مجال السفر والسياحة. نحرص على أن تكون كل رحلة مليئة باللحظات التي تبقى في الذاكرة.</p>
-<p style={{ fontSize: "16px", lineHeight: "1.75", color: "rgba(255,255,255,.9)" }}>شكرًا لثقتكم بنا، ونتطلع لأن نكون جزءًا من رحلاتكم القادمة.</p>
-<div style={{ display: "flex", alignItems: "center", gap: "14px", paddingTop: "6px" }}>
-<span style={{ width: "44px", height: "2px", background: "#faab18" }}></span>
-<span style={{ fontSize: "15px", fontWeight: "600", color: "#fff" }}>حمزة سعد — المدير التنفيذي، قصر المرايا للسفر والسياحة</span>
-</div>
-</div>
-</div>
-</section>
-<section className="qa-sec" style={{ display: "flex", flexDirection: "column", gap: "36px" }}>
-<div style={{ maxWidth: "740px", margin: "0 auto", textAlign: "center", display: "flex", flexDirection: "column", gap: "14px" }}>
-<h2 style={{ fontSize: "38px", fontWeight: "700", color: "#22a9d4", lineHeight: "1.3" }}>توصيات العملاء</h2>
-<p style={{ fontSize: "17px", lineHeight: "1.75", color: "#5f666e", textWrap: "pretty" }}>رضا العملاء هو حجر الأساس لنجاحنا. هذه تجارب حقيقية لعملاء وثقوا بنا في تنظيم رحلاتهم.</p>
-</div>
-<div className="qa-2col qa-testi-grid qa-swipe" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(300px,1fr))", gap: "24px", alignItems: "stretch" }}>
-<div className="qa-testi-card" style={{ position: "relative", background: "#fff", border: "1px solid #ececed", borderRadius: "var(--tw-radius,16px)", padding: "30px 30px 26px", display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center", gap: "16px", boxShadow: "var(--tw-card-shadow,0 1px 3px rgba(29,39,51,.06))" }}>
-<span className="qa-testi-avatar" style={{ width: "112px", height: "112px", borderRadius: "50%", flex: "none", overflow: "hidden", background: "#e4f5fb", boxShadow: "var(--tw-card-shadow,0 1px 3px rgba(29,39,51,.06))" }}><img src="/assets/avatar-ibrahim.webp" alt="ابراهيم مناضل" style={{ width: "100%", height: "100%", objectFit: "cover" }} /></span>
-<p style={{ margin: "0", fontSize: "16.5px", lineHeight: "1.8", color: "#1d2733", textWrap: "pretty" }}>حجزتُ رحلة عائلية إلى ماليزيا، وكانت رحلة ممتعة من جميع النواحي — سواء من حيث الطيران، الفنادق، البرامج السياحية، أو حتى حسن التعامل من قبل موظفي الشركة والمندوبين.</p>
-<div style={{ marginTop: "auto", display: "flex", flexDirection: "column", gap: "3px", paddingTop: "12px", borderTop: "1px solid #ececed", width: "100%" }}>
-<span style={{ fontSize: "17px", fontWeight: "700", color: "#1d2733" }}>ابراهيم مناضل</span>
-<span style={{ fontSize: "14px", color: "#5f666e" }}>موظف</span>
-</div>
-</div>
-<div className="qa-testi-card" style={{ position: "relative", background: "#fff", border: "1px solid #ececed", borderRadius: "var(--tw-radius,16px)", padding: "30px 30px 26px", display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center", gap: "16px", boxShadow: "var(--tw-card-shadow,0 1px 3px rgba(29,39,51,.06))" }}>
-<span className="qa-testi-avatar" style={{ width: "112px", height: "112px", borderRadius: "50%", flex: "none", overflow: "hidden", background: "#fef3dc", boxShadow: "var(--tw-card-shadow,0 1px 3px rgba(29,39,51,.06))" }}><img src="/assets/avatar-hasan.webp" alt="م.م. حسن عصام الدليمي" style={{ width: "100%", height: "100%", objectFit: "cover" }} /></span>
-<p style={{ margin: "0", fontSize: "16.5px", lineHeight: "1.8", color: "#1d2733", textWrap: "pretty" }}>تعاملتُ مع شركة قصر المرايا عدة مرات، وقد قاموا باستخراج تأشيرات الدخول لي لعدة دول. بكل صراحة وأمانة، كان تعاملهم راقيًا للغاية وأسعارهم مناسبة جدًا، كما أنهم يوفرون خيارات متعددة للعديد من الوجهات.</p>
-<div style={{ marginTop: "auto", display: "flex", flexDirection: "column", gap: "3px", paddingTop: "12px", borderTop: "1px solid #ececed", width: "100%" }}>
-<span style={{ fontSize: "17px", fontWeight: "700", color: "#1d2733" }}>م.م. حسن عصام الدليمي</span>
-<span style={{ fontSize: "14px", color: "#5f666e" }}>أستاذ جامعي</span>
-</div>
-</div>
-<div className="qa-testi-card" style={{ position: "relative", background: "#fff", border: "1px solid #ececed", borderRadius: "var(--tw-radius,16px)", padding: "30px 30px 26px", display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center", gap: "16px", boxShadow: "var(--tw-card-shadow,0 1px 3px rgba(29,39,51,.06))" }}>
-<span className="qa-testi-avatar" style={{ width: "112px", height: "112px", borderRadius: "50%", flex: "none", overflow: "hidden", background: "#e4f5fb", boxShadow: "var(--tw-card-shadow,0 1px 3px rgba(29,39,51,.06))" }}><img src="/assets/avatar-ali.webp" alt="علي حسين الزبيدي" style={{ width: "100%", height: "100%", objectFit: "cover" }} /></span>
-<p style={{ margin: "0", fontSize: "16.5px", lineHeight: "1.8", color: "#1d2733", textWrap: "pretty" }}>رتّبوا لي رحلة إلى باكو خلال يومين — التأشيرة، الفندق، والجولات. حتى تغيير موعد العودة في اللحظة الأخيرة تولّوه بأنفسهم دون أي عناء عليّ.</p>
-<div style={{ marginTop: "auto", display: "flex", flexDirection: "column", gap: "3px", paddingTop: "12px", borderTop: "1px solid #ececed", width: "100%" }}>
-<span style={{ fontSize: "17px", fontWeight: "700", color: "#1d2733" }}>علي حسين الزبيدي</span>
-<span style={{ fontSize: "14px", color: "#5f666e" }}>رجل أعمال</span>
-</div>
-</div>
-<div className="qa-testi-card" style={{ position: "relative", background: "#fff", border: "1px solid #ececed", borderRadius: "var(--tw-radius,16px)", padding: "30px 30px 26px", display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center", gap: "16px", boxShadow: "var(--tw-card-shadow,0 1px 3px rgba(29,39,51,.06))" }}>
-<span className="qa-testi-avatar" style={{ width: "112px", height: "112px", borderRadius: "50%", flex: "none", overflow: "hidden", background: "#fef3dc", boxShadow: "var(--tw-card-shadow,0 1px 3px rgba(29,39,51,.06))" }}><img src="/assets/avatar-saif.webp" alt="سيف الدين قاسم" style={{ width: "100%", height: "100%", objectFit: "cover" }} /></span>
-<p style={{ margin: "0", fontSize: "16.5px", lineHeight: "1.8", color: "#1d2733", textWrap: "pretty" }}>نتعامل معهم لسفر موظفينا منذ سنتين. الأسعار التعاقدية واضحة، والتعديلات على الحجوزات تُنجَز في نفس اليوم — هذا ما نحتاجه في سفر الأعمال.</p>
-<div style={{ marginTop: "auto", display: "flex", flexDirection: "column", gap: "3px", paddingTop: "12px", borderTop: "1px solid #ececed", width: "100%" }}>
-<span style={{ fontSize: "17px", fontWeight: "700", color: "#1d2733" }}>سيف الدين قاسم</span>
-<span style={{ fontSize: "14px", color: "#5f666e" }}>مدير إداري — شركة مقاولات</span>
-</div>
-</div>
-</div>
-<div className="qa-swipe-hint" aria-hidden="true">اسحب لرؤية المزيد ↔</div>
-</section>
+<TripFinder lang={st.lang} />
+<VisaChecker lang={st.lang} />
 <div data-ach-band="" style={{ '--bw-hairline': "0" }}><AchievementSpread assetBase="/assets" /></div>
 <section dir="rtl" style={{ position: "relative", overflow: "hidden", background: "var(--tw-band-deep,#049dc5)" }}>
 <img src="/assets/logo-mark-white.webp" alt="" style={{ position: "absolute", insetInlineEnd: "-110px", top: "-80px", height: "400px", opacity: ".1" }} />
@@ -1104,6 +961,18 @@ function   visaVals(country){
 </div>
 <div aria-hidden="true" style={{ position: "relative", height: "1px", background: "rgba(255,255,255,.22)" }}></div>
 <AirlinesMarquee />
+</section>
+<section className="qa-sec" style={{ paddingTop: "0" }}>
+<div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", justifyContent: "space-between", gap: "20px", background: "#f6f8f9", border: "1px solid #e6e9eb", borderRadius: "12px", padding: "28px 32px" }}>
+<div style={{ display: "flex", flexDirection: "column", gap: "6px", minWidth: "260px" }}>
+<h2 style={{ margin: "0", fontSize: "var(--q-t3,22px)", fontWeight: "700", color: "#1d2733" }}>تحتاج مساعدة في الحجز؟</h2>
+<p style={{ margin: "0", fontSize: "var(--q-t5,15px)", lineHeight: "1.7", color: "#5f666e" }}>اتصل بالرقم المختصر <b data-no-i18n="">6393</b> داخل العراق، أو راسلنا على واتساب ونرد عليك في أوقات الدوام.</p>
+</div>
+<div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
+<button type="button" className="qa-btn qa-amber" onClick={goContact}>تواصل معنا</button>
+<a className="qa-btn" href={waLink('مرحباً قصر المرايا، أرغب بالمساعدة في حجز رحلة.')} target="_blank" rel="noopener" style={{ background: "transparent", border: "1px solid #049dc5", color: "#036f8c" }}>واتساب</a>
+</div>
+</div>
 </section>
 </div>
 </>) : null}
@@ -1714,7 +1583,7 @@ function   visaVals(country){
 <div data-packages-grid="" className="qa-grid" style={{ gridTemplateColumns: "repeat(auto-fit,minmax(300px,1fr))" }}>
 {(packages || []).map((pkg, $index) => (<React.Fragment key={$index}>
 <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-<PackageCard />
+<PackageCard title={pkg.title} destination={pkg.destination} nights={pkg.nights} groupType={pkg.groupType} departs={pkg.departs} price={pkg.price} includes={pkg.includes} badge={pkg.badge} onDetails={pkg.onDetails} />
 <button type="button" onClick={pkg.toggle} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "8px", padding: "13px 16px", borderRadius: "var(--tw-radius-sm,10px)", border: "1px solid #bfe9f6", background: "#eaf8fd", fontFamily: "inherit", fontSize: "14px", fontWeight: "700", color: "#036f8c", cursor: "pointer" }}>
 <span style={{ display: "flex", alignItems: "center", gap: "8px" }}>
 <span style={{ display: "grid", placeItems: "center", width: "26px", height: "26px", borderRadius: "50%", background: "#049dc5", color: "#fff" }}>
@@ -2573,6 +2442,149 @@ function   visaVals(country){
 </div>
 </div>
 <img src="/assets/mascot-skylo-imagination.webp" alt="سكايلو — حيث يطير الخيال" style={{ width: "100%", maxWidth: "420px", justifySelf: "center", borderRadius: "var(--tw-radius,16px)" }} />
+</section>
+<section className="qa-sec qa-2col" style={{ paddingTop: "0", display: "grid", gridTemplateColumns: "1fr 1fr", gap: "64px", alignItems: "center" }}>
+<img src="/assets/mascot-skylo-pilot-plane.webp" alt="سكايلو، مرشد قصر المرايا" style={{ width: "100%", maxWidth: "400px", justifySelf: "center" }} />
+<div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
+<h2 style={{ fontSize: "36px", fontWeight: "700" }}>ما يمكننا فعله من أجلك</h2>
+<p style={{ fontSize: "18px", lineHeight: "1.75", color: "#22a9d4" }}>نحن لا ننظم فقط… نحن نُبدع في صناعة التجربة.</p>
+<p style={{ fontSize: "16px", lineHeight: "1.75" }}>باقات متكاملة تضم وجهات مميزة ومطاعم محلية، أنشطة استثنائية، واستكشاف الأماكن التي لا تزورها الجولات التقليدية.</p>
+</div>
+</section>
+<div style={{ background: "var(--tw-band,#34bbe1)", position: "relative", overflow: "hidden" }}>
+<img src="/assets/logo-mark-white.webp" alt="" style={{ position: "absolute", insetInlineStart: "-140px", top: "26%", height: "560px", opacity: "var(--tw-mark,.13)" }} />
+<img src="/assets/logo-mark-white.webp" alt="" style={{ position: "absolute", insetInlineEnd: "-160px", top: "52%", height: "620px", opacity: ".09" }} />
+<section style={{ position: "relative" }}>
+<div className="qa-sec" style={{ position: "relative", display: "flex", flexDirection: "column", gap: "32px" }}>
+<div style={{ maxWidth: "680px", margin: "0 auto", textAlign: "center", display: "flex", flexDirection: "column", gap: "16px" }}>
+<h2 style={{ fontSize: "36px", fontWeight: "700", color: "#fff" }}>قيمنا</h2>
+<p style={{ fontSize: "18px", lineHeight: "1.75", color: "rgba(255,255,255,.92)" }}>أربع قيم تحكم كل رحلة نخطّط لها.</p>
+</div>
+<div className="qa-swipe" style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: "20px", alignItems: "stretch" }}>
+<div style={{ background: "#fff", borderRadius: "var(--tw-radius,16px)", padding: "24px" }}><h4 style={{ fontSize: "20px", fontWeight: "700", color: "#1b93b8", marginBottom: "8px" }}>المغامرة والاستكشاف</h4><p style={{ fontSize: "14px", lineHeight: "1.45" }}>نُلهم المسافرين لاكتشاف أماكن وتجارب لا تُنسى.</p></div>
+<div style={{ background: "#fff", borderRadius: "var(--tw-radius,16px)", padding: "24px" }}><h4 style={{ fontSize: "20px", fontWeight: "700", color: "#1b93b8", marginBottom: "8px" }}>الثقة والاعتمادية</h4><p style={{ fontSize: "14px", lineHeight: "1.45" }}>كل رحلة تُخطَّط بصدق وأمان ومسؤولية كاملة.</p></div>
+<div style={{ background: "#fff", borderRadius: "var(--tw-radius,16px)", padding: "24px" }}><h4 style={{ fontSize: "20px", fontWeight: "700", color: "#1b93b8", marginBottom: "8px" }}>رضا العميل أولاً</h4><p style={{ fontSize: "14px", lineHeight: "1.45" }}>راحتك ودعمك في كل خطوة، بلا تعقيد.</p></div>
+<div style={{ background: "#fff", borderRadius: "var(--tw-radius,16px)", padding: "24px" }}><h4 style={{ fontSize: "20px", fontWeight: "700", color: "#1b93b8", marginBottom: "8px" }}>التميّز في الخدمة</h4><p style={{ fontSize: "14px", lineHeight: "1.45" }}>تخطيط عالي الجودة وحجز سلس وتجربة سفر متكاملة.</p></div>
+</div>
+<div className="qa-swipe-hint" aria-hidden="true">اسحب لرؤية المزيد ↔</div>
+</div>
+</section>
+<section style={{ position: "relative" }}>
+<div className="qa-sec" style={{ paddingTop: "0", position: "relative", display: "flex", flexDirection: "column", gap: "36px" }}>
+<div style={{ maxWidth: "720px", margin: "0 auto", textAlign: "center", display: "flex", flexDirection: "column", gap: "14px" }}>
+<span style={{ fontSize: "14px", fontWeight: "600", color: "rgba(255,255,255,.78)" }}>ما نعمل من أجله كل يوم</span>
+<h2 style={{ fontSize: "38px", fontWeight: "700", color: "#fff", lineHeight: "1.3" }}>أهداف شركة قصر المرايا للسفر والسياحة</h2>
+</div>
+<div className="qa-goals qa-swipe" style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: "20px", alignItems: "stretch" }}>
+<div style={{ background: "#fff", borderRadius: "var(--tw-radius,16px)", padding: "26px 24px", display: "flex", flexDirection: "column", gap: "12px" }}>
+<span style={{ width: "56px", height: "56px", borderRadius: "50%", background: "#e4f5fb", color: "#22a9d4", display: "flex", alignItems: "center", justifyContent: "center" }}><GoalServices size={32} /></span>
+<h4 style={{ fontSize: "20px", fontWeight: "700", color: "#1d2733" }}>خدمات سياحية متكاملة</h4>
+<p style={{ fontSize: "15px", lineHeight: "1.7", color: "#5f666e" }}>حجوزات الطيران، حزم العطلات، رحلات جماعية، وتأشيرات — كل شيء من مكان واحد.</p>
+</div>
+<div style={{ background: "#fff", borderRadius: "var(--tw-radius,16px)", padding: "26px 24px", display: "flex", flexDirection: "column", gap: "12px" }}>
+<span style={{ width: "56px", height: "56px", borderRadius: "50%", background: "#e4f5fb", color: "#22a9d4", display: "flex", alignItems: "center", justifyContent: "center" }}><GoalTrust size={32} /></span>
+<h4 style={{ fontSize: "20px", fontWeight: "700", color: "#1d2733" }}>رضا العملاء وبناء الثقة</h4>
+<p style={{ fontSize: "15px", lineHeight: "1.7", color: "#5f666e" }}>دعم على مدار الساعة، خدمة شخصية، وعلاقات دائمة مع كل مسافر.</p>
+</div>
+<div style={{ background: "#fff", borderRadius: "var(--tw-radius,16px)", padding: "26px 24px", display: "flex", flexDirection: "column", gap: "12px" }}>
+<span style={{ width: "56px", height: "56px", borderRadius: "50%", background: "#e4f5fb", color: "#22a9d4", display: "flex", alignItems: "center", justifyContent: "center" }}><GoalExpansion size={32} /></span>
+<h4 style={{ fontSize: "20px", fontWeight: "700", color: "#1d2733" }}>توسع محلي ودولي</h4>
+<p style={{ fontSize: "15px", lineHeight: "1.7", color: "#5f666e" }}>شراكات عالمية وحضور فاعل في المعارض السياحية الدولية.</p>
+</div>
+<div style={{ background: "#fff", borderRadius: "var(--tw-radius,16px)", padding: "26px 24px", display: "flex", flexDirection: "column", gap: "12px" }}>
+<span style={{ width: "56px", height: "56px", borderRadius: "50%", background: "#fef3dc", color: "#c07f00", display: "flex", alignItems: "center", justifyContent: "center" }}><GoalTech size={32} /></span>
+<h4 style={{ fontSize: "20px", fontWeight: "700", color: "#1d2733" }}>الابتكار والتطوير التقني</h4>
+<p style={{ fontSize: "15px", lineHeight: "1.7", color: "#5f666e" }}>أحدث تقنيات الحجز وحلول رقمية سهلة الاستخدام في كل خطوة.</p>
+</div>
+<div style={{ background: "#fff", borderRadius: "var(--tw-radius,16px)", padding: "26px 24px", display: "flex", flexDirection: "column", gap: "12px" }}>
+<span style={{ width: "56px", height: "56px", borderRadius: "50%", background: "#fef3dc", color: "#c07f00", display: "flex", alignItems: "center", justifyContent: "center" }}><GoalHeritage size={32} /></span>
+<h4 style={{ fontSize: "20px", fontWeight: "700", color: "#1d2733" }}>ترويج السياحة المحلية</h4>
+<p style={{ fontSize: "15px", lineHeight: "1.7", color: "#5f666e" }}>رحلات ثقافية فريدة لاكتشاف تاريخ العراق العريق ومعالمه.</p>
+</div>
+<div style={{ background: "#fff", borderRadius: "var(--tw-radius,16px)", padding: "26px 24px", display: "flex", flexDirection: "column", gap: "12px" }}>
+<span style={{ width: "56px", height: "56px", borderRadius: "50%", background: "#fef3dc", color: "#c07f00", display: "flex", alignItems: "center", justifyContent: "center" }}><GoalSafety size={32} /></span>
+<h4 style={{ fontSize: "20px", fontWeight: "700", color: "#1d2733" }}>توفير تجربة سفر آمنة</h4>
+<p style={{ fontSize: "15px", lineHeight: "1.7", color: "#5f666e" }}>شركاء موثوقون، تأمين شامل، وراحة وأمان من الإقلاع حتى العودة.</p>
+</div>
+</div>
+<div className="qa-swipe-hint" aria-hidden="true">اسحب لرؤية المزيد ↔</div>
+</div>
+</section>
+</div>
+<section className="qa-sec qa-2col" style={{ display: "grid", gridTemplateColumns: ".9fr 1.1fr", gap: "56px", alignItems: "center" }}>
+<div style={{ position: "relative", justifySelf: "center", width: "100%", maxWidth: "430px", display: "flex", alignItems: "center", justifyContent: "center" }}>
+<img src="/assets/vision-plane-cutout3.webp" alt="طائرة قصر المرايا على جوازات السفر" style={{ position: "relative", display: "block", width: "100%", maxWidth: "100%", height: "auto" }} />
+</div>
+<div style={{ display: "flex", flexDirection: "column", gap: "18px" }}>
+<h2 style={{ fontSize: "36px", fontWeight: "700", color: "#22a9d4", lineHeight: "1.3" }}>رؤيتنا المستقبلية في قصر المرايا للسفر والسياحة</h2>
+<p style={{ fontSize: "16px", lineHeight: "1.75", textWrap: "pretty" }}>نطمح لأن نكون الخيار الأول في مجال السفر والسياحة من خلال تقديم خدمات مبتكرة تلبي تطلعات العملاء، وتوسيع نطاق أعمالنا عالميًا لتعزيز تجربة السفر بأساليب حديثة ومتطورة. كما نعمل على بناء شراكات استراتيجية مع كبرى الشركات السياحية والفنادق وشركات الطيران لضمان تقديم أفضل الخدمات بأسعار تنافسية.</p>
+<p style={{ fontSize: "16px", lineHeight: "1.75", textWrap: "pretty" }}>بالإضافة إلى ذلك، نولي اهتمامًا خاصًا لدعم السياحة الداخلية والخارجية عبر توفير حلول سفر متكاملة تتميز بالجودة والموثوقية. ومن منطلق سعينا إلى التطور، نطمح إلى تقديم خدمات إلكترونية حديثة توفر تجربة مستخدم سلسة ولطيفة، تتيح للعملاء حجز رحلاتهم بسهولة وسرعة.</p>
+<p style={{ fontSize: "16px", lineHeight: "1.75", textWrap: "pretty" }}>كما نهدف إلى تنشيط السياحة العكسية من خلال استقبال المسافرين الأجانب وتنظيم جولات سياحية لاكتشاف العراق، وإبراز معالمه التاريخية والثقافية والطبيعية، مما يساهم في تعزيز مكانته كوجهة سياحية متميزة على مستوى العالم.</p>
+</div>
+</section>
+<section style={{ background: "var(--tw-band-deep,#049dc5)", position: "relative", overflow: "hidden" }}>
+<img src="/assets/logo-mark-white.webp" alt="" style={{ position: "absolute", insetInlineStart: "-130px", top: "-70px", height: "440px", opacity: ".09" }} />
+<div className="qa-sec qa-2col" style={{ position: "relative", display: "grid", gridTemplateColumns: ".85fr 1.15fr", gap: "56px", alignItems: "center" }}>
+<div style={{ position: "relative", justifySelf: "center", width: "100%", maxWidth: "420px" }}>
+<img src="/assets/ceo-interview.webp" alt="حمزة سعد، المدير التنفيذي، في مقابلة تلفزيونية" style={{ position: "relative", display: "block", width: "100%", aspectRatio: "4/3", objectFit: "cover", objectPosition: "center 38%", borderRadius: "var(--tw-radius,16px)", boxShadow: "var(--tw-card-shadow,0 1px 3px rgba(29,39,51,.06))" }} />
+<div style={{ position: "relative", marginTop: "-26px", marginInlineStart: "22px", display: "inline-flex", flexDirection: "column", gap: "2px", background: "#fff", borderRadius: "var(--tw-radius-sm,10px)", padding: "13px 24px", boxShadow: "var(--tw-card-shadow,0 1px 3px rgba(29,39,51,.06))" }}>
+<span style={{ fontSize: "19px", fontWeight: "700", color: "#22a9d4" }}>حمــزة سعد</span>
+<span style={{ fontSize: "14px", color: "#5f666e" }}>المدير التنفيذي</span>
+</div>
+</div>
+<div style={{ display: "flex", flexDirection: "column", gap: "18px" }}>
+<h2 style={{ fontSize: "38px", fontWeight: "700", color: "#fff", lineHeight: "1.3" }}>رسالة المدير التنفيذي</h2>
+<p style={{ fontSize: "19px", lineHeight: "1.7", color: "#fff", fontWeight: "600", maxWidth: "640px", textWrap: "pretty" }}>«نحن نؤمن بأن السفر ليس مجرد انتقال من مكان إلى آخر… بل تجربة متكاملة تفتح آفاقًا جديدة وتعزز الروابط بين الثقافات.»</p>
+<p style={{ fontSize: "16px", lineHeight: "1.75", color: "rgba(255,255,255,.9)", maxWidth: "640px", textWrap: "pretty" }}>مرحبًا بكم في قصر المرايا للسفر والسياحة. منذ تأسيس شركتنا وضعنا هدفًا واضحًا يتمثل في تقديم خدمات سياحية متكاملة ترتقي إلى أعلى المعايير العالمية، مع التركيز على الجودة والابتكار في كل ما نقدمه.</p>
+<p style={{ fontSize: "16px", lineHeight: "1.75", color: "rgba(255,255,255,.9)", maxWidth: "640px", textWrap: "pretty" }}>يعمل فريقنا المحترف وشبكة شركائنا القوية على توسيع نطاق خدماتنا لتلبي احتياجات عملائنا داخل العراق وخارجه، ونشارك في الفعاليات الدولية لنكون في طليعة الشركات الرائدة في مجال السفر والسياحة. نحرص على أن تكون كل رحلة مليئة باللحظات التي تبقى في الذاكرة.</p>
+<p style={{ fontSize: "16px", lineHeight: "1.75", color: "rgba(255,255,255,.9)" }}>شكرًا لثقتكم بنا، ونتطلع لأن نكون جزءًا من رحلاتكم القادمة.</p>
+<div style={{ display: "flex", alignItems: "center", gap: "14px", paddingTop: "6px" }}>
+<span style={{ width: "44px", height: "2px", background: "#faab18" }}></span>
+<span style={{ fontSize: "15px", fontWeight: "600", color: "#fff" }}>حمزة سعد — المدير التنفيذي، قصر المرايا للسفر والسياحة</span>
+</div>
+</div>
+</div>
+</section>
+<section className="qa-sec" style={{ display: "flex", flexDirection: "column", gap: "36px" }}>
+<div style={{ maxWidth: "740px", margin: "0 auto", textAlign: "center", display: "flex", flexDirection: "column", gap: "14px" }}>
+<h2 style={{ fontSize: "38px", fontWeight: "700", color: "#22a9d4", lineHeight: "1.3" }}>توصيات العملاء</h2>
+<p style={{ fontSize: "17px", lineHeight: "1.75", color: "#5f666e", textWrap: "pretty" }}>رضا العملاء هو حجر الأساس لنجاحنا. هذه تجارب حقيقية لعملاء وثقوا بنا في تنظيم رحلاتهم.</p>
+</div>
+<div className="qa-2col qa-testi-grid qa-swipe" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(300px,1fr))", gap: "24px", alignItems: "stretch" }}>
+<div className="qa-testi-card" style={{ position: "relative", background: "#fff", border: "1px solid #ececed", borderRadius: "var(--tw-radius,16px)", padding: "30px 30px 26px", display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center", gap: "16px", boxShadow: "var(--tw-card-shadow,0 1px 3px rgba(29,39,51,.06))" }}>
+<span className="qa-testi-avatar" style={{ width: "112px", height: "112px", borderRadius: "50%", flex: "none", overflow: "hidden", background: "#e4f5fb", boxShadow: "var(--tw-card-shadow,0 1px 3px rgba(29,39,51,.06))" }}><img src="/assets/avatar-ibrahim.webp" alt="ابراهيم مناضل" style={{ width: "100%", height: "100%", objectFit: "cover" }} /></span>
+<p style={{ margin: "0", fontSize: "16.5px", lineHeight: "1.8", color: "#1d2733", textWrap: "pretty" }}>حجزتُ رحلة عائلية إلى ماليزيا، وكانت رحلة ممتعة من جميع النواحي — سواء من حيث الطيران، الفنادق، البرامج السياحية، أو حتى حسن التعامل من قبل موظفي الشركة والمندوبين.</p>
+<div style={{ marginTop: "auto", display: "flex", flexDirection: "column", gap: "3px", paddingTop: "12px", borderTop: "1px solid #ececed", width: "100%" }}>
+<span style={{ fontSize: "17px", fontWeight: "700", color: "#1d2733" }}>ابراهيم مناضل</span>
+<span style={{ fontSize: "14px", color: "#5f666e" }}>موظف</span>
+</div>
+</div>
+<div className="qa-testi-card" style={{ position: "relative", background: "#fff", border: "1px solid #ececed", borderRadius: "var(--tw-radius,16px)", padding: "30px 30px 26px", display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center", gap: "16px", boxShadow: "var(--tw-card-shadow,0 1px 3px rgba(29,39,51,.06))" }}>
+<span className="qa-testi-avatar" style={{ width: "112px", height: "112px", borderRadius: "50%", flex: "none", overflow: "hidden", background: "#fef3dc", boxShadow: "var(--tw-card-shadow,0 1px 3px rgba(29,39,51,.06))" }}><img src="/assets/avatar-hasan.webp" alt="م.م. حسن عصام الدليمي" style={{ width: "100%", height: "100%", objectFit: "cover" }} /></span>
+<p style={{ margin: "0", fontSize: "16.5px", lineHeight: "1.8", color: "#1d2733", textWrap: "pretty" }}>تعاملتُ مع شركة قصر المرايا عدة مرات، وقد قاموا باستخراج تأشيرات الدخول لي لعدة دول. بكل صراحة وأمانة، كان تعاملهم راقيًا للغاية وأسعارهم مناسبة جدًا، كما أنهم يوفرون خيارات متعددة للعديد من الوجهات.</p>
+<div style={{ marginTop: "auto", display: "flex", flexDirection: "column", gap: "3px", paddingTop: "12px", borderTop: "1px solid #ececed", width: "100%" }}>
+<span style={{ fontSize: "17px", fontWeight: "700", color: "#1d2733" }}>م.م. حسن عصام الدليمي</span>
+<span style={{ fontSize: "14px", color: "#5f666e" }}>أستاذ جامعي</span>
+</div>
+</div>
+<div className="qa-testi-card" style={{ position: "relative", background: "#fff", border: "1px solid #ececed", borderRadius: "var(--tw-radius,16px)", padding: "30px 30px 26px", display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center", gap: "16px", boxShadow: "var(--tw-card-shadow,0 1px 3px rgba(29,39,51,.06))" }}>
+<span className="qa-testi-avatar" style={{ width: "112px", height: "112px", borderRadius: "50%", flex: "none", overflow: "hidden", background: "#e4f5fb", boxShadow: "var(--tw-card-shadow,0 1px 3px rgba(29,39,51,.06))" }}><img src="/assets/avatar-ali.webp" alt="علي حسين الزبيدي" style={{ width: "100%", height: "100%", objectFit: "cover" }} /></span>
+<p style={{ margin: "0", fontSize: "16.5px", lineHeight: "1.8", color: "#1d2733", textWrap: "pretty" }}>رتّبوا لي رحلة إلى باكو خلال يومين — التأشيرة، الفندق، والجولات. حتى تغيير موعد العودة في اللحظة الأخيرة تولّوه بأنفسهم دون أي عناء عليّ.</p>
+<div style={{ marginTop: "auto", display: "flex", flexDirection: "column", gap: "3px", paddingTop: "12px", borderTop: "1px solid #ececed", width: "100%" }}>
+<span style={{ fontSize: "17px", fontWeight: "700", color: "#1d2733" }}>علي حسين الزبيدي</span>
+<span style={{ fontSize: "14px", color: "#5f666e" }}>رجل أعمال</span>
+</div>
+</div>
+<div className="qa-testi-card" style={{ position: "relative", background: "#fff", border: "1px solid #ececed", borderRadius: "var(--tw-radius,16px)", padding: "30px 30px 26px", display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center", gap: "16px", boxShadow: "var(--tw-card-shadow,0 1px 3px rgba(29,39,51,.06))" }}>
+<span className="qa-testi-avatar" style={{ width: "112px", height: "112px", borderRadius: "50%", flex: "none", overflow: "hidden", background: "#fef3dc", boxShadow: "var(--tw-card-shadow,0 1px 3px rgba(29,39,51,.06))" }}><img src="/assets/avatar-saif.webp" alt="سيف الدين قاسم" style={{ width: "100%", height: "100%", objectFit: "cover" }} /></span>
+<p style={{ margin: "0", fontSize: "16.5px", lineHeight: "1.8", color: "#1d2733", textWrap: "pretty" }}>نتعامل معهم لسفر موظفينا منذ سنتين. الأسعار التعاقدية واضحة، والتعديلات على الحجوزات تُنجَز في نفس اليوم — هذا ما نحتاجه في سفر الأعمال.</p>
+<div style={{ marginTop: "auto", display: "flex", flexDirection: "column", gap: "3px", paddingTop: "12px", borderTop: "1px solid #ececed", width: "100%" }}>
+<span style={{ fontSize: "17px", fontWeight: "700", color: "#1d2733" }}>سيف الدين قاسم</span>
+<span style={{ fontSize: "14px", color: "#5f666e" }}>مدير إداري — شركة مقاولات</span>
+</div>
+</div>
+</div>
+<div className="qa-swipe-hint" aria-hidden="true">اسحب لرؤية المزيد ↔</div>
 </section>
 </div>
 </>) : null}
