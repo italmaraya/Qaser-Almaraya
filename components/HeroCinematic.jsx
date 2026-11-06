@@ -107,7 +107,7 @@ export default function HeroCinematic({ slides: allSlides = [], kicker, title, s
 .qh-ctas{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin-top:6px;animation:qh-up 1s .46s ease both}
 .qh-btn{display:inline-flex;align-items:center;gap:9px;border-radius:999px;padding:clamp(11px,.9vw,15px) clamp(22px,2vw,34px);font-weight:700;font-size:clamp(14px,1vw,17px);cursor:pointer;font-family:inherit;border:0;text-decoration:none;transition:transform .2s,background .2s}
 .qh-btn:hover{transform:translateY(-1px)}
-.qh-btn.pri{background:#faab18;color:#012a37;box-shadow:0 6px 16px rgba(250,171,24,.28)}
+.qh-btn.pri{background:#faab18;color:#fff;box-shadow:0 6px 16px rgba(250,171,24,.28)}
 .qh-btn.sec{background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(255,255,255,.45);backdrop-filter:blur(6px)}
 @keyframes qh-up{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
 .qh-bottom{position:absolute;z-index:5;left:0;right:0;bottom:clamp(18px,3vh,34px);display:flex;align-items:center;justify-content:space-between;gap:16px;padding:0 5%}

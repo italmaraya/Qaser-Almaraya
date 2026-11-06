@@ -292,7 +292,7 @@ export default function VisaLandingPage({ initialCards = null }) {
                   </div>
 
                   <div style={{ position: 'relative', alignSelf: 'center', width: '100%', maxWidth: 160, padding: '11px 12px 13px', background: '#fff', borderRadius: 'var(--tw-radius-sm,10px)', boxShadow: 'var(--tw-card-shadow,0 1px 3px rgba(29,39,51,.06))', animation: 'qa-pop 6.8s ease-in-out infinite' }}>
-                    <span style={{ position: 'absolute', top: -10, insetInlineStart: -10, display: 'grid', placeItems: 'center', width: 24, height: 24, borderRadius: '50%', background: '#faab18', color: '#012a37' }}>
+                    <span style={{ position: 'absolute', top: -10, insetInlineStart: -10, display: 'grid', placeItems: 'center', width: 24, height: 24, borderRadius: '50%', background: '#faab18', color: '#fff' }}>
                       <svg width={12} height={12} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.4} strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="16" rx="2" /><path d="M3 9h18M8 4v3M16 4v3" /></svg>
                     </span>
                     <span style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>

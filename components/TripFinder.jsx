@@ -100,7 +100,7 @@ export default function TripFinder({ lang = 'ar' }) {
 .qa-tf-chips{display:flex;flex-wrap:wrap;gap:8px}
 .qa-tf-chip{font-family:inherit;font-size:14px;font-weight:600;padding:8px 16px;border-radius:999px;border:1px solid rgba(255,255,255,.28);background:rgba(255,255,255,.08);color:#fff;cursor:pointer;transition:background .15s,transform .15s,border-color .15s}
 .qa-tf-chip:hover{background:rgba(255,255,255,.18)}
-.qa-tf-chip.on{background:#faab18;border-color:#faab18;color:#012a37}
+.qa-tf-chip.on{background:#faab18;border-color:#faab18;color:#fff}
 .qa-tf-res{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
 .qa-tf-card{display:flex;gap:12px;align-items:stretch;background:#fff;color:#1d2733;border-radius:var(--tw-radius-sm,10px);overflow:hidden;animation:qa-tf-in .45s cubic-bezier(.16,1,.3,1) both;transition:box-shadow .2s}
 .qa-tf-card:hover{color:#1d2733;box-shadow:var(--tw-lift-shadow,0 8px 22px rgba(1,42,55,.12))}

@@ -408,7 +408,7 @@ export default function PackageDetailPage() {
               <div className="qa-detail-hero" style={{ position: 'relative', minHeight: 200, borderRadius: 'var(--tw-radius,16px)', overflow: 'hidden', background: pkg.image_url ? `url(${pkg.image_url}) center/cover` : 'var(--tw-band-deep,#049dc5)', display: 'flex', alignItems: 'flex-end', padding: 24 }}>
                 {pkg.image_url && <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(1,42,55,.6), transparent 60%)' }} />}
                 {(pkg.badge_ar || pkg.badge_en) && (
-                  <span style={{ position: 'absolute', top: 20, insetInlineStart: 20, padding: '4px 14px', borderRadius: 999, background: '#faab18', color: '#012a37', fontSize: 12.5, fontWeight: 700, zIndex: 2 }}>
+                  <span style={{ position: 'absolute', top: 20, insetInlineStart: 20, padding: '4px 14px', borderRadius: 999, background: '#faab18', color: '#fff', fontSize: 12.5, fontWeight: 700, zIndex: 2 }}>
                     {nm(pkg.badge_ar, pkg.badge_en)}
                   </span>
                 )}

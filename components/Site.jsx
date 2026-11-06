@@ -780,7 +780,7 @@ function   visaVals(country){
       appSteps: [L('اختيار التأشيرة', 'Choose visa'), L('المسافرون والمستندات', 'Travellers & documents'), L('الدفع', 'Payment'), L('المتابعة', 'Follow up')].map((label, i) => {
         const idx = stage === 'form' ? 1 : stage === 'pay' ? 2 : 3; const st = i < idx ? 'done' : i === idx ? 'on' : 'todo';
         return { n: String(i + 1), label, bg: st === 'on' ? '#fff' : 'rgba(255,255,255,.14)', ink: st === 'on' ? '#036f8c' : '#fff', border: st === 'on' ? '#fff' : 'rgba(255,255,255,.3)',
-          dotBg: st === 'done' ? '#faab18' : st === 'on' ? '#049dc5' : 'rgba(255,255,255,.25)', dotInk: st === 'done' ? '#012a37' : '#fff' };
+          dotBg: st === 'done' ? '#faab18' : st === 'on' ? '#049dc5' : 'rgba(255,255,255,.25)', dotInk: '#fff' };
       }),
       appForm: stage === 'form', appPay: stage === 'pay', appDone: stage === 'done',
       appPhone: app.phone, appEmail: app.email,
@@ -1326,7 +1326,7 @@ function   visaVals(country){
 </div>
 {visa.isAppointment ? (<>
 <div style={{ display: "flex", alignItems: "flex-start", gap: "14px", background: "#fef3dc", border: "1px solid #fdd27c", borderRadius: "var(--tw-radius,18px)", padding: "20px 22px" }}>
-<span style={{ flex: "none", display: "grid", placeItems: "center", width: "44px", height: "44px", borderRadius: "50%", background: "#faab18", color: "#012a37" }}><Icon name="calendar-check" size={20} /></span>
+<span style={{ flex: "none", display: "grid", placeItems: "center", width: "44px", height: "44px", borderRadius: "50%", background: "#faab18", color: "#fff" }}><Icon name="calendar-check" size={20} /></span>
 <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
 <span style={{ fontSize: "17px", fontWeight: "700", color: "#7a5200" }}>هذه خدمة موعد سفارة — وليست إصدار تأشيرة</span>
 <p style={{ margin: "0", fontSize: "14.5px", lineHeight: "1.75", color: "#7a5200", textWrap: "pretty" }}>نحن لا نصدر تأشيرة أمريكا. نجهّز ملفك بالكامل — استمارة DS-160، الحجوزات، الترجمة — ونحجز لك موعد المقابلة في السفارة. عليك حضور الموعد شخصياً مع جوازك والمستندات الأصلية، والقرار النهائي يعود للسفارة وحدها.</p>
@@ -1420,7 +1420,7 @@ function   visaVals(country){
 <span style={{ fontSize: "14px", lineHeight: "1.7", color: "rgba(255,255,255,.94)" }}>متابعة حالة الطلب حتى الإصدار</span>
 </span>
 <span style={{ position: "relative", display: "flex", alignItems: "flex-start", gap: "10px" }}>
-<span data-no-i18n="" style={{ flex: "none", display: "grid", placeItems: "center", width: "24px", height: "24px", borderRadius: "50%", background: "#faab18", color: "#012a37", fontSize: "11px", fontWeight: "700" }}>03</span>
+<span data-no-i18n="" style={{ flex: "none", display: "grid", placeItems: "center", width: "24px", height: "24px", borderRadius: "50%", background: "#faab18", color: "#fff", fontSize: "11px", fontWeight: "700" }}>03</span>
 <span style={{ fontSize: "14px", lineHeight: "1.7", color: "rgba(255,255,255,.94)" }}>دعم على مدار الساعة عبر 6393</span>
 </span>
 </div>
@@ -1459,7 +1459,7 @@ function   visaVals(country){
 </div>
 {country.isAppointment ? (<>
 <div style={{ display: "flex", alignItems: "center", gap: "12px", background: "#fef3dc", border: "1px solid #fdd27c", borderRadius: "var(--tw-radius,18px)", padding: "14px 18px", color: "#7a5200", fontSize: "14.5px", lineHeight: "1.6" }}>
-<span style={{ flex: "none", display: "grid", placeItems: "center", width: "36px", height: "36px", borderRadius: "50%", background: "#faab18", color: "#012a37" }}><Icon name="calendar-check" size={16} /></span>
+<span style={{ flex: "none", display: "grid", placeItems: "center", width: "36px", height: "36px", borderRadius: "50%", background: "#faab18", color: "#fff" }}><Icon name="calendar-check" size={16} /></span>
 <span>لأمريكا لا نصدر تأشيرة — نجهّز ملفك ونحجز لك موعد المقابلة في السفارة، وعليك حضوره شخصياً.</span>
 </div>
 </>) : null}
@@ -1834,7 +1834,7 @@ function   visaVals(country){
 {appForm ? (<>
 {visa.isAppointment ? (<>
 <div style={{ display: "flex", alignItems: "flex-start", gap: "14px", background: "#fef3dc", border: "1px solid #fdd27c", borderRadius: "var(--tw-radius,18px)", padding: "18px 22px" }}>
-<span style={{ flex: "none", display: "grid", placeItems: "center", width: "40px", height: "40px", borderRadius: "50%", background: "#faab18", color: "#012a37" }}><Icon name="calendar-check" size={18} /></span>
+<span style={{ flex: "none", display: "grid", placeItems: "center", width: "40px", height: "40px", borderRadius: "50%", background: "#faab18", color: "#fff" }}><Icon name="calendar-check" size={18} /></span>
 <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
 <span style={{ fontSize: "16px", fontWeight: "700", color: "#7a5200" }}>هذه خدمة موعد سفارة — وليست إصدار تأشيرة</span>
 <span style={{ fontSize: "14px", lineHeight: "1.7", color: "#7a5200" }}>نجهّز ملفك ونحجز لك موعد المقابلة. حضورك الشخصي في السفارة إلزامي، والقرار النهائي يعود للسفارة وحدها.</span>
@@ -2069,7 +2069,7 @@ function   visaVals(country){
 <span style={{ height: "7px", width: "66%", borderRadius: "4px", background: "#eef1f2" }}></span>
 </span>
 </span>
-<span style={{ alignSelf: "flex-start", whiteSpace: "nowrap", padding: "4px 11px", borderRadius: "999px", background: "#faab18", color: "#012a37", fontSize: "11.5px", fontWeight: "700" }}>اسمك هنا</span>
+<span style={{ alignSelf: "flex-start", whiteSpace: "nowrap", padding: "4px 11px", borderRadius: "999px", background: "#faab18", color: "#fff", fontSize: "11.5px", fontWeight: "700" }}>اسمك هنا</span>
 </span>
 </div>
 
@@ -2180,7 +2180,7 @@ function   visaVals(country){
 </div>
 
 <div style={{ position: "relative", alignSelf: "center", display: "flex", alignItems: "center", gap: "11px", padding: "13px 16px", background: "#fff", borderRadius: "var(--tw-radius-sm,10px)", boxShadow: "var(--tw-card-shadow,0 1px 3px rgba(29,39,51,.06))", animation: "qa-pop 7.2s ease-in-out .5s infinite" }}>
-<span style={{ flex: "none", display: "grid", placeItems: "center", width: "34px", height: "34px", borderRadius: "50%", background: "#faab18", color: "#012a37" }}>
+<span style={{ flex: "none", display: "grid", placeItems: "center", width: "34px", height: "34px", borderRadius: "50%", background: "#faab18", color: "#fff" }}>
 <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M13.832 16.568a1 1 0 0 0 1.213-.303l.355-.465A2 2 0 0 1 17 15h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2A18 18 0 0 1 2 4a2 2 0 0 1 2-2h3a2 2 0 0 1 2 2v3a2 2 0 0 1-.8 1.6l-.468.351a1 1 0 0 0-.292 1.233 14 14 0 0 0 6.392 6.384"></path></svg>
 </span>
 <span style={{ display: "flex", flexDirection: "column", gap: "1px" }}>
@@ -2193,7 +2193,7 @@ function   visaVals(country){
 </div>
 </section>
 <section className="qa-sec" style={{ display: "flex", flexDirection: "column", gap: "26px" }}>
-<div className="qa-2col" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px", alignItems: "start" }}>
+<div style={{ display: "flex", flexDirection: "column", gap: "12px", width: "100%", maxWidth: "860px", marginInline: "auto" }}>
 {(contentFaq || []).map((item, i) => (
 <details key={item.id || item.q} style={{ background: "#fff", border: "1px solid #ececed", borderRadius: "var(--tw-radius,16px)", padding: "22px 26px", boxShadow: "var(--tw-card-shadow,0 1px 3px rgba(29,39,51,.06))" }} open={i === 0}>
 <summary style={{ cursor: "pointer", fontSize: "19px", fontWeight: "700", color: "#1d2733", lineHeight: "1.5", listStyle: "none" }}>{item.q}</summary>
