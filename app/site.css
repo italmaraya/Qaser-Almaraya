@@ -175,3 +175,10 @@ html{overflow-x:hidden}
    gained a few pixels of sideways scroll. Clipping the root removes that
    without the side effects `hidden` has on sticky elements. */
 html{overflow-x:clip}
+
+/* Less air between sections. 72px above and below each section stacked up to a
+   gap taller than a phone screen on long pages; 44px still separates them. */
+:root{--tw-section-y:44px}
+/* A document column was capped at 720px inside a 1240px page, which left a
+   wide empty band on both sides on a desktop screen. */
+:root{--q-read:860px}
