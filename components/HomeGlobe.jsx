@@ -7,13 +7,13 @@ import { COUNTRY_GEO } from '../lib/geoData';
 import { packageCountries } from '../lib/destinations';
 import { findCountryIso } from '../lib/visaPdf';
 
-const Globe3D = dynamic(() => import('./Globe3D'), { ssr: false, loading: () => <div style={{ height: 420 }} /> });
+const WorldMap3D = dynamic(() => import('./WorldMap3D'), { ssr: false, loading: () => <div style={{ height: 300 }} /> });
 
 const BAGHDAD = { lat: 33.31, lng: 44.36 };
 
-// Homepage globe: glowing flight lines from Baghdad to every country we serve
-// (visa countries + package destinations). Tapping a point opens a small card
-// with links to that country's visas and packages.
+// Homepage map: flight lines from Baghdad to every country we serve, drawn on a
+// flat world map in perspective, with a landmark standing on each country.
+// Tapping a landmark opens a small card with links to its visas and packages.
 // mode 'visa': visa countries only (used on the visas page); 'all': visas + packages.
 export default function HomeGlobe({ lang = 'ar', mode = 'all' }) {
   const visaOnly = mode === 'visa';
@@ -66,8 +66,8 @@ export default function HomeGlobe({ lang = 'ar', mode = 'all' }) {
         </h2>
         <p style={{ margin: 0, color: '#3d4650', lineHeight: 1.8 }}>
           {visaOnly
-            ? (en ? 'Spin the globe and tap any glowing country to see its visa types.' : 'أدر الكرة الأرضية واضغط على أي دولة مضيئة لتشاهد أنواع تأشيراتها.')
-            : (en ? 'Spin the globe and tap any glowing point to see its visas and trips.' : 'أدر الكرة الأرضية واضغط على أي نقطة مضيئة لتشاهد تأشيراتها ورحلاتها.')}
+            ? (en ? 'Tap any landmark on the map to see that country\u2019s visa types.' : 'اضغط على أي معلم في الخريطة لتشاهد أنواع تأشيرات تلك الدولة.')
+            : (en ? 'Tap any landmark on the map to see that country\u2019s visas and trips.' : 'اضغط على أي معلم في الخريطة لتشاهد تأشيرات تلك الدولة ورحلاتها.')}
         </p>
         {picked ? (
           <div className="qa-card" style={{ display: 'flex', flexDirection: 'column', gap: 10, border: '1px solid #d9e9ef' }}>
@@ -99,7 +99,7 @@ export default function HomeGlobe({ lang = 'ar', mode = 'all' }) {
         )}
       </div>
       <div style={{ position: 'relative', borderRadius: 'var(--tw-radius,16px)', background: '#062433', overflow: 'hidden' }}>
-        <Globe3D pins={pins} origin={BAGHDAD} startLng={BAGHDAD.lng - 12} startLat={28} cameraZ={7.4} onSelectPin={setPicked} height={420} />
+        <WorldMap3D pins={pins} origin={BAGHDAD} onSelectPin={setPicked} lang={lang} height={360} />
         <span style={{ position: 'absolute', bottom: 12, insetInlineStart: 16, fontSize: 12, color: 'rgba(255,255,255,.75)', display: 'flex', alignItems: 'center', gap: 6 }}>
           <span style={{ width: 9, height: 9, borderRadius: '50%', background: '#ff5a5f', display: 'inline-block' }} /> {en ? 'Baghdad' : 'بغداد'}
           <span style={{ width: 9, height: 9, borderRadius: '50%', background: '#faab18', display: 'inline-block', marginInlineStart: 10 }} /> {en ? 'Our destinations' : 'وجهاتنا'}

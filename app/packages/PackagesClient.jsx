@@ -10,13 +10,9 @@ import SiteFooter from '../../components/SiteFooter';
 import MascotLoader from '../../components/MascotLoader';
 import PackageCard from '../../components/PackageCard';
 
-const Globe3D = dynamic(() => import('../../components/Globe3D'), {
+const WorldMap3D = dynamic(() => import('../../components/WorldMap3D'), {
   ssr: false,
-  loading: () => (
-    <div style={{ height: 340, display: 'grid', placeItems: 'center', color: 'rgba(255,255,255,.6)', fontSize: 13 }}>
-      جارٍ تحميل الكرة الأرضية...
-    </div>
-  ),
+  loading: () => <div style={{ height: 300 }} />,
 });
 import Icon from '../../components/Icon';
 import { useLangToggle } from '../../lib/i18n';
@@ -639,7 +635,7 @@ export default function PackagesPage({ initialPackages = null }) {
             ))}
           </section>
 
-          {/* Discover all destinations — interactive 3D globe */}
+          {/* Discover all destinations — 3D flight map from Baghdad */}
           <section className="qa-sec" style={{ maxWidth: 1240, margin: '0 auto', padding: '8px 24px 8px' }}>
             <div style={{ background: '#0d4a5c', borderRadius: 28, overflow: 'hidden', display: 'grid', gridTemplateColumns: 'minmax(260px,1fr) minmax(280px,1.1fr)', alignItems: 'center', gap: 8 }}>
               <div style={{ padding: 'clamp(28px,4vw,44px)', display: 'flex', flexDirection: 'column', gap: 14, color: '#fff' }}>
@@ -651,8 +647,8 @@ export default function PackagesPage({ initialPackages = null }) {
                 </h2>
                 <p style={{ margin: 0, fontSize: 14, lineHeight: 1.8, color: 'rgba(255,255,255,.78)', maxWidth: 420 }}>
                   {lang === 'en'
-                    ? 'Spin the globe and tap a pin to jump straight to that destination — every country we travel to, in one view.'
-                    : 'أدر الكرة الأرضية واضغط على أي نقطة للانتقال مباشرة إلى تلك الوجهة — كل الدول التي نسافر إليها في مكان واحد.'}
+                    ? 'Tap a landmark on the map to jump straight to that destination — every country we travel to, in one view.'
+                    : 'اضغط على أي معلم في الخريطة للانتقال مباشرة إلى تلك الوجهة — كل الدول التي نسافر إليها في مكان واحد.'}
                 </p>
                 {upcoming.length > 0 && (
                   <div data-no-i18n="" style={{ display: 'flex', flexDirection: 'column', gap: 6, marginTop: 4 }}>
@@ -675,12 +671,11 @@ export default function PackagesPage({ initialPackages = null }) {
                 </button>
               </div>
               <div style={{ position: 'relative' }}>
-                <Globe3D
+                <WorldMap3D
                   pins={globePins}
                   origin={{ lat: 33.31, lng: 44.36 }}
-                  startLng={32}
-                  startLat={26}
                   onSelectPin={(p) => (p.iso ? pickCountry(p.iso) : setQuery(p.name))}
+                  lang={lang}
                   height={340}
                 />
               </div>
