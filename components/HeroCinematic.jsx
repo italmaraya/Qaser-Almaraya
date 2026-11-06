@@ -30,6 +30,10 @@ export default function HeroCinematic({ slides: allSlides = [], kicker, title, s
   // Videos get their source only once the client has mounted, so the poster
   // photo paints first and the download never blocks the first screen.
   const [ready, setReady] = useState(false);
+  // Intrinsic width/height of each video slide, read from its own metadata.
+  // On phones the media box takes the active video's ratio instead of the
+  // 4:5 photo crop, so a cartoon frame is never cut in half.
+  const [vidRatios, setVidRatios] = useState({});
   const videoRefs = useRef([]);
 
   useEffect(() => {
@@ -71,6 +75,11 @@ export default function HeroCinematic({ slides: allSlides = [], kicker, title, s
 
   const current = slides[active] || {};
   const dir = lang === 'en' ? 'ltr' : 'rtl';
+  // Phones: a video keeps its own shape (within sane bounds); a photograph
+  // keeps the deliberate 4:5 portrait crop.
+  const showingVideo = current.type === 'video' && !reduced && !(lite && current.poster);
+  const r = showingVideo ? vidRatios[active] : null;
+  const mobileRatio = r ? `${Math.min(Math.max(r, 0.62), 1.78)}` : '0.8';
 
   return (
     <section className={'qh' + (paused ? ' paused' : '')} dir={dir} data-no-i18n="">
@@ -109,8 +118,10 @@ export default function HeroCinematic({ slides: allSlides = [], kicker, title, s
    then the copy on white underneath. */
 @media (max-width:820px){
   .qh{height:auto;min-height:0;max-height:none;background:#fff;color:var(--q-ink,#1d2733);overflow:visible}
-  .qh-media{position:relative;inset:auto;width:100%;aspect-ratio:4/5}
-  .qh-slide img,.qh-slide video{object-position:50% 30%}
+  .qh-media{position:relative;inset:auto;width:100%;aspect-ratio:var(--qh-mr,4/5);transition:aspect-ratio .3s ease}
+  .qh-slide img{object-position:50% 30%}
+  /* A video is shown whole on phones — never cropped to the photo frame. */
+  .qh-slide video{object-fit:contain;object-position:50% 50%;background:#04161f}
   .qh-scrim,.qh[dir="ltr"] .qh-scrim{background:none}
   .qh-copy{position:static;transform:none;inset:auto;max-width:none;top:auto;padding:var(--q-s3,24px) var(--q-s2,16px) var(--q-s4,40px);gap:var(--q-s2,16px);background:#fff}
   .qh-eyebrow{color:var(--q-cyan-dark,#036f8c)}
@@ -129,7 +140,7 @@ export default function HeroCinematic({ slides: allSlides = [], kicker, title, s
   .qh-bar.on i{animation:none;width:100%}
 }
 `}</style>
-      <div className="qh-media">
+      <div className="qh-media" style={{ '--qh-mr': mobileRatio }}>
         {slides.map((s, i) => (
           <div key={i} className={'qh-slide' + (i === active ? ' on' : '')} aria-hidden={i !== active}>
             {s.type === 'video' && !reduced && !(lite && s.poster) ? (
@@ -140,6 +151,10 @@ export default function HeroCinematic({ slides: allSlides = [], kicker, title, s
                 muted
                 loop
                 playsInline
+                onLoadedMetadata={(e) => {
+                  const { videoWidth: w, videoHeight: h } = e.currentTarget;
+                  if (w && h) setVidRatios((m) => (m[i] ? m : { ...m, [i]: w / h }));
+                }}
                 preload={ready ? (i === 0 ? 'auto' : 'metadata') : 'none'}
                 autoPlay={ready && i === 0}
               />
