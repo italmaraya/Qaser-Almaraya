@@ -4,21 +4,15 @@ import { createPortal } from 'react-dom';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { siteUrgency } from '../../lib/packageUrgency';
-import dynamic from 'next/dynamic';
 import SiteHeader from '../../components/SiteHeader';
 import SiteFooter from '../../components/SiteFooter';
 import MascotLoader from '../../components/MascotLoader';
 import PackageCard from '../../components/PackageCard';
 
-const WorldMap3D = dynamic(() => import('../../components/WorldMap3D'), {
-  ssr: false,
-  loading: () => <div style={{ height: 300 }} />,
-});
 import Icon from '../../components/Icon';
 import { useLangToggle } from '../../lib/i18n';
 import { CATS, PREFS, T } from '../../lib/packagesData';
 import { formatPrice } from '../../lib/currency';
-import { COUNTRY_GEO } from '../../lib/geoData';
 import { REGIONS, countryInfo, flagUrl, groupPackagesByCountry, packageCountries, packageCountry, nightsLabel, destinationLabel, isoFromName } from '../../lib/destinations';
 
 import { BUDGETS } from '../../lib/budgets';
@@ -145,14 +139,7 @@ export default function PackagesPage({ initialPackages = null }) {
 
   const heroImage = '/assets/packages-hero-cliffs.jpg';
 
-  const globePins = useMemo(() => destCountries
-    .map((c) => {
-      const g = COUNTRY_GEO[c.iso];
-      return g ? { lat: g[0], lng: g[1], name: nm(c.ar, c.en), iso: c.iso } : null;
-    })
-    .filter(Boolean), [destCountries, lang]);
-
-  // Next departures across all packages (one per package), for the globe panel.
+  // Next departures across all packages (one per package).
   const upcoming = useMemo(() => {
     const today = new Date().toISOString().slice(0, 10);
     return (packages || [])
@@ -635,24 +622,24 @@ export default function PackagesPage({ initialPackages = null }) {
             ))}
           </section>
 
-          {/* Discover all destinations — 3D flight map from Baghdad */}
+          {/* Discover all destinations */}
           <section className="qa-sec" style={{ maxWidth: 1240, margin: '0 auto', padding: '8px 24px 8px' }}>
-            <div style={{ background: '#0d4a5c', borderRadius: 28, overflow: 'hidden', display: 'grid', gridTemplateColumns: 'minmax(260px,1fr) minmax(280px,1.1fr)', alignItems: 'center', gap: 8 }}>
-              <div style={{ padding: 'clamp(28px,4vw,44px)', display: 'flex', flexDirection: 'column', gap: 14, color: '#fff' }}>
+            <div style={{ background: '#0d4a5c', borderRadius: 'var(--tw-radius,16px)', overflow: 'hidden' }}>
+              <div style={{ padding: 'clamp(26px,4vw,40px)', display: 'flex', flexDirection: 'column', gap: 14, color: '#fff' }}>
                 <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: '.08em', color: 'rgba(255,255,255,.7)' }}>
                   {lang === 'en' ? 'EXPLORE THE WORLD' : 'استكشف العالم'}
                 </span>
                 <h2 style={{ margin: 0, fontSize: 'clamp(22px,3vw,30px)', color: '#fff' }}>
                   {lang === 'en' ? 'Discover all destinations' : 'اكتشف كل الوجهات'}
                 </h2>
-                <p style={{ margin: 0, fontSize: 14, lineHeight: 1.8, color: 'rgba(255,255,255,.78)', maxWidth: 420 }}>
+                <p style={{ margin: 0, fontSize: 14, lineHeight: 1.8, color: 'rgba(255,255,255,.78)', maxWidth: 620 }}>
                   {lang === 'en'
-                    ? 'Tap a landmark on the map to jump straight to that destination — every country we travel to, in one view.'
-                    : 'اضغط على أي معلم في الخريطة للانتقال مباشرة إلى تلك الوجهة — كل الدول التي نسافر إليها في مكان واحد.'}
+                    ? 'Every country we travel to, in one place: pick a destination below and its packages appear.'
+                    : 'كل الدول التي نسافر إليها في مكان واحد: اختر وجهتك من الأسفل وتظهر باقاتها.'}
                 </p>
                 {upcoming.length > 0 && (
-                  <div data-no-i18n="" style={{ display: 'flex', flexDirection: 'column', gap: 6, marginTop: 4 }}>
-                    <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 13, fontWeight: 700, color: '#faab18' }}><Icon name="plane-takeoff" size={14} />{lang === 'en' ? 'Our next departures from Baghdad' : 'رحلاتنا القادمة من بغداد'}</span>
+                  <div data-no-i18n="" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(240px,1fr))', gap: 8, marginTop: 4 }}>
+                    <span style={{ gridColumn: '1 / -1', display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 13, fontWeight: 700, color: '#faab18' }}><Icon name="plane-takeoff" size={14} />{lang === 'en' ? 'Our next departures from Baghdad' : 'رحلاتنا القادمة من بغداد'}</span>
                     {upcoming.map(({ p, date }) => (
                       <Link key={p.id} href={'/packages/' + p.id} className="qa-upc-row">
                         <span className="qa-upc-date">{fmtDay(date)}</span>
@@ -669,15 +656,6 @@ export default function PackagesPage({ initialPackages = null }) {
                 >
                   {lang === 'en' ? 'Discover all' : 'استكشاف الكل'}
                 </button>
-              </div>
-              <div style={{ position: 'relative' }}>
-                <WorldMap3D
-                  pins={globePins}
-                  origin={{ lat: 33.31, lng: 44.36 }}
-                  onSelectPin={(p) => (p.iso ? pickCountry(p.iso) : setQuery(p.name))}
-                  lang={lang}
-                  height={340}
-                />
               </div>
             </div>
           </section>
