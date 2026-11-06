@@ -106,6 +106,14 @@ const FLOW=[
  {role:'system',title:'يراقب الوقت',hint:'أي تأخير يصل لفريقنا فوراً'},
  {role:'team',title:'نرفع التأشيرة',hint:'أو تأكيد موعد السفارة'},
  {role:'customer',title:'تحمّلها',hint:'تصبح الحالة: جاهزة للتحميل'}];
+/* BRD §8 — the same eight steps read as four stages. Grouping only:
+   the order, the payment sequence, the roles and the conditions are untouched. */
+const STAGES=[
+ {title:'تختار التأشيرة',titleIsStage:true,steps:[{i:0}]},
+ {title:'ترفع المستندات وتدفع',steps:[{i:1},{i:2}],
+  note:'الدفع يسبق الإرسال: لا يُرسَل الملف إلى الجهة المصدرة قبل إتمام الدفع واكتمال المستندات.'},
+ {title:'نتابع الطلب',steps:[{i:3},{i:4},{i:5}]},
+ {title:'تستلم النتيجة',steps:[{i:6,outcomes:[{lead:'إمّا',text:'تأشيرة صادرة'},{lead:'أو',text:'تأكيد موعد سفارة'}]},{i:7}]}];
 
 const PACKAGES=[
  {title:'إستانبول للعائلة',destination:'إستانبول',nights:'6 ليالٍ',groupType:'عائلي',departs:'كل خميس',price:'740 $',badge:'الأكثر طلباً',includes:['طيران ذهاب وعودة','إقامة 4 نجوم مع إفطار','جولة البوسفور','مرشد يتحدث العربية']},
@@ -764,7 +772,13 @@ function   visaVals(country){
         if (APPLY_FLOW_ENABLED) { patch({ visaId: visa.id, app: loadApp(visa), appStage: 'form', appError: '', ask: false }); go('visa-apply'); return; }
         openWhatsApp(visaMessage({ type: visa.typeName, country: country.name, stay: visa.stay, issuing: visa.issuing, validity: visa.validity, travellers: st.travellers + ' بالغ' + (st.children ? '، ' + st.children + ' طفل' : ''), url: window.location.href }));
       },
-      flowSteps: FLOW.map((s, i) => ({ n: String(i + 1).padStart(2, '0'), title: s.title, hint: s.hint, role: ROLE[s.role][0], roleBg: ROLE[s.role][1], roleInk: ROLE[s.role][2], bg: ROLE[s.role][3], border: ROLE[s.role][4] })),
+      flowSteps: STAGES.map((g, i) => ({
+        n: String(i + 1), title: g.title, note: g.note || '',
+        items: g.steps.map(k => ({
+          title: g.titleIsStage ? '' : FLOW[k.i].title, hint: FLOW[k.i].hint,
+          role: ROLE[FLOW[k.i].role][0], roleBg: ROLE[FLOW[k.i].role][1], roleInk: ROLE[FLOW[k.i].role][2],
+          outcomes: k.outcomes || [] }))
+      })),
       stepsOn: page === 'visas' && props.visaSteps !== false,
       visaExportOn: page === 'visas' && props.exportActions !== false,
       copyVisa: e => { if(e) e.preventDefault(); copy(visaText(visa, country), L('تم نسخ تفاصيل التأشيرة', 'Visa details copied')); },
@@ -1576,24 +1590,39 @@ function   visaVals(country){
 </>) : null}
 
 {stepsOn ? (<>
-<div style={{ display: "flex", flexDirection: "column", gap: "24px", background: "#eaf8fd", borderRadius: "28px", padding: "36px 34px", marginTop: "8px" }}>
-<div style={{ display: "flex", flexDirection: "column", gap: "4px", textAlign: "center" }}>
-<span style={{ fontSize: "13.5px", fontWeight: "600", color: "#faab18" }}>من الاختيار إلى التحميل</span>
-<h3 style={{ margin: "0", fontSize: "26px", fontWeight: "700", color: "#049dc5" }}>كيف تُباع التأشيرة وتُنجز؟</h3>
+<div style={{ display: "flex", flexDirection: "column", gap: "var(--q-s3)", background: "#fff", border: "1px solid #e6e9eb", borderRadius: "12px", padding: "var(--q-s4)", marginTop: "8px" }}>
+<div style={{ display: "flex", flexDirection: "column", gap: "6px", textAlign: "start" }}>
+<span style={{ fontSize: "13px", fontWeight: "700", letterSpacing: ".08em", color: "#049dc5" }}>من الاختيار إلى التحميل</span>
+<h2 style={{ margin: "0", fontSize: "30px", fontWeight: "700", color: "#1d2733", lineHeight: "1.25" }}>كيف تُباع التأشيرة وتُنجز؟</h2>
 </div>
-<div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(220px,1fr))", gap: "16px" }}>
-{(flowSteps || []).map((st, $index) => (<React.Fragment key={$index}>
-<div style={{ position: "relative", display: "flex", flexDirection: "column", gap: "10px", background: st.bg, border: `1px solid ${st.border}`, borderRadius: "var(--tw-radius,18px)", padding: "20px", boxShadow: "var(--tw-card-shadow,0 2px 8px rgba(29,39,51,.07))" }}>
-<div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "8px" }}>
-<span style={{ padding: "4px 11px", borderRadius: "999px", background: st.roleBg, color: st.roleInk, fontSize: "11.5px", fontWeight: "700", letterSpacing: ".02em" }}>{st.role}</span>
-<span data-no-i18n="" style={{ fontFamily: "'IBM Plex Sans',system-ui,sans-serif", fontSize: "20px", fontWeight: "700", color: "#a6abb0" }}>{st.n}</span>
+<div style={{ display: "flex", flexDirection: "column", gap: "var(--q-s3)" }}>
+{(flowSteps || []).map((sg, $index) => (<React.Fragment key={$index}>
+<div style={{ display: "flex", alignItems: "flex-start", gap: "16px" }}>
+<div style={{ position: "relative", alignSelf: "stretch", flex: "none", width: "clamp(28px,3.4vw,36px)" }}>
+<span data-no-i18n="" style={{ position: "relative", zIndex: "1", display: "flex", alignItems: "center", justifyContent: "center", width: "clamp(28px,3.4vw,36px)", height: "clamp(28px,3.4vw,36px)", borderRadius: "999px", background: "#049dc5", color: "#fff", fontFamily: "'IBM Plex Sans',system-ui,sans-serif", fontSize: "clamp(13px,1.1vw,15px)", fontWeight: "700", lineHeight: "1" }}>{sg.n}</span>
+{$index < (flowSteps || []).length - 1 ? (<span aria-hidden="true" style={{ position: "absolute", insetInlineStart: "calc(50% - 1px)", top: "clamp(28px,3.4vw,36px)", bottom: "calc(-1 * var(--q-s3))", width: "2px", background: "#e6e9eb" }} />) : null}
 </div>
-<h4 style={{ margin: "0", fontSize: "17.5px", fontWeight: "700", color: "#1d2733" }}>{st.title}</h4>
-<p style={{ margin: "0", fontSize: "14px", lineHeight: "1.65", color: "#5f666e", textWrap: "pretty" }}>{st.hint}</p>
+<div style={{ display: "flex", flexDirection: "column", gap: "9px", flex: "1 1 auto", minWidth: "0", paddingTop: "3px" }}>
+<h3 style={{ margin: "0", fontSize: "var(--q-t3)", fontWeight: "700", color: "#1d2733", lineHeight: "1.3" }}>{sg.title}</h3>
+{(sg.items || []).map((it, $i) => (<React.Fragment key={$i}>
+<div style={{ display: "flex", flexWrap: "wrap", alignItems: "baseline", gap: "7px", minWidth: "0" }}>
+<span style={{ flex: "none", padding: "2px 9px", borderRadius: "999px", background: it.roleBg, color: it.roleInk, fontSize: "11.5px", fontWeight: "700" }}>{it.role}</span>
+{it.title ? (<span style={{ fontSize: "15px", fontWeight: "600", color: "#3d4650" }}>{it.title}</span>) : null}
+<span style={{ fontSize: "13.5px", lineHeight: "1.6", color: "#5f666e" }}>{it.hint}</span>
+</div>
+{(it.outcomes || []).map((o, $o) => (<React.Fragment key={$o}>
+<div style={{ display: "flex", flexWrap: "wrap", alignItems: "baseline", gap: "7px", paddingInlineStart: "10px", minWidth: "0" }}>
+<span style={{ flex: "none", fontSize: "13px", fontWeight: "700", color: "#9aa0a6" }}>{o.lead}</span>
+<span style={{ fontSize: "15px", fontWeight: "600", color: "#3d4650" }}>{o.text}</span>
+</div>
+</React.Fragment>))}
+</React.Fragment>))}
+{sg.note ? (<p style={{ margin: "0", fontSize: "13.5px", fontWeight: "600", lineHeight: "1.6", color: "#3d4650" }}>{sg.note}</p>) : null}
+</div>
 </div>
 </React.Fragment>))}
 </div>
-<div style={{ textAlign: "center", padding: "12px 18px", borderRadius: "var(--tw-radius-sm,10px)", background: "#fef3dc", border: "1px solid #fdd27c", color: "#7a5200", fontSize: "14px", fontWeight: "600" }}>الخطوات لا تتغير — ما يتغير هو المحتوى: الدول والمستندات والأسعار والحالات.</div>
+<p style={{ margin: "0", fontSize: "13.5px", lineHeight: "1.6", color: "#5f666e" }}>الخطوات لا تتغير — ما يتغير هو المحتوى: الدول والمستندات والأسعار والحالات.</p>
 </div>
 </>) : null}
 </section>
