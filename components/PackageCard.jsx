@@ -142,7 +142,7 @@ export default function PackageCard({ title, destination, image, nights, groupTy
         <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(1,20,28,.9) 0%, rgba(1,20,28,.35) 42%, transparent 68%)' }} />
 
         {urgency && urgency.label && (
-          <span className="qa-pkg-badge" style={{ position: 'absolute', top: 14, insetInlineStart: 14, display: 'inline-flex', alignItems: 'center', gap: 5, background: urgency.soldOut ? '#1d2733' : urgency.hot ? '#e0364f' : '#faab18', color: urgency.soldOut || urgency.hot ? '#fff' : '#012a37', borderRadius: 999, fontWeight: 700, zIndex: 2 }}>
+          <span className={'qa-pkg-badge' + (urgency.hot && !urgency.soldOut ? ' qa-urg-badge' : '')} style={{ position: 'absolute', top: 14, insetInlineStart: 14, display: 'inline-flex', alignItems: 'center', gap: 5, background: urgency.soldOut ? '#1d2733' : urgency.hot ? '#e0364f' : '#faab18', color: urgency.soldOut || urgency.hot ? '#fff' : '#012a37', borderRadius: 999, fontWeight: 700, boxShadow: 'var(--tw-card-shadow,0 1px 3px rgba(29,39,51,.06))', zIndex: 2 }}>
             <Icon name={urgency.soldOut ? 'ban' : 'clock'} size={12} />{urgency.label}
           </span>
         )}
@@ -274,7 +274,7 @@ export default function PackageCard({ title, destination, image, nights, groupTy
       <style jsx>{`
         .qa-pkg-card { transition: transform .22s ease, box-shadow .22s ease; }
         .qa-hover-lift:hover { transform: translateY(-2px); box-shadow:var(--tw-lift-shadow, 0 8px 22px rgba(1,42,55,.12)); }
-        .qa-pkg-hero { aspect-ratio: 3 / 4; }
+        .qa-pkg-hero { aspect-ratio: 16 / 10; }
         .qa-pkg-badge { padding: 5px 11px; font-size: 12.5px; }
         .qa-pkg-arrow-btn { width: 34px; height: 34px; }
         .qa-pkg-title { font-size: 17px; }
@@ -290,7 +290,7 @@ export default function PackageCard({ title, destination, image, nights, groupTy
         .qa-pkg-toggle { padding: 12px 2px 0; }
 
         @media (max-width: 640px) {
-          .qa-pkg-hero { aspect-ratio: 4 / 3; }
+          .qa-pkg-hero { aspect-ratio: 16 / 10; }
           .qa-pkg-badge { padding: 4px 9px; font-size: 11px; }
           .qa-pkg-arrow-btn { width: 28px; height: 28px; }
           .qa-pkg-title { font-size: 14.5px; }

@@ -31,7 +31,7 @@ export default function HomeOffers({ lang = 'ar' }) {
 .qa-offer{display:flex;flex-direction:column;background:#fff;border:1px solid #ececed;border-radius:var(--tw-radius,16px);overflow:hidden;box-shadow:var(--tw-card-shadow,0 1px 3px rgba(29,39,51,.06));color:inherit;transition:transform .2s ease,box-shadow .2s ease}
 .qa-offer:hover{transform:translateY(-2px);box-shadow:var(--tw-card-shadow,0 1px 3px rgba(29,39,51,.06));color:inherit}
 .qa-offer-img{position:relative;aspect-ratio:16/10;background:#e4f5fb;overflow:hidden}
-.qa-offer-urg{position:absolute;top:10px;inset-inline-start:10px;display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:999px;color:#fff;font-size:12px;font-weight:700}
+.qa-offer-urg{position:absolute;top:10px;inset-inline-start:10px;display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:999px;color:#fff;font-size:12px;font-weight:700;box-shadow:var(--tw-card-shadow,0 1px 3px rgba(29,39,51,.06))}
 .qa-offer-img img{width:100%;height:100%;object-fit:cover}
 .qa-offer-skel{background:linear-gradient(90deg,#eef6f9 25%,#f7fbfc 50%,#eef6f9 75%);background-size:200% 100%;animation:qa-skel 1.2s linear infinite;min-height:300px;border-radius:var(--tw-radius,16px)}
 @keyframes qa-skel{to{background-position:-200% 0}}
@@ -55,7 +55,7 @@ export default function HomeOffers({ lang = 'ar' }) {
                 {(() => {
                   const u = siteUrgency(p, lang);
                   if (!u || !u.label) return null;
-                  return <span className="qa-offer-urg" style={{ background: u.soldOut ? '#1d2733' : u.hot ? '#e0364f' : '#faab18', color: u.soldOut || u.hot ? '#fff' : '#012a37' }}><Icon name={u.soldOut ? 'ban' : 'clock'} size={12} />{u.label}</span>;
+                  return <span className={'qa-offer-urg' + (u.hot && !u.soldOut ? ' qa-urg-badge' : '')} style={{ background: u.soldOut ? '#1d2733' : u.hot ? '#e0364f' : '#faab18' }}><Icon name={u.soldOut ? 'ban' : 'clock'} size={12} />{u.label}</span>;
                 })()}
               </div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 6, padding: '14px 16px 16px', flex: 1 }}>

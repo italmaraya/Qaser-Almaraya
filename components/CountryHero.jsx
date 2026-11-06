@@ -35,8 +35,8 @@ function tzDiffHours(tz) {
 }
 
 /**
- * Top banner for a country's visa list: country photo, dotted route from
- * Baghdad and quick facts (no looping animation, no decorative stamp).
+ * Top banner for a country's visa list: country photo, animated dotted route
+ * from Baghdad and quick facts.
  */
 export default function CountryHero({ country, count, fastestDays, lang = 'ar', onPdf, downloading }) {
   const en = lang === 'en';
@@ -55,7 +55,7 @@ export default function CountryHero({ country, count, fastestDays, lang = 'ar', 
     const diff = tz ? tzDiffHours(tz) : null;
     const map = routeMapSvg([g[0], g[1]], '', en, {
       dot: 'rgba(255,255,255,.32)', bg: '', arc: '#faab18', label: '#fff', labelStroke: 'rgba(0,0,0,.35)',
-      aspect: 2.45, animate: false, minSpan: 130, cls: 'qch-map', planeScale: 0.5, pinScale: 0.6,
+      aspect: 2.45, animate: true, minSpan: 130, cls: 'qch-map', planeScale: 0.5, pinScale: 0.6,
     });
     return { km, hh, mm, diff, currency: g[2], map };
   }, [country, en]);

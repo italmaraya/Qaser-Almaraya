@@ -66,8 +66,8 @@ export default function HomeGlobe({ lang = 'ar', mode = 'all' }) {
         </h2>
         <p style={{ margin: 0, color: '#3d4650', lineHeight: 1.8 }}>
           {visaOnly
-            ? (en ? 'Drag the globe and tap any marked country to see its visa types.' : 'حرّك الكرة الأرضية واضغط على أي دولة معلَّمة لتشاهد أنواع تأشيراتها.')
-            : (en ? 'Drag the globe and tap any marked point to see its visas and trips.' : 'حرّك الكرة الأرضية واضغط على أي نقطة معلَّمة لتشاهد تأشيراتها ورحلاتها.')}
+            ? (en ? 'Spin the globe and tap any glowing country to see its visa types.' : 'أدر الكرة الأرضية واضغط على أي دولة مضيئة لتشاهد أنواع تأشيراتها.')
+            : (en ? 'Spin the globe and tap any glowing point to see its visas and trips.' : 'أدر الكرة الأرضية واضغط على أي نقطة مضيئة لتشاهد تأشيراتها ورحلاتها.')}
         </p>
         {picked ? (
           <div className="qa-card" style={{ display: 'flex', flexDirection: 'column', gap: 10, border: '1px solid #d9e9ef' }}>

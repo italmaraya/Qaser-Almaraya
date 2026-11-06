@@ -159,7 +159,7 @@ export function NewsArticleView({ post, related }) {
             <span>{en ? 'Share:' : 'شارك المقال:'}</span>
             <a className="wa" href={'https://wa.me/?text=' + encodeURIComponent(title + '\n' + url)} target="_blank" rel="noopener">WhatsApp</a>
             <a href={'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(url)} target="_blank" rel="noopener">Facebook</a>
-            <button type="button" onClick={() => { navigator.clipboard?.writeText(url); setCopied(true); setTimeout(() => setCopied(false), 1800); }}>{copied ? <><Icon name="check" size={13} />{en ? 'Copied' : 'تم النسخ'}</> : (en ? 'Copy link' : 'نسخ الرابط')}</button>
+            <button type="button" onClick={() => { navigator.clipboard?.writeText(url); setCopied(true); setTimeout(() => setCopied(false), 1800); }}>{copied ? (en ? '✓ Copied' : '✓ تم النسخ') : (en ? 'Copy link' : 'نسخ الرابط')}</button>
           </div>
           <div className="qn-cta">
             <div><b>{en ? 'Planning a trip?' : 'تخطط لرحلة؟'}</b><div style={{ fontSize: 14.5, color: '#5b646d', marginTop: 4 }}>{en ? 'Our team handles visas, flights and packages for you.' : 'فريقنا يتولى التأشيرة والطيران والباقة نيابةً عنك.'}</div></div>

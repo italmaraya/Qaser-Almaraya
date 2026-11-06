@@ -641,7 +641,7 @@ export default function PackagesPage({ initialPackages = null }) {
 
           {/* Discover all destinations — interactive 3D globe */}
           <section className="qa-sec" style={{ maxWidth: 1240, margin: '0 auto', padding: '8px 24px 8px' }}>
-            <div style={{ background: '#0d4a5c', borderRadius: 'var(--tw-radius,16px)', overflow: 'hidden', display: 'grid', gridTemplateColumns: 'minmax(260px,1fr) minmax(280px,1.1fr)', alignItems: 'center', gap: 8 }}>
+            <div style={{ background: '#0d4a5c', borderRadius: 28, overflow: 'hidden', display: 'grid', gridTemplateColumns: 'minmax(260px,1fr) minmax(280px,1.1fr)', alignItems: 'center', gap: 8 }}>
               <div style={{ padding: 'clamp(28px,4vw,44px)', display: 'flex', flexDirection: 'column', gap: 14, color: '#fff' }}>
                 <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: '.08em', color: 'rgba(255,255,255,.7)' }}>
                   {lang === 'en' ? 'EXPLORE THE WORLD' : 'استكشف العالم'}

@@ -549,7 +549,7 @@ export default function PackageDetailPage() {
                           rel="noopener noreferrer"
                           style={{ fontSize: 12.5, fontWeight: 700, color: '#036f8c', textDecoration: 'none' }}
                         >
-                          <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>{lang === 'en' ? 'Get directions' : 'الاتجاهات'}<Icon name="arrow-up-right" size={13} /></span>
+                          {lang === 'en' ? 'Get directions ↗' : 'الاتجاهات ↗'}
                         </a>
                       </div>
                     </div>

@@ -1548,7 +1548,7 @@ function   visaVals(country){
 <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(196px,1fr))", gap: "16px" }}>
 {(reg.items || []).map((t, $index) => (<React.Fragment key={$index}>
 <button type="button" onClick={t.go} style={{ position: "relative", display: "flex", flexDirection: "column", gap: "0", padding: "0", overflow: "hidden", textAlign: "start", background: "#fff", border: t.border, borderRadius: "var(--tw-radius,18px)", boxShadow: t.shadow, cursor: "pointer", fontFamily: "inherit", transition: "border-color .14s,box-shadow .22s,transform .22s cubic-bezier(.2,.8,.3,1)" }}>
-<span style={{ position: "relative", display: "block", height: "104px", background: "var(--tw-band-deep,#049dc5)" }}>
+<span style={{ position: "relative", display: "block", height: "104px", background: "linear-gradient(150deg,#5fd0ef,#049dc5 70%,#036f8c)" }}>
 <img src="/assets/logo-mark-white.webp" alt="" style={{ position: "absolute", insetInlineEnd: "-18px", top: "-14px", height: "118px", opacity: ".16" }} />
 <span aria-hidden="true" style={{ position: "absolute", insetInlineStart: "16px", bottom: "-24px", width: "48px", height: "48px", borderRadius: "50%", backgroundColor: "#fff", backgroundImage: `url(${t.flagUrl})`, backgroundSize: "cover", backgroundPosition: "center", border: "3px solid #fff", boxShadow: "var(--tw-card-shadow,0 1px 3px rgba(29,39,51,.06))" }}></span>
 <span aria-hidden="true" style={{ position: "absolute", insetInlineEnd: "10px", top: "10px", display: "grid", placeItems: "center", width: "50px", height: "50px", borderRadius: "50%", border: "2px dashed rgba(255,255,255,.85)", color: "#fff", transform: "rotate(-8deg)" }}>
@@ -1707,7 +1707,7 @@ function   visaVals(country){
 <div style={{ padding: "16px 18px" }}>
 {pkg.tabHotel ? (<>
 <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-<div style={{ height: "120px", borderRadius: "var(--tw-radius-sm,10px)", overflow: "hidden", background: "var(--tw-band-deep,#049dc5)", display: "grid", placeItems: "center", color: "#fff" }}>
+<div style={{ height: "120px", borderRadius: "var(--tw-radius-sm,10px)", overflow: "hidden", background: "linear-gradient(150deg,#5fd0ef,#049dc5 70%,#036f8c)", display: "grid", placeItems: "center", color: "#fff" }}>
 <Icon name="image" size={26} />
 </div>
 <span style={{ fontSize: "15px", fontWeight: "700", color: "#1d2733" }}>{pkg.hotel.name}</span>
@@ -2044,8 +2044,55 @@ function   visaVals(country){
 </span>
 </div>
 </div>
-<div data-jobs-art="" style={{ position: "relative", alignSelf: "stretch", minHeight: "380px", display: "flex", alignItems: "flex-end", justifyContent: "center" }}>
-<img src="/assets/mascot-skylo-recruit-phone-cut.webp" alt="سكايلو يستقبل طلبات التوظيف" className="qa-hero-mascot" style={{ position: "relative", zIndex: "2", display: "block", width: "clamp(240px,70%,440px)", height: "auto", marginBottom: "-30px", objectFit: "contain", filter: "drop-shadow(0 10px 18px rgba(1,42,55,.22))" }} />
+<div data-jobs-art="" style={{ position: "relative", alignSelf: "stretch", minHeight: "430px" }}>
+<span aria-hidden="true" className="qa-hero-decor" style={{ position: "absolute", left: "-42%", bottom: "-96px", width: "400px", height: "400px", borderRadius: "50%", background: "radial-gradient(circle at 50% 42%,rgba(255,255,255,.32),rgba(255,255,255,0) 70%)" }}></span>
+<span aria-hidden="true" className="qa-hero-decor" style={{ position: "absolute", left: "-36%", bottom: "-84px", width: "360px", height: "360px", animation: "qa-orbit 26s linear infinite" }}>
+<span style={{ position: "absolute", inset: "0", borderRadius: "50%", border: "1px dashed rgba(255,255,255,.42)" }}></span>
+<span style={{ position: "absolute", top: "-5px", left: "50%", width: "10px", height: "10px", marginLeft: "-5px", borderRadius: "50%", background: "#faab18", boxShadow: "0 6px 16px rgba(250,171,24,.28)" }}></span>
+</span>
+<span aria-hidden="true" className="qa-hero-decor" style={{ position: "absolute", left: "-27%", bottom: "-42px", width: "266px", height: "266px", animation: "qa-orbit-rev 34s linear infinite" }}>
+<span style={{ position: "absolute", inset: "0", borderRadius: "50%", border: "1px solid rgba(255,255,255,.26)" }}></span>
+<span style={{ position: "absolute", bottom: "-4px", left: "50%", width: "7px", height: "7px", marginLeft: "-3.5px", borderRadius: "50%", background: "rgba(255,255,255,.9)" }}></span>
+</span>
+
+<img src="/assets/mascot-skylo-recruit-phone-cut.webp" alt="سكايلو يستقبل طلبات التوظيف" className="qa-hero-mascot" style={{ position: "absolute", zIndex: "2", left: "-11%", bottom: "-30px", display: "block", width: "clamp(210px,62%,460px)", height: "auto", objectFit: "contain", filter: "drop-shadow(0 26px 38px rgba(1,42,55,.34))" }} />
+
+<div aria-hidden="true" className="qa-hero-float" style={{ position: "absolute", zIndex: "4", top: "50%", right: "-18px", width: "clamp(186px,44%,246px)", transform: "translateY(-50%)", display: "flex", flexDirection: "column", alignItems: "stretch", gap: "14px", pointerEvents: "none" }}>
+<div style={{ alignSelf: "stretch", display: "flex", flexDirection: "column", alignItems: "center", transformOrigin: "50% 0", animation: "qa-swing 5.6s ease-in-out infinite" }}>
+<span style={{ width: "2px", height: "30px", background: "rgba(255,255,255,.6)" }}></span>
+<span style={{ width: "26px", height: "8px", borderRadius: "3px", background: "rgba(255,255,255,.85)" }}></span>
+<span style={{ display: "flex", flexDirection: "column", gap: "8px", width: "100%", maxWidth: "230px", padding: "16px", background: "#fff", borderRadius: "var(--tw-radius,16px)", boxShadow: "var(--tw-card-shadow,0 1px 3px rgba(29,39,51,.06))" }}>
+<span data-no-i18n="" style={{ fontFamily: "'IBM Plex Sans',system-ui,sans-serif", fontSize: "8.5px", fontWeight: "700", letterSpacing: ".2em", color: "#5f666e" }}>TEAM MEMBER</span>
+<span style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+<span style={{ flex: "none", width: "34px", height: "34px", borderRadius: "50%", background: "#049dc5" }}></span>
+<span style={{ display: "flex", flexDirection: "column", gap: "4px", flex: "1" }}>
+<span style={{ height: "7px", borderRadius: "4px", background: "#d9edf5" }}></span>
+<span style={{ height: "7px", width: "66%", borderRadius: "4px", background: "#eef1f2" }}></span>
+</span>
+</span>
+<span style={{ alignSelf: "flex-start", whiteSpace: "nowrap", padding: "4px 11px", borderRadius: "999px", background: "#faab18", color: "#012a37", fontSize: "11.5px", fontWeight: "700" }}>اسمك هنا</span>
+</span>
+</div>
+
+<div style={{ alignSelf: "stretch", display: "flex", flexWrap: "wrap", gap: "8px", justifyContent: "center" }}>
+<span style={{ padding: "7px 14px", borderRadius: "999px", background: "rgba(255,255,255,.94)", color: "#036f8c", fontSize: "13.5px", fontWeight: "700", boxShadow: "var(--tw-card-shadow,0 1px 3px rgba(29,39,51,.06))", animation: "qa-chip 5.2s ease-in-out infinite" }}>مبيعات</span>
+<span style={{ padding: "7px 14px", borderRadius: "999px", background: "rgba(255,255,255,.94)", color: "#036f8c", fontSize: "13.5px", fontWeight: "700", boxShadow: "var(--tw-card-shadow,0 1px 3px rgba(29,39,51,.06))", animation: "qa-chip 6.4s ease-in-out .8s infinite" }}>تسويق</span>
+<span style={{ padding: "7px 14px", borderRadius: "999px", background: "rgba(255,255,255,.94)", color: "#036f8c", fontSize: "13.5px", fontWeight: "700", boxShadow: "var(--tw-card-shadow,0 1px 3px rgba(29,39,51,.06))", animation: "qa-chip 5.9s ease-in-out .4s infinite" }}>تأشيرات</span>
+</div>
+
+<div style={{ position: "relative", alignSelf: "center", width: "100%", maxWidth: "230px", padding: "16px 17px 18px", background: "#fff", borderRadius: "var(--tw-radius-sm,10px)", boxShadow: "var(--tw-card-shadow,0 1px 3px rgba(29,39,51,.06))", animation: "qa-pop 6.8s ease-in-out infinite" }}>
+<span style={{ position: "absolute", top: "-13px", left: "-13px", display: "grid", placeItems: "center", width: "34px", height: "34px", borderRadius: "50%", background: "#049dc5", color: "#fff", boxShadow: "var(--tw-card-shadow,0 1px 3px rgba(29,39,51,.06))" }}>
+<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6 9 17l-5-5"></path></svg>
+</span>
+<span style={{ display: "flex", flexDirection: "column", gap: "7px" }}>
+<span data-no-i18n="" style={{ fontFamily: "'IBM Plex Sans',system-ui,sans-serif", fontSize: "8.5px", fontWeight: "700", letterSpacing: ".2em", color: "#5f666e" }}>CV</span>
+<span style={{ height: "8px", width: "78%", borderRadius: "4px", background: "#1d2733", opacity: ".82" }}></span>
+<span style={{ height: "6px", borderRadius: "4px", background: "#e7eaec" }}></span>
+<span style={{ height: "6px", borderRadius: "4px", background: "#e7eaec" }}></span>
+<span style={{ height: "6px", width: "54%", borderRadius: "4px", background: "#bfe9f6" }}></span>
+</span>
+</div>
+</div>
 </div>
 </div>
 </section>
@@ -2097,8 +2144,53 @@ function   visaVals(country){
 </span>
 </div>
 </div>
-<div data-faq-art="" style={{ position: "relative", alignSelf: "stretch", minHeight: "380px", display: "flex", alignItems: "flex-end", justifyContent: "center" }}>
-<img src="/assets/mascot-skylo-questions-cut.webp" alt="سكايلو يفكّر في أسئلتك" className="qa-hero-mascot" style={{ position: "relative", zIndex: "2", display: "block", width: "clamp(240px,70%,420px)", height: "auto", marginBottom: "-30px", objectFit: "contain", filter: "drop-shadow(0 10px 18px rgba(1,42,55,.22))" }} />
+<div data-faq-art="" style={{ position: "relative", alignSelf: "stretch", minHeight: "430px" }}>
+<span aria-hidden="true" className="qa-hero-decor" style={{ position: "absolute", left: "-40%", bottom: "-70px", width: "380px", height: "380px", borderRadius: "50%", background: "radial-gradient(circle at 50% 42%,rgba(255,255,255,.32),rgba(255,255,255,0) 70%)" }}></span>
+<span aria-hidden="true" className="qa-hero-decor" style={{ position: "absolute", left: "-34%", bottom: "-64px", width: "344px", height: "344px", animation: "qa-orbit 28s linear infinite" }}>
+<span style={{ position: "absolute", inset: "0", borderRadius: "50%", border: "1px dashed rgba(255,255,255,.42)" }}></span>
+<span style={{ position: "absolute", top: "-5px", left: "50%", width: "10px", height: "10px", marginLeft: "-5px", borderRadius: "50%", background: "#faab18", boxShadow: "0 6px 16px rgba(250,171,24,.28)" }}></span>
+</span>
+<span aria-hidden="true" className="qa-hero-decor" style={{ position: "absolute", left: "-25%", bottom: "-28px", width: "256px", height: "256px", animation: "qa-orbit-rev 36s linear infinite" }}>
+<span style={{ position: "absolute", inset: "0", borderRadius: "50%", border: "1px solid rgba(255,255,255,.26)" }}></span>
+<span style={{ position: "absolute", bottom: "-4px", left: "50%", width: "7px", height: "7px", marginLeft: "-3.5px", borderRadius: "50%", background: "rgba(255,255,255,.9)" }}></span>
+</span>
+
+<img
+  src="/assets/mascot-skylo-questions-cut.webp"
+  alt="سكايلو يفكّر في أسئلتك"
+  className="qa-hero-mascot"
+  style={{
+    position: "absolute", zIndex: "2", left: "-11%", bottom: "-30px", display: "block",
+    width: "clamp(240px,64%,420px)", height: "auto", objectFit: "contain",
+    filter: "drop-shadow(0 26px 38px rgba(1,42,55,.32))",
+  }}
+/>
+
+<div aria-hidden="true" className="qa-hero-float" style={{ position: "absolute", zIndex: "4", top: "50%", right: "-18px", width: "clamp(186px,44%,246px)", transform: "translateY(-50%)", display: "flex", flexDirection: "column", alignItems: "stretch", gap: "14px", pointerEvents: "none" }}>
+<div style={{ position: "relative", alignSelf: "stretch", padding: "13px 15px 15px", background: "#fff", borderRadius: "14px 14px 14px 4px", boxShadow: "var(--tw-card-shadow,0 1px 3px rgba(29,39,51,.06))", animation: "qa-pop 6.4s ease-in-out infinite" }}>
+<span style={{ display: "flex", flexDirection: "column", gap: "7px" }}>
+<span style={{ fontSize: "13.5px", fontWeight: "700", color: "#1d2733", textWrap: "pretty" }}>كيف أحجز تذكرتي؟</span>
+<span style={{ height: "6px", borderRadius: "4px", background: "#e7eaec" }}></span>
+<span style={{ height: "6px", width: "62%", borderRadius: "4px", background: "#bfe9f6" }}></span>
+</span>
+</div>
+
+<div style={{ alignSelf: "stretch", display: "flex", flexWrap: "wrap", gap: "8px", justifyContent: "center" }}>
+<span style={{ padding: "7px 14px", borderRadius: "999px", background: "rgba(255,255,255,.94)", color: "#036f8c", fontSize: "13.5px", fontWeight: "700", boxShadow: "var(--tw-card-shadow,0 1px 3px rgba(29,39,51,.06))", animation: "qa-chip 5.4s ease-in-out infinite" }}>الحجز</span>
+<span style={{ padding: "7px 14px", borderRadius: "999px", background: "rgba(255,255,255,.94)", color: "#036f8c", fontSize: "13.5px", fontWeight: "700", boxShadow: "var(--tw-card-shadow,0 1px 3px rgba(29,39,51,.06))", animation: "qa-chip 6.2s ease-in-out .7s infinite" }}>الدفع</span>
+<span style={{ padding: "7px 14px", borderRadius: "999px", background: "rgba(255,255,255,.94)", color: "#036f8c", fontSize: "13.5px", fontWeight: "700", boxShadow: "var(--tw-card-shadow,0 1px 3px rgba(29,39,51,.06))", animation: "qa-chip 5.8s ease-in-out .35s infinite" }}>المتابعة</span>
+</div>
+
+<div style={{ position: "relative", alignSelf: "center", display: "flex", alignItems: "center", gap: "11px", padding: "13px 16px", background: "#fff", borderRadius: "var(--tw-radius-sm,10px)", boxShadow: "var(--tw-card-shadow,0 1px 3px rgba(29,39,51,.06))", animation: "qa-pop 7.2s ease-in-out .5s infinite" }}>
+<span style={{ flex: "none", display: "grid", placeItems: "center", width: "34px", height: "34px", borderRadius: "50%", background: "#faab18", color: "#012a37" }}>
+<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M13.832 16.568a1 1 0 0 0 1.213-.303l.355-.465A2 2 0 0 1 17 15h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2A18 18 0 0 1 2 4a2 2 0 0 1 2-2h3a2 2 0 0 1 2 2v3a2 2 0 0 1-.8 1.6l-.468.351a1 1 0 0 0-.292 1.233 14 14 0 0 0 6.392 6.384"></path></svg>
+</span>
+<span style={{ display: "flex", flexDirection: "column", gap: "1px" }}>
+<span data-no-i18n="" style={{ fontFamily: "'IBM Plex Sans',system-ui,sans-serif", fontSize: "8.5px", fontWeight: "700", letterSpacing: ".2em", color: "#5f666e" }}>HOTLINE</span>
+<span data-no-i18n="" style={{ whiteSpace: "nowrap", fontSize: "17px", fontWeight: "700", color: "#036f8c" }}>6393</span>
+</span>
+</div>
+</div>
 </div>
 </div>
 </section>
@@ -2135,8 +2227,13 @@ function   visaVals(country){
 <a href="mailto:sales@almarayagroup.com" data-no-i18n="" style={{ fontSize: "16px", color: "rgba(255,255,255,.9)", textDecoration: "none" }}>sales@almarayagroup.com</a>
 </div>
 </div>
-<div style={{ position: "relative", alignSelf: "stretch", minHeight: "340px", display: "flex", alignItems: "flex-end", justifyContent: "center" }}>
-<img src="/assets/mascot-skylo-passport-hq.webp" alt="" style={{ position: "relative", zIndex: "2", display: "block", width: "clamp(220px,78%,380px)", height: "auto", marginBottom: "-30px", objectFit: "contain", filter: "drop-shadow(0 10px 18px rgba(1,42,55,.22))" }} />
+<div style={{ position: "relative", alignSelf: "stretch", minHeight: "340px" }}>
+<span aria-hidden="true" style={{ position: "absolute", left: "-40%", bottom: "-70px", width: "380px", height: "380px", borderRadius: "50%", background: "radial-gradient(circle at 50% 42%,rgba(255,255,255,.32),rgba(255,255,255,0) 70%)" }}></span>
+<span aria-hidden="true" style={{ position: "absolute", left: "-32%", bottom: "-60px", width: "330px", height: "330px", animation: "qa-orbit 28s linear infinite" }}>
+<span style={{ position: "absolute", inset: "0", borderRadius: "50%", border: "1px dashed rgba(255,255,255,.42)" }}></span>
+<span style={{ position: "absolute", top: "-5px", left: "50%", width: "10px", height: "10px", marginLeft: "-5px", borderRadius: "50%", background: "#faab18", boxShadow: "0 6px 16px rgba(250,171,24,.28)" }}></span>
+</span>
+<img src="/assets/mascot-skylo-passport-hq.webp" alt="" style={{ position: "absolute", zIndex: "2", left: "-6%", top: "-10px", bottom: "-18px", display: "block", width: "auto", height: "calc(100% + 28px)", objectFit: "contain", objectPosition: "left bottom", filter: "drop-shadow(0 26px 38px rgba(1,42,55,.3))" }} />
 </div>
 </div>
 </section>
@@ -2178,8 +2275,13 @@ function   visaVals(country){
 <a href="mailto:sales@almarayagroup.com" data-no-i18n="" style={{ fontSize: "16px", color: "rgba(255,255,255,.9)", textDecoration: "none" }}>sales@almarayagroup.com</a>
 </div>
 </div>
-<div style={{ position: "relative", alignSelf: "stretch", minHeight: "340px", display: "flex", alignItems: "flex-end", justifyContent: "center" }}>
-<img src="/assets/mascot-skylo-suit-hq.webp" alt="" style={{ position: "relative", zIndex: "2", display: "block", width: "clamp(220px,78%,380px)", height: "auto", marginBottom: "-30px", objectFit: "contain", filter: "drop-shadow(0 10px 18px rgba(1,42,55,.22))" }} />
+<div style={{ position: "relative", alignSelf: "stretch", minHeight: "340px" }}>
+<span aria-hidden="true" style={{ position: "absolute", left: "-40%", bottom: "-70px", width: "380px", height: "380px", borderRadius: "50%", background: "radial-gradient(circle at 50% 42%,rgba(255,255,255,.32),rgba(255,255,255,0) 70%)" }}></span>
+<span aria-hidden="true" style={{ position: "absolute", left: "-32%", bottom: "-60px", width: "330px", height: "330px", animation: "qa-orbit 28s linear infinite" }}>
+<span style={{ position: "absolute", inset: "0", borderRadius: "50%", border: "1px dashed rgba(255,255,255,.42)" }}></span>
+<span style={{ position: "absolute", top: "-5px", left: "50%", width: "10px", height: "10px", marginLeft: "-5px", borderRadius: "50%", background: "#faab18", boxShadow: "0 6px 16px rgba(250,171,24,.28)" }}></span>
+</span>
+<img src="/assets/mascot-skylo-suit-hq.webp" alt="" style={{ position: "absolute", zIndex: "2", left: "-6%", top: "-10px", bottom: "-18px", display: "block", width: "auto", height: "calc(100% + 28px)", objectFit: "contain", objectPosition: "left bottom", filter: "drop-shadow(0 26px 38px rgba(1,42,55,.3))" }} />
 </div>
 </div>
 </section>

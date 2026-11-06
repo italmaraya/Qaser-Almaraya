@@ -66,7 +66,7 @@ function ActionUpload({ application }) {
     <div style={{ display: 'flex', flexDirection: 'column', gap: 8, background: '#eaf8fd', border: '1px solid #bfe9f6', borderRadius: 'var(--tw-radius-sm,10px)', padding: '12px 14px' }}>
       <span style={{ fontSize: 13, fontWeight: 700, color: '#036f8c' }}>مطلوب منك رفع مستند أو ملف</span>
       {done ? (
-        <span style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 12.5, color: '#1e7d46' }}><Icon name="check" size={14} style={{ flex: 'none' }} />تم استلام ملفك، سيراجعه فريقنا قريباً.</span>
+        <span style={{ fontSize: 12.5, color: '#1e7d46' }}>✓ تم استلام ملفك، سيراجعه فريقنا قريباً.</span>
       ) : (
         <>
           <label style={{ cursor: uploading ? 'not-allowed' : 'pointer', opacity: uploading ? 0.6 : 1, display: 'inline-flex', alignItems: 'center', gap: 8, alignSelf: 'flex-start', padding: '8px 16px', borderRadius: 999, background: '#fff', border: '1px solid #036f8c', color: '#036f8c', fontSize: 12.5, fontWeight: 700 }}>
@@ -255,12 +255,55 @@ export default function VisaLandingPage({ initialCards = null }) {
                 </p>
               </div>
 
-              <div data-jobs-art="" className="qa-visa-hero-art" style={{ position: 'relative', alignSelf: 'stretch', minHeight: 250, display: 'flex', alignItems: 'flex-end', justifyContent: 'center' }}>
+              <div data-jobs-art="" className="qa-visa-hero-art" style={{ position: 'relative', alignSelf: 'stretch', minHeight: 250 }}>
+                <span aria-hidden="true" style={{ position: 'absolute', insetInlineStart: '-8%', bottom: -46, width: 210, height: 210, borderRadius: '50%', background: 'radial-gradient(circle at 50% 42%,rgba(255,255,255,.32),rgba(255,255,255,0) 70%)' }} />
+                <span aria-hidden="true" style={{ position: 'absolute', insetInlineStart: '-2%', bottom: -38, width: 190, height: 190, animation: 'qa-orbit 26s linear infinite' }}>
+                  <span style={{ position: 'absolute', inset: 0, borderRadius: '50%', border: '1px dashed rgba(255,255,255,.42)' }} />
+                  <span style={{ position: 'absolute', top: -5, insetInlineStart: '50%', width: 10, height: 10, marginInlineStart: -5, borderRadius: '50%', background: '#faab18', boxShadow: '0 6px 16px rgba(250,171,24,.28)' }} />
+                </span>
+                <span aria-hidden="true" style={{ position: 'absolute', insetInlineStart: '6%', bottom: -20, width: 140, height: 140, animation: 'qa-orbit-rev 34s linear infinite' }}>
+                  <span style={{ position: 'absolute', inset: 0, borderRadius: '50%', border: '1px solid rgba(255,255,255,.26)' }} />
+                  <span style={{ position: 'absolute', bottom: -4, insetInlineStart: '50%', width: 7, height: 7, marginInlineStart: -3.5, borderRadius: '50%', background: 'rgba(255,255,255,.9)' }} />
+                </span>
+
                 <img
                   src="/assets/visa-fan-cutout.webp"
                   alt="سكايلو يحمل تأشيرات وجواز سفر"
-                  style={{ position: 'relative', zIndex: 2, display: 'block', width: 'clamp(150px,52%,240px)', height: 'auto', marginBottom: -14, objectFit: 'contain', filter: 'drop-shadow(0 10px 18px rgba(1,42,55,.22))' }}
+                  style={{ position: 'absolute', zIndex: 2, insetInlineStart: '2%', bottom: -14, display: 'block', width: 'clamp(150px,44%,220px)', height: 'auto', objectFit: 'contain', filter: 'drop-shadow(0 20px 30px rgba(1,42,55,.34))' }}
                 />
+
+                <div aria-hidden="true" style={{ position: 'absolute', zIndex: 4, top: '8%', insetInlineEnd: -6, width: 'clamp(140px,36%,178px)', display: 'flex', flexDirection: 'column', alignItems: 'stretch', gap: 9, pointerEvents: 'none' }}>
+                  <div style={{ alignSelf: 'stretch', maxWidth: 178, padding: 11, background: '#fff', borderRadius: 'var(--tw-radius-sm,10px)', boxShadow: 'var(--tw-card-shadow,0 1px 3px rgba(29,39,51,.06))', display: 'flex', flexDirection: 'column', gap: 6, animation: 'qa-swing 5.6s ease-in-out infinite', transformOrigin: '50% 0' }}>
+                    <span style={{ fontFamily: "'IBM Plex Sans',system-ui,sans-serif", fontSize: 7.5, fontWeight: 700, letterSpacing: '.2em', color: '#5f666e' }}>VISA STATUS</span>
+                    <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                      <span style={{ flex: 'none', display: 'grid', placeItems: 'center', width: 24, height: 24, borderRadius: '50%', background: '#049dc5', color: '#fff' }}>
+                        <svg width={13} height={13} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={3} strokeLinecap="round" strokeLinejoin="round"><path d="M20 6 9 17l-5-5" /></svg>
+                      </span>
+                      <span style={{ display: 'flex', flexDirection: 'column', gap: 4, flex: 1 }}>
+                        <span style={{ height: 7, borderRadius: 4, background: '#d9edf5' }} />
+                        <span style={{ height: 7, width: '66%', borderRadius: 4, background: '#eef1f2' }} />
+                      </span>
+                    </span>
+                  </div>
+
+                  <div style={{ alignSelf: 'stretch', display: 'flex', flexWrap: 'wrap', gap: 6, justifyContent: 'center' }}>
+                    <span style={{ padding: '5px 11px', borderRadius: 999, background: 'rgba(255,255,255,.94)', color: '#036f8c', fontSize: 11.5, fontWeight: 700, boxShadow: 'var(--tw-card-shadow,0 1px 3px rgba(29,39,51,.06))', animation: 'qa-chip 5.2s ease-in-out infinite' }}>سياحية</span>
+                    <span style={{ padding: '5px 11px', borderRadius: 999, background: 'rgba(255,255,255,.94)', color: '#036f8c', fontSize: 11.5, fontWeight: 700, boxShadow: 'var(--tw-card-shadow,0 1px 3px rgba(29,39,51,.06))', animation: 'qa-chip 6.4s ease-in-out .8s infinite' }}>عمل</span>
+                    <span style={{ padding: '5px 11px', borderRadius: 999, background: 'rgba(255,255,255,.94)', color: '#036f8c', fontSize: 11.5, fontWeight: 700, boxShadow: 'var(--tw-card-shadow,0 1px 3px rgba(29,39,51,.06))', animation: 'qa-chip 5.9s ease-in-out .4s infinite' }}>سفارة</span>
+                  </div>
+
+                  <div style={{ position: 'relative', alignSelf: 'center', width: '100%', maxWidth: 160, padding: '11px 12px 13px', background: '#fff', borderRadius: 'var(--tw-radius-sm,10px)', boxShadow: 'var(--tw-card-shadow,0 1px 3px rgba(29,39,51,.06))', animation: 'qa-pop 6.8s ease-in-out infinite' }}>
+                    <span style={{ position: 'absolute', top: -10, insetInlineStart: -10, display: 'grid', placeItems: 'center', width: 24, height: 24, borderRadius: '50%', background: '#faab18', color: '#012a37' }}>
+                      <svg width={12} height={12} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.4} strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="16" rx="2" /><path d="M3 9h18M8 4v3M16 4v3" /></svg>
+                    </span>
+                    <span style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
+                      <span style={{ fontFamily: "'IBM Plex Sans',system-ui,sans-serif", fontSize: 7.5, fontWeight: 700, letterSpacing: '.2em', color: '#5f666e' }}>PASSPORT</span>
+                      <span style={{ height: 6, width: '78%', borderRadius: 4, background: '#1d2733', opacity: 0.82 }} />
+                      <span style={{ height: 4, borderRadius: 4, background: '#e7eaec' }} />
+                      <span style={{ height: 4, width: '54%', borderRadius: 4, background: '#bfe9f6' }} />
+                    </span>
+                  </div>
+                </div>
               </div>
             </div>
 

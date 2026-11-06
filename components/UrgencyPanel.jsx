@@ -45,9 +45,12 @@ export default function UrgencyPanel({ pkg, lang = 'ar' }) {
     <div data-no-i18n="" className={'qa-urg' + (u.hot && !u.soldOut ? ' qa-urg-hot' : '')} style={{ display: 'flex', flexDirection: 'column', gap: 10, borderRadius: 'var(--tw-radius-sm,10px)', padding: '12px 14px', background: tone.bg, color: tone.fg }}>
       <style>{`
 .qa-urg-dot{width:9px;height:9px;border-radius:50%;background:currentColor;flex-shrink:0}
+.qa-urg-hot .qa-urg-dot{animation:qa-urg-pulse 1.2s ease-out infinite}
+@keyframes qa-urg-pulse{0%{box-shadow:none}100%{box-shadow:none}}
 .qa-urg-box{flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;border-radius:var(--tw-radius-sm,10px);padding:6px 2px}
 .qa-urg-box b{font-size:20px;line-height:1.1;font-variant-numeric:tabular-nums}
 .qa-urg-box span{font-size:11px;font-weight:600;opacity:.8}
+@media (prefers-reduced-motion:reduce){.qa-urg-hot .qa-urg-dot{animation:none}}
 `}</style>
       <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontWeight: 700, fontSize: 14 }}>
         {u.soldOut ? <Icon name="ban" size={16} style={{ flex: 'none' }} /> : <span className="qa-urg-dot" aria-hidden="true" />}
