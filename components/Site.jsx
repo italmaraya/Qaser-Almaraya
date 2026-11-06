@@ -27,6 +27,11 @@ const PHOTO_CREDITS = [
   { file: 'muscat-mosque', subject: 'مسقط — جامع السلطان قابوس', author: 'Francesco Bini', licence: 'CC BY-SA 4.0', page: 'https://commons.wikimedia.org/wiki/File:Muscat,_moschea_del_sultano_qaboos,_esterno_01.jpg' },
   { file: 'bangkok-wat-phra-kaew', subject: 'بانكوك — وات برا كايو', author: 'Basile Morin', licence: 'CC BY-SA 4.0', page: 'https://commons.wikimedia.org/wiki/File:%E0%B8%A7%E0%B8%B1%E0%B8%94%E0%B8%9E%E0%B8%A3%E0%B8%B0%E0%B8%A8%E0%B8%A3%E0%B8%B5%E0%B8%A3%E0%B8%B1%E0%B8%95%E0%B8%99%E0%B8%A8%E0%B8%B2%E0%B8%AA%E0%B8%94%E0%B8%B2%E0%B8%A3%E0%B8%B2%E0%B8%A1_%E0%B8%A7%E0%B8%B1%E0%B8%94%E0%B8%9E%E0%B8%A3%E0%B8%B0%E0%B9%81%E0%B8%81%E0%B9%89%E0%B8%A7_%E0%B8%81%E0%B8%A3%E0%B8%B8%E0%B8%87%E0%B9%80%E0%B8%97%E0%B8%9E%E0%B8%A1%E0%B8%AB%E0%B8%B2%E0%B8%99%E0%B8%84%E0%B8%A3_-_Wat_Phra_Kaew,_Temple_of_Emerald_Buddha,_Bangkok,_Thailand.jpg' },
   { file: 'port-dickson', subject: 'بورت ديكسون — شاطئ تيلوك كيمانغ', author: 'AyyanD', licence: 'CC BY-SA 3.0', page: 'https://commons.wikimedia.org/wiki/File:Purnama_Beach_Promenade,_Teluk_Kemang,_Port_Dickson_District.jpg' },
+  { file: 'antalya-duden', subject: 'أنطاليا — شلال دودان', author: 'Bestalex', licence: 'CC BY-SA 4.0', page: 'https://commons.wikimedia.org/wiki/File:Antalya._Lower_D%C3%BCden_Waterfall.jpg' },
+  { file: 'srilanka-nine-arch', subject: 'سريلانكا — جسر الأقواس التسعة', author: 'Dr. S. Rajivraja', licence: 'CC BY-SA 4.0', page: 'https://commons.wikimedia.org/wiki/File:Nine_Arch_Bridge,_Demodara_Ella.jpg' },
+  { file: 'batumi-skyline', subject: 'باتومي — واجهة المدينة', author: 'jagermesh', licence: 'CC BY-SA 2.0', page: 'https://commons.wikimedia.org/wiki/File:Changing_skyline_of_Batumi,_Georgia.jpg' },
+  { file: 'sharm-naama-bay', subject: 'شرم الشيخ — خليج نعمة', author: 'Marc Ryckaert', licence: 'CC BY 3.0', page: 'https://commons.wikimedia.org/wiki/File:Naama_Bay_Beach_R01.jpg' },
+  { file: 'sharm-ras-mohammed', subject: 'شرم الشيخ — شعاب رأس محمد', author: 'Sovernigo', licence: 'CC BY-SA 4.0', page: 'https://commons.wikimedia.org/wiki/File:Ras_Mohammed_coral_reefs.jpg' },
 ];
 
 const COUNTRIES_DEFAULT=[
