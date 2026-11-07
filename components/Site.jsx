@@ -10,6 +10,8 @@ import HomeWhy from './home/HomeWhy';
 import HomeVoices from './home/HomeVoices';
 import HomeContact from './home/HomeContact';
 import HomeInstagram from './home/HomeInstagram';
+import OfferStories from './home/OfferStories';
+import DeparturesBoard from './home/DeparturesBoard';
 import SeasonSpotlight from './SeasonSpotlight';
 import SeasonDecor from './SeasonDecor';
 import TripFinder from './TripFinder';
@@ -930,7 +932,9 @@ function   visaVals(country){
 </section>
 </HomeHero>
 <BookingPanel lang={st.lang} />
+<OfferStories lang={st.lang} />
 <HomeOffers lang={st.lang} />
+<DeparturesBoard lang={st.lang} />
 <HomeDestinations lang={st.lang} />
 <HomeServices lang={st.lang} />
 <VisaChecker lang={st.lang} />
