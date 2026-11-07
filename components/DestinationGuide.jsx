@@ -56,8 +56,8 @@ function Fact({ icon, label, value, note }) {
     <div className="qa-gd-fact">
       <span className="qa-gd-ico" aria-hidden="true"><Icon name={icon} size={18} /></span>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 2, minWidth: 0 }}>
-        <span style={{ fontSize: 13, color: '#5f666e' }}>{label}</span>
-        <b style={{ fontSize: 16, color: '#1d2733' }}>{value}</b>
+        <span style={{ fontSize: 13, color: 'var(--qs-ink-2,#5f666e)' }}>{label}</span>
+        <b style={{ fontSize: 16, color: 'var(--qs-ink,#1d2733)' }}>{value}</b>
         {note ? <span style={{ fontSize: 12, color: '#8a5a00' }}>{note}</span> : null}
       </div>
     </div>
@@ -93,7 +93,7 @@ export function ClimateChart({ temps, lang, month }) {
     <div className="qa-gd-chart" dir="ltr" role="img" aria-label={en ? 'Average daytime high by month' : 'متوسط درجة الحرارة العظمى لكل شهر'}>
       {temps.map((t, i) => (
         <div key={i} className={'qa-gd-col' + (i === month ? ' on' : '')}>
-          <div className="qa-gd-bar" style={{ height: Math.max(12, (t / max) * 100) + '%', background: tempColor(t), opacity: i === month ? 1 : 0.75, outline: i === month ? '2px solid #036f8c' : 'none', outlineOffset: 2 }}>
+          <div className="qa-gd-bar" style={{ height: Math.max(12, (t / max) * 100) + '%', background: tempColor(t), opacity: i === month ? 1 : 0.75, outline: i === month ? '2px solid var(--qs-brand-deep,#036f8c)' : 'none', outlineOffset: 2 }}>
             <b>{t}°</b>
           </div>
           <span className="qa-gd-m">{en ? MONTHS_EN[i] : MONTHS_AR[i]}</span>
@@ -123,20 +123,20 @@ export function GuideFull({ iso, lang = 'ar' }) {
       </div>
 
       <div className="qa-card" style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-        <h3 style={{ fontSize: 19, fontWeight: 700, color: '#1d2733' }}>{en ? 'Weather in ' + g.city + ' through the year' : 'الطقس في ' + g.city + ' على مدار السنة'}</h3>
-        <span style={{ fontSize: 13, color: '#5f666e' }}>{en ? 'Average daytime high (°C), approximate. Highlighted: this month.' : 'متوسط تقريبي لدرجة الحرارة العظمى نهاراً (°م). الشهر الحالي مظلَّل.'}</span>
+        <h3 style={{ fontSize: 19, fontWeight: 700, color: 'var(--qs-ink,#1d2733)' }}>{en ? 'Weather in ' + g.city + ' through the year' : 'الطقس في ' + g.city + ' على مدار السنة'}</h3>
+        <span style={{ fontSize: 13, color: 'var(--qs-ink-2,#5f666e)' }}>{en ? 'Average daytime high (°C), approximate. Highlighted: this month.' : 'متوسط تقريبي لدرجة الحرارة العظمى نهاراً (°م). الشهر الحالي مظلَّل.'}</span>
         <ClimateChart temps={g.temps} lang={lang} month={month} />
       </div>
 
       <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr) minmax(0,1.4fr)', gap: 16 }} className="qa-2col">
         <div className="qa-card" style={{ display: 'flex', flexDirection: 'column', gap: 8, background: '#fffaf0', borderColor: '#fde5b4' }}>
           <h3 style={{ fontSize: 18, fontWeight: 700, color: '#8a5a00' }}>{en ? 'Best time to go' : 'أفضل وقت للزيارة'}</h3>
-          <p style={{ fontSize: 16, lineHeight: 1.7, color: '#3d4650' }}>{g.best}</p>
+          <p style={{ fontSize: 16, lineHeight: 1.7, color: 'var(--qs-body,#3d4650)' }}>{g.best}</p>
         </div>
         <div className="qa-card" style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-          <h3 style={{ fontSize: 18, fontWeight: 700, color: '#1d2733' }}>{en ? 'Good to know' : 'نصائح قبل السفر'}</h3>
+          <h3 style={{ fontSize: 18, fontWeight: 700, color: 'var(--qs-ink,#1d2733)' }}>{en ? 'Good to know' : 'نصائح قبل السفر'}</h3>
           <ul style={{ margin: 0, paddingInlineStart: 20, display: 'flex', flexDirection: 'column', gap: 8 }}>
-            {g.tips.map((t, i) => <li key={i} style={{ fontSize: 15, lineHeight: 1.6, color: '#3d4650' }}>{t}</li>)}
+            {g.tips.map((t, i) => <li key={i} style={{ fontSize: 15, lineHeight: 1.6, color: 'var(--qs-body,#3d4650)' }}>{t}</li>)}
           </ul>
         </div>
       </div>
@@ -156,13 +156,13 @@ export function GuideCompact({ iso, lang = 'ar', month = null }) {
   const t = m === null ? null : g.temps[m];
   return (
     <div className="qa-card" data-no-i18n="" dir={en ? 'ltr' : 'rtl'} style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-      <h4 style={{ margin: 0, fontSize: 15, display: 'flex', alignItems: 'center', gap: 8 }}><Icon name="compass" size={16} style={{ color: '#049dc5', flex: 'none' }} />{en ? 'Travel guide: ' + name : 'دليل السفر إلى ' + name}</h4>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 6, fontSize: 14, color: '#3d4650' }}>
-        {t !== null && <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}><Icon name="sun" size={14} style={{ color: '#5f666e', flex: 'none' }} />{en ? `${MONTHS_EN[m]} in ${g.city}: around ${t}°C by day` : `${MONTHS_AR[m]} في ${g.city}: حوالي ${t}° نهاراً`}</span>}
-        <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}><Icon name="banknote" size={14} style={{ color: '#5f666e', flex: 'none' }} />{g.currency} ({g.currencyCode})</span>
-        <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}><Icon name="plug" size={14} style={{ color: '#5f666e', flex: 'none' }} />{g.plugs}{g.needsAdapter ? (en ? ' — adapter needed' : ' — تحتاج إلى محوّل') : ''}</span>
+      <h4 style={{ margin: 0, fontSize: 15, display: 'flex', alignItems: 'center', gap: 8 }}><Icon name="compass" size={16} style={{ color: 'var(--qs-brand-deep,#049dc5)', flex: 'none' }} />{en ? 'Travel guide: ' + name : 'دليل السفر إلى ' + name}</h4>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 6, fontSize: 14, color: 'var(--qs-body,#3d4650)' }}>
+        {t !== null && <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}><Icon name="sun" size={14} style={{ color: 'var(--qs-ink-2,#5f666e)', flex: 'none' }} />{en ? `${MONTHS_EN[m]} in ${g.city}: around ${t}°C by day` : `${MONTHS_AR[m]} في ${g.city}: حوالي ${t}° نهاراً`}</span>}
+        <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}><Icon name="banknote" size={14} style={{ color: 'var(--qs-ink-2,#5f666e)', flex: 'none' }} />{g.currency} ({g.currencyCode})</span>
+        <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}><Icon name="plug" size={14} style={{ color: 'var(--qs-ink-2,#5f666e)', flex: 'none' }} />{g.plugs}{g.needsAdapter ? (en ? ' — adapter needed' : ' — تحتاج إلى محوّل') : ''}</span>
       </div>
-      <Link href={'/guide/' + g.iso} style={{ fontSize: 14, fontWeight: 700, color: '#036f8c' }}>{en ? 'Full guide: weather, tips and more →' : 'الدليل الكامل: الطقس والنصائح والمزيد ←'}</Link>
+      <Link href={'/guide/' + g.iso} style={{ fontSize: 14, fontWeight: 700, color: 'var(--qs-brand-deep,#036f8c)' }}>{en ? 'Full guide: weather, tips and more →' : 'الدليل الكامل: الطقس والنصائح والمزيد ←'}</Link>
     </div>
   );
 }

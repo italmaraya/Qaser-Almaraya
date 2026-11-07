@@ -26,14 +26,14 @@ export default function SiteHeader({ active = 'التأشيرات' }) {
   }, [open]);
 
   return (
-    <header style={{ position: 'sticky', top: 0, zIndex: 40, background: '#fff', borderBottom: '1px solid #ececed', boxShadow: 'var(--tw-card-shadow,0 1px 3px rgba(29,39,51,.06))' }}>
+    <header style={{ position: 'sticky', top: 0, zIndex: 40, background: '#fff', borderBottom: '1px solid var(--qs-line,#ececed)', boxShadow: 'var(--tw-card-shadow,0 1px 3px rgba(29,39,51,.06))' }}>
       <SeasonDecor />
       <div className="qa-head" style={{ maxWidth: 1240, margin: '0 auto', padding: '12px 32px', display: 'flex', alignItems: 'center', gap: 24 }}>
         <Link href="/" aria-label="قصر المرايا للسفر و السياحة" className="qa-logo" style={{ display: 'flex', alignItems: 'center', gap: 8, textDecoration: 'none', flex: 'none' }}>
           <img src="/assets/logo-mark-tight.webp" alt="" style={{ height: 38, width: 38, objectFit: 'contain', display: 'block', flex: 'none' }} />
           <span style={{ display: 'flex', flexDirection: 'column', gap: 1, lineHeight: 1.05 }}>
-            <span style={{ fontSize: 19, fontWeight: 700, color: '#22a9d4', whiteSpace: 'nowrap' }}>قصر المرايا</span>
-            <span style={{ fontSize: 10, fontWeight: 600, color: '#5f666e', whiteSpace: 'nowrap' }}>للسفر و السياحة</span>
+            <span style={{ fontSize: 19, fontWeight: 700, color: 'var(--qs-brand-deep,#22a9d4)', whiteSpace: 'nowrap' }}>قصر المرايا</span>
+            <span style={{ fontSize: 10, fontWeight: 600, color: 'var(--qs-ink-2,#5f666e)', whiteSpace: 'nowrap' }}>للسفر و السياحة</span>
           </span>
         </Link>
 
@@ -48,7 +48,7 @@ export default function SiteHeader({ active = 'التأشيرات' }) {
                 className="qa-nav"
                 data-i18n-short={item.labelEn ? undefined : ''}
                 data-no-i18n={item.labelEn ? '' : undefined}
-                style={{ fontWeight: on ? 700 : 500, color: on ? '#049dc5' : '#3d4650', paddingBottom: 2, borderBottom: `2px solid ${on ? '#049dc5' : 'transparent'}` }}
+                style={{ fontWeight: on ? 700 : 500, color: on ? 'var(--qs-brand-deep,#049dc5)' : 'var(--qs-body,#3d4650)', paddingBottom: 2, borderBottom: `2px solid ${on ? 'var(--qs-brand-deep,#049dc5)' : 'transparent'}` }}
               >
                 {item.labelEn && lang === 'en' ? item.labelEn : item.label}
               </Link>
@@ -64,7 +64,7 @@ export default function SiteHeader({ active = 'التأشيرات' }) {
           title="Language"
           data-no-i18n=""
           className="qa-langbtn"
-          style={{ flex: 'none', display: 'flex', alignItems: 'center', gap: 8, padding: '8px 14px', border: '1px solid #ececed', borderRadius: 999, background: '#fff', fontFamily: 'inherit', fontSize: 13, fontWeight: 700, letterSpacing: '.04em', color: '#22a9d4', cursor: 'pointer' }}
+          style={{ flex: 'none', display: 'flex', alignItems: 'center', gap: 8, padding: '8px 14px', border: '1px solid var(--qs-line,#ececed)', borderRadius: 999, background: '#fff', fontFamily: 'inherit', fontSize: 13, fontWeight: 700, letterSpacing: '.04em', color: 'var(--qs-brand-deep,#22a9d4)', cursor: 'pointer' }}
         >
           <Icon name="globe" size={17} strokeWidth={1.8} />
           <span>{lang === 'ar' ? 'EN' : 'ع'}</span>
@@ -89,7 +89,7 @@ export default function SiteHeader({ active = 'التأشيرات' }) {
             height: 42,
             border: 0,
             borderRadius: 'var(--tw-radius-sm,10px)',
-            background: '#049dc5',
+            background: 'var(--qs-ink,#049dc5)',
             color: '#fff',
             cursor: 'pointer',
             marginInlineStart: 'auto',
@@ -107,7 +107,7 @@ export default function SiteHeader({ active = 'التأشيرات' }) {
             position: 'fixed',
             inset: 0,
             zIndex: 50,
-            background: '#049dc5',
+            background: 'var(--qs-ink,#049dc5)',
             display: 'flex',
             flexDirection: 'column',
             overflowY: 'auto',
@@ -192,7 +192,7 @@ export default function SiteHeader({ active = 'التأشيرات' }) {
                 padding: '12px 16px',
                 borderRadius: 999,
                 background: '#fff',
-                color: '#049dc5',
+                color: 'var(--qs-brand-deep,#049dc5)',
                 fontWeight: 700,
                 fontSize: 15,
                 textDecoration: 'none',

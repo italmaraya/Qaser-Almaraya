@@ -125,12 +125,12 @@ function TravelerForm({ index, travelerType, documents, onChange, onProgress }) 
     <div className="qa-card" style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>
-          <span style={{ fontSize: 12, fontWeight: 500, color: '#036f8c', background: '#eaf8fd', borderRadius: 999, padding: '3px 12px' }}>
+          <span style={{ fontSize: 12, fontWeight: 500, color: 'var(--qs-brand-deep,#036f8c)', background: 'var(--qs-brand-soft,#eaf8fd)', borderRadius: 999, padding: '3px 12px' }}>
             {travelerType === 'adult' ? 'بالغ' : 'طفل'}
           </span>
-          <span style={{ fontSize: 16, fontWeight: 700, color: '#1d2733' }}>مسافر {index + 1}</span>
+          <span style={{ fontSize: 16, fontWeight: 700, color: 'var(--qs-ink,#1d2733)' }}>مسافر {index + 1}</span>
         </span>
-        <span style={{ fontSize: 13, color: '#5f666e' }}>{doneRequired}/{totalRequired} مكتمل</span>
+        <span style={{ fontSize: 13, color: 'var(--qs-ink-2,#5f666e)' }}>{doneRequired}/{totalRequired} مكتمل</span>
       </div>
       <label style={labelStyle}>
         الاسم الكامل كما في الجواز *
@@ -142,7 +142,7 @@ function TravelerForm({ index, travelerType, documents, onChange, onProgress }) 
         return (
           <div key={d.id} style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-              <span style={{ fontSize: 14, fontWeight: 600, color: '#3d4650' }}>{d.name_ar}</span>
+              <span style={{ fontSize: 14, fontWeight: 600, color: 'var(--qs-body,#3d4650)' }}>{d.name_ar}</span>
               {d.required && (
                 <span style={{ fontSize: 11, fontWeight: 500, color: '#a06a00', background: '#fef3dc', borderRadius: 999, padding: '2px 10px' }}>مطلوب</span>
               )}
@@ -151,12 +151,12 @@ function TravelerForm({ index, travelerType, documents, onChange, onProgress }) 
             {(d.kind === 'file' || d.kind === 'photo') && (
               <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                  <label style={{ cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: 6, padding: '8px 16px', borderRadius: 999, border: '1px solid #036f8c', color: '#036f8c', fontSize: 14, fontWeight: 600 }}>
+                  <label style={{ cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: 6, padding: '8px 16px', borderRadius: 999, border: '1px solid var(--qs-brand-deep,#036f8c)', color: 'var(--qs-brand-deep,#036f8c)', fontSize: 14, fontWeight: 600 }}>
                     {files[d.id] ? 'تغيير الملف' : 'رفع'}
                     <input type="file" accept={d.kind === 'photo' ? 'image/*' : undefined} onChange={(e) => handleFile(d, e.target.files[0])} style={{ display: 'none' }} />
                   </label>
-                  {uploading[d.id] && <span style={{ fontSize: 13, color: '#5f666e' }}>...جارٍ الرفع</span>}
-                  {!uploading[d.id] && files[d.id] && <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4, fontSize: 13, color: '#049dc5' }}><Icon name="check" size={14} />تم الرفع</span>}
+                  {uploading[d.id] && <span style={{ fontSize: 13, color: 'var(--qs-ink-2,#5f666e)' }}>...جارٍ الرفع</span>}
+                  {!uploading[d.id] && files[d.id] && <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4, fontSize: 13, color: 'var(--qs-brand-deep,#049dc5)' }}><Icon name="check" size={14} />تم الرفع</span>}
                 </div>
                 {uploadErrors[d.id] && <span style={{ fontSize: 13, color: '#d2324f' }}>{uploadErrors[d.id]}</span>}
               </div>
@@ -180,9 +180,9 @@ function TravelerForm({ index, travelerType, documents, onChange, onProgress }) 
                       flex: 1,
                       padding: '10px 0',
                       borderRadius: 'var(--tw-radius-xs,8px)',
-                      border: '1px solid ' + (answers[d.id] === val ? '#049dc5' : '#ececed'),
-                      background: answers[d.id] === val ? '#049dc5' : '#fff',
-                      color: answers[d.id] === val ? '#fff' : '#3d4650',
+                      border: '1px solid ' + (answers[d.id] === val ? '#049dc5' : 'var(--qs-line,#ececed)'),
+                      background: answers[d.id] === val ? 'var(--qs-ink,#049dc5)' : '#fff',
+                      color: answers[d.id] === val ? '#fff' : 'var(--qs-body,#3d4650)',
                       fontFamily: 'inherit',
                       fontWeight: 600,
                     }}
@@ -204,9 +204,9 @@ function TravelerForm({ index, travelerType, documents, onChange, onProgress }) 
                       cursor: 'pointer',
                       padding: '10px 16px',
                       borderRadius: 999,
-                      border: '1px solid ' + (answers[d.id] === c ? '#049dc5' : '#ececed'),
-                      background: answers[d.id] === c ? '#049dc5' : '#fff',
-                      color: answers[d.id] === c ? '#fff' : '#3d4650',
+                      border: '1px solid ' + (answers[d.id] === c ? '#049dc5' : 'var(--qs-line,#ececed)'),
+                      background: answers[d.id] === c ? 'var(--qs-ink,#049dc5)' : '#fff',
+                      color: answers[d.id] === c ? '#fff' : 'var(--qs-body,#3d4650)',
                       fontFamily: 'inherit',
                       fontSize: 14,
                       fontWeight: 600,
@@ -216,7 +216,7 @@ function TravelerForm({ index, travelerType, documents, onChange, onProgress }) 
                   </button>
                 ))}
                 {(!d.choices || d.choices.length === 0) && (
-                  <span style={{ fontSize: 13, color: '#5f666e' }}>لم يحدد الخيارات بعد</span>
+                  <span style={{ fontSize: 13, color: 'var(--qs-ink-2,#5f666e)' }}>لم يحدد الخيارات بعد</span>
                 )}
               </div>
             )}
@@ -386,7 +386,7 @@ function ArchivedVisaApplyPage() {
       <SiteHeader active="التأشيرات" />
       <main style={{ flex: 1 }}>
         <div className="qa-page">
-          <section style={{ background: 'var(--tw-band-deep,#049dc5)', color: '#fff' }}>
+          <section style={{ background: 'var(--tw-band-deep,var(--qs-ink,#049dc5))', color: '#fff' }}>
             <div className="qa-sec" style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
               <Link href={`/visa/${id}`} style={{ fontSize: 14, color: 'rgba(255,255,255,.85)', textDecoration: 'none', alignSelf: 'flex-start' }}>← رجوع إلى التأشيرات</Link>
               <div>
@@ -403,14 +403,14 @@ function ArchivedVisaApplyPage() {
                       alignItems: 'center',
                       gap: 8,
                       background: s.id === activeStep ? '#fff' : 'rgba(255,255,255,.16)',
-                      color: s.id === activeStep ? '#049dc5' : '#fff',
+                      color: s.id === activeStep ? 'var(--qs-brand-deep,#049dc5)' : '#fff',
                       borderRadius: 999,
                       padding: '8px 16px',
                       fontSize: 14,
                       fontWeight: 700,
                     }}
                   >
-                    <span style={{ width: 20, height: 20, borderRadius: '50%', background: s.id === activeStep ? '#049dc5' : 'rgba(255,255,255,.3)', color: '#fff', fontSize: 11, display: 'grid', placeItems: 'center' }}>{s.id}</span>
+                    <span style={{ width: 20, height: 20, borderRadius: '50%', background: s.id === activeStep ? 'var(--qs-ink,#049dc5)' : 'rgba(255,255,255,.3)', color: '#fff', fontSize: 11, display: 'grid', placeItems: 'center' }}>{s.id}</span>
                     {s.label}
                   </span>
                 ))}
@@ -424,30 +424,30 @@ function ArchivedVisaApplyPage() {
               <div style={{ display: 'flex', flexDirection: 'column', gap: 8, fontSize: 14 }}>
                 {adultCount > 0 && (
                   <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                    <span style={{ color: '#5f666e' }}>{adultCount} × بالغ</span>
+                    <span style={{ color: 'var(--qs-ink-2,#5f666e)' }}>{adultCount} × بالغ</span>
                     <span>{formatPrice(Number(card.adult_price) * adultCount, 'IQD', lang)}</span>
                   </div>
                 )}
                 {childCount > 0 && (
                   <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                    <span style={{ color: '#5f666e' }}>{childCount} × طفل</span>
+                    <span style={{ color: 'var(--qs-ink-2,#5f666e)' }}>{childCount} × طفل</span>
                     <span>{formatPrice(Number(card.child_price) * childCount, 'IQD', lang)}</span>
                   </div>
                 )}
-                <div style={{ display: 'flex', justifyContent: 'space-between', borderTop: '1px solid #ececed', paddingTop: 8, fontWeight: 700 }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', borderTop: '1px solid var(--qs-line,#ececed)', paddingTop: 8, fontWeight: 700 }}>
                   <span>الإجمالي</span>
-                  <span style={{ color: '#049dc5' }}>{formatPrice(estimatedTotal, 'IQD', lang)}</span>
+                  <span style={{ color: 'var(--qs-brand-deep,#049dc5)' }}>{formatPrice(estimatedTotal, 'IQD', lang)}</span>
                 </div>
               </div>
               {step === 'form' && (
                 <>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13, color: '#5f666e' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13, color: 'var(--qs-ink-2,#5f666e)' }}>
                       <span>المستندات المطلوبة</span>
                       <span>{totalDone}/{totalNeeded} مكتمل</span>
                     </div>
-                    <div style={{ height: 6, borderRadius: 999, background: '#ececed', overflow: 'hidden' }}>
-                      <div style={{ height: '100%', width: totalNeeded ? `${Math.min(100, (totalDone / totalNeeded) * 100)}%` : '0%', background: '#049dc5' }} />
+                    <div style={{ height: 6, borderRadius: 999, background: 'var(--qs-line,#ececed)', overflow: 'hidden' }}>
+                      <div style={{ height: '100%', width: totalNeeded ? `${Math.min(100, (totalDone / totalNeeded) * 100)}%` : '0%', background: 'var(--qs-ink,#049dc5)' }} />
                     </div>
                   </div>
                   <button
@@ -474,7 +474,7 @@ function ArchivedVisaApplyPage() {
                       <label style={labelStyle}>
                         رقم الهاتف *
                         <div style={{ display: 'flex', alignItems: 'center', gap: 8, ...inputStyle, padding: '0 12px' }}>
-                          <span dir="ltr" style={{ color: '#5f666e', fontWeight: 700, flex: 'none' }}>+964</span>
+                          <span dir="ltr" style={{ color: 'var(--qs-ink-2,#5f666e)', fontWeight: 700, flex: 'none' }}>+964</span>
                           <input
                             style={{ border: 0, outline: 'none', fontFamily: 'inherit', fontSize: 15, flex: 1, padding: '10px 0', minWidth: 0 }}
                             dir="ltr"
@@ -525,7 +525,7 @@ function ArchivedVisaApplyPage() {
 
               {step === 'payment' && (
                 <div className="qa-card">
-                  {submitting && <p style={{ margin: 0, color: '#5f666e', fontSize: 14 }}>...جارٍ إرسال طلبك في الخلفية</p>}
+                  {submitting && <p style={{ margin: 0, color: 'var(--qs-ink-2,#5f666e)', fontSize: 14 }}>...جارٍ إرسال طلبك في الخلفية</p>}
                   {error && (
                     <p style={{ margin: '0 0 14px', padding: 12, background: '#fdecef', border: '1px solid #f7c3cc', borderRadius: 'var(--tw-radius-sm,10px)', color: '#d2324f', fontSize: 14 }}>{error}</p>
                   )}

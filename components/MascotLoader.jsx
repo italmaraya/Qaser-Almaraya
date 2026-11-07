@@ -22,7 +22,7 @@ export default function MascotLoader({ assetBase = '/assets' }) {
             inset: 0,
             borderRadius: '50%',
             border: '2px solid rgba(4,157,197,.2)',
-            borderTopColor: '#049dc5',
+            borderTopColor: 'var(--qs-brand-deep,#049dc5)',
             animation: 'qa-ring .9s linear infinite',
           }}
         />

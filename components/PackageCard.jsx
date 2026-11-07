@@ -17,15 +17,15 @@ function FlightRow({ f, lang, selected, onSelect }) {
   return (
     <div
       style={{
-        border: `1px solid ${selected ? 'var(--q-cyan,#049dc5)' : 'var(--q-line,#e6e9eb)'}`,
+        border: `1px solid ${selected ? 'var(--q-cyan,var(--qs-brand-deep,#049dc5))' : 'var(--q-line,var(--qs-line,#e6e9eb))'}`,
         background: selected ? 'var(--q-cyan-soft,#eaf8fd)' : '#fff', borderRadius: 'var(--q-r-sm,8px)', padding: 14,
         display: 'flex', flexDirection: 'column', gap: 10,
       }}
     >
       <div onClick={onSelect} style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8 }}>
-        <span style={{ fontSize: 13, fontWeight: 500, color: 'var(--q-ink,#1d2733)' }}>
+        <span style={{ fontSize: 13, fontWeight: 500, color: 'var(--q-ink,var(--qs-ink,#1d2733))' }}>
           {airline || (lang === 'en' ? 'Airline' : 'شركة الطيران')}
-          {legData.flightNo ? <span style={{ color: 'var(--q-ink-2,#5f666e)', fontWeight: 500 }}> · {legData.flightNo}</span> : null}
+          {legData.flightNo ? <span style={{ color: 'var(--q-ink-2,var(--qs-ink-2,#5f666e))', fontWeight: 500 }}> · {legData.flightNo}</span> : null}
         </span>
         <span style={{ fontSize: 13, fontWeight: 500, color: f.diff ? 'var(--q-cyan-dark,#036f8c)' : 'var(--q-ink-2,#5f666e)' }}>
           {f.diff ? (f.diff > 0 ? '+' : '') + f.diff.toLocaleString() + ' ' + (lang === 'en' ? 'IQD' : 'د.ع') : (lang === 'en' ? 'Included' : 'مشمول')}
@@ -39,7 +39,7 @@ function FlightRow({ f, lang, selected, onSelect }) {
             onClick={(e) => { e.stopPropagation(); setLeg('out'); }}
             style={{
               flex: 1, cursor: 'pointer', fontFamily: 'inherit', padding: '6px 8px', borderRadius: 999, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 4,
-              border: `1px solid ${active === 'out' ? 'var(--q-cyan,#049dc5)' : 'var(--q-line,#e6e9eb)'}`, background: active === 'out' ? 'var(--q-cyan,#049dc5)' : '#fff', color: active === 'out' ? '#fff' : '#3d4650', fontSize: 12, fontWeight: 700,
+              border: `1px solid ${active === 'out' ? 'var(--q-cyan,var(--qs-brand-deep,#049dc5))' : 'var(--q-line,var(--qs-line,#e6e9eb))'}`, background: active === 'out' ? 'var(--q-cyan,#049dc5)' : '#fff', color: active === 'out' ? '#fff' : 'var(--qs-body,#3d4650)', fontSize: 12, fontWeight: 700,
             }}
           >
             <Icon name="plane-takeoff" size={12} />{lang === 'en' ? 'Departure' : 'ذهاب'}
@@ -49,7 +49,7 @@ function FlightRow({ f, lang, selected, onSelect }) {
             onClick={(e) => { e.stopPropagation(); setLeg('ret'); }}
             style={{
               flex: 1, cursor: 'pointer', fontFamily: 'inherit', padding: '6px 8px', borderRadius: 999, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 4,
-              border: `1px solid ${active === 'ret' ? 'var(--q-cyan,#049dc5)' : 'var(--q-line,#e6e9eb)'}`, background: active === 'ret' ? 'var(--q-cyan,#049dc5)' : '#fff', color: active === 'ret' ? '#fff' : '#3d4650', fontSize: 12, fontWeight: 700,
+              border: `1px solid ${active === 'ret' ? 'var(--q-cyan,var(--qs-brand-deep,#049dc5))' : 'var(--q-line,var(--qs-line,#e6e9eb))'}`, background: active === 'ret' ? 'var(--q-cyan,#049dc5)' : '#fff', color: active === 'ret' ? '#fff' : 'var(--qs-body,#3d4650)', fontSize: 12, fontWeight: 700,
             }}
           >
             <Icon name="plane-landing" size={12} />{lang === 'en' ? 'Return' : 'عودة'}
@@ -60,18 +60,18 @@ function FlightRow({ f, lang, selected, onSelect }) {
       {hasRoute ? (
         <div onClick={onSelect} style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 10 }}>
           <div style={{ flex: '0 0 auto', minWidth: 70, textAlign: 'center' }}>
-            <div style={{ fontSize: 16, fontWeight: 700, color: 'var(--q-ink,#1d2733)' }}>{legData.depart || '--:--'}</div>
-            <div style={{ fontSize: 12, color: 'var(--q-ink-2,#5f666e)' }}>{legData.from || (lang === 'en' ? 'Origin' : 'الانطلاق')}</div>
+            <div style={{ fontSize: 16, fontWeight: 700, color: 'var(--q-ink,var(--qs-ink,#1d2733))' }}>{legData.depart || '--:--'}</div>
+            <div style={{ fontSize: 12, color: 'var(--q-ink-2,var(--qs-ink-2,#5f666e))' }}>{legData.from || (lang === 'en' ? 'Origin' : 'الانطلاق')}</div>
           </div>
           <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 }}>
-            <div style={{ position: 'relative', width: '100%', height: 1, background: 'var(--q-line,#e6e9eb)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <Icon name="plane" size={16} style={{ color: 'var(--q-cyan,#049dc5)', background: '#fff', transform: active === 'ret' ? 'rotate(-90deg)' : 'rotate(90deg)' }} />
+            <div style={{ position: 'relative', width: '100%', height: 1, background: 'var(--q-line,var(--qs-line,#e6e9eb))', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <Icon name="plane" size={16} style={{ color: 'var(--q-cyan,var(--qs-brand-deep,#049dc5))', background: '#fff', transform: active === 'ret' ? 'rotate(-90deg)' : 'rotate(90deg)' }} />
             </div>
-            {legData.duration ? <span style={{ fontSize: 10, color: 'var(--q-ink-2,#5f666e)' }}>{legData.duration}</span> : null}
+            {legData.duration ? <span style={{ fontSize: 10, color: 'var(--q-ink-2,var(--qs-ink-2,#5f666e))' }}>{legData.duration}</span> : null}
           </div>
           <div style={{ flex: '0 0 auto', minWidth: 70, textAlign: 'center' }}>
-            <div style={{ fontSize: 16, fontWeight: 700, color: 'var(--q-ink,#1d2733)' }}>{legData.arrive || '--:--'}</div>
-            <div style={{ fontSize: 12, color: 'var(--q-ink-2,#5f666e)' }}>{legData.to || (lang === 'en' ? 'Destination' : 'الوصول')}</div>
+            <div style={{ fontSize: 16, fontWeight: 700, color: 'var(--q-ink,var(--qs-ink,#1d2733))' }}>{legData.arrive || '--:--'}</div>
+            <div style={{ fontSize: 12, color: 'var(--q-ink-2,var(--qs-ink-2,#5f666e))' }}>{legData.to || (lang === 'en' ? 'Destination' : 'الوصول')}</div>
           </div>
         </div>
       ) : null}
@@ -86,7 +86,7 @@ function HotelRow({ h, lang, selected, onSelect }) {
     <div
       onClick={onSelect}
       style={{
-        cursor: 'pointer', border: `1px solid ${selected ? 'var(--q-cyan,#049dc5)' : 'var(--q-line,#e6e9eb)'}`,
+        cursor: 'pointer', border: `1px solid ${selected ? 'var(--q-cyan,var(--qs-brand-deep,#049dc5))' : 'var(--q-line,var(--qs-line,#e6e9eb))'}`,
         background: selected ? 'var(--q-cyan-soft,#eaf8fd)' : '#fff', borderRadius: 'var(--q-r-sm,8px)', padding: 12,
         display: 'flex', alignItems: 'center', gap: 12,
       }}
@@ -95,21 +95,21 @@ function HotelRow({ h, lang, selected, onSelect }) {
         /* eslint-disable-next-line @next/next/no-img-element */
         <img src={h.imageUrl} alt="" style={{ width: 56, height: 56, borderRadius: 'var(--q-r-sm,8px)', objectFit: 'cover', flex: 'none' }} />
       ) : (
-        <div style={{ width: 56, height: 56, borderRadius: 'var(--q-r-sm,8px)', background: 'var(--q-surface-2,#f6f8f9)', display: 'grid', placeItems: 'center', flex: 'none' }}>
-          <Icon name="building-2" size={20} style={{ color: 'var(--q-cyan,#049dc5)' }} />
+        <div style={{ width: 56, height: 56, borderRadius: 'var(--q-r-sm,8px)', background: 'var(--q-surface-2,var(--qs-paper,#f6f8f9))', display: 'grid', placeItems: 'center', flex: 'none' }}>
+          <Icon name="building-2" size={20} style={{ color: 'var(--q-cyan,var(--qs-brand-deep,#049dc5))' }} />
         </div>
       )}
       <div style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', gap: 4 }}>
-        <span style={{ fontSize: 14, fontWeight: 700, color: 'var(--q-ink,#1d2733)' }}>{nm(h.nameAr, h.nameEn)}</span>
+        <span style={{ fontSize: 14, fontWeight: 700, color: 'var(--q-ink,var(--qs-ink,#1d2733))' }}>{nm(h.nameAr, h.nameEn)}</span>
         {h.location ? (
-          <span style={{ fontSize: 12, color: 'var(--q-ink-2,#5f666e)', display: 'flex', alignItems: 'center', gap: 4 }}>
+          <span style={{ fontSize: 12, color: 'var(--q-ink-2,var(--qs-ink-2,#5f666e))', display: 'flex', alignItems: 'center', gap: 4 }}>
             <Icon name="map-pin" size={12} />{h.location}
           </span>
         ) : null}
         {amenities.length ? (
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginTop: 2 }}>
             {amenities.slice(0, 4).map((a) => (
-              <span key={a} style={{ fontSize: 11, color: '#3d4650', background: 'var(--q-surface-2,#f6f8f9)', border: '1px solid var(--q-line,#e6e9eb)', borderRadius: 999, padding: '2px 8px' }}>{a}</span>
+              <span key={a} style={{ fontSize: 11, color: 'var(--qs-body,#3d4650)', background: 'var(--q-surface-2,var(--qs-paper,#f6f8f9))', border: '1px solid var(--q-line,var(--qs-line,#e6e9eb))', borderRadius: 999, padding: '2px 8px' }}>{a}</span>
             ))}
           </div>
         ) : null}
@@ -181,15 +181,15 @@ export default function PackageCard({ title, destination, image, nights, groupTy
   const detailsLabel = en ? 'Package details' : 'تفاصيل الباقة';
 
   return (
-    <div dir={en ? 'ltr' : 'rtl'} className="qa-pkg-card" style={{ background: '#fff', border: '1px solid var(--q-line,#e6e9eb)', borderRadius: 'var(--q-r,12px)', overflow: 'hidden', display: 'flex', flexDirection: 'column', minWidth: 0, ...style }}>
+    <div dir={en ? 'ltr' : 'rtl'} className="qa-pkg-card" style={{ background: '#fff', border: '1px solid var(--q-line,var(--qs-line,#e6e9eb))', borderRadius: 'var(--q-r,12px)', overflow: 'hidden', display: 'flex', flexDirection: 'column', minWidth: 0, ...style }}>
       {/* Image + text are one focusable region that opens the package. */}
       <button type="button" onClick={onDetails} aria-label={heading ? `${detailsLabel} — ${heading}` : detailsLabel} className="qa-pkg-link">
-        <div className="qa-pkg-hero" style={{ position: 'relative', background: 'var(--q-surface-2,#f6f8f9)', overflow: 'hidden' }}>
+        <div className="qa-pkg-hero" style={{ position: 'relative', background: 'var(--q-surface-2,var(--qs-paper,#f6f8f9))', overflow: 'hidden' }}>
           {image ? (
             /* eslint-disable-next-line @next/next/no-img-element */
             <img src={image} alt={heading || title || ''} loading="lazy" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', objectPosition: '50% 28%' }} />
           ) : (
-            <span style={{ position: 'absolute', inset: 0, display: 'grid', placeItems: 'center', color: 'var(--q-ink-3,#9aa0a6)', fontSize: 13 }}>
+            <span style={{ position: 'absolute', inset: 0, display: 'grid', placeItems: 'center', color: 'var(--q-ink-3,var(--qs-ink-3,#9aa0a6))', fontSize: 13 }}>
               <Icon name="image" size={24} />
             </span>
           )}
@@ -219,7 +219,7 @@ export default function PackageCard({ title, destination, image, nights, groupTy
             <ul className="qa-pkg-includes">
               {shownIncludes.map((i) => (
                 <li key={i}>
-                  <Icon name="check" size={15} style={{ color: 'var(--q-cyan,#049dc5)', flex: 'none' }} />{i}
+                  <Icon name="check" size={15} style={{ color: 'var(--q-cyan,var(--qs-brand-deep,#049dc5))', flex: 'none' }} />{i}
                 </li>
               ))}
               {extraIncludes > 0 ? (
@@ -248,12 +248,12 @@ export default function PackageCard({ title, destination, image, nights, groupTy
           aria-expanded={open}
         >
           <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            <Icon name="plane" size={15} style={{ color: 'var(--q-cyan,#049dc5)', flex: 'none' }} />
-            <span style={{ fontSize: 13, fontWeight: 500, color: 'var(--q-cyan-dark,#036f8c)' }}>
+            <Icon name="plane" size={15} style={{ color: 'var(--q-cyan,var(--qs-brand-deep,#049dc5))', flex: 'none' }} />
+            <span style={{ fontSize: 13, fontWeight: 500, color: 'var(--q-cyan-dark,var(--qs-brand-deep,#036f8c))' }}>
               {en ? 'Check flights & hotels' : 'تحقق من الطيران والفنادق'}
             </span>
           </span>
-          <Icon name={open ? 'chevron-up' : 'chevron-down'} size={16} style={{ color: 'var(--q-cyan-dark,#036f8c)', flex: 'none' }} />
+          <Icon name={open ? 'chevron-up' : 'chevron-down'} size={16} style={{ color: 'var(--q-cyan-dark,var(--qs-brand-deep,#036f8c))', flex: 'none' }} />
         </button>
       ) : null}
 
@@ -266,8 +266,8 @@ export default function PackageCard({ title, destination, image, nights, groupTy
                 onClick={() => setTab('flights')}
                 style={{
                   flex: 1, cursor: 'pointer', fontFamily: 'inherit', padding: '8px 10px', borderRadius: 999,
-                  border: `1px solid ${tab === 'flights' ? 'var(--q-cyan,#049dc5)' : 'var(--q-line,#e6e9eb)'}`,
-                  background: tab === 'flights' ? 'var(--q-cyan,#049dc5)' : '#fff', color: tab === 'flights' ? '#fff' : '#3d4650', fontSize: 13, fontWeight: 700,
+                  border: `1px solid ${tab === 'flights' ? 'var(--q-cyan,var(--qs-brand-deep,#049dc5))' : 'var(--q-line,var(--qs-line,#e6e9eb))'}`,
+                  background: tab === 'flights' ? 'var(--q-cyan,#049dc5)' : '#fff', color: tab === 'flights' ? '#fff' : 'var(--qs-body,#3d4650)', fontSize: 13, fontWeight: 700,
                 }}
               >
                 {en ? 'Flights' : 'الرحلات'}
@@ -279,8 +279,8 @@ export default function PackageCard({ title, destination, image, nights, groupTy
                 onClick={() => setTab('hotels')}
                 style={{
                   flex: 1, cursor: 'pointer', fontFamily: 'inherit', padding: '8px 10px', borderRadius: 999,
-                  border: `1px solid ${tab === 'hotels' ? 'var(--q-cyan,#049dc5)' : 'var(--q-line,#e6e9eb)'}`,
-                  background: tab === 'hotels' ? 'var(--q-cyan,#049dc5)' : '#fff', color: tab === 'hotels' ? '#fff' : '#3d4650', fontSize: 13, fontWeight: 700,
+                  border: `1px solid ${tab === 'hotels' ? 'var(--q-cyan,var(--qs-brand-deep,#049dc5))' : 'var(--q-line,var(--qs-line,#e6e9eb))'}`,
+                  background: tab === 'hotels' ? 'var(--q-cyan,#049dc5)' : '#fff', color: tab === 'hotels' ? '#fff' : 'var(--qs-body,#3d4650)', fontSize: 13, fontWeight: 700,
                 }}
               >
                 {en ? 'Hotels' : 'الفنادق'}
@@ -315,52 +315,52 @@ export default function PackageCard({ title, destination, image, nights, groupTy
         .qa-pkg-link:focus-visible,
         .qa-pkg-cta:focus-visible,
         .qa-pkg-toggle:focus-visible,
-        .qa-pkg-continue:focus-visible { outline: 2px solid var(--q-cyan,#049dc5); outline-offset: 3px; }
+        .qa-pkg-continue:focus-visible { outline: 2px solid var(--q-cyan,var(--qs-brand-deep,#049dc5)); outline-offset: 3px; }
 
         .qa-pkg-hero { aspect-ratio: 3 / 2; }
         .qa-pkg-badge { padding: 5px 11px; font-size: 12.5px; }
 
         .qa-pkg-body { display: flex; flex-direction: column; gap: 8px; padding: 16px 20px 18px; min-width: 0; }
         .qa-pkg-dest {
-          margin: 0; font-size: 22px; font-weight: 700; color: var(--q-ink,#1d2733); line-height: 1.32;
+          margin: 0; font-size: 22px; font-weight: 700; color: var(--q-ink,var(--qs-ink,#1d2733)); line-height: 1.32;
           display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
           overflow: hidden; overflow-wrap: anywhere;
         }
-        .qa-pkg-sub { font-size: 14px; color: var(--q-ink-2,#5f666e); line-height: 1.5; overflow-wrap: anywhere; }
-        .qa-pkg-meta { font-size: 13px; color: var(--q-ink-2,#5f666e); line-height: 1.6; overflow-wrap: anywhere; }
+        .qa-pkg-sub { font-size: 14px; color: var(--q-ink-2,var(--qs-ink-2,#5f666e)); line-height: 1.5; overflow-wrap: anywhere; }
+        .qa-pkg-meta { font-size: 13px; color: var(--q-ink-2,var(--qs-ink-2,#5f666e)); line-height: 1.6; overflow-wrap: anywhere; }
 
         .qa-pkg-includes { margin: 2px 0 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 6px; }
-        .qa-pkg-includes li { display: flex; gap: 8px; align-items: flex-start; font-size: 14px; color: #3d4650; line-height: 1.5; }
-        .qa-pkg-includes li.qa-pkg-more { font-size: 13px; color: var(--q-ink-3,#9aa0a6); padding-inline-start: 23px; }
+        .qa-pkg-includes li { display: flex; gap: 8px; align-items: flex-start; font-size: 14px; color: var(--qs-body,#3d4650); line-height: 1.5; }
+        .qa-pkg-includes li.qa-pkg-more { font-size: 13px; color: var(--q-ink-3,var(--qs-ink-3,#9aa0a6)); padding-inline-start: 23px; }
 
         .qa-pkg-foot {
           display: flex; align-items: center; justify-content: space-between; gap: 12px;
-          padding: 14px 20px 18px; border-top: 1px solid var(--q-line,#e6e9eb);
+          padding: 14px 20px 18px; border-top: 1px solid var(--q-line,var(--qs-line,#e6e9eb));
         }
-        .qa-pkg-price-label { font-size: 13px; color: var(--q-ink-3,#9aa0a6); }
-        .qa-pkg-price { font-size: 28px; font-weight: 800; color: var(--q-cyan-dark,#036f8c); white-space: nowrap; line-height: 1.15; }
+        .qa-pkg-price-label { font-size: 13px; color: var(--q-ink-3,var(--qs-ink-3,#9aa0a6)); }
+        .qa-pkg-price { font-size: 28px; font-weight: 800; color: var(--q-cyan-dark,var(--qs-brand-deep,#036f8c)); white-space: nowrap; line-height: 1.15; }
         .qa-pkg-cta {
           flex: none; display: inline-flex; align-items: center; justify-content: center;
           min-height: 46px; padding: 0 18px; border-radius: 999px;
-          border: 1px solid var(--q-cyan,#049dc5); background: transparent; color: var(--q-cyan-dark,#036f8c);
+          border: 1px solid var(--q-cyan,var(--qs-brand-deep,#049dc5)); background: transparent; color: var(--q-cyan-dark,var(--qs-brand-deep,#036f8c));
           font-family: inherit; font-size: 14px; font-weight: 700; white-space: nowrap; cursor: pointer;
           transition: background .16s ease;
         }
-        .qa-pkg-cta:hover { background: var(--q-cyan-soft,#eaf8fd); }
+        .qa-pkg-cta:hover { background: var(--q-cyan-soft,var(--qs-brand-soft,#eaf8fd)); }
 
         .qa-pkg-toggle {
           display: flex; align-items: center; justify-content: space-between; gap: 10px;
-          width: 100%; padding: 13px 20px; border: 0; border-top: 1px solid var(--q-line,#e6e9eb);
+          width: 100%; padding: 13px 20px; border: 0; border-top: 1px solid var(--q-line,var(--qs-line,#e6e9eb));
           border-radius: 0; background: transparent; font-family: inherit; cursor: pointer;
         }
         .qa-pkg-panel {
           display: flex; flex-direction: column; gap: 12px;
-          padding: 14px 20px 18px; border-top: 1px solid var(--q-line,#e6e9eb);
+          padding: 14px 20px 18px; border-top: 1px solid var(--q-line,var(--qs-line,#e6e9eb));
         }
         .qa-pkg-continue {
           display: inline-flex; align-items: center; justify-content: center; min-height: 46px;
-          padding: 0 18px; border: 1px solid var(--q-cyan,#049dc5); border-radius: 999px;
-          background: var(--q-cyan,#049dc5); color: #fff;
+          padding: 0 18px; border: 1px solid var(--q-cyan,var(--qs-brand-deep,#049dc5)); border-radius: 999px;
+          background: var(--q-cyan,var(--qs-ink,#049dc5)); color: #fff;
           font-family: inherit; font-size: 13.5px; font-weight: 700; cursor: pointer;
         }
 

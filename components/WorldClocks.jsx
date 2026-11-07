@@ -64,9 +64,9 @@ export default function WorldClocks({ tz, place, lang = 'ar', flight = null, com
   try { diff = offsetMinutes(tz, now) - offsetMinutes(BAGHDAD_TZ, now); } catch { return null; }
 
   const clock = (label, zone, accent) => (
-    <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2, padding: '10px 8px', borderRadius: 'var(--tw-radius-sm,10px)', background: accent ? '#eaf8fd' : '#f6f7f8' }}>
-      <span style={{ fontSize: 12, color: '#5f666e' }}>{label}</span>
-      <span data-no-i18n="" style={{ fontSize: compact ? 20 : 24, fontWeight: 700, color: accent ? '#036f8c' : '#1d2733', fontFamily: "'IBM Plex Sans',sans-serif", direction: 'ltr' }}>{fmtTime(zone, now, 'en')}</span>
+    <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2, padding: '10px 8px', borderRadius: 'var(--tw-radius-sm,10px)', background: accent ? 'var(--qs-brand-soft,#eaf8fd)' : '#f6f7f8' }}>
+      <span style={{ fontSize: 12, color: 'var(--qs-ink-2,#5f666e)' }}>{label}</span>
+      <span data-no-i18n="" style={{ fontSize: compact ? 20 : 24, fontWeight: 700, color: accent ? 'var(--qs-brand-deep,#036f8c)' : 'var(--qs-ink,#1d2733)', fontFamily: "'IBM Plex Sans',sans-serif", direction: 'ltr' }}>{fmtTime(zone, now, 'en')}</span>
     </div>
   );
 
@@ -76,22 +76,22 @@ export default function WorldClocks({ tz, place, lang = 'ar', flight = null, com
 
   return (
     <div className="qa-card" style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-      <h4 style={{ margin: 0, fontSize: 15, display: 'flex', alignItems: 'center', gap: 8 }}><Icon name="clock" size={16} style={{ color: '#049dc5', flex: 'none' }} />{en ? 'Time difference' : 'فرق التوقيت'}</h4>
+      <h4 style={{ margin: 0, fontSize: 15, display: 'flex', alignItems: 'center', gap: 8 }}><Icon name="clock" size={16} style={{ color: 'var(--qs-brand-deep,#049dc5)', flex: 'none' }} />{en ? 'Time difference' : 'فرق التوقيت'}</h4>
       <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
         {clock(en ? 'Baghdad' : 'بغداد', BAGHDAD_TZ, false)}
-        <Icon name="arrow-left-right" size={18} style={{ color: '#049dc5', flex: 'none' }} />
+        <Icon name="arrow-left-right" size={18} style={{ color: 'var(--qs-brand-deep,#049dc5)', flex: 'none' }} />
         {clock(place, tz, true)}
       </div>
-      <span style={{ fontSize: 13, color: '#3d4650', textAlign: 'center' }}>{diffLabel(diff, place, en)}</span>
+      <span style={{ fontSize: 13, color: 'var(--qs-body,#3d4650)', textAlign: 'center' }}>{diffLabel(diff, place, en)}</span>
       {(arr || dep) && (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 4, fontSize: 13, color: '#3d4650', borderTop: '1px solid #ececed', paddingTop: 8 }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 4, fontSize: 13, color: 'var(--qs-body,#3d4650)', borderTop: '1px solid var(--qs-line,#ececed)', paddingTop: 8 }}>
           {arr && (
-            <span style={{ display: 'flex', alignItems: 'flex-start', gap: 8 }}><Icon name="plane-landing" size={15} style={{ color: '#5f666e', flex: 'none', marginTop: 2 }} /><span>{en ? `When you land at ${flight.arrive} in ${place}, it's ` : `عند وصولك الساعة ${flight.arrive} بتوقيت ${place}، تكون الساعة `}<b data-no-i18n="">{arr.text}</b>{en ? ' in Baghdad' : ' في بغداد'}{shift(arr.dayShift)}</span></span>
+            <span style={{ display: 'flex', alignItems: 'flex-start', gap: 8 }}><Icon name="plane-landing" size={15} style={{ color: 'var(--qs-ink-2,#5f666e)', flex: 'none', marginTop: 2 }} /><span>{en ? `When you land at ${flight.arrive} in ${place}, it's ` : `عند وصولك الساعة ${flight.arrive} بتوقيت ${place}، تكون الساعة `}<b data-no-i18n="">{arr.text}</b>{en ? ' in Baghdad' : ' في بغداد'}{shift(arr.dayShift)}</span></span>
           )}
           {dep && (
-            <span style={{ display: 'flex', alignItems: 'flex-start', gap: 8 }}><Icon name="plane-takeoff" size={15} style={{ color: '#5f666e', flex: 'none', marginTop: 2 }} /><span>{en ? `Your return leaves at ${flight.depart} ${place} time — ` : `رحلة العودة تغادر ${flight.depart} بتوقيت ${place} — أي `}<b data-no-i18n="">{dep.text}</b>{en ? ' in Baghdad' : ' في بغداد'}{shift(dep.dayShift)}</span></span>
+            <span style={{ display: 'flex', alignItems: 'flex-start', gap: 8 }}><Icon name="plane-takeoff" size={15} style={{ color: 'var(--qs-ink-2,#5f666e)', flex: 'none', marginTop: 2 }} /><span>{en ? `Your return leaves at ${flight.depart} ${place} time — ` : `رحلة العودة تغادر ${flight.depart} بتوقيت ${place} — أي `}<b data-no-i18n="">{dep.text}</b>{en ? ' in Baghdad' : ' في بغداد'}{shift(dep.dayShift)}</span></span>
           )}
-          <span style={{ fontSize: 12, color: '#5f666e' }}>{en ? 'Handy for planning calls with family.' : 'مفيد لترتيب الاتصال مع العائلة.'}</span>
+          <span style={{ fontSize: 12, color: 'var(--qs-ink-2,#5f666e)' }}>{en ? 'Handy for planning calls with family.' : 'مفيد لترتيب الاتصال مع العائلة.'}</span>
         </div>
       )}
     </div>

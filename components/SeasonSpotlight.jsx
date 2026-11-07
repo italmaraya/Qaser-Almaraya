@@ -58,8 +58,8 @@ export default function SeasonSpotlight({ lang = 'ar' }) {
 .qa-ss-shade{position:absolute;inset:0;background:linear-gradient(to left,var(--ss-a) 0%,var(--ss-a) 36%,var(--ss-b) 54%,var(--ss-c) 80%)}
 [dir=ltr] .qa-ss-shade{background:linear-gradient(to right,var(--ss-a) 0%,var(--ss-a) 36%,var(--ss-b) 54%,var(--ss-c) 80%)}
 .qa-ss-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;position:relative}
-.qa-ss-card{display:flex;gap:10px;background:#fff;color:#1d2733;border-radius:var(--tw-radius-sm,10px);overflow:hidden;min-height:84px;transition:transform .15s}
-.qa-ss-card:hover{color:#1d2733;transform:translateY(-2px)}
+.qa-ss-card{display:flex;gap:10px;background:#fff;color:var(--qs-ink,#1d2733);border-radius:var(--tw-radius-sm,10px);overflow:hidden;min-height:84px;transition:transform .15s}
+.qa-ss-card:hover{color:var(--qs-ink,#1d2733);transform:translateY(-2px)}
 .qa-ss-card img{width:84px;flex-shrink:0;object-fit:cover}
 .qa-ss .qa-btn{white-space:nowrap!important;min-height:0!important;line-height:1.3}
 @media (max-width:820px){.qa-ss .qa-btn{padding:10px 20px!important;font-size:14.5px!important}.qa-ss{padding:150px 18px 22px}.qa-ss h2{font-size:23px!important}.qa-ss-photo img{object-position:center 30%}.qa-ss-shade,[dir=ltr] .qa-ss-shade{background:linear-gradient(to bottom,var(--ss-c) 0px,var(--ss-c) 60px,var(--ss-b) 120px,var(--ss-a) 175px)}.qa-ss-grid{display:flex!important;flex-direction:column}}
@@ -71,18 +71,18 @@ export default function SeasonSpotlight({ lang = 'ar' }) {
           <span style={{ alignSelf: 'flex-start', fontSize: 13, fontWeight: 500, padding: '4px 12px', borderRadius: 999, background: 'rgba(255,255,255,.18)', border: '1px solid rgba(255,255,255,.3)' }}>{tx.strip}{active.preview ? (en ? ' · preview' : ' · معاينة') : ''}</span>
           <h2>{soon ? tx.soon + inDays : tx.title}</h2>
           <p style={{ fontSize: 16, lineHeight: 1.7, opacity: 0.92 }}>{tx.text}</p>
-          <Link href={cta} className="qa-btn" style={{ alignSelf: 'flex-start', marginTop: 6, background: season.accent, color: season.fg === '#fff' ? '#1d2733' : season.fg, fontWeight: 700, padding: '12px 24px', fontSize: 15 }}>{tx.cta}</Link>
+          <Link href={cta} className="qa-btn" style={{ alignSelf: 'flex-start', marginTop: 6, background: season.accent, color: season.fg === '#fff' ? 'var(--qs-ink,#1d2733)' : season.fg, fontWeight: 700, padding: '12px 24px', fontSize: 15 }}>{tx.cta}</Link>
         </div>
         {items.length > 0 && (
           <div className="qa-ss-grid">
             {items.map((p) => (
               <Link key={p.id} href={'/packages/' + p.id} className="qa-ss-card">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                {p.image_url ? <img src={p.image_url} alt="" loading="lazy" /> : <span style={{ width: 84, background: '#e4f5fb' }} />}
+                {p.image_url ? <img src={p.image_url} alt="" loading="lazy" /> : <span style={{ width: 84, background: 'var(--qs-brand-soft,#e4f5fb)' }} />}
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 3, padding: '8px 0', paddingInlineEnd: 12, minWidth: 0, flex: 1 }}>
                   <b style={{ fontSize: 14, lineHeight: 1.35, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{nm(p.title_ar, p.title_en)}</b>
-                  <span style={{ fontSize: 12, color: '#5f666e' }}>{[destinationLabel(p, lang), nightsLabel(p, lang)].filter(Boolean).join(' · ')}</span>
-                  <span style={{ marginTop: 'auto', fontSize: 14, fontWeight: 700, color: '#036f8c' }}>{formatPrice(p.price, 'IQD', lang)}</span>
+                  <span style={{ fontSize: 12, color: 'var(--qs-ink-2,#5f666e)' }}>{[destinationLabel(p, lang), nightsLabel(p, lang)].filter(Boolean).join(' · ')}</span>
+                  <span style={{ marginTop: 'auto', fontSize: 14, fontWeight: 700, color: 'var(--qs-brand-deep,#036f8c)' }}>{formatPrice(p.price, 'IQD', lang)}</span>
                 </div>
               </Link>
             ))}

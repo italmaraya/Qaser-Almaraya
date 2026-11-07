@@ -88,21 +88,21 @@ export default function VisaChecker({ lang = 'ar' }) {
   return (
     <section className="qa-sec" data-no-i18n="" dir={en ? 'ltr' : 'rtl'}>
       <style>{`
-.qa-vc{border-radius:var(--tw-radius,16px);background:#fff;border:1px solid #ececed;box-shadow:var(--tw-card-shadow,0 1px 3px rgba(29,39,51,.06));padding:30px 32px;display:flex;flex-direction:column;gap:18px}
+.qa-vc{border-radius:var(--tw-radius,16px);background:#fff;border:1px solid var(--qs-line,#ececed);box-shadow:var(--tw-card-shadow,0 1px 3px rgba(29,39,51,.06));padding:30px 32px;display:flex;flex-direction:column;gap:18px}
 .qa-vc h2{font-size:32px;font-weight:700}
 .qa-vc-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.6fr);gap:12px}
-.qa-vc select{width:100%;font-family:inherit;font-size:15.5px;padding:12px 14px;border-radius:var(--tw-radius-sm,10px);border:1px solid #d9e9ef;background:#f8fcfd;color:#1d2733}
-.qa-vc-fixed{display:flex;align-items:center;gap:8px;font-size:15.5px;font-weight:600;padding:12px 14px;border-radius:var(--tw-radius-sm,10px);border:1px solid #d9e9ef;background:#eef3f5;color:#1d2733}
-.qa-vc label{display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:700;color:#3d4650}
+.qa-vc select{width:100%;font-family:inherit;font-size:15.5px;padding:12px 14px;border-radius:var(--tw-radius-sm,10px);border:1px solid #d9e9ef;background:#f8fcfd;color:var(--qs-ink,#1d2733)}
+.qa-vc-fixed{display:flex;align-items:center;gap:8px;font-size:15.5px;font-weight:600;padding:12px 14px;border-radius:var(--tw-radius-sm,10px);border:1px solid #d9e9ef;background:#eef3f5;color:var(--qs-ink,#1d2733)}
+.qa-vc label{display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:700;color:var(--qs-body,#3d4650)}
 .qa-vc-types{display:flex;flex-wrap:wrap;gap:8px}
-.qa-vc-type{font-family:inherit;cursor:pointer;display:flex;flex-direction:column;align-items:flex-start;gap:2px;padding:10px 14px;border-radius:var(--tw-radius-sm,10px);border:1px solid #d9e9ef;background:#fff;color:#1d2733;text-align:start}
-.qa-vc-type.on{border-color:#049dc5;background:#eaf8fd;box-shadow:none}
-.qa-vc-type b{font-size:14.5px}.qa-vc-type span{font-size:12.5px;color:#5f666e}
+.qa-vc-type{font-family:inherit;cursor:pointer;display:flex;flex-direction:column;align-items:flex-start;gap:2px;padding:10px 14px;border-radius:var(--tw-radius-sm,10px);border:1px solid #d9e9ef;background:#fff;color:var(--qs-ink,#1d2733);text-align:start}
+.qa-vc-type.on{border-color:var(--qs-brand-deep,#049dc5);background:var(--qs-brand-soft,#eaf8fd);box-shadow:none}
+.qa-vc-type b{font-size:14.5px}.qa-vc-type span{font-size:12.5px;color:var(--qs-ink-2,#5f666e)}
 .qa-vc-res{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.3fr);gap:16px;animation:qa-tf-in .4s cubic-bezier(.16,1,.3,1) both}
 .qa-vc-box{border-radius:var(--tw-radius,16px);background:#f6fafb;padding:16px;display:flex;flex-direction:column;gap:8px}
-.qa-vc-kv{display:flex;justify-content:space-between;gap:10px;font-size:14px}.qa-vc-kv span:first-child{color:#5f666e}
+.qa-vc-kv{display:flex;justify-content:space-between;gap:10px;font-size:14px}.qa-vc-kv span:first-child{color:var(--qs-ink-2,#5f666e)}
 .qa-vc-docs{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:7px}
-.qa-vc-docs li{display:flex;gap:8px;align-items:flex-start;font-size:14.5px;color:#1d2733;line-height:1.5}
+.qa-vc-docs li{display:flex;gap:8px;align-items:flex-start;font-size:14.5px;color:var(--qs-ink,#1d2733);line-height:1.5}
 .qa-vc-docs li::before{content:'';flex-shrink:0;width:20px;height:20px;border-radius:var(--tw-radius-xs,8px);background:#e7f8ee url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2311804a' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6 9 17l-5-5'/%3E%3C/svg%3E") center/12px no-repeat;margin-top:1px}
 .qa-vc-docs.opt li::before{background:#fff4dc url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%238a5a00' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12h14M12 5v14'/%3E%3C/svg%3E") center/12px no-repeat}
 .qa-vc-btns{display:flex;flex-wrap:wrap;gap:10px}
@@ -114,11 +114,11 @@ export default function VisaChecker({ lang = 'ar' }) {
       <div className="qa-vc">
         <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
           <h2>{en ? 'Visa checker' : 'فاحص التأشيرة'}</h2>
-          <p style={{ fontSize: 16, color: '#5f666e' }}>{en ? 'Choose where you are going and see the price, processing time and the documents to prepare.' : 'اختر وجهتك واعرف فوراً السعر ومدة الإصدار والمستمسكات المطلوبة.'}</p>
+          <p style={{ fontSize: 16, color: 'var(--qs-ink-2,#5f666e)' }}>{en ? 'Choose where you are going and see the price, processing time and the documents to prepare.' : 'اختر وجهتك واعرف فوراً السعر ومدة الإصدار والمستمسكات المطلوبة.'}</p>
         </div>
         <div className="qa-vc-row">
           <label>{en ? 'Nationality' : 'الجنسية'}
-            <span className="qa-vc-fixed"><img src="https://flagcdn.com/w80/iq.png" alt="" width="26" height="18" style={{ width: 26, height: 18, objectFit: 'cover', borderRadius: 3, border: '1px solid #ececed' }} onError={(e) => { e.currentTarget.style.display = 'none'; }} />{natName}</span>
+            <span className="qa-vc-fixed"><img src="https://flagcdn.com/w80/iq.png" alt="" width="26" height="18" style={{ width: 26, height: 18, objectFit: 'cover', borderRadius: 3, border: '1px solid var(--qs-line,#ececed)' }} onError={(e) => { e.currentTarget.style.display = 'none'; }} />{natName}</span>
           </label>
           <label>{en ? 'Destination' : 'الوجهة'}
             <select value={countryId} onChange={(e) => setCountryId(e.target.value)}>
@@ -144,32 +144,32 @@ export default function VisaChecker({ lang = 'ar' }) {
               <div className="qa-vc-box">
                 <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  {country.flag ? <img src={flagSrc(country.flag)} alt="" width="34" height="24" style={{ width: 34, height: 24, objectFit: 'cover', borderRadius: 4, border: '1px solid #ececed' }} onError={(e) => { e.currentTarget.style.display = 'none'; }} /> : null}
-                  <b style={{ fontSize: 17, color: '#1d2733' }}>{nm(country.ar, country.en)}{detail ? ' — ' + nm(detail.visa_type_name_ar, detail.visa_type_name_en) : ''}</b>
+                  {country.flag ? <img src={flagSrc(country.flag)} alt="" width="34" height="24" style={{ width: 34, height: 24, objectFit: 'cover', borderRadius: 4, border: '1px solid var(--qs-line,#ececed)' }} onError={(e) => { e.currentTarget.style.display = 'none'; }} /> : null}
+                  <b style={{ fontSize: 17, color: 'var(--qs-ink,#1d2733)' }}>{nm(country.ar, country.en)}{detail ? ' — ' + nm(detail.visa_type_name_ar, detail.visa_type_name_en) : ''}</b>
                 </div>
                 {detail && (
                   <>
-                    <div className="qa-vc-kv"><span>{en ? 'Adult' : 'سعر البالغ'}</span><b style={{ color: '#036f8c' }}>{formatPrice(detail.adult_price, 'IQD', lang)}</b></div>
+                    <div className="qa-vc-kv"><span>{en ? 'Adult' : 'سعر البالغ'}</span><b style={{ color: 'var(--qs-brand-deep,#036f8c)' }}>{formatPrice(detail.adult_price, 'IQD', lang)}</b></div>
                     {Number(detail.child_price) > 0 && <div className="qa-vc-kv"><span>{en ? 'Child' : 'سعر الطفل'}</span><b>{formatPrice(detail.child_price, 'IQD', lang)}</b></div>}
                     <div className="qa-vc-kv"><span>{en ? 'Processing' : 'مدة الإصدار'}</span><span>{workDaysLabel(detail.issuing_time_days, lang) || '—'}</span></div>
                     {detail.stay_duration ? <div className="qa-vc-kv"><span>{en ? 'Length of stay' : 'مدة الإقامة'}</span><span>{detail.stay_duration}</span></div> : null}
                     {detail.validity_before_travel ? <div className="qa-vc-kv"><span>{en ? 'Valid before travel' : 'صلاحية قبل السفر'}</span><span>{detail.validity_before_travel}</span></div> : null}
                   </>
                 )}
-                {iso && guideFor(iso) && <Link href={'/guide/' + iso} style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 14, fontWeight: 700, color: '#036f8c', marginTop: 4 }}><Icon name="compass" size={14} />{en ? 'Travel guide for this country →' : 'دليل السفر لهذه الدولة ←'}</Link>}
+                {iso && guideFor(iso) && <Link href={'/guide/' + iso} style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 14, fontWeight: 700, color: 'var(--qs-brand-deep,#036f8c)', marginTop: 4 }}><Icon name="compass" size={14} />{en ? 'Travel guide for this country →' : 'دليل السفر لهذه الدولة ←'}</Link>}
               </div>
-              <div className="qa-vc-box" style={{ background: '#fff', border: '1px solid #ececed' }}>
-                <b style={{ fontSize: 16, color: '#1d2733' }}>{en ? 'Documents to prepare' : 'المستمسكات المطلوبة'}</b>
-                {loading && !detail ? <span style={{ color: '#5f666e', fontSize: 14 }}>{en ? 'Loading…' : 'جارٍ التحميل…'}</span> : null}
-                {detail && req.length === 0 && opt.length === 0 ? <span style={{ color: '#5f666e', fontSize: 14 }}>{en ? 'Message us and we will tell you exactly what is needed.' : 'راسلنا ونخبرك بالمطلوب بالضبط.'}</span> : null}
-                {req.length > 0 && <ul className="qa-vc-docs">{req.map((d) => <li key={d.id}>{nm(d.name_ar, d.name_en)}{audience(d.audience) ? <span style={{ color: '#5f666e', fontSize: 13 }}> ({audience(d.audience)})</span> : null}</li>)}</ul>}
+              <div className="qa-vc-box" style={{ background: '#fff', border: '1px solid var(--qs-line,#ececed)' }}>
+                <b style={{ fontSize: 16, color: 'var(--qs-ink,#1d2733)' }}>{en ? 'Documents to prepare' : 'المستمسكات المطلوبة'}</b>
+                {loading && !detail ? <span style={{ color: 'var(--qs-ink-2,#5f666e)', fontSize: 14 }}>{en ? 'Loading…' : 'جارٍ التحميل…'}</span> : null}
+                {detail && req.length === 0 && opt.length === 0 ? <span style={{ color: 'var(--qs-ink-2,#5f666e)', fontSize: 14 }}>{en ? 'Message us and we will tell you exactly what is needed.' : 'راسلنا ونخبرك بالمطلوب بالضبط.'}</span> : null}
+                {req.length > 0 && <ul className="qa-vc-docs">{req.map((d) => <li key={d.id}>{nm(d.name_ar, d.name_en)}{audience(d.audience) ? <span style={{ color: 'var(--qs-ink-2,#5f666e)', fontSize: 13 }}> ({audience(d.audience)})</span> : null}</li>)}</ul>}
                 {opt.length > 0 && (<><span style={{ fontSize: 13, color: '#8a5a00', fontWeight: 500, marginTop: 4 }}>{en ? 'If applicable' : 'عند الحاجة'}</span><ul className="qa-vc-docs opt">{opt.map((d) => <li key={d.id}>{nm(d.name_ar, d.name_en)}</li>)}</ul></>)}
               </div>
             </div>
             <div className="qa-vc-btns">
               <button type="button" onClick={ask} style={{ background: '#25d366', color: '#fff' }}>{en ? 'Apply on WhatsApp' : 'قدّم عبر واتساب'}</button>
-              <button type="button" onClick={downloadPdf} disabled={!detail} style={{ background: '#eaf8fd', color: '#036f8c', border: '1px solid #bfe9f6' }}><Icon name="file-text" size={15} />{en ? 'Download checklist (PDF)' : 'تحميل القائمة PDF'}</button>
-              {detail && <Link href={'/visa/' + detail.id} style={{ background: '#fff', color: '#036f8c', border: '1px solid #d9e9ef' }}>{en ? 'Full details' : 'التفاصيل الكاملة'}</Link>}
+              <button type="button" onClick={downloadPdf} disabled={!detail} style={{ background: 'var(--qs-brand-soft,#eaf8fd)', color: 'var(--qs-brand-deep,#036f8c)', border: '1px solid var(--qs-line-2,#bfe9f6)' }}><Icon name="file-text" size={15} />{en ? 'Download checklist (PDF)' : 'تحميل القائمة PDF'}</button>
+              {detail && <Link href={'/visa/' + detail.id} style={{ background: '#fff', color: 'var(--qs-brand-deep,#036f8c)', border: '1px solid #d9e9ef' }}>{en ? 'Full details' : 'التفاصيل الكاملة'}</Link>}
             </div>
           </>
         )}

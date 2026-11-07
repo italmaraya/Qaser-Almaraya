@@ -85,7 +85,7 @@ export function NewsIndexView({ posts, category }) {
   const en = lang === 'en';
   const [first, ...rest] = posts;
   return (
-    <div dir={en ? 'ltr' : 'rtl'} style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', background: '#f6f8f9' }}>
+    <div dir={en ? 'ltr' : 'rtl'} style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', background: 'var(--qs-paper,#f6f8f9)' }}>
       <style>{CSS}</style>
       <SiteHeader active="المدونة" />
       <main style={{ flex: 1 }} data-no-i18n="">
@@ -107,8 +107,8 @@ export function NewsIndexView({ posts, category }) {
         <div className="qn-wrap">
           {!posts.length && (
             <div className="qn-empty">
-              <Icon name="newspaper" size={44} strokeWidth={1.4} style={{ color: '#049dc5' }} />
-              <b style={{ fontSize: 18, color: '#1d2733' }}>{en ? 'No posts here yet' : 'لا توجد مقالات هنا بعد'}</b>
+              <Icon name="newspaper" size={44} strokeWidth={1.4} style={{ color: 'var(--qs-brand-deep,#049dc5)' }} />
+              <b style={{ fontSize: 18, color: 'var(--qs-ink,#1d2733)' }}>{en ? 'No posts here yet' : 'لا توجد مقالات هنا بعد'}</b>
               <span>{en ? 'Check back soon.' : 'تابعنا قريباً.'}</span>
             </div>
           )}
