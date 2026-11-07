@@ -19,11 +19,18 @@ const AIRLINES = [
   { slug: 'egyptair', name: 'EgyptAir', w: 124, h: 28 },
 ];
 
-// Hotel chains we actually book. Each entry needs /assets/hotels/<slug>.webp.
+// Hotel chains, once we carry their logos: each entry needs
+// /assets/hotels/<slug>.webp, and the row appears on its own.
 const HOTELS = [];
 
+// The airlines are dealt into two rows that travel opposite ways, so ten
+// logos read as a network instead of one thin strip.
+const evens = AIRLINES.filter((_, i) => i % 2 === 0);
+const odds = AIRLINES.filter((_, i) => i % 2 === 1);
+
 const ROWS = [
-  { key: 'airlines', base: '/assets/airlines/', items: AIRLINES, reverse: false, label: 'شركات الطيران الشريكة' },
+  { key: 'airlines-a', base: '/assets/airlines/', items: evens, reverse: false, label: 'شركات الطيران الشريكة' },
+  { key: 'airlines-b', base: '/assets/airlines/', items: odds, reverse: true, label: 'شركات الطيران الشريكة' },
   { key: 'hotels', base: '/assets/hotels/', items: HOTELS, reverse: true, label: 'سلاسل الفنادق الشريكة' },
 ];
 
