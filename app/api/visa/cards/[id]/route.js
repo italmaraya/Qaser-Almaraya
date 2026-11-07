@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 import { sql, ensureSchema } from '../../../../../lib/db';
 import { normalizeVisaCountry } from '../../../../../lib/destinations';
+import { withVisaSellPrices } from '../../../../../lib/visaPricing';
+import { getExchangeRate } from '../../../../../lib/settings';
 
 export async function GET(request, { params }) {
   await ensureSchema();
@@ -10,7 +12,7 @@ export async function GET(request, { params }) {
   // the server; those are staff-only details managed in the admin dashboard.
   const cards = await sql`
     SELECT vc.id, vc.country_id, vc.visa_type_id, vc.stay_duration, vc.issuing_time_days,
-           vc.validity_before_travel, vc.adult_price, vc.child_price, vc.booking_notes, vc.booking_notes_en, vc.image_url,
+           vc.validity_before_travel, vc.adult_price, vc.child_price, vc.price_currency, vc.booking_notes, vc.booking_notes_en, vc.image_url,
            c.name_ar AS country_name_ar, c.name_en AS country_name_en, c.flag_code, c.card_image_url, c.pdf_banner_url,
            vt.name_ar AS visa_type_name_ar, vt.name_en AS visa_type_name_en,
            vt.needs_appointment, vt.delivers_visa_file, vt.collects_passport, vt.prepares_papers, vt.result_guaranteed
@@ -25,5 +27,6 @@ export async function GET(request, { params }) {
     SELECT * FROM visa_documents WHERE visa_card_id = ${id} ORDER BY sort_order ASC, id ASC
   `;
 
-  return NextResponse.json({ ...normalizeVisaCountry(cards[0]), documents });
+  const { price_currency, ...card } = withVisaSellPrices(cards[0], await getExchangeRate());
+  return NextResponse.json({ ...normalizeVisaCountry(card), documents });
 }

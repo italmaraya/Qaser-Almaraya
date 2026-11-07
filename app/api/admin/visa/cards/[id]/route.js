@@ -16,6 +16,7 @@ export async function PUT(request, { params }) {
       validity_before_travel = ${b.validity_before_travel || ''},
       adult_price = ${b.adult_price || 0},
       child_price = ${b.child_price || 0},
+      price_currency = ${b.price_currency === 'USD' ? 'USD' : 'IQD'},
       adult_cost = ${b.adult_cost || 0},
       child_cost = ${b.child_cost || 0},
       cost_currency = ${b.cost_currency || 'IQD'},

@@ -14,7 +14,7 @@ import WhatsAppButton, { WA_ICON } from '../../../components/WhatsAppButton';
 import { APPLY_FLOW_ENABLED, packageMessage } from '../../../lib/whatsapp';
 import { buildPackageVoucherHtml, stripFlags } from '../../../lib/packagePdf';
 import UrgencyPanel from '../../../components/UrgencyPanel';
-import { TRAVELLER_TYPES, computeTotals, unitPrice, durationLabel } from '../../../lib/packagePricing';
+import { TRAVELLER_TYPES, computeTotals, unitPrice, durationLabel, tripDays, returnDate } from '../../../lib/packagePricing';
 import { useProviderReveal } from '../../../lib/useProviderReveal';
 import WorldClocks, { destinationTz } from '../../../components/WorldClocks';
 import { COUNTRY_GEO } from '../../../lib/geoData';
@@ -26,6 +26,12 @@ const optStyle = (on) => ({
   display: 'flex', alignItems: 'center', gap: 14, padding: '14px 16px', borderRadius: 'var(--tw-radius-sm,10px)',
   border: `1.5px solid ${on ? '#049dc5' : '#ececed'}`, cursor: 'pointer', background: on ? '#eaf8fd' : '#fff',
 });
+
+// "12 Dec 2026" / "12 كانون الأول 2026" for the departure–return line.
+function fmtTripDate(iso, lang) {
+  if (!iso) return '';
+  return new Date(iso + 'T00:00:00').toLocaleDateString(lang === 'en' ? 'en-GB' : 'ar-IQ-u-nu-latn', { day: 'numeric', month: 'short', year: 'numeric' });
+}
 
 export default function PackageDetailPage() {
   const { id } = useParams();
@@ -276,6 +282,15 @@ export default function PackageDetailPage() {
                       </button>
                     ))}
                   </div>
+                  {selectedDate && returnDate(pkg, selectedDate.date) && (
+                    <div data-no-i18n="" style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap', fontSize: 13.5, background: '#f3fafc', border: '1px solid #d9e9ef', borderRadius: 'var(--tw-radius-sm,10px)', padding: '8px 12px' }}>
+                      <Icon name="calendar-days" size={16} style={{ color: '#036f8c', flex: 'none' }} />
+                      <span>{lang === 'en' ? 'Departure' : 'الانطلاق'} <b dir="ltr">{fmtTripDate(selectedDate.date, lang)}</b></span>
+                      <span style={{ color: '#b0b6bb' }}>·</span>
+                      <span>{lang === 'en' ? 'Return' : 'العودة'} <b dir="ltr">{fmtTripDate(returnDate(pkg, selectedDate.date), lang)}</b></span>
+                      <span style={{ color: '#5f666e' }}>({tripDays(pkg)} {lang === 'en' ? 'days' : 'أيام'})</span>
+                    </div>
+                  )}
                 </div>
               )}
 
