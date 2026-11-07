@@ -351,8 +351,15 @@ function   groupText(group, list){
   }
 
 function   printDoc(title, bodyHtml){
-    const w = window.open('', '_blank', 'width=900,height=1100');
-    if(!w){ flash('يرجى السماح بالنوافذ المنبثقة'); return; }
+    // Rendered in a hidden iframe on this page, never a pop-up window, so
+    // pop-up blockers can't stop the download.
+    const frame = document.createElement('iframe');
+    frame.setAttribute('aria-hidden', 'true');
+    frame.style.cssText = 'position:fixed;left:-10000px;top:0;width:794px;height:1123px;border:0';
+    document.body.appendChild(frame);
+    const w = frame.contentWindow;
+    if(!w){ flash('تعذّر تجهيز الملف'); frame.remove(); return; }
+    w.document.open();
     w.document.write('<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><title>' + title + '</title>' +
       '<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;600;700&family=IBM+Plex+Sans:wght@600;700&display=swap" rel="stylesheet">' +
       '<style>@page{size:A4;margin:18mm}*{box-sizing:border-box}' +
@@ -376,8 +383,10 @@ function   printDoc(title, bodyHtml){
       '<footer><span>قصر المرايا للسفر و السياحة</span><span>+964 784 999 9600</span></footer>' +
       '</body></html>');
     w.document.close();
-    w.focus();
-    setTimeout(() => { w.print(); }, 700);
+    setTimeout(() => {
+      try { w.focus(); w.print(); } catch (e) {}
+      setTimeout(() => frame.remove(), 60000);
+    }, 700);
   }
 
 function   renderVals(){
