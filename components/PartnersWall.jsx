@@ -88,10 +88,13 @@ export default function PartnersWall() {
 .qpw-rev{animation-direction:reverse}
 .qpw-row:hover .qpw-track{animation-play-state:paused}
 .qpw-set{display:flex;align-items:stretch;gap:${GAP}px;padding-inline-end:${GAP}px;flex:none}
-.qpw-tile{flex:none;display:grid;place-items:center;width:${TILE}px;height:84px;background:#fff;border-radius:var(--tw-radius-sm,10px);box-shadow:var(--tw-card-shadow,0 1px 3px rgba(29,39,51,.06));transition:transform .2s}
-.qpw-tile:hover{transform:translateY(-2px)}
-.qpw-tile img{display:block;width:calc(var(--w) * 1px);height:calc(var(--h) * 1px);object-fit:contain}
-@media(max-width:820px){.qpw{padding:16px 0 24px;gap:12px}.qpw-set{gap:12px;padding-inline-end:12px}.qpw-tile{width:112px;height:64px}.qpw-tile img{width:calc(var(--w) * .72px);height:calc(var(--h) * .72px)}}
+/* The logos are white artwork, so they sit straight on the deep band with a
+   soft shadow for depth — a white tile behind them would hide them. */
+.qpw-tile{flex:none;display:grid;place-items:center;width:${TILE}px;height:72px;transition:transform .2s}
+.qpw-tile:hover{transform:translateY(-2px) scale(1.04)}
+.qpw-tile img{display:block;width:calc(var(--w) * 1px);height:calc(var(--h) * 1px);object-fit:contain;opacity:.92;filter:drop-shadow(0 2px 6px rgba(1,42,55,.18))}
+.qpw-tile:hover img{opacity:1}
+@media(max-width:820px){.qpw{padding:16px 0 24px;gap:12px}.qpw-set{gap:12px;padding-inline-end:12px}.qpw-tile{width:104px;height:56px}.qpw-tile img{width:calc(var(--w) * .72px);height:calc(var(--h) * .72px)}}
 @keyframes qpw-slide{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 @media(prefers-reduced-motion:reduce){.qpw-track{animation:none}}
 `}</style>
