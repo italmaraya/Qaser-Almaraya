@@ -83,25 +83,25 @@ export default function VisaDetailPage() {
       <main style={{ flex: 1 }}>
         <div className="qa-page">
           <div className="qa-sec" style={{ paddingBottom: 0 }}>
-            <Link href={`/visa/country/${card.country_id}`} style={{ fontSize: 13.5, fontWeight: 600, color: '#036f8c', textDecoration: 'none' }}>← رجوع</Link>
+            <Link href={`/visa/country/${card.country_id}`} style={{ fontSize: 14, fontWeight: 600, color: 'var(--qs-brand-deep,#036f8c)', textDecoration: 'none' }}>← رجوع</Link>
           </div>
 
           <section className="qa-sec qa-2col qa-detail" style={{ display: 'grid', gridTemplateColumns: 'minmax(240px,320px) 1fr', gap: 28, alignItems: 'flex-start' }}>
             <div className="qa-card qa-visa-side" style={{ position: 'sticky', top: 90, display: 'flex', flexDirection: 'column', gap: 14 }}>
               <h3 style={{ margin: 0, fontSize: 19 }}>{nm(card.visa_type_name_ar, card.visa_type_name_en)} — {nm(card.country_name_ar, card.country_name_en)}</h3>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 6, fontSize: 14 }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between' }}><span style={{ color: '#5f666e' }}>مدة الإقامة</span><span>{card.stay_duration || '—'}</span></div>
-                <div style={{ display: 'flex', justifyContent: 'space-between' }}><span style={{ color: '#5f666e' }}>مدة الإصدار</span><span>{workDaysLabel(card.issuing_time_days) || '—'}</span></div>
-                <div style={{ display: 'flex', justifyContent: 'space-between' }}><span style={{ color: '#5f666e' }}>صلاحية قبل السفر</span><span>{card.validity_before_travel || '—'}</span></div>
+                <div style={{ display: 'flex', justifyContent: 'space-between' }}><span style={{ color: 'var(--qs-ink-2,#5f666e)' }}>مدة الإقامة</span><span>{card.stay_duration || '—'}</span></div>
+                <div style={{ display: 'flex', justifyContent: 'space-between' }}><span style={{ color: 'var(--qs-ink-2,#5f666e)' }}>مدة الإصدار</span><span>{workDaysLabel(card.issuing_time_days) || '—'}</span></div>
+                <div style={{ display: 'flex', justifyContent: 'space-between' }}><span style={{ color: 'var(--qs-ink-2,#5f666e)' }}>صلاحية قبل السفر</span><span>{card.validity_before_travel || '—'}</span></div>
               </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', borderTop: '1px solid #ececed', paddingTop: 12 }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', borderTop: '1px solid var(--qs-line,#ececed)', paddingTop: 12 }}>
                 <div>
-                  <div style={{ fontSize: 12, color: '#5f666e' }}>البالغ</div>
-                  <div style={{ fontSize: 20, fontWeight: 700, color: '#049dc5' }}>{formatPrice(card.adult_price, 'IQD', lang)}</div>
+                  <div style={{ fontSize: 12, color: 'var(--qs-ink-2,#5f666e)' }}>البالغ</div>
+                  <div style={{ fontSize: 20, fontWeight: 700, color: 'var(--qs-brand-deep,#049dc5)' }}>{formatPrice(card.adult_price, 'IQD', lang)}</div>
                 </div>
                 <div style={{ textAlign: 'left' }}>
-                  <div style={{ fontSize: 12, color: '#5f666e' }}>الطفل</div>
-                  <div style={{ fontSize: 20, fontWeight: 700, color: '#049dc5' }}>{formatPrice(card.child_price, 'IQD', lang)}</div>
+                  <div style={{ fontSize: 12, color: 'var(--qs-ink-2,#5f666e)' }}>الطفل</div>
+                  <div style={{ fontSize: 20, fontWeight: 700, color: 'var(--qs-brand-deep,#049dc5)' }}>{formatPrice(card.child_price, 'IQD', lang)}</div>
                 </div>
               </div>
               {APPLY_FLOW_ENABLED ? (
@@ -125,22 +125,22 @@ export default function VisaDetailPage() {
                   const bodyHtml = buildVisaPdfHtml({ cards: [card], lang, fmtPrice: (n) => formatPrice(n, 'IQD', lang), pageUrl: window.location.href });
                   printDoc(nm(card.visa_type_name_ar, card.visa_type_name_en) + ' — ' + nm(card.country_name_ar, card.country_name_en), bodyHtml, lang);
                 }}
-                style={{ cursor: 'pointer', border: '1px solid #ececed', borderRadius: 999, padding: '10px 20px', fontSize: 14, fontWeight: 700, fontFamily: 'inherit', background: '#fff', color: '#036f8c', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}
+                style={{ cursor: 'pointer', border: '1px solid var(--qs-line,#ececed)', borderRadius: 999, padding: '10px 20px', fontSize: 14, fontWeight: 700, fontFamily: 'inherit', background: '#fff', color: 'var(--qs-brand-deep,#036f8c)', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}
               >
                 تحميل PDF لهذه التأشيرة
               </button>
-              <span style={{ fontSize: 12, color: '#5f666e', textAlign: 'center' }}>السعر بالدينار العراقي، ويُثبَّت عند تقديم الطلب.</span>
+              <span style={{ fontSize: 12, color: 'var(--qs-ink-2,#5f666e)', textAlign: 'center' }}>السعر بالدينار العراقي، ويُثبَّت عند تقديم الطلب.</span>
 
               {(() => {
                 const iso = findCountryIso(card);
                 const tz = iso && iso !== 'iq' ? destinationTz(iso) : null;
                 return tz ? <WorldClocks tz={tz} place={nm(card.country_name_ar, card.country_name_en)} lang={lang} compact /> : null;
               })()}
-              <div style={{ background: '#0e6f8f', borderRadius: 'var(--tw-radius-sm,10px)', padding: 18, color: '#fff', display: 'flex', flexDirection: 'column', gap: 10 }}>
+              <div style={{ background: '#0e6f8f', borderRadius: 'var(--tw-radius-sm,10px)', padding: 16, color: '#fff', display: 'flex', flexDirection: 'column', gap: 10 }}>
                 <h4 style={{ margin: 0, fontSize: 15, color: '#fff' }}>لماذا قصر المرايا؟</h4>
                 {WHY_US.map((w, i) => (
                   <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                    <span style={{ width: 20, height: 20, borderRadius: '50%', background: 'rgba(255,255,255,.2)', fontSize: 11, fontWeight: 700, display: 'grid', placeItems: 'center', flex: 'none' }}>{i + 1}</span>
+                    <span style={{ width: 20, height: 20, borderRadius: '50%', background: 'rgba(255,255,255,.2)', fontSize: 11, fontWeight: 500, display: 'grid', placeItems: 'center', flex: 'none' }}>{i + 1}</span>
                     <span style={{ fontSize: 13, lineHeight: 1.5 }}>{w}</span>
                   </div>
                 ))}
@@ -160,9 +160,9 @@ export default function VisaDetailPage() {
                       insetInlineStart: 20,
                       insetInlineEnd: 90,
                       zIndex: 2,
-                      fontSize: 11.5,
-                      fontWeight: 700,
-                      color: '#036f8c',
+                      fontSize: 12,
+                      fontWeight: 500,
+                      color: 'var(--qs-brand-deep,#036f8c)',
                       background: 'rgba(255,255,255,.96)',
                       borderRadius: 'var(--tw-radius-sm,10px)',
                       padding: '6px 12px',
@@ -174,7 +174,7 @@ export default function VisaDetailPage() {
                     title="معلومات داخلية — تظهر لفريق العمل فقط"
                   >
                     {providerHints[card.id].provider_name ? <span>{providerHints[card.id].provider_name}</span> : null}
-                    <span style={{ color: '#5f666e', fontWeight: 600 }}>
+                    <span style={{ color: 'var(--qs-ink-2,#5f666e)', fontWeight: 600 }}>
                       {lang === 'en' ? 'Cost: ' : 'التكلفة: '}
                       {formatRawAmount(providerHints[card.id].adult_cost, providerHints[card.id].cost_currency || 'IQD', lang)}
                       {lang === 'en' ? ' / adult, ' : ' للبالغ، '}
@@ -193,7 +193,7 @@ export default function VisaDetailPage() {
                 ) : null}
                 <div style={{ position: 'relative', zIndex: 1 }}>
                   <h1 style={{ margin: 0, fontSize: 30, color: '#fff', textShadow: '0 2px 10px rgba(0,0,0,.25)' }}>{nm(card.country_name_ar, card.country_name_en)}</h1>
-                  <span style={{ fontSize: 14.5, color: 'rgba(255,255,255,.9)' }}>{nm(card.visa_type_name_ar, card.visa_type_name_en)} · إقامة {card.stay_duration || '—'}</span>
+                  <span style={{ fontSize: 14, color: 'rgba(255,255,255,.9)' }}>{nm(card.visa_type_name_ar, card.visa_type_name_en)} · إقامة {card.stay_duration || '—'}</span>
                 </div>
               </div>
 
@@ -209,18 +209,18 @@ export default function VisaDetailPage() {
                     ['مدة الإصدار', workDaysLabel(card.issuing_time_days) || '—'],
                     ['سعر الطفل', Number(card.child_price).toLocaleString() + ' د.ع'],
                   ].map(([label, value]) => (
-                    <div key={label} style={{ border: '1px solid #ececed', borderRadius: 'var(--tw-radius-sm,10px)', padding: '12px 14px' }}>
-                      <div style={{ fontSize: 12, color: '#5f666e' }}>{label}</div>
-                      <div style={{ fontSize: 15, fontWeight: 700, color: '#1d2733' }}>{value}</div>
+                    <div key={label} style={{ border: '1px solid var(--qs-line,#ececed)', borderRadius: 'var(--tw-radius-sm,10px)', padding: '12px 14px' }}>
+                      <div style={{ fontSize: 12, color: 'var(--qs-ink-2,#5f666e)' }}>{label}</div>
+                      <div style={{ fontSize: 15, fontWeight: 700, color: 'var(--qs-ink,#1d2733)' }}>{value}</div>
                     </div>
                   ))}
                 </div>
               </div>
 
               {(card.booking_notes || card.booking_notes_en) && (
-                <div className="qa-card" style={{ background: '#f8fdfe', border: '1px solid #bfe9f6' }}>
+                <div className="qa-card" style={{ background: '#f8fdfe', border: '1px solid var(--qs-line-2,#bfe9f6)' }}>
                   <h4 style={{ margin: '0 0 8px' }}>معلومات إضافية</h4>
-                  <p style={{ margin: 0, fontSize: 14.5, lineHeight: 1.7, color: '#3d4650', whiteSpace: 'pre-wrap' }}>
+                  <p style={{ margin: 0, fontSize: 14, lineHeight: 1.7, color: 'var(--qs-body,#3d4650)', whiteSpace: 'pre-wrap' }}>
                     {nm(card.booking_notes, card.booking_notes_en)}
                   </p>
                 </div>
@@ -232,8 +232,8 @@ export default function VisaDetailPage() {
                   <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
                     {included.filter((f) => f.on).map((f) => (
                       <div key={f.label} className="qa-feat-row" style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                        <Icon name="check" size={16} style={{ flex: 'none', color: '#049dc5' }} />
-                        <span style={{ fontSize: 14.5, color: '#1d2733' }}>{f.label}</span>
+                        <Icon name="check" size={16} style={{ flex: 'none', color: 'var(--qs-brand-deep,#049dc5)' }} />
+                        <span style={{ fontSize: 14, color: 'var(--qs-ink,#1d2733)' }}>{f.label}</span>
                       </div>
                     ))}
                   </div>
@@ -243,22 +243,22 @@ export default function VisaDetailPage() {
                 <div className="qa-card">
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
                     <h4 style={{ margin: 0 }}>المستندات المطلوبة</h4>
-                    <span style={{ fontSize: 12, fontWeight: 700, color: '#036f8c', background: '#eaf8fd', borderRadius: 999, padding: '4px 12px' }}>{card.documents.length} بند</span>
+                    <span style={{ fontSize: 12, fontWeight: 500, color: 'var(--qs-brand-deep,#036f8c)', background: 'var(--qs-brand-soft,#eaf8fd)', borderRadius: 999, padding: '4px 12px' }}>{card.documents.length} بند</span>
                   </div>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
                     {[...requiredDocs, ...optionalDocs].map((d) => (
                       <div key={d.id} className="qa-doc-row" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, borderBottom: '1px solid #f4f4f4', paddingBottom: 10 }}>
                         <div>
-                          <div style={{ fontSize: 14.5, color: '#1d2733' }}>{d.name_ar}</div>
-                          <div style={{ fontSize: 12, color: '#5f666e' }}>{d.kind === 'file' ? 'رفع ملف' : d.kind === 'photo' ? 'رفع صورة' : 'إجابة'} · {d.audience === 'adults' ? 'البالغين' : d.audience === 'children' ? 'الأطفال' : 'الجميع'}</div>
+                          <div style={{ fontSize: 14, color: 'var(--qs-ink,#1d2733)' }}>{d.name_ar}</div>
+                          <div style={{ fontSize: 12, color: 'var(--qs-ink-2,#5f666e)' }}>{d.kind === 'file' ? 'رفع ملف' : d.kind === 'photo' ? 'رفع صورة' : 'إجابة'} · {d.audience === 'adults' ? 'البالغين' : d.audience === 'children' ? 'الأطفال' : 'الجميع'}</div>
                         </div>
                         <span
                           style={{
                             fontSize: 12,
-                            fontWeight: 700,
+                            fontWeight: 500,
                             borderRadius: 999,
                             padding: '4px 12px',
-                            color: d.required ? '#a06a00' : '#5f666e',
+                            color: d.required ? '#a06a00' : 'var(--qs-ink-2,#5f666e)',
                             background: d.required ? '#fef3dc' : '#f4f4f4',
                             flex: 'none',
                           }}
@@ -276,12 +276,12 @@ export default function VisaDetailPage() {
       </main>
       <SiteFooter />
       {providerHints && (
-        <div style={{ position: 'fixed', bottom: 18, insetInlineStart: 18, zIndex: 60, background: '#1d2733', color: '#fff', fontSize: 12.5, fontWeight: 700, borderRadius: 999, padding: '8px 16px', boxShadow: 'var(--tw-card-shadow,0 1px 3px rgba(29,39,51,.06))' }}>
+        <div style={{ position: 'fixed', bottom: 18, insetInlineStart: 18, zIndex: 60, background: 'var(--qs-ink,#1d2733)', color: '#fff', fontSize: 13, fontWeight: 500, borderRadius: 999, padding: '8px 16px', boxShadow: 'var(--tw-card-shadow,0 1px 3px rgba(29,39,51,.06))' }}>
           <Icon name="search" size={13} style={{ verticalAlign: '-2px', marginInlineEnd: 6 }} />وضع الموظفين مفعّل — اكتب نفس الكلمة السرية للإخفاء
         </div>
       )}
       {providerDenied && (
-        <div style={{ position: 'fixed', bottom: 18, insetInlineStart: 18, zIndex: 60, background: '#d2324f', color: '#fff', fontSize: 12.5, fontWeight: 700, borderRadius: 999, padding: '8px 16px', boxShadow: 'var(--tw-card-shadow,0 1px 3px rgba(29,39,51,.06))' }}>
+        <div style={{ position: 'fixed', bottom: 18, insetInlineStart: 18, zIndex: 60, background: '#d2324f', color: '#fff', fontSize: 13, fontWeight: 500, borderRadius: 999, padding: '8px 16px', boxShadow: 'var(--tw-card-shadow,0 1px 3px rgba(29,39,51,.06))' }}>
           غير مصرح لك بعرض هذه المعلومات
         </div>
       )}

@@ -30,14 +30,14 @@ export default function AchievementSpread({ items = [], active, onSelect, assetB
   if (!current) return null;
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 30, padding: '64px 32px', maxWidth: 1200, margin: '0 auto' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 28, padding: '64px 32px', maxWidth: 1200, margin: '0 auto' }}>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 10, alignItems: 'center', textAlign: 'center' }}>
         <span style={{ fontSize: 14, fontWeight: 700, color: '#faab18' }}>إنجازاتنا</span>
-        <h2 style={{ margin: 0, fontSize: 38, fontWeight: 700, color: '#049dc5' }}>إنجازاتنا ومشاركاتنا</h2>
+        <h2 style={{ margin: 0, fontSize: 38, fontWeight: 700, color: 'var(--qs-brand-deep,#049dc5)' }}>إنجازاتنا ومشاركاتنا</h2>
       </div>
 
       <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1.05fr) minmax(0,.95fr)', gap: 44, alignItems: 'center' }}>
-        <div style={{ position: 'relative', paddingTop: 22 }}>
+        <div style={{ position: 'relative', paddingTop: 24 }}>
           <div
             style={{
               position: 'absolute',
@@ -47,7 +47,7 @@ export default function AchievementSpread({ items = [], active, onSelect, assetB
               width: 96,
               height: 96,
               borderRadius: '50%',
-              background: '#049dc5',
+              background: 'var(--qs-band,#049dc5)',
               color: '#fff',
               display: 'flex',
               flexDirection: 'column',
@@ -58,7 +58,7 @@ export default function AchievementSpread({ items = [], active, onSelect, assetB
             }}
           >
             <span style={{ fontSize: 20, fontWeight: 800, lineHeight: 1 }}>{current.year}</span>
-            <span style={{ fontSize: 11.5, fontWeight: 600, marginTop: 3 }}>{current.stamp}</span>
+            <span style={{ fontSize: 12, fontWeight: 600, marginTop: 3 }}>{current.stamp}</span>
           </div>
 
           <div
@@ -66,7 +66,7 @@ export default function AchievementSpread({ items = [], active, onSelect, assetB
               position: 'relative',
               zIndex: 1,
               background: '#fff',
-              border: '1px solid #ececed',
+              border: '1px solid var(--qs-line,#ececed)',
               borderRadius: 'var(--tw-radius,16px)',
               overflow: 'hidden',
               boxShadow: 'var(--tw-card-shadow,0 1px 3px rgba(29,39,51,.06))',
@@ -84,16 +84,16 @@ export default function AchievementSpread({ items = [], active, onSelect, assetB
                 justifyContent: 'space-between',
                 gap: 10,
                 padding: '14px 20px',
-                borderTop: '1px solid #ececed',
+                borderTop: '1px solid var(--qs-line,#ececed)',
                 fontSize: 14,
-                color: '#5f666e',
+                color: 'var(--qs-ink-2,#5f666e)',
               }}
             >
-              <span style={{ display: 'inline-flex', alignItems: 'center', gap: 5 }}>
+              <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
                 <Icon name="map-pin" size={14} />
                 {current.place}
               </span>
-              <span style={{ fontWeight: 700, color: '#3d4650' }}>
+              <span style={{ fontWeight: 700, color: 'var(--qs-body,#3d4650)' }}>
                 {pad2(total)} / {pad2(index + 1)}
               </span>
             </div>
@@ -101,9 +101,9 @@ export default function AchievementSpread({ items = [], active, onSelect, assetB
         </div>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-          <h3 style={{ margin: 0, fontSize: 27, fontWeight: 700, color: '#049dc5' }}>{current.title}</h3>
+          <h3 style={{ margin: 0, fontSize: 27, fontWeight: 700, color: 'var(--qs-brand-deep,#049dc5)' }}>{current.title}</h3>
           {(Array.isArray(current.body) ? current.body : [current.body]).filter(Boolean).map((p, i) => (
-            <p key={i} style={{ margin: 0, fontSize: 16.5, lineHeight: 1.8, color: '#3d4650', textWrap: 'pretty' }}>
+            <p key={i} style={{ margin: 0, fontSize: 16, lineHeight: 1.8, color: 'var(--qs-body,#3d4650)', textWrap: 'pretty' }}>
               {p}
             </p>
           ))}
@@ -145,16 +145,16 @@ export default function AchievementSpread({ items = [], active, onSelect, assetB
                   minWidth: 130,
                   padding: '12px 16px',
                   borderRadius: 'var(--tw-radius-sm,10px)',
-                  border: isActive ? '2px solid #049dc5' : '1px solid #ececed',
+                  border: isActive ? '2px solid var(--qs-brand-deep,#049dc5)' : '1px solid var(--qs-line,#ececed)',
                   background: '#fff',
                   fontFamily: 'inherit',
                   cursor: 'pointer',
                 }}
               >
-                <span style={{ fontSize: 13, fontWeight: 700, color: isActive ? '#049dc5' : '#5f666e' }}>
+                <span style={{ fontSize: 13, fontWeight: 500, color: isActive ? 'var(--qs-brand-deep,#049dc5)' : 'var(--qs-ink-2,#5f666e)' }}>
                   {it.year} · {pad2(i + 1)}
                 </span>
-                <span style={{ fontSize: 14, fontWeight: 700, color: '#1d2733' }}>{it.short || it.title}</span>
+                <span style={{ fontSize: 14, fontWeight: 700, color: 'var(--qs-ink,#1d2733)' }}>{it.short || it.title}</span>
               </button>
             );
           })}

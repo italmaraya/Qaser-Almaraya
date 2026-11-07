@@ -96,15 +96,15 @@ export default function TripFinder({ lang = 'ar' }) {
 .qa-tf{position:relative;overflow:hidden;border-radius:var(--tw-radius,16px);background:#035a73;color:#fff;padding:34px 34px 30px;display:flex;flex-direction:column;gap:22px}
 .qa-tf h2{color:#fff;font-size:32px;font-weight:700}
 .qa-tf-row{display:flex;flex-direction:column;gap:9px}
-.qa-tf-row>b{font-size:14px;color:#bfe9f6;font-weight:600}
+.qa-tf-row>b{font-size:14px;color:var(--qs-line-2,#bfe9f6);font-weight:600}
 .qa-tf-chips{display:flex;flex-wrap:wrap;gap:8px}
 .qa-tf-chip{font-family:inherit;font-size:14px;font-weight:600;padding:8px 16px;border-radius:999px;border:1px solid rgba(255,255,255,.28);background:rgba(255,255,255,.08);color:#fff;cursor:pointer;transition:background .15s,transform .15s,border-color .15s}
 .qa-tf-chip:hover{background:rgba(255,255,255,.18)}
 .qa-tf-chip.on{background:#faab18;border-color:#faab18;color:#fff}
 .qa-tf-res{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
-.qa-tf-card{display:flex;gap:12px;align-items:stretch;background:#fff;color:#1d2733;border-radius:var(--tw-radius-sm,10px);overflow:hidden;animation:qa-tf-in .45s cubic-bezier(.16,1,.3,1) both;transition:box-shadow .2s}
-.qa-tf-card:hover{color:#1d2733;box-shadow:var(--tw-lift-shadow,0 8px 22px rgba(1,42,55,.12))}
-.qa-tf-card img{width:96px;flex-shrink:0;object-fit:cover;background:#e4f5fb}
+.qa-tf-card{display:flex;gap:12px;align-items:stretch;background:#fff;color:var(--qs-ink,#1d2733);border-radius:var(--tw-radius-sm,10px);overflow:hidden;animation:qa-tf-in .45s cubic-bezier(.16,1,.3,1) both;transition:box-shadow .2s}
+.qa-tf-card:hover{color:var(--qs-ink,#1d2733);box-shadow:var(--tw-lift-shadow,0 8px 22px rgba(1,42,55,.12))}
+.qa-tf-card img{width:96px;flex-shrink:0;object-fit:cover;background:var(--qs-brand-soft,#e4f5fb)}
 .qa-tf-card:nth-child(2){animation-delay:.07s}.qa-tf-card:nth-child(3){animation-delay:.14s}
 @keyframes qa-tf-in{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
 .qa-tf-tag{align-self:flex-start;font-size:11px;font-weight:700;border-radius:999px;padding:2px 8px}
@@ -142,7 +142,7 @@ export default function TripFinder({ lang = 'ar' }) {
         </div>}
 
         {!show ? (
-          <button type="button" className="qa-btn qa-amber" style={{ alignSelf: 'flex-start', color: '#012a37', fontWeight: 700 }} onClick={() => setAsked(true)}>{en ? 'Suggest trips' : 'اقترح لي'}</button>
+          <button type="button" className="qa-btn qa-amber" style={{ alignSelf: 'flex-start', color: 'var(--qs-ink,#012a37)', fontWeight: 700 }} onClick={() => setAsked(true)}>{en ? 'Suggest trips' : 'اقترح لي'}</button>
         ) : (
           <>
             <div className="qa-tf-res" key={budget + month + cat}>
@@ -151,12 +151,12 @@ export default function TripFinder({ lang = 'ar' }) {
                 : picks.map(({ p, exact }) => (
                   <Link key={p.id} href={'/packages/' + p.id} className="qa-tf-card">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
-                    {p.image_url ? <img src={p.image_url} alt="" loading="lazy" /> : <span style={{ width: 96, background: '#e4f5fb' }} />}
+                    {p.image_url ? <img src={p.image_url} alt="" loading="lazy" /> : <span style={{ width: 96, background: 'var(--qs-brand-soft,#e4f5fb)' }} />}
                     <div style={{ display: 'flex', flexDirection: 'column', gap: 4, padding: '10px 12px 10px 0', paddingInlineEnd: 12, minWidth: 0, flex: 1 }}>
                       <span className="qa-tf-tag" style={exact ? { background: '#e7f8ee', color: '#11804a' } : { background: '#fff4dc', color: '#8a5a00' }}>{exact ? (en ? 'Matches your choice' : 'يطابق اختيارك') : (en ? 'Closest option' : 'أقرب خيار')}</span>
                       <b style={{ fontSize: 15, lineHeight: 1.35, overflow: 'hidden', textOverflow: 'ellipsis', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' }}>{nm(p.title_ar, p.title_en)}</b>
-                      <span style={{ fontSize: 12.5, color: '#5f666e' }}>{[destinationLabel(p, lang), nightsLabel(p, lang)].filter(Boolean).join(' · ')}</span>
-                      <span style={{ marginTop: 'auto', fontSize: 15, fontWeight: 700, color: '#036f8c' }}>{formatPrice(p.price, 'IQD', lang)}</span>
+                      <span style={{ fontSize: 13, color: 'var(--qs-ink-2,#5f666e)' }}>{[destinationLabel(p, lang), nightsLabel(p, lang)].filter(Boolean).join(' · ')}</span>
+                      <span style={{ marginTop: 'auto', fontSize: 15, fontWeight: 700, color: 'var(--qs-brand-deep,#036f8c)' }}>{formatPrice(p.price, 'IQD', lang)}</span>
                     </div>
                   </Link>
                 ))}

@@ -72,7 +72,7 @@ export default function CountryHero({ country, count, fastestDays, lang = 'ar', 
   return (
     <section className="qch" style={{ backgroundImage: photo ? `url("${photo}")` : undefined }}>
       <style>{`
-.qch{position:relative;width:100%;min-height:340px;background:#036f8c center/cover no-repeat;color:#fff;overflow:hidden;isolation:isolate}
+.qch{position:relative;width:100%;min-height:340px;background:var(--qs-brand-deep,#036f8c) center/cover no-repeat;color:#fff;overflow:hidden;isolation:isolate}
 .qch:before{content:"";position:absolute;inset:0;z-index:0;background:linear-gradient(90deg,rgba(2,40,54,.92) 0%,rgba(2,40,54,.78) 45%,rgba(2,40,54,.35) 100%),linear-gradient(to top,rgba(2,40,54,.55),transparent 60%)}
 [dir=ltr] .qch:before{background:linear-gradient(270deg,rgba(2,40,54,.92) 0%,rgba(2,40,54,.78) 45%,rgba(2,40,54,.35) 100%),linear-gradient(to top,rgba(2,40,54,.55),transparent 60%)}
 .qch-in{position:relative;z-index:2;max-width:1320px;margin:0 auto;padding:28px clamp(18px,4vw,48px) 34px;display:grid;grid-template-columns:1.1fr .9fr;gap:24px;align-items:center}
@@ -88,7 +88,7 @@ export default function CountryHero({ country, count, fastestDays, lang = 'ar', 
 .qch-chip{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.22);border-radius:var(--tw-radius-sm,10px);padding:8px 12px}
 .qch-chip span{font-size:11px;color:rgba(255,255,255,.75);display:block}
 .qch-chip b{font-size:14px;display:block;white-space:nowrap}
-.qch-pdf{align-self:flex-start;display:inline-flex;align-items:center;gap:8px;background:#fff;color:#036f8c;border:0;border-radius:999px;padding:11px 20px;font-weight:700;font-size:14px;cursor:pointer;font-family:inherit}
+.qch-pdf{align-self:flex-start;display:inline-flex;align-items:center;gap:8px;background:#fff;color:var(--qs-brand-deep,#036f8c);border:0;border-radius:999px;padding:11px 20px;font-weight:700;font-size:14px;cursor:pointer;font-family:inherit}
 @media (max-width:860px){.qch-in{grid-template-columns:1fr}.qch-map{width:100%;opacity:.45}}
 `}</style>
       {info && <div dangerouslySetInnerHTML={{ __html: info.map }} style={{ display: 'contents' }} />}

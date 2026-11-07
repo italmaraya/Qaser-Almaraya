@@ -73,13 +73,13 @@ function ActionUpload({ application }) {
   }
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 8, background: '#eaf8fd', border: '1px solid #bfe9f6', borderRadius: 'var(--tw-radius-sm,10px)', padding: '12px 14px' }}>
-      <span style={{ fontSize: 13, fontWeight: 700, color: '#036f8c' }}>مطلوب منك رفع مستند أو ملف</span>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 8, background: 'var(--qs-brand-soft,#eaf8fd)', border: '1px solid var(--qs-line-2,#bfe9f6)', borderRadius: 'var(--tw-radius-sm,10px)', padding: '12px 14px' }}>
+      <span style={{ fontSize: 13, fontWeight: 500, color: 'var(--qs-brand-deep,#036f8c)' }}>مطلوب منك رفع مستند أو ملف</span>
       {done ? (
-        <span style={{ fontSize: 12.5, color: '#1e7d46' }}>✓ تم استلام ملفك، سيراجعه فريقنا قريباً.</span>
+        <span style={{ fontSize: 13, color: '#1e7d46' }}>✓ تم استلام ملفك، سيراجعه فريقنا قريباً.</span>
       ) : (
         <>
-          <label style={{ cursor: uploading ? 'not-allowed' : 'pointer', opacity: uploading ? 0.6 : 1, display: 'inline-flex', alignItems: 'center', gap: 8, alignSelf: 'flex-start', padding: '8px 16px', borderRadius: 999, background: '#fff', border: '1px solid #036f8c', color: '#036f8c', fontSize: 12.5, fontWeight: 700 }}>
+          <label style={{ cursor: uploading ? 'not-allowed' : 'pointer', opacity: uploading ? 0.6 : 1, display: 'inline-flex', alignItems: 'center', gap: 8, alignSelf: 'flex-start', padding: '8px 16px', borderRadius: 999, background: '#fff', border: '1px solid var(--qs-brand-deep,#036f8c)', color: 'var(--qs-brand-deep,#036f8c)', fontSize: 13, fontWeight: 700 }}>
             {uploading ? 'جارٍ الرفع...' : fileName ? fileName : 'اختر ملفاً للرفع'}
             <input type="file" accept="image/*,.pdf" disabled={uploading} style={{ display: 'none' }} onChange={(e) => handleFile(e.target.files && e.target.files[0])} />
           </label>
@@ -142,7 +142,7 @@ export default function VisaLandingPage({ initialCards = null }) {
           flag_code: c.flag_code,
           card_image_url: c.card_image_url,
           region: c.region || 'وجهات أخرى',
-          region_en: c.region_en || '',
+          region_en: c.region_en || (c.region ? '' : 'Other destinations'),
           region_id: c.region_id || 'other',
           cards: [],
         });
@@ -254,11 +254,10 @@ export default function VisaLandingPage({ initialCards = null }) {
       <SiteHeader active="التأشيرات" />
       <main style={{ flex: 1 }}>
         <div className="qa-page">
-          <section style={{ position: 'relative', background: 'var(--tw-band-deep,#049dc5)', paddingBottom: 50, overflow: 'hidden' }}>
+          <section style={{ position: 'relative', background: 'var(--tw-band-deep,var(--qs-band,#049dc5))', paddingBottom: 50, overflow: 'hidden' }}>
             <img src="/assets/logo-mark-white.webp" alt="" style={{ position: 'absolute', insetInlineEnd: -150, top: -80, height: 480, opacity: 0.1 }} />
             <div className="qa-sec qa-2col" style={{ position: 'relative', paddingTop: 36, paddingBottom: 0, display: 'grid', gridTemplateColumns: 'minmax(0,1.05fr) minmax(0,.95fr)', gap: 28, alignItems: 'center' }}>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 8, alignItems: 'flex-start', textAlign: 'start' }}>
-                <span style={{ fontSize: 14, fontWeight: 700, letterSpacing: '.06em', color: '#fff' }}>VISAS</span>
                 <h1 style={{ margin: 0, fontSize: 'clamp(28px,3vw,46px)', color: '#fff' }}>التأشيرات</h1>
                 <p style={{ margin: 0, fontSize: 16, lineHeight: 1.6, color: 'rgba(255,255,255,.92)', maxWidth: 600 }}>
                   اختر الدولة من الشريط أدناه لتظهر لك نوع التأشيرة ورسومها ومدة الإنجاز والمستندات المطلوبة.
@@ -281,11 +280,11 @@ export default function VisaLandingPage({ initialCards = null }) {
                   style={{ position: 'absolute', zIndex: 2, insetInlineStart: '2%', bottom: -14, display: 'block', width: 'clamp(150px,44%,220px)', height: 'auto', objectFit: 'contain', filter: 'drop-shadow(0 20px 30px rgba(1,42,55,.34))' }}
                 />
 
-                <div aria-hidden="true" style={{ position: 'absolute', zIndex: 4, top: '8%', insetInlineEnd: -6, width: 'clamp(140px,36%,178px)', display: 'flex', flexDirection: 'column', alignItems: 'stretch', gap: 9, pointerEvents: 'none' }}>
-                  <div style={{ alignSelf: 'stretch', maxWidth: 178, padding: 11, background: '#fff', borderRadius: 'var(--tw-radius-sm,10px)', boxShadow: 'var(--tw-card-shadow,0 1px 3px rgba(29,39,51,.06))', display: 'flex', flexDirection: 'column', gap: 6, animation: 'qa-swing 5.6s ease-in-out infinite', transformOrigin: '50% 0' }}>
-                    <span style={{ fontFamily: "'IBM Plex Sans',system-ui,sans-serif", fontSize: 7.5, fontWeight: 700, letterSpacing: '.2em', color: '#5f666e' }}>VISA STATUS</span>
+                <div aria-hidden="true" style={{ position: 'absolute', zIndex: 4, top: '8%', insetInlineEnd: -6, width: 'clamp(140px,36%,178px)', display: 'flex', flexDirection: 'column', alignItems: 'stretch', gap: 8, pointerEvents: 'none' }}>
+                  <div style={{ alignSelf: 'stretch', maxWidth: 178, padding: 12, background: '#fff', borderRadius: 'var(--tw-radius-sm,10px)', boxShadow: 'var(--tw-card-shadow,0 1px 3px rgba(29,39,51,.06))', display: 'flex', flexDirection: 'column', gap: 6, animation: 'qa-swing 5.6s ease-in-out infinite', transformOrigin: '50% 0' }}>
+                    <span style={{ fontFamily: "'IBM Plex Sans',system-ui,sans-serif", fontSize: 8, fontWeight: 500, letterSpacing: '.2em', color: 'var(--qs-ink-2,#5f666e)' }}>VISA STATUS</span>
                     <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                      <span style={{ flex: 'none', display: 'grid', placeItems: 'center', width: 24, height: 24, borderRadius: '50%', background: '#049dc5', color: '#fff' }}>
+                      <span style={{ flex: 'none', display: 'grid', placeItems: 'center', width: 24, height: 24, borderRadius: '50%', background: 'var(--qs-band,#049dc5)', color: '#fff' }}>
                         <svg width={13} height={13} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={3} strokeLinecap="round" strokeLinejoin="round"><path d="M20 6 9 17l-5-5" /></svg>
                       </span>
                       <span style={{ display: 'flex', flexDirection: 'column', gap: 4, flex: 1 }}>
@@ -296,20 +295,20 @@ export default function VisaLandingPage({ initialCards = null }) {
                   </div>
 
                   <div style={{ alignSelf: 'stretch', display: 'flex', flexWrap: 'wrap', gap: 6, justifyContent: 'center' }}>
-                    <span style={{ padding: '5px 11px', borderRadius: 999, background: 'rgba(255,255,255,.94)', color: '#036f8c', fontSize: 11.5, fontWeight: 700, boxShadow: 'var(--tw-card-shadow,0 1px 3px rgba(29,39,51,.06))', animation: 'qa-chip 5.2s ease-in-out infinite' }}>سياحية</span>
-                    <span style={{ padding: '5px 11px', borderRadius: 999, background: 'rgba(255,255,255,.94)', color: '#036f8c', fontSize: 11.5, fontWeight: 700, boxShadow: 'var(--tw-card-shadow,0 1px 3px rgba(29,39,51,.06))', animation: 'qa-chip 6.4s ease-in-out .8s infinite' }}>عمل</span>
-                    <span style={{ padding: '5px 11px', borderRadius: 999, background: 'rgba(255,255,255,.94)', color: '#036f8c', fontSize: 11.5, fontWeight: 700, boxShadow: 'var(--tw-card-shadow,0 1px 3px rgba(29,39,51,.06))', animation: 'qa-chip 5.9s ease-in-out .4s infinite' }}>سفارة</span>
+                    <span style={{ padding: '4px 12px', borderRadius: 999, background: 'rgba(255,255,255,.94)', color: 'var(--qs-brand-deep,#036f8c)', fontSize: 12, fontWeight: 500, boxShadow: 'var(--tw-card-shadow,0 1px 3px rgba(29,39,51,.06))', animation: 'qa-chip 5.2s ease-in-out infinite' }}>سياحية</span>
+                    <span style={{ padding: '4px 12px', borderRadius: 999, background: 'rgba(255,255,255,.94)', color: 'var(--qs-brand-deep,#036f8c)', fontSize: 12, fontWeight: 500, boxShadow: 'var(--tw-card-shadow,0 1px 3px rgba(29,39,51,.06))', animation: 'qa-chip 6.4s ease-in-out .8s infinite' }}>عمل</span>
+                    <span style={{ padding: '4px 12px', borderRadius: 999, background: 'rgba(255,255,255,.94)', color: 'var(--qs-brand-deep,#036f8c)', fontSize: 12, fontWeight: 500, boxShadow: 'var(--tw-card-shadow,0 1px 3px rgba(29,39,51,.06))', animation: 'qa-chip 5.9s ease-in-out .4s infinite' }}>سفارة</span>
                   </div>
 
-                  <div style={{ position: 'relative', alignSelf: 'center', width: '100%', maxWidth: 160, padding: '11px 12px 13px', background: '#fff', borderRadius: 'var(--tw-radius-sm,10px)', boxShadow: 'var(--tw-card-shadow,0 1px 3px rgba(29,39,51,.06))', animation: 'qa-pop 6.8s ease-in-out infinite' }}>
+                  <div style={{ position: 'relative', alignSelf: 'center', width: '100%', maxWidth: 160, padding: 12, background: '#fff', borderRadius: 'var(--tw-radius-sm,10px)', boxShadow: 'var(--tw-card-shadow,0 1px 3px rgba(29,39,51,.06))', animation: 'qa-pop 6.8s ease-in-out infinite' }}>
                     <span style={{ position: 'absolute', top: -10, insetInlineStart: -10, display: 'grid', placeItems: 'center', width: 24, height: 24, borderRadius: '50%', background: '#faab18', color: '#fff' }}>
                       <svg width={12} height={12} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.4} strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="16" rx="2" /><path d="M3 9h18M8 4v3M16 4v3" /></svg>
                     </span>
-                    <span style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
-                      <span style={{ fontFamily: "'IBM Plex Sans',system-ui,sans-serif", fontSize: 7.5, fontWeight: 700, letterSpacing: '.2em', color: '#5f666e' }}>PASSPORT</span>
-                      <span style={{ height: 6, width: '78%', borderRadius: 4, background: '#1d2733', opacity: 0.82 }} />
+                    <span style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+                      <span style={{ fontFamily: "'IBM Plex Sans',system-ui,sans-serif", fontSize: 8, fontWeight: 500, letterSpacing: '.2em', color: 'var(--qs-ink-2,#5f666e)' }}>PASSPORT</span>
+                      <span style={{ height: 6, width: '78%', borderRadius: 4, background: 'var(--qs-ink,#1d2733)', opacity: 0.82 }} />
                       <span style={{ height: 4, borderRadius: 4, background: '#e7eaec' }} />
-                      <span style={{ height: 4, width: '54%', borderRadius: 4, background: '#bfe9f6' }} />
+                      <span style={{ height: 4, width: '54%', borderRadius: 4, background: 'var(--qs-line-2,#bfe9f6)' }} />
                     </span>
                   </div>
                 </div>
@@ -318,12 +317,10 @@ export default function VisaLandingPage({ initialCards = null }) {
 
             <div className="qa-sec" style={{ paddingTop: 20, paddingBottom: 0 }}>
               <div style={{ position: 'relative', background: '#fff', borderRadius: 'var(--tw-radius,16px)', boxShadow: 'var(--tw-card-shadow,0 1px 3px rgba(29,39,51,.06))' }}>
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '18px 26px', borderBottom: '1px solid #ececed' }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '16px 24px', borderBottom: '1px solid var(--qs-line,#ececed)' }}>
                   <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
-                    <span style={{ fontSize: 17, fontWeight: 700, color: '#1d2733' }}>طلب تأشيرة</span>
-                    <span style={{ fontSize: 11, fontWeight: 600, color: '#5f666e', letterSpacing: '.06em' }}>VISA REQUEST</span>
+                    <span style={{ fontSize: 17, fontWeight: 700, color: 'var(--qs-ink,#1d2733)' }}>طلب تأشيرة</span>
                   </div>
-                  <span style={{ fontSize: 13, fontWeight: 700, color: '#5f666e', letterSpacing: '.04em' }}>QASER · ALMARAYA</span>
                 </div>
                 <form
                   onSubmit={goSearch}
@@ -376,7 +373,7 @@ export default function VisaLandingPage({ initialCards = null }) {
                       <span>
                         {adultCount} {nm('بالغ', 'adult')}{childCount > 0 ? ` · ${childCount} ${nm('طفل', 'child')}` : ''}
                       </span>
-                      <Icon name="chevron-down" size={16} style={{ color: '#5f666e', flex: 'none' }} />
+                      <Icon name="chevron-down" size={16} style={{ color: 'var(--qs-ink-2,#5f666e)', flex: 'none' }} />
                     </button>
 
                     {travelersOpen && (
@@ -388,7 +385,7 @@ export default function VisaLandingPage({ initialCards = null }) {
                           marginTop: 8,
                           zIndex: 20,
                           background: '#fff',
-                          border: '1px solid #ececed',
+                          border: '1px solid var(--qs-line,#ececed)',
                           borderRadius: 'var(--tw-radius-sm,10px)',
                           boxShadow: 'var(--tw-card-shadow,0 1px 3px rgba(29,39,51,.06))',
                           padding: 16,
@@ -399,7 +396,7 @@ export default function VisaLandingPage({ initialCards = null }) {
                         }}
                       >
                         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
-                          <span style={{ fontSize: 14, color: '#3d4650' }}>بالغ</span>
+                          <span style={{ fontSize: 14, color: 'var(--qs-body,#3d4650)' }}>بالغ</span>
                           <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                             <button type="button" onClick={() => setAdultCount((n) => Math.max(0, n - 1))} style={stepperBtn}>−</button>
                             <span style={{ fontSize: 16, fontWeight: 700, minWidth: 16, textAlign: 'center' }}>{adultCount}</span>
@@ -407,14 +404,14 @@ export default function VisaLandingPage({ initialCards = null }) {
                           </div>
                         </div>
                         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
-                          <span style={{ fontSize: 14, color: '#3d4650' }}>طفل</span>
+                          <span style={{ fontSize: 14, color: 'var(--qs-body,#3d4650)' }}>طفل</span>
                           <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                             <button type="button" onClick={() => setChildCount((n) => Math.max(0, n - 1))} style={stepperBtn}>−</button>
                             <span style={{ fontSize: 16, fontWeight: 700, minWidth: 16, textAlign: 'center' }}>{childCount}</span>
                             <button type="button" onClick={() => setChildCount((n) => n + 1)} style={stepperBtn}>+</button>
                           </div>
                         </div>
-                        <button type="button" onClick={() => setTravelersOpen(false)} className="qa-btn qa-cyan" style={{ padding: '8px 0', fontSize: 13.5 }}>
+                        <button type="button" onClick={() => setTravelersOpen(false)} className="qa-btn qa-cyan" style={{ padding: '8px 0', fontSize: 14 }}>
                           تم
                         </button>
                       </div>
@@ -423,26 +420,26 @@ export default function VisaLandingPage({ initialCards = null }) {
                 </form>
 
                 {selectedCountry && (
-                  <div style={{ padding: '0 26px 18px' }}>
-                    <span style={{ fontSize: 12.5, color: '#5f666e' }}>
+                  <div style={{ padding: '0 24px 16px' }}>
+                    <span style={{ fontSize: 13, color: 'var(--qs-ink-2,#5f666e)' }}>
                       {selectedCountry.typeNames.map((t) => nm(t, typeNameMap[t])).join('، ')} · الإصدار من {Math.round(selectedCountry.minIssuing)} أيام عمل
                     </span>
                   </div>
                 )}
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 14, padding: '18px 26px', background: '#f8fdfe' }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 14, padding: '16px 24px', background: '#f8fdfe' }}>
                   <button type="submit" onClick={goSearch} disabled={!selectedCountry} className="qa-btn qa-cyan" style={{ opacity: selectedCountry ? 1 : 0.5, cursor: selectedCountry ? 'pointer' : 'not-allowed' }}>
                     عرض التفاصيل
                   </button>
                   <div style={{ textAlign: 'left' }}>
-                    <div style={{ fontSize: 13, color: '#5f666e' }}>الإجمالي التقديري</div>
-                    <div style={{ fontSize: 22, fontWeight: 700, color: '#049dc5' }}>{estimatedTotal != null ? formatPrice(estimatedTotal, 'IQD', lang) : '—'}</div>
+                    <div style={{ fontSize: 13, color: 'var(--qs-ink-2,#5f666e)' }}>الإجمالي التقديري</div>
+                    <div style={{ fontSize: 22, fontWeight: 700, color: 'var(--qs-brand-deep,#049dc5)' }}>{estimatedTotal != null ? formatPrice(estimatedTotal, 'IQD', lang) : '—'}</div>
                   </div>
                 </div>
               </div>
             </div>
 
             <div className="qa-sec" style={{ paddingTop: 20 }}>
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 14, background: 'rgba(255,255,255,.14)', border: '1px solid rgba(255,255,255,.3)', borderRadius: 'var(--tw-radius,16px)', padding: '16px 22px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 14, background: 'rgba(255,255,255,.14)', border: '1px solid rgba(255,255,255,.3)', borderRadius: 'var(--tw-radius,16px)', padding: '16px 24px' }}>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
                   <span style={{ fontSize: 15, fontWeight: 700, color: '#fff' }}>هل لديك طلب تأشيرة؟</span>
                   <span style={{ fontSize: 13, color: 'rgba(255,255,255,.85)' }}>تتبع حالة طلبك بإدخال رقم الهاتف أو رقم الطلب</span>
@@ -450,7 +447,7 @@ export default function VisaLandingPage({ initialCards = null }) {
                 <button
                   type="button"
                   onClick={() => setTrackOpen(true)}
-                  style={{ cursor: 'pointer', border: 0, borderRadius: 999, padding: '11px 24px', fontSize: 14, fontWeight: 700, fontFamily: 'inherit', background: '#fff', color: '#049dc5' }}
+                  style={{ cursor: 'pointer', border: 0, borderRadius: 999, padding: '12px 24px', fontSize: 14, fontWeight: 700, fontFamily: 'inherit', background: '#fff', color: 'var(--qs-brand-deep,#049dc5)' }}
                 >
                   تتبع طلبك
                 </button>
@@ -460,9 +457,9 @@ export default function VisaLandingPage({ initialCards = null }) {
 
           <section className="qa-sec" style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-              <span style={{ fontSize: 13, fontWeight: 700, color: '#faab18' }}>الدول</span>
+              <span style={{ fontSize: 13, fontWeight: 500, color: '#faab18' }}>الدول</span>
               <h2 style={{ fontSize: 'clamp(22px,2.4vw,32px)' }}>الدول المتاحة للتأشيرة</h2>
-              <span style={{ fontSize: 14, color: '#5f666e' }}>{countries.length} {countries.length > 2 && countries.length <= 10 ? 'دول' : 'دولة'} · {cards ? cards.length : 0} {cards && cards.length > 2 && cards.length <= 10 ? 'تأشيرات' : 'تأشيرة'}</span>
+              <span style={{ fontSize: 14, color: 'var(--qs-ink-2,#5f666e)' }}>{countries.length} {countries.length > 2 && countries.length <= 10 ? 'دول' : 'دولة'} · {cards ? cards.length : 0} {cards && cards.length > 2 && cards.length <= 10 ? 'تأشيرات' : 'تأشيرة'}</span>
             </div>
 
             {error && <p style={{ color: '#d2324f', background: '#fdecef', border: '1px solid #f7c3cc', borderRadius: 'var(--tw-radius-sm,10px)', padding: '12px 16px' }}>{error}</p>}
@@ -476,10 +473,10 @@ export default function VisaLandingPage({ initialCards = null }) {
                 placeholder={nm('ابحث عن دولة...', 'Search for a country...')}
                 style={{
                   width: '100%', boxSizing: 'border-box', padding: '12px 44px 12px 16px', borderRadius: 999,
-                  border: '1px solid #cacbcc', fontSize: 15, fontFamily: 'inherit',
+                  border: '1px solid var(--qs-line-2,#cacbcc)', fontSize: 15, fontFamily: 'inherit',
                 }}
               />
-              <span style={{ position: 'absolute', insetInlineEnd: 16, top: '50%', transform: 'translateY(-50%)', color: '#5f666e', pointerEvents: 'none' }}>
+              <span style={{ position: 'absolute', insetInlineEnd: 16, top: '50%', transform: 'translateY(-50%)', color: 'var(--qs-ink-2,#5f666e)', pointerEvents: 'none' }}>
                 <Icon name="search" size={18} />
               </span>
               {countrySearch && (
@@ -487,7 +484,7 @@ export default function VisaLandingPage({ initialCards = null }) {
                   type="button"
                   onClick={() => setCountrySearch('')}
                   aria-label={nm('مسح', 'Clear')}
-                  style={{ position: 'absolute', insetInlineStart: 10, top: '50%', transform: 'translateY(-50%)', border: 0, background: 'transparent', cursor: 'pointer', color: '#5f666e', padding: 4 }}
+                  style={{ position: 'absolute', insetInlineStart: 10, top: '50%', transform: 'translateY(-50%)', border: 0, background: 'transparent', cursor: 'pointer', color: 'var(--qs-ink-2,#5f666e)', padding: 4 }}
                 >
                   <Icon name="x" size={16} />
                 </button>
@@ -496,11 +493,11 @@ export default function VisaLandingPage({ initialCards = null }) {
 
               {typeOptions.length > 2 && (
                 <label style={{ display: 'flex', alignItems: 'center', gap: 8, flex: '0 1 280px' }}>
-                  <span style={{ fontSize: 14, fontWeight: 600, color: '#3d4650', whiteSpace: 'nowrap' }}>{nm('نوع التأشيرة', 'Visa type')}</span>
+                  <span style={{ fontSize: 14, fontWeight: 600, color: 'var(--qs-body,#3d4650)', whiteSpace: 'nowrap' }}>{nm('نوع التأشيرة', 'Visa type')}</span>
                   <select
                     value={typeFilter}
                     onChange={(e) => setTypeFilter(e.target.value)}
-                    style={{ flex: 1, minWidth: 0, padding: '11px 14px', borderRadius: 999, border: '1px solid #cacbcc', fontSize: 15, fontFamily: 'inherit', background: '#fff', color: '#1d2733' }}
+                    style={{ flex: 1, minWidth: 0, padding: '12px 14px', borderRadius: 999, border: '1px solid var(--qs-line-2,#cacbcc)', fontSize: 15, fontFamily: 'inherit', background: '#fff', color: 'var(--qs-ink,#1d2733)' }}
                   >
                     {typeOptions.map((t) => (
                       <option key={t} value={t}>{t === 'الكل' ? nm('كل الأنواع', 'All types') : nm(t, typeNameMap[t])}</option>
@@ -513,14 +510,14 @@ export default function VisaLandingPage({ initialCards = null }) {
             {cards && countries.length === 0 && (
               <div className="qa-card" style={{ textAlign: 'center', padding: 40, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12 }}>
                 <img src="/assets/mascot-skylo-tours.webp" alt="" style={{ height: 120, width: 'auto' }} />
-                <p style={{ color: '#5f666e', margin: 0 }}>لا توجد تأشيرات متاحة حاليًا — تواصل معنا وسنساعدك في ترتيب رحلتك.</p>
+                <p style={{ color: 'var(--qs-ink-2,#5f666e)', margin: 0 }}>لا توجد تأشيرات متاحة حاليًا — تواصل معنا وسنساعدك في ترتيب رحلتك.</p>
                 <Link href="/contact" className="qa-btn qa-cyan" style={{ textDecoration: 'none' }}>تواصل معنا</Link>
               </div>
             )}
 
             {countries.length > 0 && filteredByRegion.length === 0 && (
               <div className="qa-card" style={{ textAlign: 'center', padding: 32, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10 }}>
-                <p style={{ color: '#5f666e', margin: 0 }}>{nm('لم نجد دولة مطابقة لبحثكم.', "We couldn't find a matching country.")}</p>
+                <p style={{ color: 'var(--qs-ink-2,#5f666e)', margin: 0 }}>{nm('لم نجد دولة مطابقة لبحثكم.', "We couldn't find a matching country.")}</p>
                 <button type="button" onClick={() => { setCountrySearch(''); setTypeFilter('الكل'); }} className="qa-btn qa-cyan" style={{ border: 0 }}>
                   {nm('مسح البحث', 'Clear search')}
                 </button>
@@ -529,9 +526,9 @@ export default function VisaLandingPage({ initialCards = null }) {
 
             {filteredByRegion.map(([region, list]) => (
               <div key={region} style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1px solid #ececed', paddingBottom: 8 }}>
-                  <span style={{ fontSize: 15, fontWeight: 700, color: '#1d2733' }}>{region}</span>
-                  <span style={{ fontSize: 13, color: '#5f666e' }}>{list.length} {nm(list.length <= 10 && list.length > 2 ? 'دول' : 'دولة', list.length === 1 ? 'country' : 'countries')}</span>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1px solid var(--qs-line,#ececed)', paddingBottom: 8 }}>
+                  <span style={{ fontSize: 15, fontWeight: 700, color: 'var(--qs-ink,#1d2733)' }}>{region}</span>
+                  <span style={{ fontSize: 13, color: 'var(--qs-ink-2,#5f666e)' }}>{list.length} {nm(list.length <= 10 && list.length > 2 ? 'دول' : 'دولة', list.length === 1 ? 'country' : 'countries')}</span>
                 </div>
                 <div className="qa-visa-grid">
                   {list.map((c) => (
@@ -544,7 +541,7 @@ export default function VisaLandingPage({ initialCards = null }) {
                             : 'var(--tw-band-deep,#049dc5)',
                         }}
                       >
-                        <span style={{ background: 'rgba(255,255,255,.18)', color: '#fff', fontSize: 12, fontWeight: 700, borderRadius: 999, padding: '5px 12px' }}>
+                        <span style={{ background: 'rgba(255,255,255,.18)', color: '#fff', fontSize: 12, fontWeight: 500, borderRadius: 999, padding: '4px 12px' }}>
                           من {formatPrice(c.minPrice, 'IQD', lang)}
                         </span>
                         {c.flag_code ? (
@@ -555,10 +552,10 @@ export default function VisaLandingPage({ initialCards = null }) {
                       </div>
                       <div style={{ padding: 16, display: 'flex', flexDirection: 'column', gap: 4 }}>
                         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                          <span style={{ fontSize: 17, fontWeight: 700, color: '#1d2733' }}>{nm(c.country_name_ar, c.country_name_en)}</span>
+                          <span style={{ fontSize: 17, fontWeight: 700, color: 'var(--qs-ink,#1d2733)' }}>{nm(c.country_name_ar, c.country_name_en)}</span>
                         </div>
-                        <span style={{ fontSize: 13, color: '#5f666e' }}>{c.typeNames.length === 1 ? 'نوع واحد' : c.typeNames.length + ' أنواع'}: {c.typeNames.map((t) => nm(t, typeNameMap[t])).join('، ')}</span>
-                        {c.minIssuing < 999 ? <span style={{ fontSize: 12.5, color: '#5f666e' }}>{nm('الإصدار خلال ', 'Issued in ')}{workDaysLabel(c.minIssuing, lang)}</span> : null}
+                        <span style={{ fontSize: 13, color: 'var(--qs-ink-2,#5f666e)' }}>{c.typeNames.length === 1 ? 'نوع واحد' : c.typeNames.length + ' أنواع'}: {c.typeNames.map((t) => nm(t, typeNameMap[t])).join('، ')}</span>
+                        {c.minIssuing < 999 ? <span style={{ fontSize: 13, color: 'var(--qs-ink-2,#5f666e)' }}>{nm('الإصدار خلال ', 'Issued in ')}{workDaysLabel(c.minIssuing, lang)}</span> : null}
                       </div>
                     </Link>
                   ))}
@@ -569,44 +566,44 @@ export default function VisaLandingPage({ initialCards = null }) {
 
           <section className="qa-sec" style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
             <div style={{ maxWidth: 980, marginInline: 'auto', width: '100%', display: 'flex', flexDirection: 'column', gap: 6 }}>
-              <span style={{ fontSize: 13, fontWeight: 700, letterSpacing: '.08em', color: '#049dc5' }}>من الاختيار إلى التحميل</span>
+              <span style={{ fontSize: 13, fontWeight: 500, color: 'var(--qs-brand-deep,#049dc5)' }}>من الاختيار إلى التحميل</span>
               <h2 style={{ fontSize: 'clamp(22px,2.4vw,32px)' }}>كيف تُباع التأشيرة وتُنجَز؟</h2>
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 24, maxWidth: 980, marginInline: 'auto', width: '100%' }}>
               {STAGES.map((sg, gi) => (
                 <div key={sg.n} style={{ display: 'flex', alignItems: 'flex-start', gap: 16 }}>
                   <div style={{ position: 'relative', alignSelf: 'stretch', flex: 'none', width: 'clamp(28px,3.4vw,36px)' }}>
-                    <span data-no-i18n="" style={{ position: 'relative', zIndex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', width: 'clamp(28px,3.4vw,36px)', height: 'clamp(28px,3.4vw,36px)', borderRadius: 999, background: '#049dc5', color: '#fff', fontFamily: "'IBM Plex Sans',system-ui,sans-serif", fontSize: 'clamp(13px,1.1vw,15px)', fontWeight: 700, lineHeight: 1 }}>{sg.n}</span>
+                    <span data-no-i18n="" style={{ position: 'relative', zIndex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', width: 'clamp(28px,3.4vw,36px)', height: 'clamp(28px,3.4vw,36px)', borderRadius: 999, background: 'var(--qs-band,#049dc5)', color: '#fff', fontFamily: "'IBM Plex Sans',system-ui,sans-serif", fontSize: 'clamp(13px,1.1vw,15px)', fontWeight: 700, lineHeight: 1 }}>{sg.n}</span>
                     {gi < STAGES.length - 1 ? (
-                      <span aria-hidden="true" style={{ position: 'absolute', insetInlineStart: 'calc(50% - 1px)', top: 'clamp(28px,3.4vw,36px)', bottom: -24, width: 2, background: '#e6e9eb' }} />
+                      <span aria-hidden="true" style={{ position: 'absolute', insetInlineStart: 'calc(50% - 1px)', top: 'clamp(28px,3.4vw,36px)', bottom: -24, width: 2, background: 'var(--qs-line,#e6e9eb)' }} />
                     ) : null}
                   </div>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: 9, flex: '1 1 auto', minWidth: 0, paddingTop: 3 }}>
-                    <h3 style={{ margin: 0, fontSize: 'var(--q-t3,22px)', fontWeight: 700, color: '#1d2733', lineHeight: 1.3 }}>{sg.title}</h3>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 8, flex: '1 1 auto', minWidth: 0, paddingTop: 3 }}>
+                    <h3 style={{ margin: 0, fontSize: 'var(--q-t3,22px)', fontWeight: 700, color: 'var(--qs-ink,#1d2733)', lineHeight: 1.3 }}>{sg.title}</h3>
                     {sg.steps.map((si) => {
                       const st = STEPS[si];
                       const mine = st.who === 'أنت';
                       return (
-                        <div key={st.n} style={{ display: 'flex', flexDirection: 'column', gap: 7 }}>
-                          <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'baseline', gap: 7, minWidth: 0 }}>
-                            <span style={{ flex: 'none', padding: '2px 9px', borderRadius: 999, background: mine ? '#eaf8fd' : '#fef3dc', color: mine ? '#036f8c' : '#a06a00', fontSize: 11.5, fontWeight: 700 }}>{st.who}</span>
-                            <span style={{ fontSize: 15, fontWeight: 600, color: '#3d4650' }}>{st.title}</span>
-                            <span style={{ fontSize: 13.5, lineHeight: 1.6, color: '#5f666e' }}>{st.hint}</span>
+                        <div key={st.n} style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                          <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'baseline', gap: 8, minWidth: 0 }}>
+                            <span style={{ flex: 'none', padding: '2px 8px', borderRadius: 999, background: mine ? 'var(--qs-brand-soft,#eaf8fd)' : '#fef3dc', color: mine ? 'var(--qs-brand-deep,#036f8c)' : '#a06a00', fontSize: 12, fontWeight: 500 }}>{st.who}</span>
+                            <span style={{ fontSize: 15, fontWeight: 600, color: 'var(--qs-body,#3d4650)' }}>{st.title}</span>
+                            <span style={{ fontSize: 14, lineHeight: 1.6, color: 'var(--qs-ink-2,#5f666e)' }}>{st.hint}</span>
                           </div>
                           {sg.outcomes && sg.outcomesAfter === si ? sg.outcomes.map((o) => (
-                            <div key={o.lead} style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'baseline', gap: 7, paddingInlineStart: 10, minWidth: 0 }}>
-                              <span style={{ flex: 'none', fontSize: 13, fontWeight: 700, color: '#9aa0a6' }}>{o.lead}</span>
-                              <span style={{ fontSize: 15, fontWeight: 600, color: '#3d4650' }}>{o.text}</span>
+                            <div key={o.lead} style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'baseline', gap: 8, paddingInlineStart: 10, minWidth: 0 }}>
+                              <span style={{ flex: 'none', fontSize: 13, fontWeight: 500, color: 'var(--qs-ink-3,#9aa0a6)' }}>{o.lead}</span>
+                              <span style={{ fontSize: 15, fontWeight: 600, color: 'var(--qs-body,#3d4650)' }}>{o.text}</span>
                             </div>
                           )) : null}
                         </div>
                       );
                     })}
-                    {sg.note ? <p style={{ margin: 0, fontSize: 13.5, fontWeight: 600, lineHeight: 1.6, color: '#3d4650' }}>{sg.note}</p> : null}
+                    {sg.note ? <p style={{ margin: 0, fontSize: 14, fontWeight: 600, lineHeight: 1.6, color: 'var(--qs-body,#3d4650)' }}>{sg.note}</p> : null}
                   </div>
                 </div>
               ))}
-              <p style={{ margin: 0, fontSize: 13.5, lineHeight: 1.6, color: '#5f666e' }}>
+              <p style={{ margin: 0, fontSize: 14, lineHeight: 1.6, color: 'var(--qs-ink-2,#5f666e)' }}>
                 الخطوات لا تتغير — ما يتغير هو المحتوى: الدول والمستندات والأسعار والحالات.
               </p>
             </div>
@@ -626,23 +623,23 @@ export default function VisaLandingPage({ initialCards = null }) {
             onClick={(e) => e.stopPropagation()}
             style={{ width: '100%', maxWidth: 460, maxHeight: '88vh', overflow: 'auto', background: '#fff', borderRadius: 'var(--tw-radius,16px)', boxShadow: 'var(--tw-card-shadow,0 1px 3px rgba(29,39,51,.06))' }}
           >
-            <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 14, padding: '22px 24px 14px', borderBottom: '1px solid #ececed' }}>
+            <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 14, padding: '24px 24px 14px', borderBottom: '1px solid var(--qs-line,#ececed)' }}>
               <span style={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
                 <span style={{ fontSize: 13, fontWeight: 600, color: '#faab18' }}>تتبّع الطلب</span>
-                <h3 style={{ margin: 0, fontSize: 20, fontWeight: 700, color: '#1d2733' }}>حالة طلب التأشيرة</h3>
+                <h3 style={{ margin: 0, fontSize: 20, fontWeight: 700, color: 'var(--qs-ink,#1d2733)' }}>حالة طلب التأشيرة</h3>
               </span>
-              <button type="button" onClick={closeTrack} aria-label="إغلاق" style={{ flex: 'none', width: 34, height: 34, borderRadius: '50%', border: '1px solid #ececed', background: '#fff', color: '#5f666e', display: 'grid', placeItems: 'center', cursor: 'pointer' }}><Icon name="x" size={15} /></button>
+              <button type="button" onClick={closeTrack} aria-label="إغلاق" style={{ flex: 'none', width: 34, height: 34, borderRadius: '50%', border: '1px solid var(--qs-line,#ececed)', background: '#fff', color: 'var(--qs-ink-2,#5f666e)', display: 'grid', placeItems: 'center', cursor: 'pointer' }}><Icon name="x" size={15} /></button>
             </div>
 
-            <form onSubmit={submitTrack} style={{ padding: '22px 24px 26px', display: 'flex', flexDirection: 'column', gap: 14 }}>
-              <label style={{ display: 'flex', flexDirection: 'column', gap: 6, fontSize: 14, fontWeight: 600, color: '#3d4650' }}>
+            <form onSubmit={submitTrack} style={{ padding: '24px 24px 24px', display: 'flex', flexDirection: 'column', gap: 14 }}>
+              <label style={{ display: 'flex', flexDirection: 'column', gap: 6, fontSize: 14, fontWeight: 600, color: 'var(--qs-body,#3d4650)' }}>
                 رقم الهاتف أو رقم الطلب
                 <input
                   autoFocus
                   value={trackInput}
                   onChange={(e) => setTrackInput(e.target.value)}
                   placeholder="مثال: 07xxxxxxxx أو QA-000012"
-                  style={{ width: '100%', boxSizing: 'border-box', padding: '10px 12px', borderRadius: 'var(--tw-radius-xs,8px)', border: '1px solid #ececed', fontSize: 15, fontFamily: 'inherit' }}
+                  style={{ width: '100%', boxSizing: 'border-box', padding: '10px 12px', borderRadius: 'var(--tw-radius-xs,8px)', border: '1px solid var(--qs-line,#ececed)', fontSize: 15, fontFamily: 'inherit' }}
                 />
               </label>
               {trackError && (
@@ -657,13 +654,13 @@ export default function VisaLandingPage({ initialCards = null }) {
                   {trackResults.map((a) => {
                     const currentIdx = trackStages.findIndex((s) => s.id === a.customer_status_id);
                     return (
-                      <div key={a.id} style={{ border: '1px solid #ececed', borderRadius: 'var(--tw-radius-sm,10px)', padding: '14px 16px', display: 'flex', flexDirection: 'column', gap: 10 }}>
+                      <div key={a.id} style={{ border: '1px solid var(--qs-line,#ececed)', borderRadius: 'var(--tw-radius-sm,10px)', padding: '14px 16px', display: 'flex', flexDirection: 'column', gap: 10 }}>
                         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                          <span style={{ fontSize: 14, fontWeight: 700, color: '#1d2733' }}>QA-{String(a.id).padStart(6, '0')}</span>
-                          <span style={{ fontSize: 12, fontWeight: 700, color: '#036f8c', background: '#eaf8fd', borderRadius: 999, padding: '3px 12px' }}>{a.status_name_ar}</span>
+                          <span style={{ fontSize: 14, fontWeight: 700, color: 'var(--qs-ink,#1d2733)' }}>QA-{String(a.id).padStart(6, '0')}</span>
+                          <span style={{ fontSize: 12, fontWeight: 500, color: 'var(--qs-brand-deep,#036f8c)', background: 'var(--qs-brand-soft,#eaf8fd)', borderRadius: 999, padding: '3px 12px' }}>{a.status_name_ar}</span>
                         </div>
-                        <span style={{ fontSize: 13.5, color: '#3d4650' }}>{nm(a.country_name_ar, a.country_name_en)} — {nm(a.visa_type_name_ar, a.visa_type_name_en)}</span>
-                        <span style={{ fontSize: 12.5, color: '#5f666e' }}>{a.customer_name}</span>
+                        <span style={{ fontSize: 14, color: 'var(--qs-body,#3d4650)' }}>{nm(a.country_name_ar, a.country_name_en)} — {nm(a.visa_type_name_ar, a.visa_type_name_en)}</span>
+                        <span style={{ fontSize: 13, color: 'var(--qs-ink-2,#5f666e)' }}>{a.customer_name}</span>
 
                         {trackStages.length > 0 && (
                           <div style={{ display: 'flex', alignItems: 'center', gap: 0, padding: '8px 0 2px', overflowX: 'auto' }}>
@@ -681,19 +678,19 @@ export default function VisaLandingPage({ initialCards = null }) {
                                         display: 'grid',
                                         placeItems: 'center',
                                         fontSize: 11,
-                                        fontWeight: 700,
+                                        fontWeight: 500,
                                         color: done ? '#fff' : '#a8adb3',
-                                        background: done ? '#049dc5' : '#f0f0f0',
+                                        background: done ? 'var(--qs-band,#049dc5)' : '#f0f0f0',
                                       }}
                                     >
                                       {done ? <Icon name="check" size={13} strokeWidth={3} /> : i + 1}
                                     </span>
-                                    <span style={{ fontSize: 10, color: done ? '#036f8c' : '#a8adb3', fontWeight: done ? 700 : 500, textAlign: 'center', maxWidth: 64, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                                    <span style={{ fontSize: 10, color: done ? 'var(--qs-brand-deep,#036f8c)' : '#a8adb3', fontWeight: done ? 700 : 500, textAlign: 'center', maxWidth: 64, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                                       {s.name_ar}
                                     </span>
                                   </div>
                                   {i < trackStages.length - 1 && (
-                                    <span style={{ flex: 1, height: 2, background: currentIdx >= 0 && i < currentIdx ? '#049dc5' : '#f0f0f0', margin: '0 2px', marginBottom: 16 }} />
+                                    <span style={{ flex: 1, height: 2, background: currentIdx >= 0 && i < currentIdx ? 'var(--qs-band,#049dc5)' : '#f0f0f0', margin: '0 2px', marginBottom: 16 }} />
                                   )}
                                 </div>
                               );
@@ -728,13 +725,13 @@ export default function VisaLandingPage({ initialCards = null }) {
                             href={"https://wa.me/" + WHATSAPP_NUMBER}
                             target="_blank"
                             rel="noopener"
-                            style={{ flex: 1, textAlign: 'center', textDecoration: 'none', fontSize: 13, fontWeight: 700, color: '#fff', background: '#25d366', borderRadius: 999, padding: '9px 0' }}
+                            style={{ flex: 1, textAlign: 'center', textDecoration: 'none', fontSize: 13, fontWeight: 500, color: '#fff', background: '#25d366', borderRadius: 999, padding: '8px 0' }}
                           >
                             واتساب
                           </a>
                           <a
                             href="tel:+9647749999600"
-                            style={{ flex: 1, textAlign: 'center', textDecoration: 'none', fontSize: 13, fontWeight: 700, color: '#036f8c', background: '#eaf8fd', borderRadius: 999, padding: '9px 0' }}
+                            style={{ flex: 1, textAlign: 'center', textDecoration: 'none', fontSize: 13, fontWeight: 500, color: 'var(--qs-brand-deep,#036f8c)', background: 'var(--qs-brand-soft,#eaf8fd)', borderRadius: 999, padding: '8px 0' }}
                           >
                             اتصال
                           </a>
@@ -772,11 +769,11 @@ const segmentStyle = {
   flexDirection: 'column',
   gap: 6,
   textAlign: 'right',
-  padding: '20px 22px',
+  padding: '20px 24px',
   borderInlineStart: '1px solid #ececed',
 };
 
-const segmentLabel = { fontSize: 12.5, color: '#5f666e' };
+const segmentLabel = { fontSize: 13, color: '#5f666e' };
 
 const segmentSelect = {
   fontFamily: 'inherit',

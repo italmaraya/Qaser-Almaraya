@@ -117,19 +117,19 @@ export default function HeroCinematic({ slides: allSlides = [], kicker, title, s
 /* Phones get a different crop, not a squeeze: a 4:5 portrait of the photo,
    then the copy on white underneath. */
 @media (max-width:820px){
-  .qh{height:auto;min-height:0;max-height:none;background:#fff;color:var(--q-ink,#1d2733);overflow:visible}
+  .qh{height:auto;min-height:0;max-height:none;background:#fff;color:var(--q-ink,var(--qs-ink,#1d2733));overflow:visible}
   .qh-media{position:relative;inset:auto;width:100%;aspect-ratio:var(--qh-mr,4/5);transition:aspect-ratio .3s ease}
   .qh-slide img{object-position:50% 30%}
   /* A video is shown whole on phones — never cropped to the photo frame. */
   .qh-slide video{object-fit:contain;object-position:50% 50%;background:#04161f}
   .qh-scrim,.qh[dir="ltr"] .qh-scrim{background:none}
   .qh-copy{position:static;transform:none;inset:auto;max-width:none;top:auto;padding:var(--q-s3,24px) var(--q-s2,16px) var(--q-s4,40px);gap:var(--q-s2,16px);background:#fff}
-  .qh-eyebrow{color:var(--q-cyan-dark,#036f8c)}
-  .qh-title{color:var(--q-ink,#1d2733)}
-  .qh-sub{max-width:none;color:var(--q-ink-2,#5f666e)}
+  .qh-eyebrow{color:var(--q-cyan-dark,var(--qs-brand-deep,#036f8c))}
+  .qh-title{color:var(--q-ink,var(--qs-ink,#1d2733))}
+  .qh-sub{max-width:none;color:var(--q-ink-2,var(--qs-ink-2,#5f666e))}
   .qh-ctas{flex-direction:column;align-items:stretch;width:100%;gap:10px}
   .qh-btn{width:100%;max-width:100%;min-width:0}
-  .qh-btn.sec{border-color:var(--q-line,#e6e9eb);color:var(--q-ink,#1d2733)}
+  .qh-btn.sec{border-color:var(--q-line,var(--qs-line,#e6e9eb));color:var(--q-ink,var(--qs-ink,#1d2733))}
   .qh-btn.sec:hover{border-color:#cfd6da}
   /* Caption and bars move onto the photo's bottom edge. */
   .qh-foot{bottom:0;padding:28px var(--q-s2,16px) 12px;color:#fff;background:linear-gradient(to top,rgba(4,22,31,.62) 0%,rgba(4,22,31,0) 100%)}
@@ -169,7 +169,7 @@ export default function HeroCinematic({ slides: allSlides = [], kicker, title, s
         <div className="qh-foot">
           <div className="qh-cap">
             {current.caption && (
-              <span style={{ display: 'inline-flex', alignItems: 'center', gap: 7 }}>
+              <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>
                 <Icon name="map-pin" size={15} />
                 {current.caption}
               </span>

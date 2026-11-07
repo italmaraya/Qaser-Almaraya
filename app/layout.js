@@ -1,4 +1,6 @@
 import './site.css';
+import './qs.css';
+import AreaMark from '../components/AreaMark';
 import MobileBottomBar from '../components/MobileBottomBar';
 import LiveChat from '../components/LiveChat';
 import AirportChime from '../components/AirportChime';
@@ -24,8 +26,13 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="ar" dir="rtl">
+    <html lang="ar" dir="rtl" data-area="site" suppressHydrationWarning>
       <head>
+        {/* Public site vs. dashboard: the redesign styles in app/qs.css apply only to
+            data-area="site", so /admin and /staff keep their own look untouched. */}
+        <script dangerouslySetInnerHTML={{ __html: "if(/^\\/(admin|staff)(\\/|$)/.test(location.pathname))document.documentElement.setAttribute('data-area','admin')" }} />
+        <link rel="preload" href="/fonts/ibmplexsansarabic-arabic-400.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
+        <link rel="preload" href="/fonts/notonaskharabic-arabic-600.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link
@@ -49,6 +56,7 @@ export default function RootLayout({ children }) {
         <AirportChime />
         <RoutePrefetch />
         <LangGuard />
+        <AreaMark />
       </body>
     </html>
   );

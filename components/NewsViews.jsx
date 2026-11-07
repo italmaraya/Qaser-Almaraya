@@ -85,7 +85,7 @@ export function NewsIndexView({ posts, category }) {
   const en = lang === 'en';
   const [first, ...rest] = posts;
   return (
-    <div dir={en ? 'ltr' : 'rtl'} style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', background: '#f6f8f9' }}>
+    <div dir={en ? 'ltr' : 'rtl'} style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', background: 'var(--qs-paper,#f6f8f9)' }}>
       <style>{CSS}</style>
       <SiteHeader active="المدونة" />
       <main style={{ flex: 1 }} data-no-i18n="">
@@ -107,8 +107,8 @@ export function NewsIndexView({ posts, category }) {
         <div className="qn-wrap">
           {!posts.length && (
             <div className="qn-empty">
-              <Icon name="newspaper" size={44} strokeWidth={1.4} style={{ color: '#049dc5' }} />
-              <b style={{ fontSize: 18, color: '#1d2733' }}>{en ? 'No posts here yet' : 'لا توجد مقالات هنا بعد'}</b>
+              <Icon name="newspaper" size={44} strokeWidth={1.4} style={{ color: 'var(--qs-brand-deep,#049dc5)' }} />
+              <b style={{ fontSize: 18, color: 'var(--qs-ink,#1d2733)' }}>{en ? 'No posts here yet' : 'لا توجد مقالات هنا بعد'}</b>
               <span>{en ? 'Check back soon.' : 'تابعنا قريباً.'}</span>
             </div>
           )}
@@ -147,7 +147,7 @@ export function NewsArticleView({ post, related }) {
       <main style={{ flex: 1 }} data-no-i18n="">
         <section className="qn-art-hero" style={{ backgroundImage: post.cover_url ? `url("${post.cover_url}")` : undefined }}>
           <div className="in">
-            <Link href="/news" style={{ color: 'rgba(255,255,255,.85)', fontSize: 13.5, fontWeight: 600, textDecoration: 'none' }}>{en ? '← All posts' : '← كل المقالات'}</Link>
+            <Link href="/news" style={{ color: 'rgba(255,255,255,.85)', fontSize: 14, fontWeight: 600, textDecoration: 'none' }}>{en ? '← All posts' : '← كل المقالات'}</Link>
             <div className="qn-meta"><span className="qn-cat" style={{ background: cat.c }}>{en ? cat.en : cat.ar}</span><span>{fmtDate(post.published_at, en)}</span><span>· {post.minutes} {en ? 'min read' : 'دقائق قراءة'}</span></div>
             <h1>{title}</h1>
           </div>
@@ -162,7 +162,7 @@ export function NewsArticleView({ post, related }) {
             <button type="button" onClick={() => { navigator.clipboard?.writeText(url); setCopied(true); setTimeout(() => setCopied(false), 1800); }}>{copied ? (en ? '✓ Copied' : '✓ تم النسخ') : (en ? 'Copy link' : 'نسخ الرابط')}</button>
           </div>
           <div className="qn-cta">
-            <div><b>{en ? 'Planning a trip?' : 'تخطط لرحلة؟'}</b><div style={{ fontSize: 14.5, color: '#5b646d', marginTop: 4 }}>{en ? 'Our team handles visas, flights and packages for you.' : 'فريقنا يتولى التأشيرة والطيران والباقة نيابةً عنك.'}</div></div>
+            <div><b>{en ? 'Planning a trip?' : 'تخطط لرحلة؟'}</b><div style={{ fontSize: 14, color: '#5b646d', marginTop: 4 }}>{en ? 'Our team handles visas, flights and packages for you.' : 'فريقنا يتولى التأشيرة والطيران والباقة نيابةً عنك.'}</div></div>
             <a href={waLink((en ? 'Hello, I read "' : 'مرحباً، قرأت مقال "') + title + (en ? '" and would like some help.' : '" وأرغب بالمساعدة.'))} target="_blank" rel="noopener" className="qa-btn" style={{ background: '#25d366', color: '#fff', textDecoration: 'none' }}>{en ? 'Message us on WhatsApp' : 'راسلنا على واتساب'}</a>
           </div>
         </article>
