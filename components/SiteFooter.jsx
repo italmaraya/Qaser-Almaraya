@@ -26,6 +26,7 @@ export default function SiteFooter() {
             <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
               <p style={{ fontSize: 22, fontWeight: 700, color: '#fff', margin: 0, lineHeight: 1.3 }}>رحلتك تبدأ وياّنا</p>
               <span style={{ width: 56, height: 3, borderRadius: 2, background: '#faab18' }} />
+              <p style={{ margin: 0, fontSize: 14, lineHeight: 1.7, color: 'rgba(255,255,255,.9)', maxWidth: 230 }}>نأخذك إلى حيث تتمنى، لنصنع ذكريات لا تُنسى.</p>
             </div>
           </div>
         </div>

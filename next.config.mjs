@@ -19,7 +19,13 @@ const nextConfig = {
   // Static export removed: the admin dashboard and visa module need real
   // API routes (login, saving content, image uploads, database access),
   // which only run on a server.
-  images: { unoptimized: true },
+  // Only the public site's lib/img.js asks for optimised copies (no page uses
+  // next/image). Blob files never change once uploaded, so copies are kept a month.
+  images: {
+    remotePatterns: [{ protocol: 'https', hostname: '*.public.blob.vercel-storage.com' }],
+    formats: ['image/webp'],
+    minimumCacheTTL: 2678400,
+  },
   poweredByHeader: false,
   async redirects() {
     return [

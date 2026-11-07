@@ -1,4 +1,5 @@
 'use client';
+import { imgProps } from '../lib/img';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { activeSeason, seasonPackages } from '../lib/seasons';
@@ -78,7 +79,7 @@ export default function SeasonSpotlight({ lang = 'ar' }) {
             {items.map((p) => (
               <Link key={p.id} href={'/packages/' + p.id} className="qa-ss-card">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                {p.image_url ? <img src={p.image_url} alt="" loading="lazy" /> : <span style={{ width: 84, background: 'var(--qs-brand-soft,#e4f5fb)' }} />}
+                {p.image_url ? <img {...imgProps(p.image_url, '84px', [384])} alt="" loading="lazy" decoding="async" /> : <span style={{ width: 84, background: 'var(--qs-brand-soft,#e4f5fb)' }} />}
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 3, padding: '8px 0', paddingInlineEnd: 12, minWidth: 0, flex: 1 }}>
                   <b style={{ fontSize: 14, lineHeight: 1.35, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{nm(p.title_ar, p.title_en)}</b>
                   <span style={{ fontSize: 12, color: 'var(--qs-ink-2,#5f666e)' }}>{[destinationLabel(p, lang), nightsLabel(p, lang)].filter(Boolean).join(' · ')}</span>

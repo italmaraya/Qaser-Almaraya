@@ -1,4 +1,5 @@
 'use client';
+import { imgProps } from '../lib/img';
 import Icon from './Icon';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
@@ -52,7 +53,7 @@ export default function HomeOffers({ lang = 'ar' }) {
             <Link key={p.id} href={'/packages/' + p.id} className="qa-offer">
               <div className="qa-offer-img">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                {p.image_url ? <img src={p.image_url} alt={nm(p.title_ar, p.title_en)} loading="lazy" /> : null}
+                {p.image_url ? <img {...imgProps(p.image_url, '(max-width: 820px) 80vw, 400px')} alt={nm(p.title_ar, p.title_en)} loading="lazy" decoding="async" /> : null}
                 {(() => {
                   const u = siteUrgency(p, lang);
                   if (!u || !u.label) return null;

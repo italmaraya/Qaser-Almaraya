@@ -1,4 +1,5 @@
 'use client';
+import { imgProps } from '../lib/img';
 import React, { useState } from 'react';
 import Icon from './Icon';
 
@@ -187,7 +188,7 @@ export default function PackageCard({ title, destination, image, nights, groupTy
         <div className="qa-pkg-hero" style={{ position: 'relative', background: 'var(--q-surface-2,var(--qs-paper,#f6f8f9))', overflow: 'hidden' }}>
           {image ? (
             /* eslint-disable-next-line @next/next/no-img-element */
-            <img src={image} alt={heading || title || ''} loading="lazy" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', objectPosition: '50% 28%' }} />
+            <img {...imgProps(image, '(max-width: 640px) 92vw, (max-width: 1100px) 46vw, 380px')} alt={heading || title || ''} loading="lazy" decoding="async" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', objectPosition: '50% 28%' }} />
           ) : (
             <span style={{ position: 'absolute', inset: 0, display: 'grid', placeItems: 'center', color: 'var(--q-ink-3,var(--qs-ink-3,#9aa0a6))', fontSize: 13 }}>
               <Icon name="image" size={24} />

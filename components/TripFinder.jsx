@@ -1,4 +1,5 @@
 'use client';
+import { imgProps } from '../lib/img';
 import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { loadPackages, upcomingDates } from '../lib/publicPackages';
@@ -151,7 +152,7 @@ export default function TripFinder({ lang = 'ar' }) {
                 : picks.map(({ p, exact }) => (
                   <Link key={p.id} href={'/packages/' + p.id} className="qa-tf-card">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
-                    {p.image_url ? <img src={p.image_url} alt="" loading="lazy" /> : <span style={{ width: 96, background: 'var(--qs-brand-soft,#e4f5fb)' }} />}
+                    {p.image_url ? <img {...imgProps(p.image_url, '96px', [384])} alt="" loading="lazy" decoding="async" /> : <span style={{ width: 96, background: 'var(--qs-brand-soft,#e4f5fb)' }} />}
                     <div style={{ display: 'flex', flexDirection: 'column', gap: 4, padding: '10px 12px 10px 0', paddingInlineEnd: 12, minWidth: 0, flex: 1 }}>
                       <span className="qa-tf-tag" style={exact ? { background: '#e7f8ee', color: '#11804a' } : { background: '#fff4dc', color: '#8a5a00' }}>{exact ? (en ? 'Matches your choice' : 'يطابق اختيارك') : (en ? 'Closest option' : 'أقرب خيار')}</span>
                       <b style={{ fontSize: 15, lineHeight: 1.35, overflow: 'hidden', textOverflow: 'ellipsis', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' }}>{nm(p.title_ar, p.title_en)}</b>

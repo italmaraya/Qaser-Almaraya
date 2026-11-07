@@ -53,7 +53,7 @@ export default function HomeHero({ hero, lang = 'ar', onPrimary, children }) {
       lang={lang}
       kicker={en ? h.kickerEn || 'Your trusted travel partner' : h.kickerAr || 'شريكك الموثوق في السفر'}
       title={en ? h.titleEn || 'Your journey starts with us' : h.titleAr || 'رحلتك تبدأ معنا'}
-      subtitle={en ? h.subtitleEn || 'Visas, holidays and flights, planned for you from Baghdad to the world.' : h.subtitleAr || 'تأشيرات ورحلات وطيران… نخطط لك كل شيء من بغداد إلى العالم.'}
+      subtitle={en ? h.subtitleEn || 'Your memories begin with us.' : h.subtitleAr || 'نأخذك إلى حيث تتمنى، لنصنع ذكريات لا تُنسى.'}
       primary={{ label: en ? 'Browse packages' : 'تصفّح الباقات', onClick: onPrimary }}
       secondary={{ label: en ? 'Ask us on WhatsApp' : 'اسألنا على واتساب', href: waLink(en ? 'Hello Qaser Almaraya, I would like some help planning my trip.' : 'مرحباً قصر المرايا، أرغب بالمساعدة في التخطيط لرحلتي.') }}
     />

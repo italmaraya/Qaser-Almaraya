@@ -1,4 +1,5 @@
 'use client';
+import { imgProps } from '../../../../lib/img';
 import { useEffect, useMemo, useState } from 'react';
 import { useParams, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
@@ -198,7 +199,7 @@ export default function CountryVisaListPage() {
                   <div key={c.id} className="qa-card qa-visa-card" style={{ padding: 0, overflow: 'hidden', position: 'relative', display: 'grid', gridTemplateColumns: '140px 1fr', minHeight: 140 }}>
                     <div style={{ position: 'relative', height: '100%', minHeight: 140, background: theme.gradient, overflow: 'hidden' }}>
                       {photo ? (
-                        <img src={photo} alt="" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }} />
+                        <img {...imgProps(photo, '(max-width: 820px) 92vw, 400px')} alt="" loading="lazy" decoding="async" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }} />
                       ) : (
                         <>
                           <Icon name={theme.icon} size={130} strokeWidth={1} style={{ position: 'absolute', insetInlineStart: -26, bottom: -30, color: 'rgba(255,255,255,.16)' }} />
