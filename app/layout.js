@@ -6,6 +6,7 @@ import LiveChat from '../components/LiveChat';
 import AirportChime from '../components/AirportChime';
 import RoutePrefetch from '../components/RoutePrefetch';
 import LangGuard from '../components/LangGuard';
+import TravelAlert from '../components/TravelAlert';
 import { SITE_URL, DEFAULT_OG, ORG_JSON_LD } from '../lib/seo';
 
 export const viewport = {
@@ -50,6 +51,7 @@ export default function RootLayout({ children }) {
       </head>
       <body>
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(ORG_JSON_LD) }} />
+        <TravelAlert />
         {children}
         <MobileBottomBar />
         <LiveChat />

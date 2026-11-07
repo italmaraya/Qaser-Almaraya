@@ -934,6 +934,7 @@ function   visaVals(country){
 <HomeDestinations lang={st.lang} />
 <HomeServices lang={st.lang} />
 <VisaChecker lang={st.lang} />
+<HomeOffers lang={st.lang} variant="events" />
 <SeasonSpotlight lang={st.lang} />
 <TripFinder lang={st.lang} />
 <HomeWhy lang={st.lang} milestones={ACHIEVEMENTS} />
@@ -2550,7 +2551,8 @@ function   visaVals(country){
 <span dir="ltr" style={{ textAlign: "right" }}>00964-774-9999-600</span>
 <span dir="ltr" style={{ textAlign: "right" }}>00964-784-9999-600</span>
 <span>sales@almarayagroup.com</span>
-<span>العراق: شارع 14 رمضان، بغداد</span>
+<span>بغداد — قرب نزلة جسر 14 رمضان، مقابل مجمع النعيمي</span>
+<span>أوقات الدوام: يومياً من 9 صباحاً حتى 12 منتصف الليل</span>
 </div>
 <img src="/assets/mascot-skylo-support.webp" alt="سكايلو في مركز الاتصال" style={{ width: "100%", maxWidth: "calc(var(--tw-poster,340px) + 80px)", borderRadius: "var(--tw-radius,16px)", boxShadow: "var(--tw-card-shadow,0 1px 3px rgba(29,39,51,.06))" }} />
 </div>
@@ -2606,6 +2608,7 @@ function   visaVals(country){
 <a href={"tel:" + (contentContact ? contentContact.phone2.replace(/-/g, "") : "009647849999600")} dir="ltr" style={{ fontSize: "16px", whiteSpace: "nowrap", color: "rgba(255,255,255,.9)", textDecoration: "none", alignSelf: "flex-start" }}>{contentContact ? contentContact.phone2 : "00964-784-9999-600"}</a>
 <a href={"mailto:" + (contentContact ? contentContact.email : "sales@almarayagroup.com")} style={{ fontSize: "16px", overflowWrap: "anywhere", color: "rgba(255,255,255,.9)", textDecoration: "none", alignSelf: "flex-start" }}>{contentContact ? contentContact.email : "sales@almarayagroup.com"}</a>
 <span style={{ fontSize: "16px", lineHeight: "1.6" }}>{contentContact ? contentContact.address : "العراق: شارع 14 رمضان، بغداد"}</span>
+<span style={{ fontSize: "15px", lineHeight: "1.6", color: "rgba(255,255,255,.85)" }}>أوقات الدوام: يومياً من 9 صباحاً حتى 12 منتصف الليل</span>
 </div>
 <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
 <h4 style={{ fontSize: "18px", color: "#fff", margin: "0" }}>خدماتنا</h4>

@@ -36,6 +36,7 @@ export default function SiteFooter() {
           <a href="tel:009647849999600" dir="ltr" style={{ fontSize: 16, whiteSpace: 'nowrap', color: 'rgba(255,255,255,.9)', textDecoration: 'none' }}>00964-784-9999-600</a>
           <a href="mailto:sales@almarayagroup.com" style={{ fontSize: 16, color: 'rgba(255,255,255,.9)', textDecoration: 'none' }}>sales@almarayagroup.com</a>
           <span style={{ fontSize: 16, lineHeight: 1.6 }}>العراق: شارع 14 رمضان، بغداد</span>
+          <span style={{ fontSize: 15, lineHeight: 1.6, color: 'rgba(255,255,255,.85)' }}>أوقات الدوام: يومياً من 9 صباحاً حتى 12 منتصف الليل</span>
         </div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
           <h4 style={{ fontSize: 18, color: '#fff', margin: 0 }}>تحتاج مساعدة؟</h4>

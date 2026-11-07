@@ -13,17 +13,26 @@ import { siteUrgency } from '../lib/packageUrgency';
 // there are no packages (or the list fails to load).
 const MAX = 6;
 
-export default function HomeOffers({ lang = 'ar' }) {
+// variant="events": the same strip limited to concert and sports packages
+// (categories music/sports). It stays hidden until staff add such packages.
+const EVENT_CATS = ['music', 'sports'];
+
+export default function HomeOffers({ lang = 'ar', variant }) {
   const en = lang === 'en';
+  const events = variant === 'events';
   const [items, setItems] = useState(null);
 
   useEffect(() => {
     let alive = true;
-    loadPackages().then((list) => { if (alive) setItems(list.slice(0, MAX)); });
+    loadPackages().then((list) => {
+      if (!alive) return;
+      setItems((events ? list.filter((p) => EVENT_CATS.includes(p.cat)) : list).slice(0, MAX));
+    });
     return () => { alive = false; };
-  }, []);
+  }, [events]);
 
   if (items && items.length === 0) return null;
+  if (events && !items) return null; // no placeholder for a section that may not exist
   const nm = (ar, enText) => (en && enText ? enText : ar);
 
   return (
@@ -40,11 +49,11 @@ export default function HomeOffers({ lang = 'ar' }) {
 `}</style>
       <div className="qs-head">
         <div>
-          <span className="qs-kicker">{en ? 'Packages' : 'الباقات'}</span>
-          <h2 className="qs-h2">{en ? 'Featured offers' : 'أبرز العروض'}</h2>
-          <p className="qs-lead">{en ? 'Ready-made trips from Baghdad, one price per person.' : 'رحلات جاهزة من بغداد بسعر واحد للفرد.'}</p>
+          <span className="qs-kicker">{events ? (en ? 'Events' : 'فعاليات') : (en ? 'Packages' : 'الباقات')}</span>
+          <h2 className="qs-h2">{events ? (en ? 'Concert and match trips' : 'رحلات الحفلات والمباريات') : (en ? 'Featured offers' : 'أبرز العروض')}</h2>
+          <p className="qs-lead">{events ? (en ? 'Flights, hotel and tickets planned around the event date.' : 'طيران وفندق وتذاكر، مرتبة حول موعد الفعالية.') : (en ? 'Ready-made trips from Baghdad, one price per person.' : 'رحلات جاهزة من بغداد بسعر واحد للفرد.')}</p>
         </div>
-        <Link href="/packages" className="qs-link">{en ? 'All packages' : 'كل الباقات'}</Link>
+        <Link href={events ? '/packages?cat=' + (items.some((p) => p.cat === 'music') ? 'music' : 'sports') : '/packages'} className="qs-link">{events ? (en ? 'All event trips' : 'كل رحلات الفعاليات') : (en ? 'All packages' : 'كل الباقات')}</Link>
       </div>
       <div className="qa-offers-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(3,minmax(0,1fr))', gap: 20 }}>
         {items === null

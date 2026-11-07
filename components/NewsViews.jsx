@@ -14,6 +14,7 @@ const CATS = {
   visas: { ar: 'تأشيرات', en: 'Visas', c: '#7b4bd6' },
   offers: { ar: 'عروض ورحلات', en: 'Offers & trips', c: '#e0364f' },
   events: { ar: 'فعاليات ومعارض', en: 'Events & expos', c: '#c27a00' },
+  alert: { ar: 'تنبيه للمسافرين', en: 'Travel alerts', c: '#b42318' },
 };
 
 const pick = (en, a, b) => (en && b ? b : a || b || '');
