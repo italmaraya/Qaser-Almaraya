@@ -142,7 +142,7 @@ export default function VisaLandingPage({ initialCards = null }) {
           flag_code: c.flag_code,
           card_image_url: c.card_image_url,
           region: c.region || 'وجهات أخرى',
-          region_en: c.region_en || '',
+          region_en: c.region_en || (c.region ? '' : 'Other destinations'),
           region_id: c.region_id || 'other',
           cards: [],
         });

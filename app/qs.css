@@ -377,3 +377,5 @@ html[data-area=site] .qa-offer-urg{border-radius:var(--qs-r-xs)!important;box-sh
 @media (prefers-reduced-motion:reduce){html[data-area=site] .qa-offer-img img{transition:none}}
 html[data-area=site] .qa-tf .qa-btn.qa-amber{min-height:48px!important}
 @media (max-width:820px){html[data-area=site] .qh .qh-title{font-size:34px!important;line-height:1.35!important}}
+/* Tablet portrait: the phone's 4:5 photo crop made the hero taller than the screen */
+@media (min-width:600px) and (max-width:820px){html[data-area=site] .qh .qh-media{max-height:68svh}}
