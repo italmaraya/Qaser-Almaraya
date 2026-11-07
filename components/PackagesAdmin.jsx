@@ -397,6 +397,18 @@ function PackageForm({ initial, onSave, onCancel, saving }) {
       return { ...f, [field]: arr };
     });
   }
+  // Copy a row (hotel, flight, day) with every field, placed right under the
+  // original. A copied hotel starts hidden so a duplicate never reaches
+  // customers before the staff member edits and saves it.
+  function duplicateRow(field, idx, extra) {
+    setForm((f) => {
+      const arr = [...(f[field] || [])];
+      const src = arr[idx];
+      if (!src) return f;
+      arr.splice(idx + 1, 0, JSON.parse(JSON.stringify({ ...src, ...(extra || {}) })));
+      return { ...f, [field]: arr };
+    });
+  }
 
   return (
     <div style={cardStyle}>
@@ -502,6 +514,7 @@ function PackageForm({ initial, onSave, onCancel, saving }) {
               </span>
               <div style={{ display: 'flex', gap: 6 }}>
                 <button type="button" style={{ ...btnStyle('ghost'), color: h.hidden ? '#1a7f47' : '#8a5a00' }} onClick={() => updateRow('hotels', idx, 'hidden', !h.hidden)}>{h.hidden ? '👁 إظهار للعملاء' : '🚫 إخفاء عن العملاء'}</button>
+                <button type="button" style={btnStyle('ghost')} onClick={() => duplicateRow('hotels', idx, { hidden: true, nameAr: (h.nameAr || '') + ' — نسخة', nameEn: h.nameEn ? h.nameEn + ' — copy' : '' })}>⧉ نسخ الفندق</button>
                 <button type="button" style={btnStyle('danger')} onClick={() => removeRow('hotels', idx)}>حذف الفندق</button>
               </div>
             </div>
@@ -716,11 +729,13 @@ function PackageForm({ initial, onSave, onCancel, saving }) {
 function PackagesTab() {
   const [packages, setPackages] = useState(null);
   const [supplierFilter, setSupplierFilter] = useState('');
+  const [placeFilter, setPlaceFilter] = useState('');
+  const [visFilter, setVisFilter] = useState('');
   const [editing, setEditing] = useState(null); // package object or 'new' or null
   const [saving, setSaving] = useState(false);
   const [duplicating, setDuplicating] = useState(null);
   const [error, setError] = useState('');
-const { selectedIds, toggleSelect, handleBulkDelete, handleBulkToggleActive, clearSelection } = usePackagesBulk(packages, api, () => load());
+const { selectedIds, toggleSelect, toggleSelectAll, handleBulkDelete, handleBulkToggleActive, clearSelection } = usePackagesBulk(packages, api, () => load());
 function load() {
   api('/api/admin/packages').then(setPackages).catch((e) => setError(e.message));
 }
@@ -782,6 +797,18 @@ function load() {
     }
   }
 
+  // Dashboard list filters: supplier, free-text country/city, visibility.
+  const placeText = (p) => [p.dest_ar, p.dest_en, p.title_ar, p.title_en, ...(Array.isArray(p.countries) ? p.countries : [])]
+    .filter(Boolean).join(' ').toLowerCase();
+  const filtered = (packages || []).filter((p) => {
+    if (supplierFilter && (supplierFilter === '__none__' ? !!p.supplier_name : p.supplier_name !== supplierFilter)) return false;
+    if (visFilter === 'on' && !p.active) return false;
+    if (visFilter === 'off' && p.active) return false;
+    const q = placeFilter.trim().toLowerCase();
+    if (q && !placeText(p).includes(q)) return false;
+    return true;
+  });
+
   if (editing) {
     return (
       <PackageForm
@@ -798,30 +825,62 @@ function load() {
       {error && <p style={{ color: '#d2324f' }}>{error}</p>}
       <GroupsImport onDone={load} />
       <GroupsImportFull onDone={load} />
-      {Array.isArray(packages) && (() => {
+      {Array.isArray(packages) && packages.length > 0 && (() => {
         const names = [...new Set(packages.map((p) => p.supplier_name).filter(Boolean))].sort();
-        if (!names.length) return null;
+        const sel = { padding: '7px 10px', borderRadius: 8, border: '1px solid #ececed', fontFamily: 'inherit', fontSize: 13.5 };
         return (
-          <label style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 13, fontWeight: 600, color: '#3d4650' }}>
-            تصفية حسب المورد:
-            <select value={supplierFilter} onChange={(e) => setSupplierFilter(e.target.value)} style={{ padding: '7px 10px', borderRadius: 8, border: '1px solid #ececed', fontFamily: 'inherit', minWidth: 200 }}>
-              <option value="">— كل الموردين ({packages.length}) —</option>
-              {names.map((n) => <option key={n} value={n}>{n} ({packages.filter((p) => p.supplier_name === n).length})</option>)}
-              <option value="__none__">بدون مورد ({packages.filter((p) => !p.supplier_name).length})</option>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap', background: '#f8fafb', border: '1px solid #ececed', borderRadius: 10, padding: '10px 12px' }}>
+            <input
+              value={placeFilter}
+              onChange={(e) => setPlaceFilter(e.target.value)}
+              placeholder="🔎 ابحث بالدولة أو المدينة، مثال: تركيا أو طرابزون"
+              style={{ ...sel, minWidth: 280, flex: '1 1 260px' }}
+            />
+            <select value={visFilter} onChange={(e) => setVisFilter(e.target.value)} style={sel}>
+              <option value="">كل الحالات</option>
+              <option value="on">الظاهرة فقط ({packages.filter((p) => p.active).length})</option>
+              <option value="off">المخفية فقط ({packages.filter((p) => !p.active).length})</option>
             </select>
-          </label>
+            {names.length > 0 && (
+              <select value={supplierFilter} onChange={(e) => setSupplierFilter(e.target.value)} style={{ ...sel, minWidth: 180 }}>
+                <option value="">كل الموردين</option>
+                {names.map((n) => <option key={n} value={n}>{n} ({packages.filter((p) => p.supplier_name === n).length})</option>)}
+                <option value="__none__">بدون مورد ({packages.filter((p) => !p.supplier_name).length})</option>
+              </select>
+            )}
+            <span style={{ fontSize: 13, color: '#5f666e' }}>الظاهر: <b>{filtered.length}</b> من {packages.length}</span>
+            {(placeFilter || visFilter || supplierFilter) && (
+              <button type="button" style={btnStyle('ghost')} onClick={() => { setPlaceFilter(''); setVisFilter(''); setSupplierFilter(''); }}>مسح التصفية</button>
+            )}
+          </div>
         );
       })()}
       <div>
         <BulkActionBar selectedIds={selectedIds} handleBulkDelete={handleBulkDelete} handleBulkToggleActive={handleBulkToggleActive} clearSelection={clearSelection} btnStyle={btnStyle} />
-        <button type="button" style={btnStyle('primary')} onClick={() => setEditing('new')}>+ إضافة باقة جديدة</button>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
+          <button type="button" style={btnStyle('primary')} onClick={() => setEditing('new')}>+ إضافة باقة جديدة</button>
+          {filtered.length > 0 && (
+            <label style={{ display: 'flex', alignItems: 'center', gap: 7, fontSize: 13, fontWeight: 600, color: '#3d4650', cursor: 'pointer' }}>
+              <input
+                type="checkbox"
+                checked={selectedIds.length > 0 && filtered.every((p) => selectedIds.includes(p.id))}
+                onChange={() => toggleSelectAll(filtered)}
+                style={{ width: 17, height: 17, cursor: 'pointer' }}
+              />
+              تحديد كل الظاهر ({filtered.length})
+            </label>
+          )}
+        </div>
       </div>
       {!packages ? (
         <p>جارٍ التحميل...</p>
       ) : packages.length === 0 ? (
         <p style={{ color: '#7b8087' }}>لا توجد باقات بعد.</p>
       ) : (
-        packages.filter((p) => !supplierFilter || (supplierFilter === '__none__' ? !p.supplier_name : p.supplier_name === supplierFilter)).map((p) => (
+        filtered.length === 0 ? (
+          <p style={{ color: '#7b8087' }}>لا توجد باقة مطابقة للتصفية.</p>
+        ) : (
+        filtered.map((p) => (
           <div key={p.id} style={{ ...cardStyle, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
             <input type="checkbox" checked={selectedIds.includes(p.id)} onChange={() => toggleSelect(p.id)} style={{ width: 18, height: 18, cursor: 'pointer', marginInlineEnd: 10 }} />
             <div>
@@ -837,7 +896,7 @@ function load() {
               <button type="button" style={btnStyle('danger')} onClick={() => handleDelete(p.id)}>حذف</button>
             </div>
           </div>
-        ))
+        )))
       )}
     </div>
   );

@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { sql, ensureSchema } from '../../../../../lib/db';
 import { requireAuth, getSessionRole, SESSION_COOKIE } from '../../../../../lib/session';
 import { getExchangeRate } from '../../../../../lib/settings';
+import { withVisaSellPrices } from '../../../../../lib/visaPricing';
 
 export async function GET(request) {
   const RATE = await getExchangeRate();
@@ -24,7 +25,7 @@ export async function GET(request) {
 
   const apps = await sql`
     SELECT a.*, c.name_ar AS country_name_ar, vt.name_ar AS visa_type_name_ar,
-           vc.issuing_time_days, vc.adult_cost, vc.child_cost, vc.cost_currency, vc.adult_price, vc.child_price,
+           vc.issuing_time_days, vc.adult_cost, vc.child_cost, vc.cost_currency, vc.adult_price, vc.child_price, vc.price_currency,
            vc.send_method, vc.provider_email AS card_provider_email,
            s.name_ar AS status_name_ar, s.name_en AS status_name_en, s.id AS status_id,
            p.name AS provider_name, p.emails AS provider_emails,
@@ -63,7 +64,9 @@ export async function GET(request) {
     const hasProviderEmail = !!a.card_provider_email || linkedProviderEmails.length > 0;
     const provider_email_missing = wantsProvider && !hasProviderEmail;
 
-    const row = { ...a, is_delayed: isDelayed, internal_cost_total, provider_email_missing };
+    const sell = withVisaSellPrices(a, RATE);
+    const row = { ...a, adult_price: sell.adult_price, child_price: sell.child_price, is_delayed: isDelayed, internal_cost_total, provider_email_missing };
+    delete row.price_currency;
     delete row.provider_emails;
     delete row.card_provider_email;
     // Internal cost/margin is admin-only — a staff session (status board)

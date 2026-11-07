@@ -16,7 +16,13 @@ export function usePackagesBulk(packages, api, load) {
   };
 
   async function handleBulkDelete() {
-    if (!selectedIds.length || !confirm(`هل أنت متأكد من حذف ${selectedIds.length} باقة؟`)) return;
+    if (!selectedIds.length) return;
+    const names = selectedIds
+      .map((id) => (packages || []).find((p) => p.id === id))
+      .filter(Boolean)
+      .map((p) => '• ' + (p.title_ar || p.dest_ar || p.id));
+    const shown = names.slice(0, 10).join('\n') + (names.length > 10 ? `\n… و${names.length - 10} غيرها` : '');
+    if (!confirm(`سيتم حذف ${selectedIds.length} باقة نهائياً ولا يمكن التراجع:\n\n${shown}`)) return;
     try {
       await Promise.all(selectedIds.map(id => api(`/api/admin/packages/${id}`, { method: 'DELETE' })));
       setSelectedIds([]);

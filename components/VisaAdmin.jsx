@@ -1220,6 +1220,7 @@ function blankCard() {
     validity_before_travel: '',
     adult_price: '',
     child_price: '',
+    price_currency: 'IQD',
     adult_cost: '',
     child_cost: '',
     cost_currency: 'IQD',
@@ -1231,8 +1232,30 @@ function blankCard() {
   };
 }
 
+// Selling-price currency for a visa card. A card priced in USD follows the
+// dashboard exchange rate automatically, exactly like a package in USD.
+function SellCurrencyRow({ value, onChange, rate, adult, child }) {
+  const usd = value === 'USD';
+  const conv = (v) => (Math.round(((Number(v) || 0) * (Number(rate) || 0)) / 1000) * 1000).toLocaleString('en-US');
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 6, background: '#f8fafb', border: '1px solid #ececed', borderRadius: 10, padding: '10px 12px' }}>
+      <span style={{ fontSize: 13, fontWeight: 700, color: '#3d4650' }}>عملة سعر البيع (سعر البالغ وسعر الطفل)</span>
+      <CostCurrencyPicker value={value || 'IQD'} onChange={onChange} />
+      <span style={{ fontSize: 12.5, color: '#7b8087', lineHeight: 1.8 }}>
+        {usd
+          ? `بالدولار: يتحوّل تلقائياً بسعر الصرف الحالي (${(Number(rate) || 0).toLocaleString('en-US')} د.ع) ويُقرَّب إلى أقرب 1,000 — أي سعر البالغ ${conv(adult)} د.ع وسعر الطفل ${conv(child)} د.ع. أي تغيير لسعر الصرف في الإعدادات يحدّث هذه الأسعار فوراً.`
+          : 'بالدينار: السعر ثابت كما يُدخَل ولا يتأثر بسعر الصرف.'}
+      </span>
+    </div>
+  );
+}
+
 function CardsTab({ cards, countries, types, providers, reload, setError }) {
   const [draft, setDraft] = useState(blankCard());
+  const [rate, setRate] = useState(0);
+  useEffect(() => {
+    fetch('/api/admin/settings').then((r) => r.json()).then((d) => setRate(Number(d.usd_iqd_rate) || 0)).catch(() => {});
+  }, []);
   const [expanded, setExpanded] = useState(null);
   const [editing, setEditing] = useState(null);
   const [editDraft, setEditDraft] = useState(null);
@@ -1362,11 +1385,11 @@ function CardsTab({ cards, countries, types, providers, reload, setError }) {
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: 12 }}>
           <label style={labelStyle}>
-            سعر البالغ (IQD)
+            سعر البالغ ({draft.price_currency === 'USD' ? 'USD' : 'IQD'})
             <input type="number" style={inputStyle} value={draft.adult_price} onChange={(e) => setDraft({ ...draft, adult_price: e.target.value })} />
           </label>
           <label style={labelStyle}>
-            سعر الطفل (IQD)
+            سعر الطفل ({draft.price_currency === 'USD' ? 'USD' : 'IQD'})
             <input type="number" style={inputStyle} value={draft.child_price} onChange={(e) => setDraft({ ...draft, child_price: e.target.value })} />
           </label>
           <label style={labelStyle}>
@@ -1378,6 +1401,7 @@ function CardsTab({ cards, countries, types, providers, reload, setError }) {
             <input type="number" style={inputStyle} value={draft.child_cost} onChange={(e) => setDraft({ ...draft, child_cost: e.target.value })} />
           </label>
         </div>
+        <SellCurrencyRow value={draft.price_currency} onChange={(v) => setDraft({ ...draft, price_currency: v })} rate={rate} adult={draft.adult_price} child={draft.child_price} />
         <label style={labelStyle}>
           عملة التكلفة الداخلية (لكِلا الحقلين أعلاه)
           <CostCurrencyPicker value={draft.cost_currency} onChange={(v) => setDraft({ ...draft, cost_currency: v })} />
@@ -1516,11 +1540,11 @@ function CardsTab({ cards, countries, types, providers, reload, setError }) {
               </div>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: 12 }}>
                 <label style={labelStyle}>
-                  سعر البالغ (IQD)
+                  سعر البالغ ({editDraft.price_currency === 'USD' ? 'USD' : 'IQD'})
                   <input type="number" style={inputStyle} value={editDraft.adult_price || ''} onChange={(e) => setEditDraft({ ...editDraft, adult_price: e.target.value })} />
                 </label>
                 <label style={labelStyle}>
-                  سعر الطفل (IQD)
+                  سعر الطفل ({editDraft.price_currency === 'USD' ? 'USD' : 'IQD'})
                   <input type="number" style={inputStyle} value={editDraft.child_price || ''} onChange={(e) => setEditDraft({ ...editDraft, child_price: e.target.value })} />
                 </label>
                 <label style={labelStyle}>
@@ -1532,6 +1556,7 @@ function CardsTab({ cards, countries, types, providers, reload, setError }) {
                   <input type="number" style={inputStyle} value={editDraft.child_cost || ''} onChange={(e) => setEditDraft({ ...editDraft, child_cost: e.target.value })} />
                 </label>
               </div>
+              <SellCurrencyRow value={editDraft.price_currency} onChange={(v) => setEditDraft({ ...editDraft, price_currency: v })} rate={rate} adult={editDraft.adult_price} child={editDraft.child_price} />
               <label style={labelStyle}>
                 عملة التكلفة الداخلية (لكِلا الحقلين أعلاه)
                 <CostCurrencyPicker value={editDraft.cost_currency} onChange={(v) => setEditDraft({ ...editDraft, cost_currency: v })} />
@@ -1584,8 +1609,8 @@ function CardsTab({ cards, countries, types, providers, reload, setError }) {
             </div>
           ) : (
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: 10, fontSize: 14 }}>
-              <span>سعر البالغ: {c.adult_price} د.ع</span>
-              <span>سعر الطفل: {c.child_price} د.ع</span>
+              <span>سعر البالغ: {c.price_currency === 'USD' ? `$${c.adult_price} ≈ ${(Math.round(((Number(c.adult_price) || 0) * (Number(rate) || 0)) / 1000) * 1000).toLocaleString('en-US')} د.ع` : `${c.adult_price} د.ع`}</span>
+              <span>سعر الطفل: {c.price_currency === 'USD' ? `$${c.child_price} ≈ ${(Math.round(((Number(c.child_price) || 0) * (Number(rate) || 0)) / 1000) * 1000).toLocaleString('en-US')} د.ع` : `${c.child_price} د.ع`}</span>
               <span>المزود: {c.provider_name || '—'}</span>
               <span>مدة الإصدار: {c.issuing_time_days || '—'} يوم</span>
             </div>

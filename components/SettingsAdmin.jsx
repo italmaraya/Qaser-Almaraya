@@ -9,6 +9,7 @@ export default function SettingsAdmin() {
   const [saved, setSaved] = useState(false);
   const [err, setErr] = useState('');
   const [busy, setBusy] = useState(false);
+  const [repriced, setRepriced] = useState(0);
 
   useEffect(() => {
     fetch('/api/admin/settings').then((r) => r.json()).then((d) => setRate(String(d.usd_iqd_rate || ''))).catch(() => {});
@@ -20,7 +21,8 @@ export default function SettingsAdmin() {
       const r = await fetch('/api/admin/settings', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ usd_iqd_rate: Number(rate) }) });
       const d = await r.json();
       if (!r.ok) throw new Error(d.error || 'تعذّر الحفظ');
-      setRate(String(d.usd_iqd_rate)); setSaved(true);
+      setRate(String(d.usd_iqd_rate)); setSaved(true); setRepriced(Number(d.repriced) || 0);
+      if (d.warning) setErr(d.warning);
     } catch (e) { setErr(e.message); } finally { setBusy(false); }
   }
 
@@ -29,8 +31,8 @@ export default function SettingsAdmin() {
       <div style={{ background: '#f3fafc', border: '1px solid #d9e9ef', borderRadius: 12, padding: 16, display: 'flex', flexDirection: 'column', gap: 10 }}>
         <b style={{ fontSize: 15, color: '#036f8c' }}>💱 سعر صرف الدولار</b>
         <span style={{ fontSize: 13, color: '#3d4650', lineHeight: 1.8 }}>
-          كم ديناراً عراقياً يساوي الدولار الواحد. يُستخدم تلقائياً في: الباقات المسعّرة بالدولار، تحويل التكاليف الداخلية بالدولار، وزر تبديل العملة للزوار.
-          عند الحفظ تتحدّث جميع الأسعار على الموقع فوراً دون تعديل يدوي. تُقرَّب أسعار العملاء إلى أقرب 1,000 دينار.
+          كم ديناراً عراقياً يساوي الدولار الواحد. يُستخدم تلقائياً في: الباقات والكروبات المسعّرة بالدولار، بطاقات التأشيرات المسعّرة بالدولار، تحويل التكاليف الداخلية بالدولار، وزر تبديل العملة للزوار.
+          عند الحفظ تتحدّث جميع الأسعار على الموقع وفي لوحة التحكم فوراً دون تعديل يدوي لكل باقة أو تأشيرة. تُقرَّب أسعار العملاء إلى أقرب 1,000 دينار.
         </span>
         <label style={{ display: 'flex', flexDirection: 'column', gap: 6, fontSize: 13, fontWeight: 600 }}>
           1 دولار أمريكي =
@@ -41,7 +43,7 @@ export default function SettingsAdmin() {
         </label>
         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
           <button type="button" onClick={save} disabled={busy || !rate} style={{ padding: '9px 18px', borderRadius: 8, border: 0, background: '#049dc5', color: '#fff', fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}>{busy ? 'جارٍ الحفظ…' : 'حفظ سعر الصرف'}</button>
-          {saved && <span style={{ color: '#1a7f47', fontSize: 13, fontWeight: 700 }}>✓ تم الحفظ — الأسعار بالدولار تحدّثت على الموقع</span>}
+          {saved && <span style={{ color: '#1a7f47', fontSize: 13, fontWeight: 700 }}>✓ تم الحفظ — الأسعار بالدولار تحدّثت على الموقع{repriced ? ` وأُعيد حساب ${repriced} باقة` : ''}</span>}
           {err && <span style={{ color: '#c02643', fontSize: 13 }}>{err}</span>}
         </div>
       </div>

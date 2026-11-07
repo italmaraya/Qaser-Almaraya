@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 import { sql, ensureSchema } from '../../../../lib/db';
 import { requireAuth } from '../../../../lib/session';
+import { getExchangeRate } from '../../../../lib/settings';
+import { withVisaSellPrices } from '../../../../lib/visaPricing';
 
 // GET only — this route intentionally has no POST/PUT/DELETE. It exists so
 // staff accounts can see the internal cost side of visa pricing (what we pay
@@ -14,7 +16,7 @@ export async function GET(request) {
       c.name_ar AS country_ar, c.name_en AS country_en,
       vt.name_ar AS visa_type_ar, vt.name_en AS visa_type_en,
       p.name AS provider_name,
-      vc.adult_price, vc.child_price,
+      vc.adult_price, vc.child_price, vc.price_currency,
       vc.adult_cost, vc.child_cost,
       vc.cost_currency, vc.active
     FROM visa_cards vc
@@ -23,5 +25,7 @@ export async function GET(request) {
     LEFT JOIN providers p ON p.id = vc.provider_id
     ORDER BY c.name_ar ASC NULLS LAST, vt.name_ar ASC NULLS LAST, vc.id ASC
   `;
-  return NextResponse.json(rows);
+  // A card priced in USD is shown here in IQD, like everywhere else.
+  const rate = await getExchangeRate();
+  return NextResponse.json(rows.map((r) => withVisaSellPrices(r, rate)));
 }
