@@ -56,8 +56,8 @@ function Fact({ icon, label, value, note }) {
     <div className="qa-gd-fact">
       <span className="qa-gd-ico" aria-hidden="true"><Icon name={icon} size={18} /></span>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 2, minWidth: 0 }}>
-        <span style={{ fontSize: 12.5, color: '#5f666e' }}>{label}</span>
-        <b style={{ fontSize: 15.5, color: '#1d2733' }}>{value}</b>
+        <span style={{ fontSize: 13, color: '#5f666e' }}>{label}</span>
+        <b style={{ fontSize: 16, color: '#1d2733' }}>{value}</b>
         {note ? <span style={{ fontSize: 12, color: '#8a5a00' }}>{note}</span> : null}
       </div>
     </div>
@@ -113,7 +113,7 @@ export function GuideFull({ iso, lang = 'ar' }) {
   useEffect(() => { setMonth(new Date().getMonth()); }, []);
   if (!g) return null;
   return (
-    <div data-no-i18n="" dir={en ? 'ltr' : 'rtl'} style={{ display: 'flex', flexDirection: 'column', gap: 22 }}>
+    <div data-no-i18n="" dir={en ? 'ltr' : 'rtl'} style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
       <style>{CSS}</style>
       <div className="qa-gd-facts">
         <Fact icon="clock" label={en ? 'Local time in ' + g.city : 'الوقت الآن في ' + g.city} value={clock ? clock.time : '—'} note={clock ? diffText(clock.diff, en) : ''} />
@@ -131,7 +131,7 @@ export function GuideFull({ iso, lang = 'ar' }) {
       <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr) minmax(0,1.4fr)', gap: 16 }} className="qa-2col">
         <div className="qa-card" style={{ display: 'flex', flexDirection: 'column', gap: 8, background: '#fffaf0', borderColor: '#fde5b4' }}>
           <h3 style={{ fontSize: 18, fontWeight: 700, color: '#8a5a00' }}>{en ? 'Best time to go' : 'أفضل وقت للزيارة'}</h3>
-          <p style={{ fontSize: 15.5, lineHeight: 1.7, color: '#3d4650' }}>{g.best}</p>
+          <p style={{ fontSize: 16, lineHeight: 1.7, color: '#3d4650' }}>{g.best}</p>
         </div>
         <div className="qa-card" style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
           <h3 style={{ fontSize: 18, fontWeight: 700, color: '#1d2733' }}>{en ? 'Good to know' : 'نصائح قبل السفر'}</h3>
@@ -156,13 +156,13 @@ export function GuideCompact({ iso, lang = 'ar', month = null }) {
   const t = m === null ? null : g.temps[m];
   return (
     <div className="qa-card" data-no-i18n="" dir={en ? 'ltr' : 'rtl'} style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-      <h4 style={{ margin: 0, fontSize: 15, display: 'flex', alignItems: 'center', gap: 7 }}><Icon name="compass" size={16} style={{ color: '#049dc5', flex: 'none' }} />{en ? 'Travel guide: ' + name : 'دليل السفر إلى ' + name}</h4>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 6, fontSize: 13.5, color: '#3d4650' }}>
-        {t !== null && <span style={{ display: 'flex', alignItems: 'center', gap: 7 }}><Icon name="sun" size={14} style={{ color: '#5f666e', flex: 'none' }} />{en ? `${MONTHS_EN[m]} in ${g.city}: around ${t}°C by day` : `${MONTHS_AR[m]} في ${g.city}: حوالي ${t}° نهاراً`}</span>}
-        <span style={{ display: 'flex', alignItems: 'center', gap: 7 }}><Icon name="banknote" size={14} style={{ color: '#5f666e', flex: 'none' }} />{g.currency} ({g.currencyCode})</span>
-        <span style={{ display: 'flex', alignItems: 'center', gap: 7 }}><Icon name="plug" size={14} style={{ color: '#5f666e', flex: 'none' }} />{g.plugs}{g.needsAdapter ? (en ? ' — adapter needed' : ' — تحتاج إلى محوّل') : ''}</span>
+      <h4 style={{ margin: 0, fontSize: 15, display: 'flex', alignItems: 'center', gap: 8 }}><Icon name="compass" size={16} style={{ color: '#049dc5', flex: 'none' }} />{en ? 'Travel guide: ' + name : 'دليل السفر إلى ' + name}</h4>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 6, fontSize: 14, color: '#3d4650' }}>
+        {t !== null && <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}><Icon name="sun" size={14} style={{ color: '#5f666e', flex: 'none' }} />{en ? `${MONTHS_EN[m]} in ${g.city}: around ${t}°C by day` : `${MONTHS_AR[m]} في ${g.city}: حوالي ${t}° نهاراً`}</span>}
+        <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}><Icon name="banknote" size={14} style={{ color: '#5f666e', flex: 'none' }} />{g.currency} ({g.currencyCode})</span>
+        <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}><Icon name="plug" size={14} style={{ color: '#5f666e', flex: 'none' }} />{g.plugs}{g.needsAdapter ? (en ? ' — adapter needed' : ' — تحتاج إلى محوّل') : ''}</span>
       </div>
-      <Link href={'/guide/' + g.iso} style={{ fontSize: 13.5, fontWeight: 700, color: '#036f8c' }}>{en ? 'Full guide: weather, tips and more →' : 'الدليل الكامل: الطقس والنصائح والمزيد ←'}</Link>
+      <Link href={'/guide/' + g.iso} style={{ fontSize: 14, fontWeight: 700, color: '#036f8c' }}>{en ? 'Full guide: weather, tips and more →' : 'الدليل الكامل: الطقس والنصائح والمزيد ←'}</Link>
     </div>
   );
 }

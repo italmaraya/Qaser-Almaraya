@@ -65,7 +65,7 @@ export default function PaymentMethods({ title, note, methods, defaultOpen = 'ca
     return (
       <div dir="rtl" style={{ display: 'grid', gridTemplateColumns: 'clamp(180px,34%,300px) minmax(240px,1fr)', alignItems: 'stretch', borderRadius: 'var(--tw-radius,16px)', overflow: 'hidden', background: '#eaf8fd', border: '1px solid #bfe9f6', ...style }}>
         <img src={thankYouSrc || assetBase + '/mascot-skylo-thankyou.webp'} alt="سكايلو يشكرك" style={{ width: '100%', height: '100%', minHeight: 300, display: 'block', objectFit: 'cover' }} />
-        <div style={{ minWidth: 0, display: 'flex', flexDirection: 'column', alignItems: 'flex-start', textAlign: 'start', justifyContent: 'center', gap: 10, padding: 26 }}>
+        <div style={{ minWidth: 0, display: 'flex', flexDirection: 'column', alignItems: 'flex-start', textAlign: 'start', justifyContent: 'center', gap: 10, padding: 24 }}>
           <span style={{ fontSize: 24, fontWeight: 700, color: '#036f8c' }}>شكراً لك!</span>
           {orderNo && (
             <span style={{ display: 'inline-flex', alignItems: 'center', gap: 10, padding: '8px 16px', borderRadius: 999, background: '#fff', border: '1px solid #bfe9f6' }}>
@@ -99,7 +99,7 @@ export default function PaymentMethods({ title, note, methods, defaultOpen = 'ca
                   <Icon name={m.icon} size={18} />
                 </span>
                 <span style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', gap: 2 }}>
-                  <span style={{ fontSize: 13.5, fontWeight: 600, color: '#1d2733' }}>الطريقة {i + 1} — {m.label}</span>
+                  <span style={{ fontSize: 14, fontWeight: 600, color: '#1d2733' }}>الطريقة {i + 1} — {m.label}</span>
                   <span style={{ fontSize: 11, color: '#5f666e' }}>{m.hint}</span>
                 </span>
                 <Icon name={on ? 'chevron-up' : 'chevron-down'} size={18} style={{ color: '#5f666e' }} />
@@ -109,7 +109,7 @@ export default function PaymentMethods({ title, note, methods, defaultOpen = 'ca
                   {(m.rows || []).map((r) => (
                     <div key={r[0]} style={{ display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
                       <span style={{ minWidth: 110, fontSize: 12, color: '#5f666e' }}>{r[0]}</span>
-                      <span dir={/[0-9+]/.test(r[1][0]) ? 'ltr' : 'rtl'} style={{ fontSize: 13.5, fontWeight: 600, color: '#1d2733', letterSpacing: /[0-9+]/.test(r[1][0]) ? '.04em' : 'normal' }}>{r[1]}</span>
+                      <span dir={/[0-9+]/.test(r[1][0]) ? 'ltr' : 'rtl'} style={{ fontSize: 14, fontWeight: 600, color: '#1d2733', letterSpacing: /[0-9+]/.test(r[1][0]) ? '.04em' : 'normal' }}>{r[1]}</span>
                     </div>
                   ))}
                   <p style={{ display: 'flex', gap: 8, margin: 0, padding: '12px 14px', borderRadius: 'var(--tw-radius-sm,10px)', background: m.warn ? '#fef3dc' : '#f8f7f8', border: '1px solid ' + (m.warn ? '#fdd27c' : '#ececed'), fontSize: 13, lineHeight: 1.6, color: m.warn ? '#a06a00' : '#3d4650' }}>
@@ -123,7 +123,7 @@ export default function PaymentMethods({ title, note, methods, defaultOpen = 'ca
         })}
       </div>
       {chosen ? (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 16, padding: 18, borderRadius: 'var(--tw-radius-sm,10px)', border: '1.5px dashed #049dc5', background: '#eaf8fd' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 16, padding: 16, borderRadius: 'var(--tw-radius-sm,10px)', border: '1.5px dashed #049dc5', background: '#eaf8fd' }}>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
             <span style={{ fontSize: 15, fontWeight: 600, color: '#1d2733' }}>{atOffice ? 'تأكيد الدفع في المكتب' : 'أرفق إشعار الدفع — ' + chosen.label}</span>
             <span style={{ fontSize: 12, color: '#3d4650' }}>{atOffice ? 'أكِّد اختيارك، وادفع المبلغ في المكتب خلال يوم واحد — لا حاجة لإرفاق أي ملف.' : 'صورة أو PDF لإشعار التحويل — حتى 5 ميغابايت.'}</span>
@@ -136,7 +136,7 @@ export default function PaymentMethods({ title, note, methods, defaultOpen = 'ca
           )}
           <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
             {atOffice ? null : (
-              <label htmlFor={uploadId} style={{ cursor: uploading ? 'not-allowed' : 'pointer', opacity: uploading ? 0.6 : 1, display: 'flex', alignItems: 'center', gap: 8, padding: '10px 18px', borderRadius: 999, background: '#fff', border: '1px solid #036f8c', color: '#036f8c', fontSize: 13.5, fontWeight: 600 }}>
+              <label htmlFor={uploadId} style={{ cursor: uploading ? 'not-allowed' : 'pointer', opacity: uploading ? 0.6 : 1, display: 'flex', alignItems: 'center', gap: 8, padding: '10px 16px', borderRadius: 999, background: '#fff', border: '1px solid #036f8c', color: '#036f8c', fontSize: 14, fontWeight: 600 }}>
                 <Icon name={receiptUrl ? 'check' : 'upload'} size={17} />{uploading ? 'جارٍ الرفع...' : receiptUrl ? 'تغيير الملف' : 'اختر الملف'}
               </label>
             )}
@@ -147,7 +147,7 @@ export default function PaymentMethods({ title, note, methods, defaultOpen = 'ca
               </span>
             )}
             <button disabled={!ready || submitting || uploading} onClick={handleConfirm}
-              style={{ cursor: (ready && !submitting && !uploading) ? 'pointer' : 'not-allowed', opacity: (ready && !submitting && !uploading) ? 1 : 0.45, border: 0, borderRadius: 999, padding: '12px 26px', background: '#049dc5', color: '#fff', fontFamily: 'inherit', fontSize: 13.5, fontWeight: 600 }}>
+              style={{ cursor: (ready && !submitting && !uploading) ? 'pointer' : 'not-allowed', opacity: (ready && !submitting && !uploading) ? 1 : 0.45, border: 0, borderRadius: 999, padding: '12px 24px', background: '#049dc5', color: '#fff', fontFamily: 'inherit', fontSize: 14, fontWeight: 600 }}>
               {submitting ? 'جارٍ الإرسال...' : 'تأكيد الدفع'}
             </button>
           </div>

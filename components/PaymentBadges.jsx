@@ -11,7 +11,7 @@ export default function PaymentBadges({ assetBase = '/assets' }) {
   };
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-      <span style={{ fontSize: 12.5, fontWeight: 700, color: 'rgba(255,255,255,.85)' }}>طرق الدفع</span>
+      <span style={{ fontSize: 13, fontWeight: 500, color: 'rgba(255,255,255,.85)' }}>طرق الدفع</span>
       <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
         <span style={chip} title="Mastercard" aria-label="Mastercard">
           <svg width="34" height="20" viewBox="0 0 34 20" aria-hidden="true">

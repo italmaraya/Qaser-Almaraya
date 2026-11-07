@@ -156,14 +156,14 @@ export default function VisaChecker({ lang = 'ar' }) {
                     {detail.validity_before_travel ? <div className="qa-vc-kv"><span>{en ? 'Valid before travel' : 'صلاحية قبل السفر'}</span><span>{detail.validity_before_travel}</span></div> : null}
                   </>
                 )}
-                {iso && guideFor(iso) && <Link href={'/guide/' + iso} style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 13.5, fontWeight: 700, color: '#036f8c', marginTop: 4 }}><Icon name="compass" size={14} />{en ? 'Travel guide for this country →' : 'دليل السفر لهذه الدولة ←'}</Link>}
+                {iso && guideFor(iso) && <Link href={'/guide/' + iso} style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 14, fontWeight: 700, color: '#036f8c', marginTop: 4 }}><Icon name="compass" size={14} />{en ? 'Travel guide for this country →' : 'دليل السفر لهذه الدولة ←'}</Link>}
               </div>
               <div className="qa-vc-box" style={{ background: '#fff', border: '1px solid #ececed' }}>
-                <b style={{ fontSize: 15.5, color: '#1d2733' }}>{en ? 'Documents to prepare' : 'المستمسكات المطلوبة'}</b>
+                <b style={{ fontSize: 16, color: '#1d2733' }}>{en ? 'Documents to prepare' : 'المستمسكات المطلوبة'}</b>
                 {loading && !detail ? <span style={{ color: '#5f666e', fontSize: 14 }}>{en ? 'Loading…' : 'جارٍ التحميل…'}</span> : null}
                 {detail && req.length === 0 && opt.length === 0 ? <span style={{ color: '#5f666e', fontSize: 14 }}>{en ? 'Message us and we will tell you exactly what is needed.' : 'راسلنا ونخبرك بالمطلوب بالضبط.'}</span> : null}
-                {req.length > 0 && <ul className="qa-vc-docs">{req.map((d) => <li key={d.id}>{nm(d.name_ar, d.name_en)}{audience(d.audience) ? <span style={{ color: '#5f666e', fontSize: 12.5 }}> ({audience(d.audience)})</span> : null}</li>)}</ul>}
-                {opt.length > 0 && (<><span style={{ fontSize: 13, color: '#8a5a00', fontWeight: 700, marginTop: 4 }}>{en ? 'If applicable' : 'عند الحاجة'}</span><ul className="qa-vc-docs opt">{opt.map((d) => <li key={d.id}>{nm(d.name_ar, d.name_en)}</li>)}</ul></>)}
+                {req.length > 0 && <ul className="qa-vc-docs">{req.map((d) => <li key={d.id}>{nm(d.name_ar, d.name_en)}{audience(d.audience) ? <span style={{ color: '#5f666e', fontSize: 13 }}> ({audience(d.audience)})</span> : null}</li>)}</ul>}
+                {opt.length > 0 && (<><span style={{ fontSize: 13, color: '#8a5a00', fontWeight: 500, marginTop: 4 }}>{en ? 'If applicable' : 'عند الحاجة'}</span><ul className="qa-vc-docs opt">{opt.map((d) => <li key={d.id}>{nm(d.name_ar, d.name_en)}</li>)}</ul></>)}
               </div>
             </div>
             <div className="qa-vc-btns">

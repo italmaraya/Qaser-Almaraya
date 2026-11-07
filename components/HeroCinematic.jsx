@@ -169,7 +169,7 @@ export default function HeroCinematic({ slides: allSlides = [], kicker, title, s
         <div className="qh-foot">
           <div className="qh-cap">
             {current.caption && (
-              <span style={{ display: 'inline-flex', alignItems: 'center', gap: 7 }}>
+              <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>
                 <Icon name="map-pin" size={15} />
                 {current.caption}
               </span>

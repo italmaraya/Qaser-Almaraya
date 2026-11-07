@@ -39,9 +39,9 @@ export default function GuideClient({ iso = null }) {
               <div className="qa-card" style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 12, justifyContent: 'space-between', background: '#eaf8fd', borderColor: '#bfe9f6' }}>
                 <b style={{ fontSize: 17, color: '#036f8c' }}>{en ? `Planning a trip to ${name}?` : `تخطط لرحلة إلى ${name}؟`}</b>
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10 }}>
-                  <Link href={'/packages?q=' + encodeURIComponent(countryInfo(iso).ar)} className="qa-btn qa-cyan qa-btn-fit" style={{ padding: '10px 20px', fontSize: 14.5 }}>{en ? 'Packages' : 'الباقات'}</Link>
-                  <Link href="/visa" className="qa-btn qa-btn-fit" style={{ padding: '10px 20px', fontSize: 14.5, background: '#fff', color: '#036f8c', border: '1px solid #bfe9f6' }}>{en ? 'Visas' : 'التأشيرات'}</Link>
-                  <button type="button" className="qa-btn" onClick={() => openWhatsApp(en ? `Hello, I would like to travel to ${name}.` : `مرحباً، أرغب بالسفر إلى ${name}.`)} style={{ padding: '10px 20px', fontSize: 14.5, background: '#25d366', color: '#fff' }}>{en ? 'Ask us on WhatsApp' : 'اسألنا على واتساب'}</button>
+                  <Link href={'/packages?q=' + encodeURIComponent(countryInfo(iso).ar)} className="qa-btn qa-cyan qa-btn-fit" style={{ padding: '10px 20px', fontSize: 14 }}>{en ? 'Packages' : 'الباقات'}</Link>
+                  <Link href="/visa" className="qa-btn qa-btn-fit" style={{ padding: '10px 20px', fontSize: 14, background: '#fff', color: '#036f8c', border: '1px solid #bfe9f6' }}>{en ? 'Visas' : 'التأشيرات'}</Link>
+                  <button type="button" className="qa-btn" onClick={() => openWhatsApp(en ? `Hello, I would like to travel to ${name}.` : `مرحباً، أرغب بالسفر إلى ${name}.`)} style={{ padding: '10px 20px', fontSize: 14, background: '#25d366', color: '#fff' }}>{en ? 'Ask us on WhatsApp' : 'اسألنا على واتساب'}</button>
                 </div>
               </div>
             </>
@@ -59,8 +59,8 @@ export default function GuideClient({ iso = null }) {
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img src={flagUrl(c.iso)} alt="" width="40" height="28" loading="lazy" style={{ width: 40, height: 28, objectFit: 'cover', borderRadius: 5, border: '1px solid #ececed' }} />
                       <div style={{ display: 'flex', flexDirection: 'column', minWidth: 0 }}>
-                        <b style={{ fontSize: 15.5 }}>{en ? c.en : c.ar}</b>
-                        <span style={{ fontSize: 12.5, color: '#5f666e' }}>{gi.city} · {gi.currencyCode}</span>
+                        <b style={{ fontSize: 16 }}>{en ? c.en : c.ar}</b>
+                        <span style={{ fontSize: 13, color: '#5f666e' }}>{gi.city} · {gi.currencyCode}</span>
                       </div>
                     </Link>
                   );

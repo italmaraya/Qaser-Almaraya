@@ -150,16 +150,16 @@ function ArchivedPackageBookingPage() {
       <main style={{ flex: 1 }}>
         <div className="qa-page">
           <div className="qa-sec" style={{ paddingBottom: 0 }}>
-            <Link href={`/packages/${id}`} style={{ fontSize: 13.5, fontWeight: 600, color: '#036f8c', textDecoration: 'none' }}>{t.back_to_detail}</Link>
+            <Link href={`/packages/${id}`} style={{ fontSize: 14, fontWeight: 600, color: '#036f8c', textDecoration: 'none' }}>{t.back_to_detail}</Link>
           </div>
 
           <section className="qa-sec qa-2col" style={{ display: 'grid', gridTemplateColumns: 'minmax(240px,320px) 1fr', gap: 28, alignItems: 'flex-start' }}>
             <div className="qa-card" style={{ position: 'sticky', top: 90, display: 'flex', flexDirection: 'column', gap: 10 }}>
               <h3 style={{ margin: 0, fontSize: 17 }}>{nm(pkg.title_ar, pkg.title_en)}</h3>
               <span style={{ fontSize: 13, color: '#5f666e' }}>{destinationLabel(pkg, lang)} · {nightsLabel(pkg, lang)}</span>
-              {hotel && <div style={{ fontSize: 13.5, borderTop: '1px solid #ececed', paddingTop: 10 }}><b>{t.hotel_title}:</b> {nm(hotel.nameAr, hotel.nameEn)}</div>}
-              {flight && <div style={{ fontSize: 13.5 }}><b>{t.flight_title}:</b> {nm(flight.nameAr, flight.nameEn)}</div>}
-              <div style={{ fontSize: 13.5 }}>{t.detail_adults}: {adultCount} · {t.detail_children}: {childCount}</div>
+              {hotel && <div style={{ fontSize: 14, borderTop: '1px solid #ececed', paddingTop: 10 }}><b>{t.hotel_title}:</b> {nm(hotel.nameAr, hotel.nameEn)}</div>}
+              {flight && <div style={{ fontSize: 14 }}><b>{t.flight_title}:</b> {nm(flight.nameAr, flight.nameEn)}</div>}
+              <div style={{ fontSize: 14 }}>{t.detail_adults}: {adultCount} · {t.detail_children}: {childCount}</div>
               <div style={{ display: 'flex', justifyContent: 'space-between', borderTop: '1px solid #ececed', paddingTop: 10, fontSize: 16, fontWeight: 700 }}>
                 <span>{t.detail_total}</span>
                 <span style={{ color: '#049dc5' }}>{formatPrice(grandTotal, 'IQD', lang)}</span>
@@ -174,7 +174,7 @@ function ArchivedPackageBookingPage() {
                     <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
                       {travelers.map((tr, idx) => (
                         <div key={idx} style={{ border: '1px solid #ececed', borderRadius: 'var(--tw-radius-sm,10px)', padding: 14, display: 'flex', flexDirection: 'column', gap: 10 }}>
-                          <span style={{ fontSize: 13, fontWeight: 700, color: '#036f8c' }}>{tr.traveler_type === 'adult' ? t.pax_adult : t.pax_child} {idx + 1}</span>
+                          <span style={{ fontSize: 13, fontWeight: 500, color: '#036f8c' }}>{tr.traveler_type === 'adult' ? t.pax_adult : t.pax_child} {idx + 1}</span>
                           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(180px,1fr))', gap: 10 }}>
                             <label style={labelStyle}>
                               {t.pax_name}
@@ -242,7 +242,7 @@ function ArchivedPackageBookingPage() {
                       >
                         {t.booking_cta}
                       </button>
-                      {validationMsg && <p style={{ margin: 0, fontSize: 13.5, color: '#d2324f' }}>{validationMsg}</p>}
+                      {validationMsg && <p style={{ margin: 0, fontSize: 14, color: '#d2324f' }}>{validationMsg}</p>}
                     </div>
                   )}
 

@@ -68,10 +68,10 @@ export default function SeasonSpotlight({ lang = 'ar' }) {
       <div className="qa-ss" style={{ background: season.bg, color: season.fg }}>
         <Photo id={season.id} base={season.base || '#036f8c'} />
         <div style={{ display: 'flex', flexDirection: 'column', gap: 8, position: 'relative', maxWidth: 620 }}>
-          <span style={{ alignSelf: 'flex-start', fontSize: 12.5, fontWeight: 700, padding: '4px 12px', borderRadius: 999, background: 'rgba(255,255,255,.18)', border: '1px solid rgba(255,255,255,.3)' }}>{tx.strip}{active.preview ? (en ? ' · preview' : ' · معاينة') : ''}</span>
+          <span style={{ alignSelf: 'flex-start', fontSize: 13, fontWeight: 500, padding: '4px 12px', borderRadius: 999, background: 'rgba(255,255,255,.18)', border: '1px solid rgba(255,255,255,.3)' }}>{tx.strip}{active.preview ? (en ? ' · preview' : ' · معاينة') : ''}</span>
           <h2>{soon ? tx.soon + inDays : tx.title}</h2>
-          <p style={{ fontSize: 16.5, lineHeight: 1.7, opacity: 0.92 }}>{tx.text}</p>
-          <Link href={cta} className="qa-btn" style={{ alignSelf: 'flex-start', marginTop: 6, background: season.accent, color: season.fg === '#fff' ? '#1d2733' : season.fg, fontWeight: 700, padding: '11px 24px', fontSize: 15 }}>{tx.cta}</Link>
+          <p style={{ fontSize: 16, lineHeight: 1.7, opacity: 0.92 }}>{tx.text}</p>
+          <Link href={cta} className="qa-btn" style={{ alignSelf: 'flex-start', marginTop: 6, background: season.accent, color: season.fg === '#fff' ? '#1d2733' : season.fg, fontWeight: 700, padding: '12px 24px', fontSize: 15 }}>{tx.cta}</Link>
         </div>
         {items.length > 0 && (
           <div className="qa-ss-grid">
@@ -79,10 +79,10 @@ export default function SeasonSpotlight({ lang = 'ar' }) {
               <Link key={p.id} href={'/packages/' + p.id} className="qa-ss-card">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 {p.image_url ? <img src={p.image_url} alt="" loading="lazy" /> : <span style={{ width: 84, background: '#e4f5fb' }} />}
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 3, padding: '9px 0', paddingInlineEnd: 12, minWidth: 0, flex: 1 }}>
-                  <b style={{ fontSize: 14.5, lineHeight: 1.35, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{nm(p.title_ar, p.title_en)}</b>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 3, padding: '8px 0', paddingInlineEnd: 12, minWidth: 0, flex: 1 }}>
+                  <b style={{ fontSize: 14, lineHeight: 1.35, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{nm(p.title_ar, p.title_en)}</b>
                   <span style={{ fontSize: 12, color: '#5f666e' }}>{[destinationLabel(p, lang), nightsLabel(p, lang)].filter(Boolean).join(' · ')}</span>
-                  <span style={{ marginTop: 'auto', fontSize: 14.5, fontWeight: 700, color: '#036f8c' }}>{formatPrice(p.price, 'IQD', lang)}</span>
+                  <span style={{ marginTop: 'auto', fontSize: 14, fontWeight: 700, color: '#036f8c' }}>{formatPrice(p.price, 'IQD', lang)}</span>
                 </div>
               </Link>
             ))}

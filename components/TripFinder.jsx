@@ -155,7 +155,7 @@ export default function TripFinder({ lang = 'ar' }) {
                     <div style={{ display: 'flex', flexDirection: 'column', gap: 4, padding: '10px 12px 10px 0', paddingInlineEnd: 12, minWidth: 0, flex: 1 }}>
                       <span className="qa-tf-tag" style={exact ? { background: '#e7f8ee', color: '#11804a' } : { background: '#fff4dc', color: '#8a5a00' }}>{exact ? (en ? 'Matches your choice' : 'يطابق اختيارك') : (en ? 'Closest option' : 'أقرب خيار')}</span>
                       <b style={{ fontSize: 15, lineHeight: 1.35, overflow: 'hidden', textOverflow: 'ellipsis', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' }}>{nm(p.title_ar, p.title_en)}</b>
-                      <span style={{ fontSize: 12.5, color: '#5f666e' }}>{[destinationLabel(p, lang), nightsLabel(p, lang)].filter(Boolean).join(' · ')}</span>
+                      <span style={{ fontSize: 13, color: '#5f666e' }}>{[destinationLabel(p, lang), nightsLabel(p, lang)].filter(Boolean).join(' · ')}</span>
                       <span style={{ marginTop: 'auto', fontSize: 15, fontWeight: 700, color: '#036f8c' }}>{formatPrice(p.price, 'IQD', lang)}</span>
                     </div>
                   </Link>

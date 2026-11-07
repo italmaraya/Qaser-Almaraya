@@ -30,7 +30,7 @@ const btnStyle = (variant) => ({
   cursor: 'pointer',
   border: variant === 'ghost' ? '1px solid #ececed' : 'none',
   borderRadius: 999,
-  padding: '12px 26px',
+  padding: '12px 24px',
   fontSize: 15,
   fontWeight: 700,
   fontFamily: 'inherit',
@@ -125,7 +125,7 @@ function TravelerForm({ index, travelerType, documents, onChange, onProgress }) 
     <div className="qa-card" style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>
-          <span style={{ fontSize: 12, fontWeight: 700, color: '#036f8c', background: '#eaf8fd', borderRadius: 999, padding: '3px 12px' }}>
+          <span style={{ fontSize: 12, fontWeight: 500, color: '#036f8c', background: '#eaf8fd', borderRadius: 999, padding: '3px 12px' }}>
             {travelerType === 'adult' ? 'بالغ' : 'طفل'}
           </span>
           <span style={{ fontSize: 16, fontWeight: 700, color: '#1d2733' }}>مسافر {index + 1}</span>
@@ -144,21 +144,21 @@ function TravelerForm({ index, travelerType, documents, onChange, onProgress }) 
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <span style={{ fontSize: 14, fontWeight: 600, color: '#3d4650' }}>{d.name_ar}</span>
               {d.required && (
-                <span style={{ fontSize: 11, fontWeight: 700, color: '#a06a00', background: '#fef3dc', borderRadius: 999, padding: '2px 10px' }}>مطلوب</span>
+                <span style={{ fontSize: 11, fontWeight: 500, color: '#a06a00', background: '#fef3dc', borderRadius: 999, padding: '2px 10px' }}>مطلوب</span>
               )}
             </div>
 
             {(d.kind === 'file' || d.kind === 'photo') && (
               <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                  <label style={{ cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: 6, padding: '8px 16px', borderRadius: 999, border: '1px solid #036f8c', color: '#036f8c', fontSize: 13.5, fontWeight: 600 }}>
+                  <label style={{ cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: 6, padding: '8px 16px', borderRadius: 999, border: '1px solid #036f8c', color: '#036f8c', fontSize: 14, fontWeight: 600 }}>
                     {files[d.id] ? 'تغيير الملف' : 'رفع'}
                     <input type="file" accept={d.kind === 'photo' ? 'image/*' : undefined} onChange={(e) => handleFile(d, e.target.files[0])} style={{ display: 'none' }} />
                   </label>
                   {uploading[d.id] && <span style={{ fontSize: 13, color: '#5f666e' }}>...جارٍ الرفع</span>}
                   {!uploading[d.id] && files[d.id] && <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4, fontSize: 13, color: '#049dc5' }}><Icon name="check" size={14} />تم الرفع</span>}
                 </div>
-                {uploadErrors[d.id] && <span style={{ fontSize: 12.5, color: '#d2324f' }}>{uploadErrors[d.id]}</span>}
+                {uploadErrors[d.id] && <span style={{ fontSize: 13, color: '#d2324f' }}>{uploadErrors[d.id]}</span>}
               </div>
             )}
 
@@ -202,7 +202,7 @@ function TravelerForm({ index, travelerType, documents, onChange, onProgress }) 
                     onClick={() => setAnswers({ ...answers, [d.id]: c })}
                     style={{
                       cursor: 'pointer',
-                      padding: '10px 18px',
+                      padding: '10px 16px',
                       borderRadius: 999,
                       border: '1px solid ' + (answers[d.id] === c ? '#049dc5' : '#ececed'),
                       background: answers[d.id] === c ? '#049dc5' : '#fff',
@@ -216,7 +216,7 @@ function TravelerForm({ index, travelerType, documents, onChange, onProgress }) 
                   </button>
                 ))}
                 {(!d.choices || d.choices.length === 0) && (
-                  <span style={{ fontSize: 12.5, color: '#5f666e' }}>لم يحدد الخيارات بعد</span>
+                  <span style={{ fontSize: 13, color: '#5f666e' }}>لم يحدد الخيارات بعد</span>
                 )}
               </div>
             )}
@@ -388,11 +388,11 @@ function ArchivedVisaApplyPage() {
         <div className="qa-page">
           <section style={{ background: 'var(--tw-band-deep,#049dc5)', color: '#fff' }}>
             <div className="qa-sec" style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-              <Link href={`/visa/${id}`} style={{ fontSize: 13.5, color: 'rgba(255,255,255,.85)', textDecoration: 'none', alignSelf: 'flex-start' }}>← رجوع إلى التأشيرات</Link>
+              <Link href={`/visa/${id}`} style={{ fontSize: 14, color: 'rgba(255,255,255,.85)', textDecoration: 'none', alignSelf: 'flex-start' }}>← رجوع إلى التأشيرات</Link>
               <div>
-                <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: '.04em', color: 'rgba(255,255,255,.85)' }}>VISA APPLICATION</span>
+                <span style={{ fontSize: 12, fontWeight: 500, letterSpacing: '.04em', color: 'rgba(255,255,255,.85)' }}>VISA APPLICATION</span>
                 <h1 style={{ margin: '4px 0 0', fontSize: 'clamp(24px,2.6vw,32px)', color: '#fff' }}>طلب تأشيرة — {nm(card.country_name_ar, card.country_name_en)}</h1>
-                <p style={{ margin: '4px 0 0', fontSize: 14.5, color: 'rgba(255,255,255,.9)' }}>{nm(card.visa_type_name_ar, card.visa_type_name_en)} · إقامة {card.stay_duration || '—'} · الإصدار {card.issuing_time_days || '—'} أيام عمل</p>
+                <p style={{ margin: '4px 0 0', fontSize: 14, color: 'rgba(255,255,255,.9)' }}>{nm(card.visa_type_name_ar, card.visa_type_name_en)} · إقامة {card.stay_duration || '—'} · الإصدار {card.issuing_time_days || '—'} أيام عمل</p>
               </div>
               <div className="qa-steps-row" style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
                 {STEPS.map((s) => (
@@ -406,7 +406,7 @@ function ArchivedVisaApplyPage() {
                       color: s.id === activeStep ? '#049dc5' : '#fff',
                       borderRadius: 999,
                       padding: '8px 16px',
-                      fontSize: 13.5,
+                      fontSize: 14,
                       fontWeight: 700,
                     }}
                   >

@@ -152,7 +152,7 @@ export default function CountryVisaListPage() {
           />
         )}
         <div className="qa-page qa-sec" style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
-          {!country && <Link href="/visa" style={{ fontSize: 13.5, fontWeight: 600, color: '#036f8c', textDecoration: 'none', alignSelf: 'flex-start' }}>← رجوع إلى التأشيرات</Link>}
+          {!country && <Link href="/visa" style={{ fontSize: 14, fontWeight: 600, color: '#036f8c', textDecoration: 'none', alignSelf: 'flex-start' }}>← رجوع إلى التأشيرات</Link>}
 
           {error && <p style={{ color: '#d2324f', background: '#fdecef', border: '1px solid #f7c3cc', borderRadius: 'var(--tw-radius-sm,10px)', padding: '12px 16px' }}>{error}</p>}
 
@@ -169,7 +169,7 @@ export default function CountryVisaListPage() {
               })()}
 
               {travelDate && (
-                <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 12.5, color: '#5f666e' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 13, color: '#5f666e' }}>
                   <Icon name="calendar-days" size={14} />
                   {nm('جاهزية التأشيرة محسوبة بناءً على تاريخ السفر: ', 'Visa readiness is checked against your travel date: ')}
                   <b style={{ color: '#3d4650' }}>{travelDate}</b>
@@ -178,9 +178,9 @@ export default function CountryVisaListPage() {
               )}
 
               {noneFeasible && (
-                <div style={{ background: '#fdecef', border: '1px solid #f7c3cc', borderRadius: 'var(--tw-radius-sm,10px)', padding: '14px 18px', display: 'flex', alignItems: 'center', gap: 10, color: '#8a1f34' }}>
+                <div style={{ background: '#fdecef', border: '1px solid #f7c3cc', borderRadius: 'var(--tw-radius-sm,10px)', padding: '14px 16px', display: 'flex', alignItems: 'center', gap: 10, color: '#8a1f34' }}>
                   <Icon name="alert-triangle" size={18} style={{ flex: 'none' }} />
-                  <span style={{ fontSize: 13.5 }}>
+                  <span style={{ fontSize: 14 }}>
                     {nm(
                       'يبدو أن التأشيرة لن تكون جاهزة في الوقت المحدد لسفركم. تواصلوا معنا لمزيد من المعلومات.',
                       "Looks like the visa won't be ready in time for your travel date. Contact us for further information."
@@ -224,7 +224,7 @@ export default function CountryVisaListPage() {
                         <span
                           dir="ltr"
                           style={{
-                            position: 'absolute', bottom: 8, insetInlineStart: 8, insetInlineEnd: 8, zIndex: 2, fontSize: 10, fontWeight: 700, color: '#036f8c',
+                            position: 'absolute', bottom: 8, insetInlineStart: 8, insetInlineEnd: 8, zIndex: 2, fontSize: 10, fontWeight: 500, color: '#036f8c',
                             background: 'rgba(255,255,255,.96)', borderRadius: 'var(--tw-radius-sm,10px)', padding: '4px 8px', boxShadow: 'var(--tw-card-shadow,0 1px 3px rgba(29,39,51,.06))',
                             display: 'flex', flexDirection: 'column', gap: 1, textAlign: 'start',
                           }}
@@ -233,7 +233,7 @@ export default function CountryVisaListPage() {
                           {providerHints[c.id].provider_name ? (
                             <span style={{ wordBreak: 'break-word' }}>{providerHints[c.id].provider_name}</span>
                           ) : null}
-                          <span style={{ color: '#5f666e', fontWeight: 600, fontSize: 9.5, wordBreak: 'break-word' }}>
+                          <span style={{ color: '#5f666e', fontWeight: 600, fontSize: 10, wordBreak: 'break-word' }}>
                             {nm('التكلفة: ', 'Cost: ')}
                             {formatRawAmount(providerHints[c.id].adult_cost, providerHints[c.id].cost_currency || 'IQD', lang)}
                           </span>
@@ -241,14 +241,14 @@ export default function CountryVisaListPage() {
                       )}
                     </div>
 
-                    <div style={{ padding: '14px 18px', display: 'flex', flexDirection: 'column', gap: 10 }}>
-                      <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 18, flexWrap: 'wrap' }}>
+                    <div style={{ padding: '14px 16px', display: 'flex', flexDirection: 'column', gap: 10 }}>
+                      <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 16, flexWrap: 'wrap' }}>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: 6, flex: '1 1 240px', minWidth: 0 }}>
                           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
                             <span style={{ ...pillStyle, fontSize: 11, padding: '3px 10px' }}>{nm(c.visa_type_name_ar, c.visa_type_name_en)}</span>
                             {c.stay_duration ? <span style={{ ...pillStyleOutline, fontSize: 11, padding: '3px 10px' }}>{nm(c.country_name_ar, c.country_name_en)}</span> : null}
                           </div>
-                          <h3 style={{ margin: 0, fontSize: 15.5, fontWeight: 700, color: '#1d2733' }}>
+                          <h3 style={{ margin: 0, fontSize: 16, fontWeight: 700, color: '#1d2733' }}>
                             {lang === 'en'
                               ? `${nm(c.country_name_ar, c.country_name_en)} visa${c.stay_duration ? ' for ' + c.stay_duration + ' stay' : ''}`
                               : `تأشيرة ${nm(c.country_name_ar, c.country_name_en)}${c.stay_duration ? ' لمدة ' + c.stay_duration : ''}`}
@@ -256,7 +256,7 @@ export default function CountryVisaListPage() {
                           <button
                             type="button"
                             onClick={() => toggleRequirements(c.id)}
-                            style={{ display: 'flex', alignItems: 'center', gap: 7, fontSize: 12, color: '#3d4650', border: 'none', background: 'none', padding: 0, cursor: 'pointer', fontFamily: 'inherit', textAlign: 'start' }}
+                            style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 12, color: '#3d4650', border: 'none', background: 'none', padding: 0, cursor: 'pointer', fontFamily: 'inherit', textAlign: 'start' }}
                           >
                             <span style={{ width: 15, height: 15, borderRadius: '50%', background: '#d2324f', color: '#fff', display: 'grid', placeItems: 'center', flex: 'none', fontSize: 10, fontWeight: 800 }}>!</span>
                             {lang === 'en'
@@ -266,7 +266,7 @@ export default function CountryVisaListPage() {
                           <button
                             type="button"
                             onClick={() => toggleRequirements(c.id)}
-                            style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 11.5, color: '#049dc5', fontWeight: 600, border: 'none', background: 'none', padding: 0, cursor: 'pointer', fontFamily: 'inherit' }}
+                            style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 12, color: '#049dc5', fontWeight: 600, border: 'none', background: 'none', padding: 0, cursor: 'pointer', fontFamily: 'inherit' }}
                           >
                             <Icon name="info" size={12} />
                             {expanded[c.id]
@@ -274,7 +274,7 @@ export default function CountryVisaListPage() {
                               : nm('اضغط لمعرفة المتطلبات', 'Click to see requirements')}
                           </button>
                           {!isFeasible(c) ? (
-                            <span style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 11.5, color: '#8a1f34', background: '#fdecef', borderRadius: 'var(--tw-radius-xs,8px)', padding: '5px 9px' }}>
+                            <span style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, color: '#8a1f34', background: '#fdecef', borderRadius: 'var(--tw-radius-xs,8px)', padding: '4px 8px' }}>
                               <Icon name="alert-triangle" size={12} />
                               {nm('قد لا تكون جاهزة في موعد سفركم', "May not be ready by your travel date")}
                             </span>
@@ -283,9 +283,9 @@ export default function CountryVisaListPage() {
 
                         <div className="qa-visa-pricebox" style={{ background: '#f8fbfc', borderRadius: 'var(--tw-radius-sm,10px)', padding: '12px 16px', display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 4, flex: 'none', minWidth: 168 }}>
                           <span style={{ fontSize: 10, color: '#5f666e' }}>{lang === 'en' ? 'Travel visa provided' : 'التأشيرة السياحية متوفرة'}</span>
-                          <span style={{ fontSize: 12, color: '#3d4650' }}>{formatPrice(c.child_price, 'IQD', lang)} <span style={{ color: '#5f666e', fontSize: 10.5 }}>{lang === 'en' ? '/ per child' : '/ للطفل'}</span></span>
+                          <span style={{ fontSize: 12, color: '#3d4650' }}>{formatPrice(c.child_price, 'IQD', lang)} <span style={{ color: '#5f666e', fontSize: 10 }}>{lang === 'en' ? '/ per child' : '/ للطفل'}</span></span>
                           <span style={{ fontSize: 18, fontWeight: 800, color: '#1d2733' }}>{formatPrice(c.adult_price, 'IQD', lang)}</span>
-                          <span style={{ fontSize: 10.5, color: '#5f666e', marginTop: -4 }}>{lang === 'en' ? 'Total per adult' : 'الإجمالي للبالغ'}</span>
+                          <span style={{ fontSize: 10, color: '#5f666e', marginTop: -4 }}>{lang === 'en' ? 'Total per adult' : 'الإجمالي للبالغ'}</span>
                           <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 8, width: '100%', justifyContent: 'flex-end' }}>
                             <span title={lang === 'en' ? 'Requirements & info' : 'المتطلبات والمعلومات'} style={{ width: 26, height: 26, borderRadius: '50%', border: '1.5px solid #1d2733', display: 'grid', placeItems: 'center', flex: 'none' }}>
                               <Icon name="info" size={13} style={{ color: '#1d2733' }} />
@@ -316,7 +316,7 @@ export default function CountryVisaListPage() {
                             </span>
                             <span style={{ display: 'flex', flexDirection: 'column', gap: 0, minWidth: 0 }}>
                               <span style={{ fontSize: 10, color: '#5f666e' }}>{s.label}</span>
-                              <span style={{ fontSize: 12, fontWeight: 700, color: '#1d2733', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{s.value}</span>
+                              <span style={{ fontSize: 12, fontWeight: 500, color: '#1d2733', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{s.value}</span>
                             </span>
                           </div>
                         ))}
@@ -361,23 +361,23 @@ export default function CountryVisaListPage() {
                 })}
                 </div>
 
-                <aside style={{ background: '#fff', border: '1px solid #ececed', borderRadius: 'var(--tw-radius,16px)', padding: 18, display: 'flex', flexDirection: 'column', gap: 20, position: 'sticky', top: 90 }}>
-                  <h4 style={{ margin: 0, fontSize: 15, display: 'flex', alignItems: 'center', gap: 7 }}>
+                <aside style={{ background: '#fff', border: '1px solid #ececed', borderRadius: 'var(--tw-radius,16px)', padding: 16, display: 'flex', flexDirection: 'column', gap: 20, position: 'sticky', top: 90 }}>
+                  <h4 style={{ margin: 0, fontSize: 15, display: 'flex', alignItems: 'center', gap: 8 }}>
                     <Icon name="layout-grid" size={15} style={{ color: '#049dc5' }} />
                     {nm('الفلاتر', 'Filters')}
                   </h4>
 
                   {typeOptions.length > 2 && (
                     <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-                      <span style={{ fontSize: 12.5, fontWeight: 700, color: '#5f666e' }}>{nm('نوع التأشيرة', 'Visa type')}</span>
+                      <span style={{ fontSize: 13, fontWeight: 500, color: '#5f666e' }}>{nm('نوع التأشيرة', 'Visa type')}</span>
                       {typeOptions.map((t) => (
                         <button
                           key={t}
                           onClick={() => setTypeFilter(t)}
                           style={{
                             cursor: 'pointer', textAlign: 'start', display: 'flex', alignItems: 'center', gap: 8,
-                            border: 'none', background: 'none', padding: '5px 2px', fontFamily: 'inherit',
-                            fontSize: 13.5, fontWeight: typeFilter === t ? 700 : 500, color: typeFilter === t ? '#049dc5' : '#3d4650',
+                            border: 'none', background: 'none', padding: '4px 2px', fontFamily: 'inherit',
+                            fontSize: 14, fontWeight: typeFilter === t ? 700 : 500, color: typeFilter === t ? '#049dc5' : '#3d4650',
                           }}
                         >
                           <span style={{ width: 14, height: 14, borderRadius: '50%', border: '1.5px solid ' + (typeFilter === t ? '#049dc5' : '#cacbcc'), display: 'grid', placeItems: 'center', flex: 'none' }}>
@@ -390,7 +390,7 @@ export default function CountryVisaListPage() {
                   )}
 
                   <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-                    <span style={{ fontSize: 12.5, fontWeight: 700, color: '#5f666e' }}>{nm('سرعة الإصدار', 'Issuance speed')}</span>
+                    <span style={{ fontSize: 13, fontWeight: 500, color: '#5f666e' }}>{nm('سرعة الإصدار', 'Issuance speed')}</span>
                     {[
                       ['all', nm('الكل', 'All')],
                       ['fast', nm('سريعة (3 أيام أو أقل)', 'Fast (≤3 days)')],
@@ -402,8 +402,8 @@ export default function CountryVisaListPage() {
                         onClick={() => setSpeedFilter(key)}
                         style={{
                           cursor: 'pointer', textAlign: 'start', display: 'flex', alignItems: 'center', gap: 8,
-                          border: 'none', background: 'none', padding: '5px 2px', fontFamily: 'inherit',
-                          fontSize: 13.5, fontWeight: speedFilter === key ? 700 : 500, color: speedFilter === key ? '#049dc5' : '#3d4650',
+                          border: 'none', background: 'none', padding: '4px 2px', fontFamily: 'inherit',
+                          fontSize: 14, fontWeight: speedFilter === key ? 700 : 500, color: speedFilter === key ? '#049dc5' : '#3d4650',
                         }}
                       >
                         <span style={{ width: 14, height: 14, borderRadius: '50%', border: '1.5px solid ' + (speedFilter === key ? '#049dc5' : '#cacbcc'), display: 'grid', placeItems: 'center', flex: 'none' }}>
@@ -416,7 +416,7 @@ export default function CountryVisaListPage() {
 
                   {priceBounds.max > priceBounds.min && (
                     <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-                      <span style={{ fontSize: 12.5, fontWeight: 700, color: '#5f666e' }}>{nm('الحد الأقصى للسعر', 'Max price')}</span>
+                      <span style={{ fontSize: 13, fontWeight: 500, color: '#5f666e' }}>{nm('الحد الأقصى للسعر', 'Max price')}</span>
                       <input
                         type="range"
                         min={priceBounds.min}
@@ -426,7 +426,7 @@ export default function CountryVisaListPage() {
                         onChange={(e) => setMaxPrice(Number(e.target.value))}
                         style={{ width: '100%' }}
                       />
-                      <span style={{ fontSize: 13, fontWeight: 700, color: '#1d2733' }}>{formatPrice(effectiveMaxPrice, 'IQD', lang)}</span>
+                      <span style={{ fontSize: 13, fontWeight: 500, color: '#1d2733' }}>{formatPrice(effectiveMaxPrice, 'IQD', lang)}</span>
                     </div>
                   )}
 
@@ -448,12 +448,12 @@ export default function CountryVisaListPage() {
       <SiteFooter />
       {cards == null && !error && <MascotLoader assetBase="/assets" />}
       {providerHints && (
-        <div style={{ position: 'fixed', bottom: 18, insetInlineStart: 18, zIndex: 60, background: '#1d2733', color: '#fff', fontSize: 12.5, fontWeight: 700, borderRadius: 999, padding: '8px 16px', boxShadow: 'var(--tw-card-shadow,0 1px 3px rgba(29,39,51,.06))' }}>
+        <div style={{ position: 'fixed', bottom: 18, insetInlineStart: 18, zIndex: 60, background: '#1d2733', color: '#fff', fontSize: 13, fontWeight: 500, borderRadius: 999, padding: '8px 16px', boxShadow: 'var(--tw-card-shadow,0 1px 3px rgba(29,39,51,.06))' }}>
           <Icon name="search" size={13} style={{ verticalAlign: '-2px', marginInlineEnd: 6 }} />وضع الموظفين مفعّل — اكتب نفس الكلمة السرية للإخفاء
         </div>
       )}
       {providerDenied && (
-        <div style={{ position: 'fixed', bottom: 18, insetInlineStart: 18, zIndex: 60, background: '#d2324f', color: '#fff', fontSize: 12.5, fontWeight: 700, borderRadius: 999, padding: '8px 16px', boxShadow: 'var(--tw-card-shadow,0 1px 3px rgba(29,39,51,.06))' }}>
+        <div style={{ position: 'fixed', bottom: 18, insetInlineStart: 18, zIndex: 60, background: '#d2324f', color: '#fff', fontSize: 13, fontWeight: 500, borderRadius: 999, padding: '8px 16px', boxShadow: 'var(--tw-card-shadow,0 1px 3px rgba(29,39,51,.06))' }}>
           غير مصرح لك بعرض هذه المعلومات
         </div>
       )}

@@ -29,11 +29,11 @@ export default function SiteHeader({ active = 'التأشيرات' }) {
     <header style={{ position: 'sticky', top: 0, zIndex: 40, background: '#fff', borderBottom: '1px solid #ececed', boxShadow: 'var(--tw-card-shadow,0 1px 3px rgba(29,39,51,.06))' }}>
       <SeasonDecor />
       <div className="qa-head" style={{ maxWidth: 1240, margin: '0 auto', padding: '12px 32px', display: 'flex', alignItems: 'center', gap: 24 }}>
-        <Link href="/" aria-label="قصر المرايا للسفر و السياحة" className="qa-logo" style={{ display: 'flex', alignItems: 'center', gap: 9, textDecoration: 'none', flex: 'none' }}>
+        <Link href="/" aria-label="قصر المرايا للسفر و السياحة" className="qa-logo" style={{ display: 'flex', alignItems: 'center', gap: 8, textDecoration: 'none', flex: 'none' }}>
           <img src="/assets/logo-mark-tight.webp" alt="" style={{ height: 38, width: 38, objectFit: 'contain', display: 'block', flex: 'none' }} />
           <span style={{ display: 'flex', flexDirection: 'column', gap: 1, lineHeight: 1.05 }}>
             <span style={{ fontSize: 19, fontWeight: 700, color: '#22a9d4', whiteSpace: 'nowrap' }}>قصر المرايا</span>
-            <span style={{ fontSize: 10.5, fontWeight: 600, letterSpacing: '.02em', color: '#5f666e', whiteSpace: 'nowrap' }}>للسفر و السياحة</span>
+            <span style={{ fontSize: 10, fontWeight: 600, color: '#5f666e', whiteSpace: 'nowrap' }}>للسفر و السياحة</span>
           </span>
         </Link>
 
@@ -64,12 +64,12 @@ export default function SiteHeader({ active = 'التأشيرات' }) {
           title="Language"
           data-no-i18n=""
           className="qa-langbtn"
-          style={{ flex: 'none', display: 'flex', alignItems: 'center', gap: 7, padding: '8px 14px', border: '1px solid #ececed', borderRadius: 999, background: '#fff', fontFamily: 'inherit', fontSize: 13, fontWeight: 700, letterSpacing: '.04em', color: '#22a9d4', cursor: 'pointer' }}
+          style={{ flex: 'none', display: 'flex', alignItems: 'center', gap: 8, padding: '8px 14px', border: '1px solid #ececed', borderRadius: 999, background: '#fff', fontFamily: 'inherit', fontSize: 13, fontWeight: 700, letterSpacing: '.04em', color: '#22a9d4', cursor: 'pointer' }}
         >
           <Icon name="globe" size={17} strokeWidth={1.8} />
           <span>{lang === 'ar' ? 'EN' : 'ع'}</span>
         </button>
-        <Link href="/contact" className="qa-btn qa-cyan qa-headcta" style={{ flex: 'none', padding: '9px 18px', fontSize: 14, textDecoration: 'none' }}>
+        <Link href="/contact" className="qa-btn qa-cyan qa-headcta" style={{ flex: 'none', padding: '8px 16px', fontSize: 14, textDecoration: 'none' }}>
           تواصل معنا
         </Link>
 
@@ -113,7 +113,7 @@ export default function SiteHeader({ active = 'التأشيرات' }) {
             overflowY: 'auto',
           }}
         >
-          <div style={{ display: 'flex', justifyContent: 'flex-end', padding: '14px 18px' }}>
+          <div style={{ display: 'flex', justifyContent: 'flex-end', padding: '14px 16px' }}>
             <button
               type="button"
               onClick={() => setOpen(false)}
@@ -135,7 +135,7 @@ export default function SiteHeader({ active = 'التأشيرات' }) {
             </button>
           </div>
 
-          <nav style={{ display: 'flex', flexDirection: 'column', padding: '4px 26px 20px' }}>
+          <nav style={{ display: 'flex', flexDirection: 'column', padding: '4px 24px 20px' }}>
             {NAV.map((item) => {
               const on = item.label === active;
               return (
@@ -148,7 +148,7 @@ export default function SiteHeader({ active = 'التأشيرات' }) {
                     color: '#fff',
                     fontSize: 20,
                     fontWeight: on ? 800 : 600,
-                    padding: '15px 4px',
+                    padding: '16px 4px',
                     borderBottom: '1px solid rgba(255,255,255,.18)',
                     textDecoration: 'none',
                   }}
@@ -159,7 +159,7 @@ export default function SiteHeader({ active = 'التأشيرات' }) {
             })}
           </nav>
 
-          <div style={{ marginTop: 'auto', padding: '18px 26px 30px', display: 'flex', alignItems: 'center', gap: 12 }}>
+          <div style={{ marginTop: 'auto', padding: '16px 24px 28px', display: 'flex', alignItems: 'center', gap: 12 }}>
             <button
               type="button"
               onClick={toggle}
@@ -167,7 +167,7 @@ export default function SiteHeader({ active = 'التأشيرات' }) {
               style={{
                 display: 'flex',
                 alignItems: 'center',
-                gap: 7,
+                gap: 8,
                 padding: '10px 16px',
                 border: '1px solid rgba(255,255,255,.35)',
                 borderRadius: 999,
@@ -189,7 +189,7 @@ export default function SiteHeader({ active = 'التأشيرات' }) {
               style={{
                 flex: 1,
                 textAlign: 'center',
-                padding: '12px 18px',
+                padding: '12px 16px',
                 borderRadius: 999,
                 background: '#fff',
                 color: '#049dc5',

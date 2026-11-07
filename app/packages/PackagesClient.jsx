@@ -223,7 +223,7 @@ export default function PackagesPage({ initialPackages = null }) {
             <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(1,20,28,.82) 0%, rgba(1,20,28,.42) 55%, rgba(1,20,28,.18) 100%)' }} />
 
             <div style={{ position: 'relative', zIndex: 1, maxWidth: 860, margin: '0 auto', textAlign: 'center', padding: '0 24px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16 }}>
-              <span style={{ fontSize: 13, fontWeight: 700, letterSpacing: '.08em', color: 'rgba(255,255,255,.88)' }}>
+              <span style={{ fontSize: 13, fontWeight: 500, letterSpacing: '.08em', color: 'rgba(255,255,255,.88)' }}>
                 {t.hero_eyebrow}
               </span>
               <h1 style={{ margin: 0, fontSize: 'clamp(32px,6vw,58px)', fontWeight: 800, color: '#fff', lineHeight: 1.08, maxWidth: 760 }}>{t.hero_title}</h1>
@@ -235,7 +235,7 @@ export default function PackagesPage({ initialPackages = null }) {
           <div style={{ maxWidth: 1080, margin: 'clamp(-64px,-8vw,-46px) auto 0', padding: '0 20px', position: 'relative', zIndex: 30 }}>
             <div className="qa-search-bar" style={{ background: '#fff', border: '1px solid #ececed', borderRadius: 'var(--tw-radius,16px)', boxShadow: 'var(--tw-pop-shadow,0 6px 20px rgba(1,42,55,.10))', display: 'flex', flexWrap: 'wrap', alignItems: 'stretch' }}>
               <div className="qa-search-field" style={{ position: 'relative', flex: '1 1 220px', padding: '14px 20px', display: 'flex', flexDirection: 'column', gap: 3, minWidth: 200 }}>
-                <span style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 11, fontWeight: 700, color: '#5f666e', textTransform: 'uppercase', letterSpacing: '.03em' }}>
+                <span style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 11, fontWeight: 500, color: '#5f666e', textTransform: 'uppercase', letterSpacing: '.03em' }}>
                   <Icon name="map-pin" size={12} style={{ color: '#049dc5' }} />{lang === 'en' ? 'Destination' : 'الوجهة'}
                 </span>
                 <input
@@ -252,12 +252,12 @@ export default function PackagesPage({ initialPackages = null }) {
                     style={{
                       position: 'absolute', insetInlineStart: 0, insetInlineEnd: 0, top: 'calc(100% + 12px)', zIndex: 20,
                       background: '#fff', border: '1px solid #ececed', borderRadius: 'var(--tw-radius,16px)', boxShadow: 'var(--tw-card-shadow,0 1px 3px rgba(29,39,51,.06))',
-                      padding: 18, display: 'flex', flexDirection: 'column', gap: 14, maxHeight: 360, overflowY: 'auto', textAlign: 'start',
+                      padding: 16, display: 'flex', flexDirection: 'column', gap: 14, maxHeight: 360, overflowY: 'auto', textAlign: 'start',
                     }}
                   >
                     {regionGroups.map((g) => (
                       <div key={g.id} style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-                        <span style={{ fontSize: 12.5, fontWeight: 700, color: '#5f666e' }}>{nm(g.ar, g.en)}</span>
+                        <span style={{ fontSize: 13, fontWeight: 500, color: '#5f666e' }}>{nm(g.ar, g.en)}</span>
                         <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
                           {g.list.map((c) => (
                             <button
@@ -282,7 +282,7 @@ export default function PackagesPage({ initialPackages = null }) {
               <div className="qa-search-divider" />
 
               <div className="qa-search-field" style={{ flex: '1 1 180px', padding: '14px 20px', display: 'flex', flexDirection: 'column', gap: 3, minWidth: 160 }}>
-                <span style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 11, fontWeight: 700, color: '#5f666e', textTransform: 'uppercase', letterSpacing: '.03em' }}>
+                <span style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 11, fontWeight: 500, color: '#5f666e', textTransform: 'uppercase', letterSpacing: '.03em' }}>
                   <Icon name="calendar-days" size={12} style={{ color: '#049dc5' }} />{t.filter_dates_label}
                 </span>
                 <input
@@ -301,7 +301,7 @@ export default function PackagesPage({ initialPackages = null }) {
                   onClick={() => setShowTravelers((s) => !s)}
                   style={{ width: '100%', height: '100%', cursor: 'pointer', fontFamily: 'inherit', background: 'none', border: 'none', padding: 0, display: 'flex', flexDirection: 'column', gap: 3, textAlign: 'start' }}
                 >
-                  <span style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 11, fontWeight: 700, color: '#5f666e', textTransform: 'uppercase', letterSpacing: '.03em' }}>
+                  <span style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 11, fontWeight: 500, color: '#5f666e', textTransform: 'uppercase', letterSpacing: '.03em' }}>
                     <Icon name="users" size={12} style={{ color: '#049dc5' }} />{lang === 'en' ? 'Guests' : 'المسافرون'}
                   </span>
                   <span style={{ fontSize: 15, fontWeight: 600, color: '#1d2733' }}>{travelersTotal} {lang === 'en' ? 'traveler(s)' : 'مسافر'}</span>
@@ -312,7 +312,7 @@ export default function PackagesPage({ initialPackages = null }) {
                     style={{
                       position: 'absolute', insetInlineEnd: 0, top: 'calc(100% + 12px)', zIndex: 20, width: 280, maxWidth: '90vw',
                       background: '#fff', border: '1px solid #ececed', borderRadius: 'var(--tw-radius,16px)', boxShadow: 'var(--tw-card-shadow,0 1px 3px rgba(29,39,51,.06))',
-                      padding: 18, display: 'flex', flexDirection: 'column', gap: 12, textAlign: 'start',
+                      padding: 16, display: 'flex', flexDirection: 'column', gap: 12, textAlign: 'start',
                     }}
                   >
                     {[
@@ -324,7 +324,7 @@ export default function PackagesPage({ initialPackages = null }) {
                     ].map(([key, label, sub, min]) => (
                       <div key={key} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10 }}>
                         <span style={{ display: 'flex', flexDirection: 'column' }}>
-                          <span style={{ fontSize: 13.5, fontWeight: 600, color: '#1d2733' }}>{label}</span>
+                          <span style={{ fontSize: 14, fontWeight: 600, color: '#1d2733' }}>{label}</span>
                           {sub ? <span style={{ fontSize: 11, color: '#5f666e' }}>{sub}</span> : null}
                         </span>
                         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
@@ -351,7 +351,7 @@ export default function PackagesPage({ initialPackages = null }) {
                   }}
                 >
                   <Icon name="search" size={20} />
-                  <span className="qa-search-cta-label" style={{ display: 'none', fontSize: 14.5, fontWeight: 700 }}>{lang === 'en' ? 'Search' : 'بحث'}</span>
+                  <span className="qa-search-cta-label" style={{ display: 'none', fontSize: 14, fontWeight: 700 }}>{lang === 'en' ? 'Search' : 'بحث'}</span>
                 </button>
               </div>
             </div>
@@ -390,15 +390,15 @@ export default function PackagesPage({ initialPackages = null }) {
             <div dir={lang === 'en' ? 'ltr' : 'rtl'} style={{ position: 'fixed', inset: 0, zIndex: 1000, display: 'flex', justifyContent: 'flex-end' }}>
               <div onClick={() => setDrawerOpen(false)} style={{ position: 'absolute', inset: 0, background: 'rgba(1,20,28,.45)' }} />
               <div className="qa-drawer" style={{ position: 'relative', width: 'min(360px,88vw)', height: '100%', background: '#fff', boxShadow: 'var(--tw-card-shadow,0 1px 3px rgba(29,39,51,.06))', display: 'flex', flexDirection: 'column', overflowY: 'auto' }}>
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '20px 22px', borderBottom: '1px solid #ececed' }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '20px 24px', borderBottom: '1px solid #ececed' }}>
                   <h3 style={{ margin: 0, fontSize: 18 }}>{lang === 'en' ? 'Filters' : 'الفلاتر'}</h3>
                   <button type="button" onClick={() => setDrawerOpen(false)} style={{ border: 'none', background: '#f4f4f4', borderRadius: '50%', width: 34, height: 34, cursor: 'pointer', display: 'grid', placeItems: 'center' }}>
                     <Icon name="x" size={16} />
                   </button>
                 </div>
-                <div style={{ padding: 22, display: 'flex', flexDirection: 'column', gap: 22, flex: 1 }}>
+                <div style={{ padding: 24, display: 'flex', flexDirection: 'column', gap: 24, flex: 1 }}>
                   <div>
-                    <div style={{ fontSize: 13, fontWeight: 700, color: '#3d4650', marginBottom: 10 }}>{t.filter_pref_label}</div>
+                    <div style={{ fontSize: 13, fontWeight: 500, color: '#3d4650', marginBottom: 10 }}>{t.filter_pref_label}</div>
                     <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10 }}>
                       {PREFS.map((p) => {
                         const on = prefs.includes(p.id);
@@ -408,7 +408,7 @@ export default function PackagesPage({ initialPackages = null }) {
                             type="button"
                             onClick={() => togglePref(p.id)}
                             style={{
-                              padding: '8px 16px', borderRadius: 999, fontSize: 13.5, fontWeight: 500, cursor: 'pointer', fontFamily: 'inherit',
+                              padding: '8px 16px', borderRadius: 999, fontSize: 14, fontWeight: 500, cursor: 'pointer', fontFamily: 'inherit',
                               background: on ? '#049dc5' : '#fff', color: on ? '#fff' : '#3d4650', border: `1px solid ${on ? '#049dc5' : '#cacbcc'}`,
                             }}
                           >
@@ -419,7 +419,7 @@ export default function PackagesPage({ initialPackages = null }) {
                     </div>
                   </div>
                   <div>
-                    <div style={{ fontSize: 13, fontWeight: 700, color: '#3d4650', marginBottom: 10 }}>{lang === 'en' ? 'Budget per person' : 'الميزانية للشخص'}</div>
+                    <div style={{ fontSize: 13, fontWeight: 500, color: '#3d4650', marginBottom: 10 }}>{lang === 'en' ? 'Budget per person' : 'الميزانية للشخص'}</div>
                     <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10 }}>
                       {BUDGETS.filter((b) => budgetCounts[b.id]).map((b) => (
                         <button key={b.id} type="button" onClick={() => setBudget(budget === b.id ? 'all' : b.id)} className={'qa-fchip' + (budget === b.id ? ' on' : '')}>
@@ -430,7 +430,7 @@ export default function PackagesPage({ initialPackages = null }) {
                   </div>
                   {monthOptions.length > 0 && (
                     <div>
-                      <div style={{ fontSize: 13, fontWeight: 700, color: '#3d4650', marginBottom: 10 }}>{lang === 'en' ? 'Travel month' : 'شهر السفر'}</div>
+                      <div style={{ fontSize: 13, fontWeight: 500, color: '#3d4650', marginBottom: 10 }}>{lang === 'en' ? 'Travel month' : 'شهر السفر'}</div>
                       <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10 }}>
                         {monthOptions.map((m) => (
                           <button key={m.ym} type="button" onClick={() => { setMonth(month === m.ym ? 'all' : m.ym); setPreferredDates(''); }} className={'qa-fchip' + (month === m.ym ? ' on' : '')}>
@@ -441,7 +441,7 @@ export default function PackagesPage({ initialPackages = null }) {
                     </div>
                   )}
                   <div>
-                    <div style={{ fontSize: 13, fontWeight: 700, color: '#3d4650', marginBottom: 10 }}>{t.filter_destination_ph}</div>
+                    <div style={{ fontSize: 13, fontWeight: 500, color: '#3d4650', marginBottom: 10 }}>{t.filter_destination_ph}</div>
                     <input
                       type="text"
                       value={query}
@@ -451,11 +451,11 @@ export default function PackagesPage({ initialPackages = null }) {
                     />
                   </div>
                 </div>
-                <div style={{ padding: 22, borderTop: '1px solid #ececed', display: 'flex', gap: 10, position: 'sticky', bottom: 0, background: '#fff' }}>
+                <div style={{ padding: 24, borderTop: '1px solid #ececed', display: 'flex', gap: 10, position: 'sticky', bottom: 0, background: '#fff' }}>
                   <button
                     type="button"
                     onClick={() => { setPrefs([]); setQuery(''); setBudget('all'); setMonth('all'); setPreferredDates(''); }}
-                    style={{ flex: 1, padding: '11px 16px', borderRadius: 999, border: '1px solid #cacbcc', background: '#fff', color: '#3d4650', fontSize: 13.5, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}
+                    style={{ flex: 1, padding: '12px 16px', borderRadius: 999, border: '1px solid #cacbcc', background: '#fff', color: '#3d4650', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}
                   >
                     {lang === 'en' ? 'Reset' : 'إعادة تعيين'}
                   </button>
@@ -557,7 +557,7 @@ export default function PackagesPage({ initialPackages = null }) {
             )}
 
             {(budget !== 'all' || month !== 'all') && (
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap', marginBottom: 18 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap', marginBottom: 16 }}>
                 <span style={{ fontSize: 14, fontWeight: 700, color: '#1d2733' }}>{nm('النتائج', 'Results')} · {filtered.length}</span>
                 {budget !== 'all' && (
                   <button type="button" onClick={() => setBudget('all')} className="qa-dest-chip" style={{ background: '#fff' }}>
@@ -573,7 +573,7 @@ export default function PackagesPage({ initialPackages = null }) {
             )}
 
             {country !== 'all' && (
-              <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap', marginBottom: 18 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap', marginBottom: 16 }}>
                 <span style={{ fontSize: 15, fontWeight: 700, color: '#1d2733' }}>
                   {nm('باقات', 'Packages in')} {nm((countryInfo(country) || {}).ar, (countryInfo(country) || {}).en)} · {filtered.length}
                 </span>
@@ -626,7 +626,7 @@ export default function PackagesPage({ initialPackages = null }) {
           <section className="qa-sec" style={{ maxWidth: 1240, margin: '0 auto', padding: '8px 24px 8px' }}>
             <div style={{ background: '#0d4a5c', borderRadius: 'var(--tw-radius,16px)', overflow: 'hidden' }}>
               <div style={{ padding: 'clamp(26px,4vw,40px)', display: 'flex', flexDirection: 'column', gap: 14, color: '#fff' }}>
-                <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: '.08em', color: 'rgba(255,255,255,.7)' }}>
+                <span style={{ fontSize: 12, fontWeight: 500, letterSpacing: '.08em', color: 'rgba(255,255,255,.7)' }}>
                   {lang === 'en' ? 'EXPLORE THE WORLD' : 'استكشف العالم'}
                 </span>
                 <h2 style={{ margin: 0, fontSize: 'clamp(22px,3vw,30px)', color: '#fff' }}>
@@ -639,7 +639,7 @@ export default function PackagesPage({ initialPackages = null }) {
                 </p>
                 {upcoming.length > 0 && (
                   <div data-no-i18n="" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(240px,1fr))', gap: 8, marginTop: 4 }}>
-                    <span style={{ gridColumn: '1 / -1', display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 13, fontWeight: 700, color: '#faab18' }}><Icon name="plane-takeoff" size={14} />{lang === 'en' ? 'Our next departures from Baghdad' : 'رحلاتنا القادمة من بغداد'}</span>
+                    <span style={{ gridColumn: '1 / -1', display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 13, fontWeight: 500, color: '#faab18' }}><Icon name="plane-takeoff" size={14} />{lang === 'en' ? 'Our next departures from Baghdad' : 'رحلاتنا القادمة من بغداد'}</span>
                     {upcoming.map(({ p, date }) => (
                       <Link key={p.id} href={'/packages/' + p.id} className="qa-upc-row">
                         <span className="qa-upc-date">{fmtDay(date)}</span>
@@ -665,7 +665,7 @@ export default function PackagesPage({ initialPackages = null }) {
             <section className="qa-sec" style={{ maxWidth: 1240, margin: '0 auto', padding: '32px 24px 56px' }}>
               <h2 style={{ fontSize: 'clamp(20px,3vw,26px)', margin: '0 0 6px' }}>{lang === 'en' ? 'Destinations by region' : 'الوجهات حسب المنطقة'}</h2>
               <p style={{ margin: '0 0 22px', color: '#5f666e', fontSize: 14 }}>{lang === 'en' ? 'Pick a country to see its packages.' : 'اختر الدولة لتظهر باقاتها.'}</p>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(260px,1fr))', gap: 18 }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(260px,1fr))', gap: 16 }}>
                 {regionGroups.map((g) => (
                   <div key={g.id} className="qa-card" style={{ display: 'flex', flexDirection: 'column', gap: 12, padding: 20 }}>
                     <span style={{ fontSize: 16, fontWeight: 800, color: '#036f8c' }}>{nm(g.ar, g.en)}</span>
@@ -689,7 +689,7 @@ export default function PackagesPage({ initialPackages = null }) {
             <section style={{ background: '#f8f7f8', padding: '48px clamp(16px,4vw,32px)' }}>
               <div style={{ maxWidth: 1240, margin: '0 auto', display: 'grid', gridTemplateColumns: 'minmax(280px,1fr) minmax(260px,1fr)', gap: 24, alignItems: 'stretch' }}>
                 <div style={{ background: '#eaf8fd', borderRadius: 'var(--tw-radius,16px)', padding: 'clamp(28px,4vw,44px)', display: 'flex', flexDirection: 'column', gap: 16, position: 'relative', overflow: 'hidden' }}>
-                  <span style={{ fontSize: 12, fontWeight: 700, color: '#5f666e' }}>{lang === 'en' ? 'Our testimonials' : 'آراء عملائنا'}</span>
+                  <span style={{ fontSize: 12, fontWeight: 500, color: '#5f666e' }}>{lang === 'en' ? 'Our testimonials' : 'آراء عملائنا'}</span>
                   <h2 style={{ margin: 0, fontSize: 'clamp(20px,3vw,28px)', color: '#1d2733' }}>{lang === 'en' ? 'What our customers say' : 'ماذا يقول عملاؤنا عنا'}</h2>
                   <div style={{ display: 'flex', gap: 2 }}>
                     {Array.from({ length: 5 }).map((_, i) => (
@@ -748,7 +748,7 @@ export default function PackagesPage({ initialPackages = null }) {
                   </span>
                   <div>
                     <div style={{ fontSize: 17, fontWeight: 800, color: '#1d2733' }}>{s.value} <span style={{ fontWeight: 600, fontSize: 14, color: '#3d4650' }}>{s.label}</span></div>
-                    <div style={{ fontSize: 12.5, color: '#5f666e', marginTop: 3 }}>{s.sub}</div>
+                    <div style={{ fontSize: 13, color: '#5f666e', marginTop: 3 }}>{s.sub}</div>
                   </div>
                 </div>
               ))}

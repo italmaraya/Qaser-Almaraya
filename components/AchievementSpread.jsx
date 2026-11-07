@@ -30,14 +30,14 @@ export default function AchievementSpread({ items = [], active, onSelect, assetB
   if (!current) return null;
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 30, padding: '64px 32px', maxWidth: 1200, margin: '0 auto' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 28, padding: '64px 32px', maxWidth: 1200, margin: '0 auto' }}>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 10, alignItems: 'center', textAlign: 'center' }}>
         <span style={{ fontSize: 14, fontWeight: 700, color: '#faab18' }}>إنجازاتنا</span>
         <h2 style={{ margin: 0, fontSize: 38, fontWeight: 700, color: '#049dc5' }}>إنجازاتنا ومشاركاتنا</h2>
       </div>
 
       <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1.05fr) minmax(0,.95fr)', gap: 44, alignItems: 'center' }}>
-        <div style={{ position: 'relative', paddingTop: 22 }}>
+        <div style={{ position: 'relative', paddingTop: 24 }}>
           <div
             style={{
               position: 'absolute',
@@ -58,7 +58,7 @@ export default function AchievementSpread({ items = [], active, onSelect, assetB
             }}
           >
             <span style={{ fontSize: 20, fontWeight: 800, lineHeight: 1 }}>{current.year}</span>
-            <span style={{ fontSize: 11.5, fontWeight: 600, marginTop: 3 }}>{current.stamp}</span>
+            <span style={{ fontSize: 12, fontWeight: 600, marginTop: 3 }}>{current.stamp}</span>
           </div>
 
           <div
@@ -89,7 +89,7 @@ export default function AchievementSpread({ items = [], active, onSelect, assetB
                 color: '#5f666e',
               }}
             >
-              <span style={{ display: 'inline-flex', alignItems: 'center', gap: 5 }}>
+              <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
                 <Icon name="map-pin" size={14} />
                 {current.place}
               </span>
@@ -103,7 +103,7 @@ export default function AchievementSpread({ items = [], active, onSelect, assetB
         <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
           <h3 style={{ margin: 0, fontSize: 27, fontWeight: 700, color: '#049dc5' }}>{current.title}</h3>
           {(Array.isArray(current.body) ? current.body : [current.body]).filter(Boolean).map((p, i) => (
-            <p key={i} style={{ margin: 0, fontSize: 16.5, lineHeight: 1.8, color: '#3d4650', textWrap: 'pretty' }}>
+            <p key={i} style={{ margin: 0, fontSize: 16, lineHeight: 1.8, color: '#3d4650', textWrap: 'pretty' }}>
               {p}
             </p>
           ))}
@@ -151,7 +151,7 @@ export default function AchievementSpread({ items = [], active, onSelect, assetB
                   cursor: 'pointer',
                 }}
               >
-                <span style={{ fontSize: 13, fontWeight: 700, color: isActive ? '#049dc5' : '#5f666e' }}>
+                <span style={{ fontSize: 13, fontWeight: 500, color: isActive ? '#049dc5' : '#5f666e' }}>
                   {it.year} · {pad2(i + 1)}
                 </span>
                 <span style={{ fontSize: 14, fontWeight: 700, color: '#1d2733' }}>{it.short || it.title}</span>

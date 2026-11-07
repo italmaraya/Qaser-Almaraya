@@ -42,7 +42,7 @@ export default function HomeOffers({ lang = 'ar' }) {
           <h2 style={{ fontSize: 34, fontWeight: 700 }}>{en ? 'Featured offers' : 'أبرز العروض'}</h2>
           <p style={{ fontSize: 16, color: '#5f666e' }}>{en ? 'Ready-made trips from Baghdad, one price per person.' : 'رحلات جاهزة من بغداد بسعر واحد للفرد.'}</p>
         </div>
-        <Link href="/packages" className="qa-btn qa-cyan" style={{ padding: '11px 24px', fontSize: 15, whiteSpace: 'nowrap', flexShrink: 0, alignSelf: 'center' }}>{en ? 'All packages' : 'كل الباقات'}</Link>
+        <Link href="/packages" className="qa-btn qa-cyan" style={{ padding: '12px 24px', fontSize: 15, whiteSpace: 'nowrap', flexShrink: 0, alignSelf: 'center' }}>{en ? 'All packages' : 'كل الباقات'}</Link>
       </div>
       <div className="qa-offers-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(3,minmax(0,1fr))', gap: 20 }}>
         {items === null

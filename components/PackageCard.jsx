@@ -23,11 +23,11 @@ function FlightRow({ f, lang, selected, onSelect }) {
       }}
     >
       <div onClick={onSelect} style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8 }}>
-        <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--q-ink,#1d2733)' }}>
+        <span style={{ fontSize: 13, fontWeight: 500, color: 'var(--q-ink,#1d2733)' }}>
           {airline || (lang === 'en' ? 'Airline' : 'شركة الطيران')}
           {legData.flightNo ? <span style={{ color: 'var(--q-ink-2,#5f666e)', fontWeight: 500 }}> · {legData.flightNo}</span> : null}
         </span>
-        <span style={{ fontSize: 12.5, fontWeight: 700, color: f.diff ? 'var(--q-cyan-dark,#036f8c)' : 'var(--q-ink-2,#5f666e)' }}>
+        <span style={{ fontSize: 13, fontWeight: 500, color: f.diff ? 'var(--q-cyan-dark,#036f8c)' : 'var(--q-ink-2,#5f666e)' }}>
           {f.diff ? (f.diff > 0 ? '+' : '') + f.diff.toLocaleString() + ' ' + (lang === 'en' ? 'IQD' : 'د.ع') : (lang === 'en' ? 'Included' : 'مشمول')}
         </span>
       </div>
@@ -38,8 +38,8 @@ function FlightRow({ f, lang, selected, onSelect }) {
             type="button"
             onClick={(e) => { e.stopPropagation(); setLeg('out'); }}
             style={{
-              flex: 1, cursor: 'pointer', fontFamily: 'inherit', padding: '6px 8px', borderRadius: 999, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 5,
-              border: `1px solid ${active === 'out' ? 'var(--q-cyan,#049dc5)' : 'var(--q-line,#e6e9eb)'}`, background: active === 'out' ? 'var(--q-cyan,#049dc5)' : '#fff', color: active === 'out' ? '#fff' : '#3d4650', fontSize: 11.5, fontWeight: 700,
+              flex: 1, cursor: 'pointer', fontFamily: 'inherit', padding: '6px 8px', borderRadius: 999, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 4,
+              border: `1px solid ${active === 'out' ? 'var(--q-cyan,#049dc5)' : 'var(--q-line,#e6e9eb)'}`, background: active === 'out' ? 'var(--q-cyan,#049dc5)' : '#fff', color: active === 'out' ? '#fff' : '#3d4650', fontSize: 12, fontWeight: 700,
             }}
           >
             <Icon name="plane-takeoff" size={12} />{lang === 'en' ? 'Departure' : 'ذهاب'}
@@ -48,8 +48,8 @@ function FlightRow({ f, lang, selected, onSelect }) {
             type="button"
             onClick={(e) => { e.stopPropagation(); setLeg('ret'); }}
             style={{
-              flex: 1, cursor: 'pointer', fontFamily: 'inherit', padding: '6px 8px', borderRadius: 999, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 5,
-              border: `1px solid ${active === 'ret' ? 'var(--q-cyan,#049dc5)' : 'var(--q-line,#e6e9eb)'}`, background: active === 'ret' ? 'var(--q-cyan,#049dc5)' : '#fff', color: active === 'ret' ? '#fff' : '#3d4650', fontSize: 11.5, fontWeight: 700,
+              flex: 1, cursor: 'pointer', fontFamily: 'inherit', padding: '6px 8px', borderRadius: 999, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 4,
+              border: `1px solid ${active === 'ret' ? 'var(--q-cyan,#049dc5)' : 'var(--q-line,#e6e9eb)'}`, background: active === 'ret' ? 'var(--q-cyan,#049dc5)' : '#fff', color: active === 'ret' ? '#fff' : '#3d4650', fontSize: 12, fontWeight: 700,
             }}
           >
             <Icon name="plane-landing" size={12} />{lang === 'en' ? 'Return' : 'عودة'}
@@ -61,17 +61,17 @@ function FlightRow({ f, lang, selected, onSelect }) {
         <div onClick={onSelect} style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 10 }}>
           <div style={{ flex: '0 0 auto', minWidth: 70, textAlign: 'center' }}>
             <div style={{ fontSize: 16, fontWeight: 700, color: 'var(--q-ink,#1d2733)' }}>{legData.depart || '--:--'}</div>
-            <div style={{ fontSize: 11.5, color: 'var(--q-ink-2,#5f666e)' }}>{legData.from || (lang === 'en' ? 'Origin' : 'الانطلاق')}</div>
+            <div style={{ fontSize: 12, color: 'var(--q-ink-2,#5f666e)' }}>{legData.from || (lang === 'en' ? 'Origin' : 'الانطلاق')}</div>
           </div>
           <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 }}>
             <div style={{ position: 'relative', width: '100%', height: 1, background: 'var(--q-line,#e6e9eb)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <Icon name="plane" size={16} style={{ color: 'var(--q-cyan,#049dc5)', background: '#fff', transform: active === 'ret' ? 'rotate(-90deg)' : 'rotate(90deg)' }} />
             </div>
-            {legData.duration ? <span style={{ fontSize: 10.5, color: 'var(--q-ink-2,#5f666e)' }}>{legData.duration}</span> : null}
+            {legData.duration ? <span style={{ fontSize: 10, color: 'var(--q-ink-2,#5f666e)' }}>{legData.duration}</span> : null}
           </div>
           <div style={{ flex: '0 0 auto', minWidth: 70, textAlign: 'center' }}>
             <div style={{ fontSize: 16, fontWeight: 700, color: 'var(--q-ink,#1d2733)' }}>{legData.arrive || '--:--'}</div>
-            <div style={{ fontSize: 11.5, color: 'var(--q-ink-2,#5f666e)' }}>{legData.to || (lang === 'en' ? 'Destination' : 'الوصول')}</div>
+            <div style={{ fontSize: 12, color: 'var(--q-ink-2,#5f666e)' }}>{legData.to || (lang === 'en' ? 'Destination' : 'الوصول')}</div>
           </div>
         </div>
       ) : null}
@@ -109,12 +109,12 @@ function HotelRow({ h, lang, selected, onSelect }) {
         {amenities.length ? (
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginTop: 2 }}>
             {amenities.slice(0, 4).map((a) => (
-              <span key={a} style={{ fontSize: 11, color: '#3d4650', background: 'var(--q-surface-2,#f6f8f9)', border: '1px solid var(--q-line,#e6e9eb)', borderRadius: 999, padding: '2px 9px' }}>{a}</span>
+              <span key={a} style={{ fontSize: 11, color: '#3d4650', background: 'var(--q-surface-2,#f6f8f9)', border: '1px solid var(--q-line,#e6e9eb)', borderRadius: 999, padding: '2px 8px' }}>{a}</span>
             ))}
           </div>
         ) : null}
       </div>
-      <span style={{ fontSize: 12.5, fontWeight: 700, color: h.diff ? 'var(--q-cyan-dark,#036f8c)' : 'var(--q-ink-2,#5f666e)', flex: 'none' }}>
+      <span style={{ fontSize: 13, fontWeight: 500, color: h.diff ? 'var(--q-cyan-dark,#036f8c)' : 'var(--q-ink-2,#5f666e)', flex: 'none' }}>
         {h.diff ? (h.diff > 0 ? '+' : '') + h.diff.toLocaleString() + ' ' + (lang === 'en' ? 'IQD' : 'د.ع') : (lang === 'en' ? 'Included' : 'مشمول')}
       </span>
     </div>
@@ -199,7 +199,7 @@ export default function PackageCard({ title, destination, image, nights, groupTy
             <span
               className="qa-pkg-badge"
               style={{
-                position: 'absolute', top: 12, insetInlineStart: 12, display: 'inline-flex', alignItems: 'center', gap: 5,
+                position: 'absolute', top: 12, insetInlineStart: 12, display: 'inline-flex', alignItems: 'center', gap: 4,
                 background: hotBadge.soldOut ? 'var(--q-ink,#1d2733)' : '#e0364f',
                 color: '#fff',
                 borderRadius: 999, fontWeight: 700, zIndex: 2,
@@ -247,9 +247,9 @@ export default function PackageCard({ title, destination, image, nights, groupTy
           className="qa-pkg-toggle"
           aria-expanded={open}
         >
-          <span style={{ display: 'flex', alignItems: 'center', gap: 9 }}>
+          <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
             <Icon name="plane" size={15} style={{ color: 'var(--q-cyan,#049dc5)', flex: 'none' }} />
-            <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--q-cyan-dark,#036f8c)' }}>
+            <span style={{ fontSize: 13, fontWeight: 500, color: 'var(--q-cyan-dark,#036f8c)' }}>
               {en ? 'Check flights & hotels' : 'تحقق من الطيران والفنادق'}
             </span>
           </span>
@@ -265,7 +265,7 @@ export default function PackageCard({ title, destination, image, nights, groupTy
                 type="button"
                 onClick={() => setTab('flights')}
                 style={{
-                  flex: 1, cursor: 'pointer', fontFamily: 'inherit', padding: '9px 10px', borderRadius: 999,
+                  flex: 1, cursor: 'pointer', fontFamily: 'inherit', padding: '8px 10px', borderRadius: 999,
                   border: `1px solid ${tab === 'flights' ? 'var(--q-cyan,#049dc5)' : 'var(--q-line,#e6e9eb)'}`,
                   background: tab === 'flights' ? 'var(--q-cyan,#049dc5)' : '#fff', color: tab === 'flights' ? '#fff' : '#3d4650', fontSize: 13, fontWeight: 700,
                 }}
@@ -278,7 +278,7 @@ export default function PackageCard({ title, destination, image, nights, groupTy
                 type="button"
                 onClick={() => setTab('hotels')}
                 style={{
-                  flex: 1, cursor: 'pointer', fontFamily: 'inherit', padding: '9px 10px', borderRadius: 999,
+                  flex: 1, cursor: 'pointer', fontFamily: 'inherit', padding: '8px 10px', borderRadius: 999,
                   border: `1px solid ${tab === 'hotels' ? 'var(--q-cyan,#049dc5)' : 'var(--q-line,#e6e9eb)'}`,
                   background: tab === 'hotels' ? 'var(--q-cyan,#049dc5)' : '#fff', color: tab === 'hotels' ? '#fff' : '#3d4650', fontSize: 13, fontWeight: 700,
                 }}

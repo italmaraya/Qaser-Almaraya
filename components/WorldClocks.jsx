@@ -76,7 +76,7 @@ export default function WorldClocks({ tz, place, lang = 'ar', flight = null, com
 
   return (
     <div className="qa-card" style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-      <h4 style={{ margin: 0, fontSize: 15, display: 'flex', alignItems: 'center', gap: 7 }}><Icon name="clock" size={16} style={{ color: '#049dc5', flex: 'none' }} />{en ? 'Time difference' : 'فرق التوقيت'}</h4>
+      <h4 style={{ margin: 0, fontSize: 15, display: 'flex', alignItems: 'center', gap: 8 }}><Icon name="clock" size={16} style={{ color: '#049dc5', flex: 'none' }} />{en ? 'Time difference' : 'فرق التوقيت'}</h4>
       <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
         {clock(en ? 'Baghdad' : 'بغداد', BAGHDAD_TZ, false)}
         <Icon name="arrow-left-right" size={18} style={{ color: '#049dc5', flex: 'none' }} />
@@ -86,10 +86,10 @@ export default function WorldClocks({ tz, place, lang = 'ar', flight = null, com
       {(arr || dep) && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 4, fontSize: 13, color: '#3d4650', borderTop: '1px solid #ececed', paddingTop: 8 }}>
           {arr && (
-            <span style={{ display: 'flex', alignItems: 'flex-start', gap: 7 }}><Icon name="plane-landing" size={15} style={{ color: '#5f666e', flex: 'none', marginTop: 2 }} /><span>{en ? `When you land at ${flight.arrive} in ${place}, it's ` : `عند وصولك الساعة ${flight.arrive} بتوقيت ${place}، تكون الساعة `}<b data-no-i18n="">{arr.text}</b>{en ? ' in Baghdad' : ' في بغداد'}{shift(arr.dayShift)}</span></span>
+            <span style={{ display: 'flex', alignItems: 'flex-start', gap: 8 }}><Icon name="plane-landing" size={15} style={{ color: '#5f666e', flex: 'none', marginTop: 2 }} /><span>{en ? `When you land at ${flight.arrive} in ${place}, it's ` : `عند وصولك الساعة ${flight.arrive} بتوقيت ${place}، تكون الساعة `}<b data-no-i18n="">{arr.text}</b>{en ? ' in Baghdad' : ' في بغداد'}{shift(arr.dayShift)}</span></span>
           )}
           {dep && (
-            <span style={{ display: 'flex', alignItems: 'flex-start', gap: 7 }}><Icon name="plane-takeoff" size={15} style={{ color: '#5f666e', flex: 'none', marginTop: 2 }} /><span>{en ? `Your return leaves at ${flight.depart} ${place} time — ` : `رحلة العودة تغادر ${flight.depart} بتوقيت ${place} — أي `}<b data-no-i18n="">{dep.text}</b>{en ? ' in Baghdad' : ' في بغداد'}{shift(dep.dayShift)}</span></span>
+            <span style={{ display: 'flex', alignItems: 'flex-start', gap: 8 }}><Icon name="plane-takeoff" size={15} style={{ color: '#5f666e', flex: 'none', marginTop: 2 }} /><span>{en ? `Your return leaves at ${flight.depart} ${place} time — ` : `رحلة العودة تغادر ${flight.depart} بتوقيت ${place} — أي `}<b data-no-i18n="">{dep.text}</b>{en ? ' in Baghdad' : ' في بغداد'}{shift(dep.dayShift)}</span></span>
           )}
           <span style={{ fontSize: 12, color: '#5f666e' }}>{en ? 'Handy for planning calls with family.' : 'مفيد لترتيب الاتصال مع العائلة.'}</span>
         </div>

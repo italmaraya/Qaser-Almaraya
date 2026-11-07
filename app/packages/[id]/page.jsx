@@ -255,7 +255,7 @@ export default function PackageDetailPage() {
       <main style={{ flex: 1 }}>
         <div className="qa-page">
           <div className="qa-sec" style={{ paddingBottom: 0 }}>
-            <Link href="/packages" style={{ fontSize: 13.5, fontWeight: 600, color: '#036f8c', textDecoration: 'none' }}>{t.back_to_results}</Link>
+            <Link href="/packages" style={{ fontSize: 14, fontWeight: 600, color: '#036f8c', textDecoration: 'none' }}>{t.back_to_results}</Link>
           </div>
 
           <section className="qa-sec qa-2col qa-detail" style={{ display: 'grid', gridTemplateColumns: 'minmax(240px,340px) 1fr', gap: 28, alignItems: 'flex-start' }}>
@@ -276,14 +276,14 @@ export default function PackageDetailPage() {
                   <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
                     {availableDates.map((d, i) => (
                       <button key={d.date} type="button" onClick={() => setDateIdx(i)}
-                        style={{ borderRadius: 'var(--tw-radius-sm,10px)', padding: '8px 12px', cursor: 'pointer', fontFamily: 'inherit', fontSize: 13.5, fontWeight: 700, border: i === dateIdx ? '2px solid #049dc5' : '1px solid #ececed', background: i === dateIdx ? '#eaf8fd' : '#fff', color: '#1d2733' }}>
+                        style={{ borderRadius: 'var(--tw-radius-sm,10px)', padding: '8px 12px', cursor: 'pointer', fontFamily: 'inherit', fontSize: 14, fontWeight: 700, border: i === dateIdx ? '2px solid #049dc5' : '1px solid #ececed', background: i === dateIdx ? '#eaf8fd' : '#fff', color: '#1d2733' }}>
                         <span dir="ltr">{new Date(d.date).toLocaleDateString(lang === 'en' ? 'en-GB' : 'ar-IQ-u-nu-latn', { day: 'numeric', month: 'short', year: 'numeric' })}</span>
                         {d.adjust ? <span style={{ display: 'block', fontSize: 11, color: d.adjust > 0 ? '#c27a00' : '#1a7f47' }}>{formatSignedPrice(d.adjust, 'IQD', lang)}</span> : null}
                       </button>
                     ))}
                   </div>
                   {selectedDate && returnDate(pkg, selectedDate.date) && (
-                    <div data-no-i18n="" style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap', fontSize: 13.5, background: '#f3fafc', border: '1px solid #d9e9ef', borderRadius: 'var(--tw-radius-sm,10px)', padding: '8px 12px' }}>
+                    <div data-no-i18n="" style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap', fontSize: 14, background: '#f3fafc', border: '1px solid #d9e9ef', borderRadius: 'var(--tw-radius-sm,10px)', padding: '8px 12px' }}>
                       <Icon name="calendar-days" size={16} style={{ color: '#036f8c', flex: 'none' }} />
                       <span>{lang === 'en' ? 'Departure' : 'الانطلاق'} <b dir="ltr">{fmtTripDate(selectedDate.date, lang)}</b></span>
                       <span style={{ color: '#b0b6bb' }}>·</span>
@@ -302,9 +302,9 @@ export default function PackageDetailPage() {
                   const unit = totals.units ? totals.units[tt.key] : unitPrice(pkg, tt, upgrade);
                   return (
                     <div key={tt.key} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8 }}>
-                      <span style={{ fontSize: 14, color: unit == null ? '#b0b6bb' : '#1d2733' }}>{label}{hint ? <span style={{ fontSize: 11.5, color: '#5f666e' }}> ({hint})</span> : null}
-                        {unit == null ? <span style={{ display: 'block', fontSize: 11.5, color: '#b0b6bb' }}>{lang === 'en' ? 'Not available for this hotel' : 'غير متاح لهذا الفندق'}</span>
-                          : counts[tt.key] > 0 && <span style={{ display: 'block', fontSize: 11.5, color: '#5f666e' }}>{formatPrice(unit, 'IQD', lang)}</span>}
+                      <span style={{ fontSize: 14, color: unit == null ? '#b0b6bb' : '#1d2733' }}>{label}{hint ? <span style={{ fontSize: 12, color: '#5f666e' }}> ({hint})</span> : null}
+                        {unit == null ? <span style={{ display: 'block', fontSize: 12, color: '#b0b6bb' }}>{lang === 'en' ? 'Not available for this hotel' : 'غير متاح لهذا الفندق'}</span>
+                          : counts[tt.key] > 0 && <span style={{ display: 'block', fontSize: 12, color: '#5f666e' }}>{formatPrice(unit, 'IQD', lang)}</span>}
                       </span>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                         <button type="button" disabled={counts[tt.key] <= 0} onClick={() => setCounts((c) => ({ ...c, [tt.key]: Math.max(0, c[tt.key] - 1) }))} style={{ width: 28, height: 28, borderRadius: '50%', border: '1px solid #cacbcc', background: '#fff', cursor: counts[tt.key] <= 0 ? 'not-allowed' : 'pointer', opacity: counts[tt.key] <= 0 ? 0.4 : 1 }}>−</button>
@@ -315,7 +315,7 @@ export default function PackageDetailPage() {
                   );
                 })}
                 {noAdults && (
-                  <span role="alert" style={{ fontSize: 12.5, fontWeight: 700, color: '#d2324f', background: '#fdecef', border: '1px solid #f7c3cc', borderRadius: 'var(--tw-radius-xs,8px)', padding: '8px 10px' }}>{noAdultsMsg}</span>
+                  <span role="alert" style={{ fontSize: 13, fontWeight: 500, color: '#d2324f', background: '#fdecef', border: '1px solid #f7c3cc', borderRadius: 'var(--tw-radius-xs,8px)', padding: '8px 10px' }}>{noAdultsMsg}</span>
                 )}
               </div>
 
@@ -335,7 +335,7 @@ export default function PackageDetailPage() {
               <UrgencyPanel pkg={pkg} lang={lang} />
               {staffMode && (
                 <div style={{ border: '2px dashed #faab18', background: '#fffaf0', borderRadius: 'var(--tw-radius-sm,10px)', padding: 12, display: 'flex', flexDirection: 'column', gap: 8 }}>
-                  <b style={{ fontSize: 13.5, color: '#8a5a00' }}>عرض سعر مخصص (وضع الموظفين)</b>
+                  <b style={{ fontSize: 14, color: '#8a5a00' }}>عرض سعر مخصص (وضع الموظفين)</b>
                   <input style={{ padding: '8px 10px', borderRadius: 'var(--tw-radius-xs,8px)', border: '1px solid #ececed', fontFamily: 'inherit' }} placeholder="اسم العميل — مثال: أحمد علي" value={quote.customer} onChange={(e) => setQuote({ ...quote, customer: e.target.value })} />
                   <div style={{ display: 'flex', gap: 6 }}>
                     <select style={{ padding: '8px', borderRadius: 'var(--tw-radius-xs,8px)', border: '1px solid #ececed', fontFamily: 'inherit' }} value={quote.discountType} onChange={(e) => setQuote({ ...quote, discountType: e.target.value })}>
@@ -351,7 +351,7 @@ export default function PackageDetailPage() {
                   {quoteDiscount() > 0 && (
                     <span style={{ fontSize: 13 }}>الإجمالي بعد الخصم: <b data-no-i18n="">{formatPrice(grandTotal - quoteDiscount(), 'IQD', lang)}</b> <s data-no-i18n="" style={{ color: '#5f666e' }}>{formatPrice(grandTotal, 'IQD', lang)}</s></span>
                   )}
-                  <span style={{ fontSize: 11.5, color: '#5f666e' }}>يظهر اسم العميل والخصم في ملف PDF فقط — لا يراه أحد غيرك على الموقع.</span>
+                  <span style={{ fontSize: 12, color: '#5f666e' }}>يظهر اسم العميل والخصم في ملف PDF فقط — لا يراه أحد غيرك على الموقع.</span>
                 </div>
               )}
               {APPLY_FLOW_ENABLED ? (
@@ -373,14 +373,14 @@ export default function PackageDetailPage() {
                 </div>
               )}
 
-              <label style={{ display: 'flex', flexDirection: 'column', gap: 6, fontSize: 12.5, fontWeight: 700, color: '#3d4650' }}>
+              <label style={{ display: 'flex', flexDirection: 'column', gap: 6, fontSize: 13, fontWeight: 500, color: '#3d4650' }}>
                 {lang === 'en' ? 'Travel date (optional — adds dates to the PDF)' : 'تاريخ السفر (اختياري — يضيف التواريخ إلى ملف PDF)'}
                 <input
                   type="date"
                   value={tripDate}
                   min={new Date().toISOString().slice(0, 10)}
                   onChange={(e) => setTripDate(e.target.value)}
-                  style={{ padding: '9px 12px', borderRadius: 'var(--tw-radius-sm,10px)', border: '1px solid #ececed', fontFamily: 'inherit', fontSize: 14 }}
+                  style={{ padding: '8px 12px', borderRadius: 'var(--tw-radius-sm,10px)', border: '1px solid #ececed', fontFamily: 'inherit', fontSize: 14 }}
                 />
               </label>
               <div style={{ display: 'flex', gap: 8 }}>
@@ -405,13 +405,13 @@ export default function PackageDetailPage() {
                 type="button"
                 onClick={handleShare}
                 className="qa-share-btn"
-                style={{ cursor: 'pointer', border: '1px solid #b9eccd', borderRadius: 999, padding: '10px 14px', fontSize: 13.5, fontWeight: 700, fontFamily: 'inherit', background: '#eafaf0', color: '#11804a', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 7 }}
+                style={{ cursor: 'pointer', border: '1px solid #b9eccd', borderRadius: 999, padding: '10px 14px', fontSize: 14, fontWeight: 700, fontFamily: 'inherit', background: '#eafaf0', color: '#11804a', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}
               >
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><circle cx="18" cy="5" r="3" /><circle cx="6" cy="12" r="3" /><circle cx="18" cy="19" r="3" /><path d="m8.6 13.5 6.8 4M15.4 6.5l-6.8 4" /></svg>
                 {lang === 'en' ? 'Share this package with family & friends' : 'شارك الباقة مع أهلك وأصدقائك'}
               </button>
               {toast && (
-                <span style={{ fontSize: 12.5, fontWeight: 700, color: '#036f8c', background: '#eaf8fd', border: '1px solid #bfe9f6', borderRadius: 'var(--tw-radius-xs,8px)', padding: '6px 10px', textAlign: 'center' }}>{toast}</span>
+                <span style={{ fontSize: 13, fontWeight: 500, color: '#036f8c', background: '#eaf8fd', border: '1px solid #bfe9f6', borderRadius: 'var(--tw-radius-xs,8px)', padding: '6px 10px', textAlign: 'center' }}>{toast}</span>
               )}
 
               <span style={{ fontSize: 12, color: '#5f666e', textAlign: 'center' }}>{t.detail_note}</span>
@@ -438,14 +438,14 @@ export default function PackageDetailPage() {
               <div className="qa-detail-hero" style={{ position: 'relative', minHeight: 200, borderRadius: 'var(--tw-radius,16px)', overflow: 'hidden', background: pkg.image_url ? `url(${pkg.image_url}) center/cover` : 'var(--tw-band-deep,#049dc5)', display: 'flex', alignItems: 'flex-end', padding: 24 }}>
                 {pkg.image_url && <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(1,42,55,.6), transparent 60%)' }} />}
                 {(pkg.badge_ar || pkg.badge_en) && (
-                  <span style={{ position: 'absolute', top: 20, insetInlineStart: 20, padding: '4px 14px', borderRadius: 999, background: '#faab18', color: '#fff', fontSize: 12.5, fontWeight: 700, zIndex: 2 }}>
+                  <span style={{ position: 'absolute', top: 20, insetInlineStart: 20, padding: '4px 14px', borderRadius: 999, background: '#faab18', color: '#fff', fontSize: 13, fontWeight: 500, zIndex: 2 }}>
                     {nm(pkg.badge_ar, pkg.badge_en)}
                   </span>
                 )}
                 <div style={{ position: 'relative', zIndex: 1 }}>
-                  <span style={{ fontSize: 12.5, fontWeight: 700, letterSpacing: '.06em', color: 'rgba(255,255,255,.85)' }}>{catLabel(pkg.cat, lang).toUpperCase()}</span>
+                  <span style={{ fontSize: 13, fontWeight: 500, letterSpacing: '.06em', color: 'rgba(255,255,255,.85)' }}>{catLabel(pkg.cat, lang).toUpperCase()}</span>
                   <h1 style={{ margin: '4px 0 0', fontSize: 28, color: '#fff' }}>{nm(pkg.title_ar, pkg.title_en)}</h1>
-                  <span style={{ fontSize: 14.5, color: 'rgba(255,255,255,.9)' }}>{destinationLabel(pkg, lang)} · {nightsLabel(pkg, lang)}</span>
+                  <span style={{ fontSize: 14, color: 'rgba(255,255,255,.9)' }}>{destinationLabel(pkg, lang)} · {nightsLabel(pkg, lang)}</span>
                 </div>
               </div>
 
@@ -470,7 +470,7 @@ export default function PackageDetailPage() {
                 <div className="qa-card" style={{ borderInlineStart: '4px solid #faab18', background: '#fffaf0' }}>
                   <h4 style={{ margin: '0 0 10px' }}>{lang === 'en' ? 'Important notes' : 'ملاحظات مهمة'}</h4>
                   <ul style={{ margin: 0, paddingInlineStart: 20, display: 'flex', flexDirection: 'column', gap: 6 }}>
-                    {generalNotes.map((l, i) => <li key={i} style={{ fontSize: 14.5, color: '#3d4650', lineHeight: 1.7 }}>{l}</li>)}
+                    {generalNotes.map((l, i) => <li key={i} style={{ fontSize: 14, color: '#3d4650', lineHeight: 1.7 }}>{l}</li>)}
                   </ul>
                 </div>
               )}
@@ -485,7 +485,7 @@ export default function PackageDetailPage() {
                         {includes.map((i, idx) => (
                           <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                             <Icon name="check" size={16} style={{ color: '#1a7f47', flex: 'none' }} />
-                            <span style={{ fontSize: 14.5, color: '#1d2733' }}>{i}</span>
+                            <span style={{ fontSize: 14, color: '#1d2733' }}>{i}</span>
                           </div>
                         ))}
                       </div>
@@ -496,7 +496,7 @@ export default function PackageDetailPage() {
                         {excludes.map((i, idx) => (
                           <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                             <Icon name="x" size={15} style={{ color: '#c02643', flex: 'none' }} />
-                            <span style={{ fontSize: 14.5, color: '#1d2733' }}>{i}</span>
+                            <span style={{ fontSize: 14, color: '#1d2733' }}>{i}</span>
                           </div>
                         ))}
                       </div>
@@ -512,7 +512,7 @@ export default function PackageDetailPage() {
                     {days.map((d, idx) => (
                       <div key={idx} style={{ borderInlineStart: '3px solid #049dc5', paddingInlineStart: 14 }}>
                         <div style={{ fontSize: 15, fontWeight: 700, color: '#1d2733' }}>{stripFlags(nm(d.titleAr, d.titleEn))}</div>
-                        <div style={{ fontSize: 13.5, color: '#5f666e', lineHeight: 1.6, marginTop: 2 }}>{stripFlags(nm(d.descAr, d.descEn))}</div>
+                        <div style={{ fontSize: 14, color: '#5f666e', lineHeight: 1.6, marginTop: 2 }}>{stripFlags(nm(d.descAr, d.descEn))}</div>
                       </div>
                     ))}
                   </div>
@@ -529,17 +529,17 @@ export default function PackageDetailPage() {
                         {h.imageUrl ? (
                           <img src={h.imageUrl} alt="" style={{ width: 44, height: 44, borderRadius: 'var(--tw-radius-xs,8px)', objectFit: 'cover', flex: 'none' }} />
                         ) : null}
-                        <span className="qa-opt-name" style={{ flex: 1, fontSize: 14.5, color: '#1d2733' }}>
+                        <span className="qa-opt-name" style={{ flex: 1, fontSize: 14, color: '#1d2733' }}>
                           {nm(h.nameAr, h.nameEn)}
-                          {(h.notesAr || h.notesEn) && <span style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 12.5, color: '#1a7f47', fontWeight: 600, marginTop: 2 }}><Icon name="utensils" size={12} style={{ flex: 'none' }} />{nm(h.notesAr, h.notesEn)}</span>}
+                          {(h.notesAr || h.notesEn) && <span style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 13, color: '#1a7f47', fontWeight: 600, marginTop: 2 }}><Icon name="utensils" size={12} style={{ flex: 'none' }} />{nm(h.notesAr, h.notesEn)}</span>}
                         </span>
-                        <span className="qa-opt-price" style={{ fontSize: 13.5, fontWeight: 700, color: (h.extras?.adult ?? h.diff) ? '#049dc5' : '#5f666e' }}>{(h.extras?.adult ?? h.diff) ? formatSignedPrice(h.extras?.adult ?? h.diff, 'IQD', lang) : (lang === 'en' ? 'Included' : 'مشمول')}</span>
+                        <span className="qa-opt-price" style={{ fontSize: 14, fontWeight: 700, color: (h.extras?.adult ?? h.diff) ? '#049dc5' : '#5f666e' }}>{(h.extras?.adult ?? h.diff) ? formatSignedPrice(h.extras?.adult ?? h.diff, 'IQD', lang) : (lang === 'en' ? 'Included' : 'مشمول')}</span>
                       </div>
                     ))}
                   </div>
 
                   {hotels[hotelIdx]?.locationUrl ? (
-                    <a href={hotels[hotelIdx].locationUrl} target="_blank" rel="noopener noreferrer" style={{ marginTop: 12, display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 13.5, fontWeight: 700, color: '#049dc5', textDecoration: 'none' }}>
+                    <a href={hotels[hotelIdx].locationUrl} target="_blank" rel="noopener noreferrer" style={{ marginTop: 12, display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 14, fontWeight: 700, color: '#049dc5', textDecoration: 'none' }}>
                       <Icon name="map-pin" size={16} /> {lang === 'en' ? 'View hotel location' : 'موقع الفندق على الخريطة'}
                     </a>
                   ) : null}
@@ -569,7 +569,7 @@ export default function PackageDetailPage() {
                         src={`https://www.openstreetmap.org/export/embed.html?bbox=${selectedHotelCoords.lng - 0.01}%2C${selectedHotelCoords.lat - 0.01}%2C${selectedHotelCoords.lng + 0.01}%2C${selectedHotelCoords.lat + 0.01}&layer=mapnik&marker=${selectedHotelCoords.lat}%2C${selectedHotelCoords.lng}`}
                       />
                       <div style={{ padding: '10px 14px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10, background: '#f8fbfc' }}>
-                        <span style={{ fontSize: 12.5, color: '#5f666e', display: 'flex', alignItems: 'center', gap: 5 }}>
+                        <span style={{ fontSize: 13, color: '#5f666e', display: 'flex', alignItems: 'center', gap: 4 }}>
                           <Icon name="map-pin" size={13} style={{ color: '#049dc5' }} />
                           {nm(hotels[hotelIdx]?.nameAr, hotels[hotelIdx]?.nameEn)}
                         </span>
@@ -577,7 +577,7 @@ export default function PackageDetailPage() {
                           href={`https://www.openstreetmap.org/?mlat=${selectedHotelCoords.lat}&mlon=${selectedHotelCoords.lng}#map=16/${selectedHotelCoords.lat}/${selectedHotelCoords.lng}`}
                           target="_blank"
                           rel="noopener noreferrer"
-                          style={{ fontSize: 12.5, fontWeight: 700, color: '#036f8c', textDecoration: 'none' }}
+                          style={{ fontSize: 13, fontWeight: 500, color: '#036f8c', textDecoration: 'none' }}
                         >
                           {lang === 'en' ? 'Get directions ↗' : 'الاتجاهات ↗'}
                         </a>
@@ -594,8 +594,8 @@ export default function PackageDetailPage() {
                     {flights.map((f, idx) => (
                       <div key={idx} style={optStyle(flightIdx === idx)} onClick={() => setFlightIdx(idx)}>
                         <input type="radio" checked={flightIdx === idx} onChange={() => setFlightIdx(idx)} style={{ flex: 'none' }} />
-                        <span style={{ flex: 1, fontSize: 14.5, color: '#1d2733' }}>{nm(f.nameAr, f.nameEn)}</span>
-                        <span style={{ fontSize: 13.5, fontWeight: 700, color: f.diff ? '#049dc5' : '#5f666e' }}>{f.diff ? formatSignedPrice(f.diff, 'IQD', lang) : (lang === 'en' ? 'Included' : 'مشمول')}</span>
+                        <span style={{ flex: 1, fontSize: 14, color: '#1d2733' }}>{nm(f.nameAr, f.nameEn)}</span>
+                        <span style={{ fontSize: 14, fontWeight: 700, color: f.diff ? '#049dc5' : '#5f666e' }}>{f.diff ? formatSignedPrice(f.diff, 'IQD', lang) : (lang === 'en' ? 'Included' : 'مشمول')}</span>
                       </div>
                     ))}
                   </div>
@@ -607,16 +607,16 @@ export default function PackageDetailPage() {
         {!APPLY_FLOW_ENABLED && (
           <div className={'qa-pkg-mbar' + (showBar ? ' on' : '')} data-no-i18n="" aria-hidden={!showBar}>
             <div style={{ display: 'flex', flexDirection: 'column', minWidth: 0, lineHeight: 1.25 }}>
-              <span style={{ fontSize: 11.5, color: '#5f666e' }}>{grandTotal > 0 ? (lang === 'en' ? 'Total' : 'المجموع') + ' · ' + travellerSummary(lang === 'en') : t.detail_total_pp}</span>
+              <span style={{ fontSize: 12, color: '#5f666e' }}>{grandTotal > 0 ? (lang === 'en' ? 'Total' : 'المجموع') + ' · ' + travellerSummary(lang === 'en') : t.detail_total_pp}</span>
               <b style={{ fontSize: 16, color: '#036f8c', whiteSpace: 'nowrap' }}>{formatPrice(grandTotal > 0 ? grandTotal : totalPerAdult, 'IQD', lang)}</b>
             </div>
             {noAdults ? (
-              <button type="button" disabled className="qa-btn" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, background: '#25d366', color: '#fff', border: 0, fontWeight: 700, padding: '10px 16px', fontSize: 14.5, minHeight: 0, whiteSpace: 'nowrap', flexShrink: 0, opacity: 0.5, cursor: 'not-allowed' }}>
+              <button type="button" disabled className="qa-btn" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, background: '#25d366', color: '#fff', border: 0, fontWeight: 700, padding: '10px 16px', fontSize: 14, minHeight: 0, whiteSpace: 'nowrap', flexShrink: 0, opacity: 0.5, cursor: 'not-allowed' }}>
                 {WA_ICON}
                 <span>{lang === 'en' ? 'Book on WhatsApp' : 'احجز عبر واتساب'}</span>
               </button>
             ) : (
-            <WhatsAppButton label={lang === 'en' ? 'Book on WhatsApp' : 'احجز عبر واتساب'} getMessage={waMessage} style={{ padding: '10px 16px', fontSize: 14.5, minHeight: 0, whiteSpace: 'nowrap', flexShrink: 0 }} />
+            <WhatsAppButton label={lang === 'en' ? 'Book on WhatsApp' : 'احجز عبر واتساب'} getMessage={waMessage} style={{ padding: '10px 16px', fontSize: 14, minHeight: 0, whiteSpace: 'nowrap', flexShrink: 0 }} />
             )}
           </div>
         )}
