@@ -1,8 +1,9 @@
 'use client';
 import Link from 'next/link';
 import Icon from '../Icon';
+import { waLink } from '../../lib/whatsapp';
 
-// The five services, as an editorial index rather than a row of identical
+// The services, as an editorial index rather than a row of identical
 // cards. Every line links to the page that actually delivers the service.
 const ITEMS = [
   { href: '/flights', icon: 'plane', ar: 'الطيران', en: 'Flights',
@@ -20,7 +21,19 @@ const ITEMS = [
   { href: '/contact', icon: 'users', ar: 'سفر الشركات والمجموعات', en: 'Corporate & group travel',
     dAr: 'سفر الموظفين والوفود والمجموعات: ننسق الطيران والفنادق والتأشيرات في طلب واحد.',
     dEn: 'Staff, delegations and groups: flights, hotels and visas coordinated in one request.' },
+  { wa: true, icon: 'plane-landing', ar: 'التوصيل من المطار وإليه', en: 'Airport transfers',
+    dAr: 'نرتب توصيلك من المطار وإليه. راسلنا على واتساب بموعد رحلتك ونرسل لك التفاصيل والسعر.',
+    dEn: 'We arrange your ride to and from the airport. Send us your flight time on WhatsApp for the details and price.',
+    msgAr: 'مرحباً قصر المرايا، أرغب بحجز توصيل من المطار أو إليه.',
+    msgEn: 'Hello Qaser Almaraya, I would like to book an airport transfer.' },
 ];
+
+function Row({ s, en, className, children }) {
+  if (s.wa) {
+    return <a href={waLink(en ? s.msgEn : s.msgAr)} target="_blank" rel="noopener noreferrer" className={className}>{children}</a>;
+  }
+  return <Link href={s.href} className={className}>{children}</Link>;
+}
 
 export default function HomeServices({ lang = 'ar' }) {
   const en = lang === 'en';
@@ -30,12 +43,12 @@ export default function HomeServices({ lang = 'ar' }) {
         <div className="qs-svc-head">
           <span className="qs-kicker">{en ? 'What we do' : 'خدماتنا'}</span>
           <h2 className="qs-h2">{en ? 'One office in Baghdad for the whole trip' : 'مكتب واحد في بغداد لرحلتك كاملة'}</h2>
-          <p className="qs-lead">{en ? 'Packages, visas, flights and hotels, all run from our office in Baghdad. One team follows your request from the first call to the end of the trip.' : 'باقات سياحية، تأشيرات، وحجوزات طيران وفنادق. تُدار كلها من مكتبنا في بغداد، ويتابع فريق واحد طلبك من أول اتصال حتى انتهاء الرحلة.'}</p>
+          <p className="qs-lead">{en ? 'Packages, visas, flights, hotels and airport transfers, all run from our office in Baghdad. One team follows your request from the first call to the end of the trip.' : 'باقات سياحية، تأشيرات، حجوزات طيران وفنادق، وتوصيل من المطار وإليه. تُدار كلها من مكتبنا في بغداد، ويتابع فريق واحد طلبك من أول اتصال حتى انتهاء الرحلة.'}</p>
         </div>
         <ul className="qs-svc-list">
           {ITEMS.map((s, i) => (
             <li key={s.ar}>
-              <Link href={s.href} className="qs-svc-row">
+              <Row s={s} en={en} className="qs-svc-row">
                 <span className="qs-svc-num">{String(i + 1).padStart(2, '0')}</span>
                 <span className="qs-svc-icon"><Icon name={s.icon} size={22} strokeWidth={1.6} /></span>
                 <span className="qs-svc-text">
@@ -43,7 +56,7 @@ export default function HomeServices({ lang = 'ar' }) {
                   <span>{en ? s.dEn : s.dAr}</span>
                 </span>
                 <span className="qs-svc-go"><Icon name={en ? 'chevron-right' : 'chevron-left'} size={20} strokeWidth={1.8} /></span>
-              </Link>
+              </Row>
             </li>
           ))}
         </ul>

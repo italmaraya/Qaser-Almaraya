@@ -105,6 +105,7 @@
   "مع قصر المرايا للسفر والسياحة، نأخذك في رحلات لا تُنسى، بخدمات احترافية وتجارب مصممة خصيصًا لك.": "With Qaser Almaraya for Travel & Tourism we take you on unforgettable journeys, with professional service and experiences designed around you.",
   "للسفر و السياحة": "for Travel & Tourism",
   "للسفر والسياحة": "for Travel & Tourism",
+  "نأخذك إلى حيث تتمنى، لنصنع ذكريات لا تُنسى.": "Your memories begin with us.",
   "من أول بحث حتى بطاقة الصعود — سكايلو وفريقنا معك.": "From the first search to your boarding pass — Skylo and our team are with you.",
   "فلامنغو وقصر المرايا — شركاء وأصدقاء": "Flamingo and Qaser Almaraya — partners and best friends",
   "ذكرياتك تبدأ معنا": "Your memories begin with us",

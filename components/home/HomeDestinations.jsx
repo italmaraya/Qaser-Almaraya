@@ -1,4 +1,5 @@
 'use client';
+import { imgProps } from '../../lib/img';
 import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { loadPackages } from '../../lib/publicPackages';
@@ -47,7 +48,7 @@ export default function HomeDestinations({ lang = 'ar' }) {
               <Link key={g.iso} href={'/packages?q=' + encodeURIComponent(g.en)} className={'qs-dest' + (i === 0 ? ' lead' : '')}>
                 <div className="qs-photo qs-shade">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={g.photo} alt={en ? g.en : g.ar} loading="lazy" decoding="async" />
+                  <img {...imgProps(g.photo, '(max-width: 820px) 80vw, 50vw')} alt={en ? g.en : g.ar} loading="lazy" decoding="async" />
                 </div>
                 <div className="qs-dest-copy">
                   <h3>{en ? g.en : g.ar}</h3>

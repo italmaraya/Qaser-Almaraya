@@ -21,6 +21,7 @@ import { COUNTRY_GEO } from '../../../lib/geoData';
 import { nightsLabel, destinationLabel, packageCountries } from '../../../lib/destinations';
 import { GuideCompact } from '../../../components/DestinationGuide';
 import { nextDeparture } from '../../../lib/packageUrgency';
+import { imgProps } from '../../../lib/img';
 
 const optStyle = (on) => ({
   display: 'flex', alignItems: 'center', gap: 14, padding: '14px 16px', borderRadius: 'var(--tw-radius-sm,10px)',
@@ -254,20 +255,46 @@ export default function PackageDetailPage() {
       <SiteHeader active="المجموعات والباقات" />
       <main style={{ flex: 1 }}>
         <div className="qa-page">
-          <div className="qa-sec" style={{ paddingBottom: 0 }}>
-            <Link href="/packages" style={{ fontSize: 14, fontWeight: 600, color: 'var(--qs-brand-deep,#036f8c)', textDecoration: 'none' }}>{t.back_to_results}</Link>
+          <section className={'qs-pd-hero' + (pkg.image_url ? '' : ' qs-pd-hero-plain')}>
+            {pkg.image_url ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img className="qs-pd-hero-img" {...imgProps(pkg.image_url, '100vw', [828, 1200, 1920])} alt="" fetchPriority="high" decoding="async" />
+            ) : null}
+            <div className="qs-wrap qs-pd-hero-in">
+              <Link href="/packages" className="qs-pd-back">{t.back_to_results}</Link>
+              <div className="qs-pd-hero-copy">
+                {(pkg.badge_ar || pkg.badge_en) && <span className="qs-pd-badge">{nm(pkg.badge_ar, pkg.badge_en)}</span>}
+                <span className="qs-pd-cat">{catLabel(pkg.cat, lang)}</span>
+                <h1 className="qs-pd-title">{nm(pkg.title_ar, pkg.title_en)}</h1>
+                <span className="qs-pd-sub">{destinationLabel(pkg, lang)} · {nightsLabel(pkg, lang)}</span>
+              </div>
+            </div>
+          </section>
+          <div className="qs-wrap">
+            <dl className="qs-pd-facts">
+              {[
+                [lang === 'en' ? 'Destination' : 'الوجهة', destinationLabel(pkg, lang)],
+                [lang === 'en' ? 'Duration' : 'المدة', durationLabel(pkg, lang) || nightsLabel(pkg, lang)],
+                [lang === 'en' ? 'Departures' : 'المغادرة', nm(pkg.departs_ar, pkg.departs_en)],
+                [t.detail_base, formatPrice(Number(pkg.price) || 0, 'IQD', lang)],
+              ].filter(([, v]) => v).map(([label, value]) => (
+                <div key={label}><dt>{label}</dt><dd>{value}</dd></div>
+              ))}
+            </dl>
           </div>
 
-          <section className="qa-sec qa-2col qa-detail" style={{ display: 'grid', gridTemplateColumns: 'minmax(240px,340px) 1fr', gap: 28, alignItems: 'flex-start' }}>
+          <section className="qa-sec qa-2col qa-detail qs-pd" style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr) minmax(300px,380px)', gap: 48, alignItems: 'flex-start' }}>
             {/* Sticky price summary */}
-            <div className="qa-card" style={{ position: 'sticky', top: 90, display: 'flex', flexDirection: 'column', gap: 14 }}>
-              <h3 style={{ margin: 0, fontSize: 18 }}>{t.price_title}</h3>
+            <div className="qa-card qs-pd-book" style={{ position: 'sticky', top: 90, display: 'flex', flexDirection: 'column', gap: 14 }}>
+              <div className="qs-pd-price">
+                <span>{t.detail_total_pp}</span>
+                <b>{formatPrice(totalPerAdult, 'IQD', lang)}</b>
+              </div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 6, fontSize: 14 }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between' }}><span style={{ color: 'var(--qs-ink-2,#5f666e)' }}>{t.detail_base}</span><span>{formatPrice(Number(pkg.price) || 0, 'IQD', lang)}</span></div>
                 {upgrade !== 0 && (
                   <div style={{ display: 'flex', justifyContent: 'space-between' }}><span style={{ color: 'var(--qs-ink-2,#5f666e)' }}>{t.detail_upgrade}</span><span>{formatSignedPrice(upgrade, 'IQD', lang)}</span></div>
                 )}
-                <div style={{ display: 'flex', justifyContent: 'space-between', fontWeight: 700 }}><span>{t.detail_total_pp}</span><span style={{ color: 'var(--qs-brand-deep,#049dc5)' }}>{formatPrice(totalPerAdult, 'IQD', lang)}</span></div>
               </div>
 
               {availableDates.length > 0 && (
@@ -365,11 +392,12 @@ export default function PackageDetailPage() {
                   </button>
                 ) : (
                 <WhatsAppButton
-                  label={lang === 'en' ? 'Contact us on WhatsApp to book' : 'تواصل معنا على واتساب للحجز'}
+                  label={lang === 'en' ? 'Book this package on WhatsApp' : 'احجز هذه الباقة عبر واتساب'}
                   getMessage={waMessage}
-                  style={{ width: '100%', boxSizing: 'border-box' }}
+                  style={{ width: '100%', boxSizing: 'border-box', minHeight: 54, fontSize: 16 }}
                 />
                 )}
+                <a href="tel:6393" className="qs-pd-call" data-no-i18n="">{lang === 'en' ? 'or call the hotline 6393' : 'أو اتصل على الخط الساخن 6393'}</a>
                 </div>
               )}
 
@@ -387,7 +415,7 @@ export default function PackageDetailPage() {
                 <button
                   type="button"
                   onClick={handleDownloadPdf}
-                  style={{ flex: 1, cursor: 'pointer', border: '1px solid var(--qs-line,#ececed)', borderRadius: 999, padding: '10px 14px', fontSize: 13, fontWeight: 700, fontFamily: 'inherit', background: '#fff', color: 'var(--qs-brand-deep,#036f8c)', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}
+                  className="qs-pd-tool"
                 >
                   <Icon name="file-text" size={15} />
                   {t.pdf_btn}
@@ -395,7 +423,7 @@ export default function PackageDetailPage() {
                 <button
                   type="button"
                   onClick={handleCopy}
-                  style={{ flex: 1, cursor: 'pointer', border: '1px solid var(--qs-line-2,#bfe9f6)', borderRadius: 999, padding: '10px 14px', fontSize: 13, fontWeight: 700, fontFamily: 'inherit', background: 'var(--qs-brand-soft,#eaf8fd)', color: 'var(--qs-brand-deep,#036f8c)', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}
+                  className="qs-pd-tool"
                 >
                   <Icon name="copy" size={15} />
                   {t.copy_btn}
@@ -404,8 +432,7 @@ export default function PackageDetailPage() {
               <button
                 type="button"
                 onClick={handleShare}
-                className="qa-share-btn"
-                style={{ cursor: 'pointer', border: '1px solid #b9eccd', borderRadius: 999, padding: '10px 14px', fontSize: 14, fontWeight: 700, fontFamily: 'inherit', background: '#eafaf0', color: '#11804a', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}
+                className="qa-share-btn qs-pd-tool"
               >
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><circle cx="18" cy="5" r="3" /><circle cx="6" cy="12" r="3" /><circle cx="18" cy="19" r="3" /><path d="m8.6 13.5 6.8 4M15.4 6.5l-6.8 4" /></svg>
                 {lang === 'en' ? 'Share this package with family & friends' : 'شارك الباقة مع أهلك وأصدقائك'}
@@ -434,41 +461,10 @@ export default function PackageDetailPage() {
             </div>
 
             {/* Main content */}
-            <div className="qa-detail-main" style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
-              <div className="qa-detail-hero" style={{ position: 'relative', minHeight: 200, borderRadius: 'var(--tw-radius,16px)', overflow: 'hidden', background: pkg.image_url ? `url(${pkg.image_url}) center/cover` : 'var(--tw-band-deep,#049dc5)', display: 'flex', alignItems: 'flex-end', padding: 24 }}>
-                {pkg.image_url && <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(1,42,55,.6), transparent 60%)' }} />}
-                {(pkg.badge_ar || pkg.badge_en) && (
-                  <span style={{ position: 'absolute', top: 20, insetInlineStart: 20, padding: '4px 14px', borderRadius: 999, background: '#faab18', color: '#fff', fontSize: 13, fontWeight: 500, zIndex: 2 }}>
-                    {nm(pkg.badge_ar, pkg.badge_en)}
-                  </span>
-                )}
-                <div style={{ position: 'relative', zIndex: 1 }}>
-                  <span style={{ fontSize: 13, fontWeight: 500, letterSpacing: '.06em', color: 'rgba(255,255,255,.85)' }}>{catLabel(pkg.cat, lang).toUpperCase()}</span>
-                  <h1 style={{ margin: '4px 0 0', fontSize: 28, color: '#fff' }}>{nm(pkg.title_ar, pkg.title_en)}</h1>
-                  <span style={{ fontSize: 14, color: 'rgba(255,255,255,.9)' }}>{destinationLabel(pkg, lang)} · {nightsLabel(pkg, lang)}</span>
-                </div>
-              </div>
-
-              <div className="qa-card">
-                <h4 style={{ margin: '0 0 14px' }}>{t.overview_title}</h4>
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(160px,1fr))', gap: 12 }}>
-                  {[
-                    [lang === 'en' ? 'Destination' : 'الوجهة', destinationLabel(pkg, lang)],
-                    [lang === 'en' ? 'Duration' : 'المدة', durationLabel(pkg, lang) || nightsLabel(pkg, lang)],
-                    [lang === 'en' ? 'Departures' : 'المغادرة', nm(pkg.departs_ar, pkg.departs_en)],
-                    [t.detail_base, formatPrice(Number(pkg.price) || 0, 'IQD', lang)],
-                  ].map(([label, value]) => (
-                    <div key={label} style={{ border: '1px solid var(--qs-line,#ececed)', borderRadius: 'var(--tw-radius-sm,10px)', padding: '12px 14px' }}>
-                      <div style={{ fontSize: 12, color: 'var(--qs-ink-2,#5f666e)' }}>{label}</div>
-                      <div style={{ fontSize: 15, fontWeight: 700, color: 'var(--qs-ink,#1d2733)' }}>{value}</div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
+            <div className="qa-detail-main qs-pd-main" style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
               {generalNotes.length > 0 && (
-                <div className="qa-card" style={{ borderInlineStart: '4px solid #faab18', background: '#fffaf0' }}>
-                  <h4 style={{ margin: '0 0 10px' }}>{lang === 'en' ? 'Important notes' : 'ملاحظات مهمة'}</h4>
+                <div className="qs-pd-block qs-pd-note">
+                  <h2 className="qs-pd-h">{lang === 'en' ? 'Important notes' : 'ملاحظات مهمة'}</h2>
                   <ul style={{ margin: 0, paddingInlineStart: 20, display: 'flex', flexDirection: 'column', gap: 6 }}>
                     {generalNotes.map((l, i) => <li key={i} style={{ fontSize: 14, color: 'var(--qs-body,#3d4650)', lineHeight: 1.7 }}>{l}</li>)}
                   </ul>
@@ -476,8 +472,8 @@ export default function PackageDetailPage() {
               )}
 
               {(includes.length > 0 || excludes.length > 0) && (
-                <div className="qa-card">
-                  <h4 style={{ margin: '0 0 14px' }}>{lang === 'en' ? 'What the price covers' : 'ماذا يشمل السعر'}</h4>
+                <div className="qs-pd-block">
+                  <h2 className="qs-pd-h">{lang === 'en' ? 'What the price covers' : 'ماذا يشمل السعر'}</h2>
                   <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(220px,1fr))', gap: 14 }}>
                     {includes.length > 0 && (
                       <div style={{ background: '#eefaf3', border: '1px solid #cdebd9', borderRadius: 'var(--tw-radius-sm,10px)', padding: '12px 14px', display: 'flex', flexDirection: 'column', gap: 8 }}>
@@ -506,8 +502,8 @@ export default function PackageDetailPage() {
               )}
 
               {days.length > 0 && (
-                <div className="qa-card">
-                  <h4 style={{ margin: '0 0 14px' }}>{t.calendar_title}</h4>
+                <div className="qs-pd-block">
+                  <h2 className="qs-pd-h">{t.calendar_title}</h2>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
                     {days.map((d, idx) => (
                       <div key={idx} style={{ borderInlineStart: '3px solid var(--qs-brand-deep,#049dc5)', paddingInlineStart: 14 }}>
@@ -520,14 +516,14 @@ export default function PackageDetailPage() {
               )}
 
               {hotels.length > 0 && (
-                <div className="qa-card">
-                  <h4 style={{ margin: '0 0 14px' }}>{t.hotel_title}</h4>
+                <div className="qs-pd-block">
+                  <h2 className="qs-pd-h">{t.hotel_title}</h2>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
                     {hotels.map((h, idx) => (
                       <div key={idx} className="qa-opt-hotel" style={optStyle(hotelIdx === idx)} onClick={() => setHotelIdx(idx)}>
                         <input type="radio" checked={hotelIdx === idx} onChange={() => setHotelIdx(idx)} style={{ flex: 'none' }} />
                         {h.imageUrl ? (
-                          <img src={h.imageUrl} alt="" style={{ width: 44, height: 44, borderRadius: 'var(--tw-radius-xs,8px)', objectFit: 'cover', flex: 'none' }} />
+                          <img {...imgProps(h.imageUrl, '44px', [384])} alt="" loading="lazy" style={{ width: 44, height: 44, borderRadius: 'var(--tw-radius-xs,8px)', objectFit: 'cover', flex: 'none' }} />
                         ) : null}
                         <span className="qa-opt-name" style={{ flex: 1, fontSize: 14, color: 'var(--qs-ink,#1d2733)' }}>
                           {nm(h.nameAr, h.nameEn)}
@@ -549,8 +545,9 @@ export default function PackageDetailPage() {
                       {[hotels[hotelIdx].imageUrl, ...(hotels[hotelIdx].extraImages || [])].filter(Boolean).map((src, i) => (
                         <img
                           key={i}
-                          src={src}
+                          {...imgProps(src, '130px', [384])}
                           alt=""
+                          loading="lazy"
                           style={{ width: 130, height: 96, borderRadius: 'var(--tw-radius-sm,10px)', objectFit: 'cover', flex: 'none', border: '1px solid var(--qs-line,#ececed)' }}
                         />
                       ))}
@@ -588,8 +585,8 @@ export default function PackageDetailPage() {
               )}
 
               {flights.length > 0 && (
-                <div className="qa-card">
-                  <h4 style={{ margin: '0 0 14px' }}>{t.flight_title}</h4>
+                <div className="qs-pd-block">
+                  <h2 className="qs-pd-h">{t.flight_title}</h2>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
                     {flights.map((f, idx) => (
                       <div key={idx} style={optStyle(flightIdx === idx)} onClick={() => setFlightIdx(idx)}>

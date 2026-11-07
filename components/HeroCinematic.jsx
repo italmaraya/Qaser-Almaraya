@@ -1,4 +1,5 @@
 'use client';
+import { imgProps } from '../lib/img';
 import Icon from './Icon';
 import { useEffect, useRef, useState } from 'react';
 
@@ -160,7 +161,7 @@ export default function HeroCinematic({ slides: allSlides = [], kicker, title, s
               />
             ) : (
               // eslint-disable-next-line @next/next/no-img-element
-              <img src={s.type === 'video' ? s.poster || '' : s.url} alt="" loading={i === 0 ? 'eager' : 'lazy'} fetchPriority={i === 0 ? 'high' : 'auto'} decoding={i === 0 ? 'sync' : 'async'} />
+              <img {...imgProps(s.type === 'video' ? s.poster || '' : s.url, '100vw', [640, 1080, 1920])} alt="" loading={i === 0 ? 'eager' : 'lazy'} fetchPriority={i === 0 ? 'high' : 'auto'} decoding={i === 0 ? 'sync' : 'async'} />
             )}
           </div>
         ))}

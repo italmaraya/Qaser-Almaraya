@@ -9,6 +9,7 @@ import HomeServices from './home/HomeServices';
 import HomeWhy from './home/HomeWhy';
 import HomeVoices from './home/HomeVoices';
 import HomeContact from './home/HomeContact';
+import HomeInstagram from './home/HomeInstagram';
 import SeasonSpotlight from './SeasonSpotlight';
 import SeasonDecor from './SeasonDecor';
 import TripFinder from './TripFinder';
@@ -947,6 +948,7 @@ function   visaVals(country){
 <PartnersWall />
 </section>
 <HomeVoices lang={st.lang} />
+<HomeInstagram lang={st.lang} />
 <HomeContact lang={st.lang} contact={contentContact} />
 </div>
 </>) : null}
@@ -2595,7 +2597,7 @@ function   visaVals(country){
 <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
 <p style={{ fontSize: "25px", fontWeight: "700", color: "#fff", margin: "0", lineHeight: "1.3" }}>رحلتك تبدي ويانا</p>
 <span style={{ width: "56px", height: "3px", borderRadius: "2px", background: "#faab18" }}></span>
-<p style={{ margin: "0", fontSize: "14px", lineHeight: "1.7", color: "rgba(255,255,255,.82)", maxWidth: "230px" }}>من أول بحث حتى بطاقة الصعود — سكايلو وفريقنا معك.</p>
+<p style={{ margin: "0", fontSize: "14px", lineHeight: "1.7", color: "rgba(255,255,255,.82)", maxWidth: "230px" }}>نأخذك إلى حيث تتمنى، لنصنع ذكريات لا تُنسى.</p>
 </div>
 </div>
 <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
