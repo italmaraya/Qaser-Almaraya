@@ -121,7 +121,7 @@ export default function DeparturesBoard({ lang = 'ar' }) {
           <div>
             <span className="qs-kicker">{en ? 'Departures' : 'المغادرة'}</span>
             <h2 className="qs-h2">{en ? 'Next departures from Baghdad' : 'لوحة المغادرة من بغداد'}</h2>
-            <p className="qs-lead">{en ? 'The next group departures, live from our schedule. Tap a row for the full programme.' : 'أقرب مواعيد رحلاتنا الجماعية كما في جدولنا. اضغط على أي رحلة لتشوف برنامجها كامل.'}</p>
+            <p className="qs-lead">{en ? 'The next group departures, live from our schedule. Tap a row for the full programme.' : 'أقرب مواعيد رحلاتنا الجماعية كما وردت في جدولنا. اضغط على أي رحلة لعرض برنامجها كاملاً.'}</p>
           </div>
           <Link href="/packages" className="qs-link">{en ? 'All packages' : 'كل الباقات'}</Link>
         </div>

@@ -116,8 +116,8 @@ export default function TripFinder({ lang = 'ar' }) {
 `}</style>
       <div className="qa-tf">
         <div style={{ display: 'flex', flexDirection: 'column', gap: 6, position: 'relative' }}>
-          <h2>{en ? 'Where can I go on my budget?' : 'وين أسافر بميزانيتي؟'}</h2>
-          <p style={{ fontSize: 16, color: '#d6f1fa' }}>{en ? 'Pick what suits you and we suggest the closest trips.' : 'اختر اللي يناسبك ونقترح عليك أقرب الرحلات.'}</p>
+          <h2>{en ? 'Where can I go on my budget?' : 'إلى أين أسافر بميزانيتي؟'}</h2>
+          <p style={{ fontSize: 16, color: '#d6f1fa' }}>{en ? 'Pick what suits you and we suggest the closest trips.' : 'اختر ما يناسبك، ونقترح عليك أقرب الرحلات.'}</p>
         </div>
 
         <div className="qa-tf-row">

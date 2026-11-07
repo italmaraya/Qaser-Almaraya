@@ -2601,7 +2601,7 @@ function   visaVals(country){
 </span>
 </div>
 <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-<p style={{ fontSize: "25px", fontWeight: "700", color: "#fff", margin: "0", lineHeight: "1.3" }}>رحلتك تبدي ويانا</p>
+<p style={{ fontSize: "25px", fontWeight: "700", color: "#fff", margin: "0", lineHeight: "1.3" }}>رحلتك تبدأ معنا</p>
 <span style={{ width: "56px", height: "3px", borderRadius: "2px", background: "#faab18" }}></span>
 <p style={{ margin: "0", fontSize: "14px", lineHeight: "1.7", color: "rgba(255,255,255,.82)", maxWidth: "230px" }}>نأخذك إلى حيث تتمنى، لنصنع ذكريات لا تُنسى.</p>
 </div>
