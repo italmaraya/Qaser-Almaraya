@@ -7,7 +7,7 @@ import SeasonSpotlight from './SeasonSpotlight';
 import SeasonDecor from './SeasonDecor';
 import TripFinder from './TripFinder';
 import VisaChecker from './VisaChecker';
-import AirlinesMarquee from './AirlinesMarquee';
+import PartnersWall from './PartnersWall';
 import React, { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import Icon from './Icon';
@@ -969,7 +969,7 @@ function   visaVals(country){
 </div>
 </div>
 <div aria-hidden="true" style={{ position: "relative", height: "1px", background: "rgba(255,255,255,.22)" }}></div>
-<AirlinesMarquee />
+<PartnersWall />
 </section>
 <section className="qa-sec" style={{ paddingTop: "0" }}>
 <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", justifyContent: "space-between", gap: "20px", background: "#f6f8f9", border: "1px solid #e6e9eb", borderRadius: "12px", padding: "28px 32px" }}>
