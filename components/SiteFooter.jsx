@@ -2,7 +2,7 @@ import PaymentBadges from './PaymentBadges';
 
 export default function SiteFooter() {
   return (
-    <footer style={{ background: 'var(--qs-ink,#049dc5)', color: 'rgba(255,255,255,.95)' }}>
+    <footer style={{ background: 'var(--qs-band,#049dc5)', color: 'rgba(255,255,255,.95)' }}>
       <div
         className="qa-foot"
         style={{ maxWidth: 1240, margin: '0 auto', padding: '24px 32px 16px', display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(196px,1fr))', gap: '28px 24px', alignItems: 'start' }}

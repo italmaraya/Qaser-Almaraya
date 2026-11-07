@@ -181,7 +181,7 @@ function TravelerForm({ index, travelerType, documents, onChange, onProgress }) 
                       padding: '10px 0',
                       borderRadius: 'var(--tw-radius-xs,8px)',
                       border: '1px solid ' + (answers[d.id] === val ? '#049dc5' : 'var(--qs-line,#ececed)'),
-                      background: answers[d.id] === val ? 'var(--qs-ink,#049dc5)' : '#fff',
+                      background: answers[d.id] === val ? 'var(--qs-band,#049dc5)' : '#fff',
                       color: answers[d.id] === val ? '#fff' : 'var(--qs-body,#3d4650)',
                       fontFamily: 'inherit',
                       fontWeight: 600,
@@ -205,7 +205,7 @@ function TravelerForm({ index, travelerType, documents, onChange, onProgress }) 
                       padding: '10px 16px',
                       borderRadius: 999,
                       border: '1px solid ' + (answers[d.id] === c ? '#049dc5' : 'var(--qs-line,#ececed)'),
-                      background: answers[d.id] === c ? 'var(--qs-ink,#049dc5)' : '#fff',
+                      background: answers[d.id] === c ? 'var(--qs-band,#049dc5)' : '#fff',
                       color: answers[d.id] === c ? '#fff' : 'var(--qs-body,#3d4650)',
                       fontFamily: 'inherit',
                       fontSize: 14,
@@ -386,7 +386,7 @@ function ArchivedVisaApplyPage() {
       <SiteHeader active="التأشيرات" />
       <main style={{ flex: 1 }}>
         <div className="qa-page">
-          <section style={{ background: 'var(--tw-band-deep,var(--qs-ink,#049dc5))', color: '#fff' }}>
+          <section style={{ background: 'var(--tw-band-deep,var(--qs-band,#049dc5))', color: '#fff' }}>
             <div className="qa-sec" style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
               <Link href={`/visa/${id}`} style={{ fontSize: 14, color: 'rgba(255,255,255,.85)', textDecoration: 'none', alignSelf: 'flex-start' }}>← رجوع إلى التأشيرات</Link>
               <div>
@@ -410,7 +410,7 @@ function ArchivedVisaApplyPage() {
                       fontWeight: 700,
                     }}
                   >
-                    <span style={{ width: 20, height: 20, borderRadius: '50%', background: s.id === activeStep ? 'var(--qs-ink,#049dc5)' : 'rgba(255,255,255,.3)', color: '#fff', fontSize: 11, display: 'grid', placeItems: 'center' }}>{s.id}</span>
+                    <span style={{ width: 20, height: 20, borderRadius: '50%', background: s.id === activeStep ? 'var(--qs-band,#049dc5)' : 'rgba(255,255,255,.3)', color: '#fff', fontSize: 11, display: 'grid', placeItems: 'center' }}>{s.id}</span>
                     {s.label}
                   </span>
                 ))}
@@ -447,7 +447,7 @@ function ArchivedVisaApplyPage() {
                       <span>{totalDone}/{totalNeeded} مكتمل</span>
                     </div>
                     <div style={{ height: 6, borderRadius: 999, background: 'var(--qs-line,#ececed)', overflow: 'hidden' }}>
-                      <div style={{ height: '100%', width: totalNeeded ? `${Math.min(100, (totalDone / totalNeeded) * 100)}%` : '0%', background: 'var(--qs-ink,#049dc5)' }} />
+                      <div style={{ height: '100%', width: totalNeeded ? `${Math.min(100, (totalDone / totalNeeded) * 100)}%` : '0%', background: 'var(--qs-band,#049dc5)' }} />
                     </div>
                   </div>
                   <button

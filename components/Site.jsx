@@ -869,7 +869,7 @@ function   visaVals(country){
   aria-label="القائمة"
   aria-expanded={qaMobileMenuOpen}
   className="qa-burger"
-  style={{ display: "none", flex: "none", alignItems: "center", justifyContent: "center", width: 42, height: 42, border: 0, borderRadius: 'var(--tw-radius-sm,10px)', background: "var(--qs-ink,#049dc5)", color: "#fff", cursor: "pointer", marginInlineStart: "auto" }}
+  style={{ display: "none", flex: "none", alignItems: "center", justifyContent: "center", width: 42, height: 42, border: 0, borderRadius: 'var(--tw-radius-sm,10px)', background: "var(--qs-band,#049dc5)", color: "#fff", cursor: "pointer", marginInlineStart: "auto" }}
 >
   <Icon name="menu" size={22} strokeWidth={2.2} />
 </button>
@@ -877,7 +877,7 @@ function   visaVals(country){
 </header>
 
 {qaMobileMenuOpen && (
-  <div className="qa-mobilemenu" style={{ position: "fixed", inset: 0, zIndex: 50, background: "var(--qs-ink,#049dc5)", display: "flex", flexDirection: "column", overflowY: "auto" }}>
+  <div className="qa-mobilemenu" style={{ position: "fixed", inset: 0, zIndex: 50, background: "var(--qs-band,#049dc5)", display: "flex", flexDirection: "column", overflowY: "auto" }}>
     <div style={{ display: "flex", justifyContent: "flex-end", padding: "14px 16px" }}>
       <button type="button" onClick={() => setQaMobileMenuOpen(false)} aria-label="إغلاق" style={{ width: 42, height: 42, borderRadius: 'var(--tw-radius-sm,10px)', border: 0, background: "rgba(255,255,255,.18)", color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer" }}>
         <Icon name="x" size={20} strokeWidth={2.4} />
@@ -917,7 +917,7 @@ function   visaVals(country){
 {isHome ? (<>
 <div className="qa-page">
 <HomeHero hero={props.content && props.content.hero} lang={st.lang} onPrimary={goPackages}>
-<section style={{ position: "relative", background: "var(--tw-band,var(--qs-ink,#34bbe1))" }}>
+<section style={{ position: "relative", background: "var(--tw-band,var(--qs-band,#34bbe1))" }}>
 <img src="/assets/cover-website.webp" alt="ذكرياتك تبدأ معنا — قصر المرايا للسفر و السياحة" style={{ display: "block", width: "100%", height: "auto" }} />
 <div className="qa-cover-copy" style={{ position: "absolute", right: "3%", top: "50%", transform: "translateY(-50%)", width: "34%", maxHeight: "94%", display: "flex", flexDirection: "column", alignItems: "flex-start", textAlign: "start", gap: "clamp(12px,1.3vw,22px)" }}>
 <h1 style={{ margin: "0", fontSize: "clamp(30px,3.4vw,62px)", fontWeight: "700", lineHeight: "1.12", color: "#0e88ad", textWrap: "pretty" }}>رحلتك تبدأ معنا!</h1>
@@ -958,7 +958,7 @@ function   visaVals(country){
 <p style={{ fontSize: "20px", lineHeight: "1.55", color: "var(--qs-brand-deep,#22a9d4)", maxWidth: "820px" }}>قصر المرايا هي الشريك الرسمي لـ Flamingo — كل حجوزات الطيران والفنادق تُتمّ عبر منصة فلامنغو، ويبقى فريقنا معك من أول بحث حتى بطاقة الصعود.</p>
 </section>
 <section className="qa-sec" style={{ paddingTop: "20px" }}>
-<div style={{ position: "relative", width: "100vw", marginInline: "calc(50% - 50vw)", overflow: "hidden", background: "var(--tw-band-deep,var(--qs-ink,#049dc5))" }} data-partner-band="">
+<div style={{ position: "relative", width: "100vw", marginInline: "calc(50% - 50vw)", overflow: "hidden", background: "var(--tw-band-deep,var(--qs-band,#049dc5))" }} data-partner-band="">
 <div style={{ position: "relative" }}>
 <div style={{ position: "relative", overflow: "hidden" }}><img src="/assets/partners-flamingo-skylo-v3.jpg" alt="فلامنغو وقصر المرايا — شركاء وأصدقاء" style={{ display: "block", width: "100%", height: "auto" }} /></div>
 <div className="qa-2col qa-partner" style={{ display: "grid", gridTemplateColumns: "1.08fr .92fr", gap: "40px", alignItems: "center", padding: "44px 48px 48px" }}>
@@ -993,7 +993,7 @@ function   visaVals(country){
 <div style={{ display: "flex", flexDirection: "column", gap: "var(--q-s3,24px)" }}>
 <div style={{ position: "relative", display: "flex", alignItems: "flex-start", gap: "var(--q-s2,16px)" }}>
 <span aria-hidden="true" style={{ position: "absolute", insetInlineStart: "13px", top: "28px", bottom: "calc(-1 * var(--q-s3,24px))", width: "2px", background: "var(--q-line,var(--qs-line,#e6e9eb))" }}></span>
-<span style={{ position: "relative", zIndex: "1", flex: "none", display: "grid", placeItems: "center", width: "28px", height: "28px", borderRadius: "999px", background: "var(--q-cyan,var(--qs-ink,#049dc5))", color: "#fff", fontFamily: "'IBM Plex Sans',system-ui,sans-serif", fontSize: "var(--q-t6,13px)", fontWeight: "700", lineHeight: "1" }}>1</span>
+<span style={{ position: "relative", zIndex: "1", flex: "none", display: "grid", placeItems: "center", width: "28px", height: "28px", borderRadius: "999px", background: "var(--q-cyan,var(--qs-band,#049dc5))", color: "#fff", fontFamily: "'IBM Plex Sans',system-ui,sans-serif", fontSize: "var(--q-t6,13px)", fontWeight: "700", lineHeight: "1" }}>1</span>
 <div style={{ display: "flex", flexDirection: "column", gap: "6px", flex: "1 1 auto", minWidth: "0" }}>
 <h4 style={{ margin: "0", display: "flex", alignItems: "center", flexWrap: "wrap", gap: "8px", fontSize: "var(--q-t4,17px)", fontWeight: "700", color: "var(--q-ink,var(--qs-ink,#1d2733))" }}>ابحث على <img src="/assets/logo-flamingo.webp" alt="flamingo.iq" style={{ height: "22px", width: "auto" }} /></h4>
 <p style={{ margin: "0", fontSize: "var(--q-t5,15px)", lineHeight: "1.7", color: "var(--q-ink-2,var(--qs-ink-2,#5f666e))" }}>كل شركات الطيران وسلاسل الفنادق التي نتعامل معها متاحة على المنصة بأسعارنا التعاقدية.</p>
@@ -1001,14 +1001,14 @@ function   visaVals(country){
 </div>
 <div style={{ position: "relative", display: "flex", alignItems: "flex-start", gap: "var(--q-s2,16px)" }}>
 <span aria-hidden="true" style={{ position: "absolute", insetInlineStart: "13px", top: "28px", bottom: "calc(-1 * var(--q-s3,24px))", width: "2px", background: "var(--q-line,var(--qs-line,#e6e9eb))" }}></span>
-<span style={{ position: "relative", zIndex: "1", flex: "none", display: "grid", placeItems: "center", width: "28px", height: "28px", borderRadius: "999px", background: "var(--q-cyan,var(--qs-ink,#049dc5))", color: "#fff", fontFamily: "'IBM Plex Sans',system-ui,sans-serif", fontSize: "var(--q-t6,13px)", fontWeight: "700", lineHeight: "1" }}>2</span>
+<span style={{ position: "relative", zIndex: "1", flex: "none", display: "grid", placeItems: "center", width: "28px", height: "28px", borderRadius: "999px", background: "var(--q-cyan,var(--qs-band,#049dc5))", color: "#fff", fontFamily: "'IBM Plex Sans',system-ui,sans-serif", fontSize: "var(--q-t6,13px)", fontWeight: "700", lineHeight: "1" }}>2</span>
 <div style={{ display: "flex", flexDirection: "column", gap: "6px", flex: "1 1 auto", minWidth: "0" }}>
 <h4 style={{ margin: "0", display: "flex", alignItems: "center", flexWrap: "wrap", gap: "8px", fontSize: "var(--q-t4,17px)", fontWeight: "700", color: "var(--q-ink,var(--qs-ink,#1d2733))" }}>أكمل الحجز</h4>
 <p style={{ margin: "0", fontSize: "var(--q-t5,15px)", lineHeight: "1.7", color: "var(--q-ink-2,var(--qs-ink-2,#5f666e))" }}>دفع آمن وتأكيد فوري على بريدك الإلكتروني وواتساب.</p>
 </div>
 </div>
 <div style={{ position: "relative", display: "flex", alignItems: "flex-start", gap: "var(--q-s2,16px)" }}>
-<span style={{ position: "relative", zIndex: "1", flex: "none", display: "grid", placeItems: "center", width: "28px", height: "28px", borderRadius: "999px", background: "var(--q-cyan,var(--qs-ink,#049dc5))", color: "#fff", fontFamily: "'IBM Plex Sans',system-ui,sans-serif", fontSize: "var(--q-t6,13px)", fontWeight: "700", lineHeight: "1" }}>3</span>
+<span style={{ position: "relative", zIndex: "1", flex: "none", display: "grid", placeItems: "center", width: "28px", height: "28px", borderRadius: "999px", background: "var(--q-cyan,var(--qs-band,#049dc5))", color: "#fff", fontFamily: "'IBM Plex Sans',system-ui,sans-serif", fontSize: "var(--q-t6,13px)", fontWeight: "700", lineHeight: "1" }}>3</span>
 <div style={{ display: "flex", flexDirection: "column", gap: "6px", flex: "1 1 auto", minWidth: "0" }}>
 <h4 style={{ margin: "0", display: "flex", alignItems: "center", flexWrap: "wrap", gap: "8px", fontSize: "var(--q-t4,17px)", fontWeight: "700", color: "var(--q-ink,var(--qs-ink,#1d2733))" }}>نتابع نحن الباقي</h4>
 <p style={{ margin: "0", fontSize: "var(--q-t5,15px)", lineHeight: "1.7", color: "var(--q-ink-2,var(--qs-ink-2,#5f666e))" }}>تغيير موعد، أمتعة إضافية، أو تأشيرة — كلّم قصر المرايا وسنتولى الأمر.</p>
@@ -1028,7 +1028,7 @@ function   visaVals(country){
 
 {isVisas ? (<>
 <div className="qa-page">
-<section style={{ background: "var(--tw-band,var(--qs-ink,#34bbe1))", position: "relative", overflow: "hidden", paddingBottom: "96px" }}>
+<section style={{ background: "var(--tw-band,var(--qs-band,#34bbe1))", position: "relative", overflow: "hidden", paddingBottom: "96px" }}>
 <div className="qa-sec qa-2col" style={{ position: "relative", display: "grid", gridTemplateColumns: "1.06fr .94fr", gap: "8px", alignItems: "center", paddingBlock: "0" }}>
 <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
 <h1 style={{ fontSize: "54px", fontWeight: "700", lineHeight: "1.15", color: "#fff" }}>التأشيرات</h1>
@@ -1301,7 +1301,7 @@ function   visaVals(country){
 </div>
 </>) : null}
 {showSearchPrompt ? (<>
-<button type="button" onClick={openTrack} style={{ position: "relative", display: "flex", alignItems: "center", gap: "16px", flexWrap: "wrap", justifyContent: "space-between", background: "var(--qs-ink,#049dc5)", border: "0", borderRadius: "var(--tw-radius,18px)", padding: "20px 24px", boxShadow: "none", cursor: "pointer", fontFamily: "inherit", textAlign: "start", width: "100%" }}>
+<button type="button" onClick={openTrack} style={{ position: "relative", display: "flex", alignItems: "center", gap: "16px", flexWrap: "wrap", justifyContent: "space-between", background: "var(--qs-band,#049dc5)", border: "0", borderRadius: "var(--tw-radius,18px)", padding: "20px 24px", boxShadow: "none", cursor: "pointer", fontFamily: "inherit", textAlign: "start", width: "100%" }}>
 <span style={{ display: "flex", flexDirection: "column", gap: "1px", minWidth: "220px" }}>
 <span style={{ fontSize: "17px", fontWeight: "700", color: "#fff" }}>هل تقدمت بطلب تأشيرة معنا؟</span>
 <span style={{ fontSize: "14px", color: "rgba(255,255,255,.88)" }}>اضغط هنا للتحقق من حالة طلبك برقم هاتفك أو رقم الطلب</span>
@@ -1420,7 +1420,7 @@ function   visaVals(country){
 <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(196px,1fr))", gap: "16px" }}>
 {(reg.items || []).map((t, $index) => (<React.Fragment key={$index}>
 <button type="button" onClick={t.go} style={{ position: "relative", display: "flex", flexDirection: "column", gap: "0", padding: "0", overflow: "hidden", textAlign: "start", background: "#fff", border: t.border, borderRadius: "var(--tw-radius,18px)", boxShadow: t.shadow, cursor: "pointer", fontFamily: "inherit", transition: "border-color .14s,box-shadow .22s,transform .22s cubic-bezier(.2,.8,.3,1)" }}>
-<span style={{ position: "relative", display: "block", height: "104px", background: "linear-gradient(150deg,#5fd0ef,var(--qs-ink,#049dc5) 70%,var(--qs-brand-deep,#036f8c))" }}>
+<span style={{ position: "relative", display: "block", height: "104px", background: "linear-gradient(150deg,#5fd0ef,var(--qs-band,#049dc5) 70%,var(--qs-brand-deep,#036f8c))" }}>
 <img src="/assets/logo-mark-white.webp" alt="" style={{ position: "absolute", insetInlineEnd: "-18px", top: "-14px", height: "118px", opacity: ".16" }} />
 <span aria-hidden="true" style={{ position: "absolute", insetInlineStart: "16px", bottom: "-24px", width: "48px", height: "48px", borderRadius: "50%", backgroundColor: "#fff", backgroundImage: `url(${t.flagUrl})`, backgroundSize: "cover", backgroundPosition: "center", border: "3px solid #fff", boxShadow: "var(--tw-card-shadow,0 1px 3px rgba(29,39,51,.06))" }}></span>
 <span aria-hidden="true" style={{ position: "absolute", insetInlineEnd: "10px", top: "10px", display: "grid", placeItems: "center", width: "50px", height: "50px", borderRadius: "50%", border: "2px dashed rgba(255,255,255,.85)", color: "#fff", transform: "rotate(-8deg)" }}>
@@ -1457,7 +1457,7 @@ function   visaVals(country){
 {(flowSteps || []).map((sg, $index) => (<React.Fragment key={$index}>
 <div style={{ display: "flex", alignItems: "flex-start", gap: "16px" }}>
 <div style={{ position: "relative", alignSelf: "stretch", flex: "none", width: "clamp(28px,3.4vw,36px)" }}>
-<span data-no-i18n="" style={{ position: "relative", zIndex: "1", display: "flex", alignItems: "center", justifyContent: "center", width: "clamp(28px,3.4vw,36px)", height: "clamp(28px,3.4vw,36px)", borderRadius: "999px", background: "var(--qs-ink,#049dc5)", color: "#fff", fontFamily: "'IBM Plex Sans',system-ui,sans-serif", fontSize: "clamp(13px,1.1vw,15px)", fontWeight: "700", lineHeight: "1" }}>{sg.n}</span>
+<span data-no-i18n="" style={{ position: "relative", zIndex: "1", display: "flex", alignItems: "center", justifyContent: "center", width: "clamp(28px,3.4vw,36px)", height: "clamp(28px,3.4vw,36px)", borderRadius: "999px", background: "var(--qs-band,#049dc5)", color: "#fff", fontFamily: "'IBM Plex Sans',system-ui,sans-serif", fontSize: "clamp(13px,1.1vw,15px)", fontWeight: "700", lineHeight: "1" }}>{sg.n}</span>
 {$index < (flowSteps || []).length - 1 ? (<span aria-hidden="true" style={{ position: "absolute", insetInlineStart: "calc(50% - 1px)", top: "clamp(28px,3.4vw,36px)", bottom: "calc(-1 * var(--q-s3))", width: "2px", background: "var(--qs-line,#e6e9eb)" }} />) : null}
 </div>
 <div style={{ display: "flex", flexDirection: "column", gap: "8px", flex: "1 1 auto", minWidth: "0", paddingTop: "3px" }}>
@@ -1489,7 +1489,7 @@ function   visaVals(country){
 
 {isPackages ? (<>
 <div className="qa-page">
-<section style={{ background: "var(--tw-band,var(--qs-ink,#34bbe1))", position: "relative", overflow: "hidden", paddingBottom: "70px" }}>
+<section style={{ background: "var(--tw-band,var(--qs-band,#34bbe1))", position: "relative", overflow: "hidden", paddingBottom: "70px" }}>
 <div className="qa-sec" style={{ position: "relative", paddingBlock: "0" }}>
 <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
 <h1 style={{ fontSize: "54px", fontWeight: "700", lineHeight: "1.15", color: "#fff" }}>الباقات والجولات</h1>
@@ -1573,7 +1573,7 @@ function   visaVals(country){
 <PackageCard title={pkg.title} destination={pkg.destination} nights={pkg.nights} groupType={pkg.groupType} departs={pkg.departs} price={pkg.price} includes={pkg.includes} badge={pkg.badge} onDetails={pkg.onDetails} />
 <button type="button" onClick={pkg.toggle} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "8px", padding: "12px 16px", borderRadius: "var(--tw-radius-sm,10px)", border: "1px solid var(--qs-line-2,#bfe9f6)", background: "var(--qs-brand-soft,#eaf8fd)", fontFamily: "inherit", fontSize: "14px", fontWeight: "700", color: "var(--qs-brand-deep,#036f8c)", cursor: "pointer" }}>
 <span style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-<span style={{ display: "grid", placeItems: "center", width: "26px", height: "26px", borderRadius: "50%", background: "var(--qs-ink,#049dc5)", color: "#fff" }}>
+<span style={{ display: "grid", placeItems: "center", width: "26px", height: "26px", borderRadius: "50%", background: "var(--qs-band,#049dc5)", color: "#fff" }}>
 <Icon name="plane-takeoff" size={14} />
 </span>
 تفاصيل الطيران والفندق والتواريخ
@@ -1592,7 +1592,7 @@ function   visaVals(country){
 <div style={{ padding: "16px 16px" }}>
 {pkg.tabHotel ? (<>
 <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-<div style={{ height: "120px", borderRadius: "var(--tw-radius-sm,10px)", overflow: "hidden", background: "linear-gradient(150deg,#5fd0ef,var(--qs-ink,#049dc5) 70%,var(--qs-brand-deep,#036f8c))", display: "grid", placeItems: "center", color: "#fff" }}>
+<div style={{ height: "120px", borderRadius: "var(--tw-radius-sm,10px)", overflow: "hidden", background: "linear-gradient(150deg,#5fd0ef,var(--qs-band,#049dc5) 70%,var(--qs-brand-deep,#036f8c))", display: "grid", placeItems: "center", color: "#fff" }}>
 <Icon name="image" size={26} />
 </div>
 <span style={{ fontSize: "15px", fontWeight: "700", color: "var(--qs-ink,#1d2733)" }}>{pkg.hotel.name}</span>
@@ -1646,7 +1646,7 @@ function   visaVals(country){
 <span data-no-i18n="" style={{ textAlign: "center", padding: "8px 0", borderRadius: "var(--tw-radius-xs,8px)", fontSize: "13px", fontWeight: cd.w, background: cd.bg, color: cd.ink }}>{cd.n}</span>
 </React.Fragment>))}
 </div>
-<span style={{ display: "flex", alignItems: "center", gap: "8px", fontSize: "13px", color: "var(--qs-ink-2,#5f666e)" }}><span aria-hidden="true" style={{ width: "10px", height: "10px", borderRadius: "3px", background: "var(--qs-ink,#049dc5)" }}></span>مواعيد انطلاق متاحة</span>
+<span style={{ display: "flex", alignItems: "center", gap: "8px", fontSize: "13px", color: "var(--qs-ink-2,#5f666e)" }}><span aria-hidden="true" style={{ width: "10px", height: "10px", borderRadius: "3px", background: "var(--qs-band,#049dc5)" }}></span>مواعيد انطلاق متاحة</span>
 </div>
 </>) : null}
 </div>
@@ -1693,7 +1693,7 @@ function   visaVals(country){
 
 {isVisaApply ? (<>
 <div className="qa-page">
-<section style={{ background: "var(--tw-band-deep,var(--qs-ink,#049dc5))", position: "relative", overflow: "hidden" }}>
+<section style={{ background: "var(--tw-band-deep,var(--qs-band,#049dc5))", position: "relative", overflow: "hidden" }}>
 <img src="/assets/logo-mark-white.webp" alt="" style={{ position: "absolute", insetInlineEnd: "-40px", bottom: "-56px", height: "180px", opacity: "var(--tw-mark,.16)" }} />
 <div className="qa-sec" style={{ position: "relative", display: "flex", flexDirection: "column", gap: "14px", paddingBlock: "16px 24px" }}>
 <a href="#" onClick={goVisas} style={{ fontSize: "13px", fontWeight: "600", color: "rgba(255,255,255,.85)", textDecoration: "none" }}>← رجوع إلى التأشيرات</a>
@@ -1743,7 +1743,7 @@ function   visaVals(country){
 {(travellersList || []).map((tv, $index) => (<React.Fragment key={$index}>
 <div style={{ display: "flex", flexDirection: "column", gap: "14px", background: "#fff", border: "1px solid var(--qs-line,#ececed)", borderRadius: "var(--tw-radius,18px)", padding: "24px 24px" }}>
 <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-<span data-no-i18n="" style={{ flex: "none", display: "grid", placeItems: "center", width: "36px", height: "36px", borderRadius: "50%", background: "var(--qs-ink,#049dc5)", color: "#fff", fontFamily: "'IBM Plex Sans',system-ui,sans-serif", fontSize: "14px", fontWeight: "700" }}>{tv.n}</span>
+<span data-no-i18n="" style={{ flex: "none", display: "grid", placeItems: "center", width: "36px", height: "36px", borderRadius: "50%", background: "var(--qs-band,#049dc5)", color: "#fff", fontFamily: "'IBM Plex Sans',system-ui,sans-serif", fontSize: "14px", fontWeight: "700" }}>{tv.n}</span>
 <span style={{ flex: "1", display: "flex", alignItems: "center", gap: "8px", fontSize: "17px", fontWeight: "700", color: "var(--qs-ink,#1d2733)" }}>مسافر <span data-no-i18n="">{tv.n}</span>
 <span style={{ padding: "3px 10px", borderRadius: "999px", background: tv.kindBg, color: tv.kindInk, fontSize: "12px", fontWeight: "500", whiteSpace: "nowrap" }}>{tv.kindLabel}</span>
 </span>
@@ -1831,7 +1831,7 @@ function   visaVals(country){
 </div>
 <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
 <span style={{ display: "flex", justifyContent: "space-between", fontSize: "13px", color: "var(--qs-ink-2,#5f666e)" }}><span>المستندات المطلوبة</span><span><span data-no-i18n="">{appDoneCount}</span>/<span data-no-i18n="">{appTotalLines}</span> مكتمل</span></span>
-<span style={{ height: "6px", borderRadius: "999px", background: "var(--qs-line,#ececed)", overflow: "hidden" }}><span style={{ display: "block", height: "100%", width: appProgress, background: "var(--qs-ink,#049dc5)", transition: "width .22s" }}></span></span>
+<span style={{ height: "6px", borderRadius: "999px", background: "var(--qs-line,#ececed)", overflow: "hidden" }}><span style={{ display: "block", height: "100%", width: appProgress, background: "var(--qs-band,#049dc5)", transition: "width .22s" }}></span></span>
 </div>
 {notGuaranteed ? (<>
 <label style={{ display: "flex", alignItems: "flex-start", gap: "10px", padding: "12px", borderRadius: "var(--tw-radius-sm,10px)", background: "#fef3dc", border: "1px solid #fdd27c", fontSize: "13px", lineHeight: "1.6", color: "#7a5200", cursor: "pointer" }}>
@@ -1880,7 +1880,7 @@ function   visaVals(country){
 <div style={{ display: "flex", alignItems: "center", gap: "12px", padding: "10px 12px", border: `1px solid ${sl.border}`, borderRadius: "var(--tw-radius-sm,10px)", background: sl.bg }}>
 <span style={{ flex: "none", display: "grid", placeItems: "center", width: "32px", height: "32px", borderRadius: "50%", background: sl.dotBg, color: sl.dotInk }}><Icon name={sl.icon} size={15} /></span>
 <span style={{ flex: "1", display: "flex", flexDirection: "column", gap: "1px" }}><span style={{ fontSize: "14px", fontWeight: "700", color: "var(--qs-ink,#1d2733)" }}>{sl.label}</span><span style={{ fontSize: "13px", color: "var(--qs-ink-2,#5f666e)" }}>{sl.hint}</span></span>
-{sl.now ? (<><span style={{ padding: "3px 10px", borderRadius: "999px", background: "var(--qs-ink,#049dc5)", color: "#fff", fontSize: "12px", fontWeight: "500" }}>الآن</span></>) : null}
+{sl.now ? (<><span style={{ padding: "3px 10px", borderRadius: "999px", background: "var(--qs-band,#049dc5)", color: "#fff", fontSize: "12px", fontWeight: "500" }}>الآن</span></>) : null}
 </div>
 </React.Fragment>))}
 </div>
@@ -1902,7 +1902,7 @@ function   visaVals(country){
 
 {isJobs ? (<>
 <div className="qa-page">
-<section style={{ background: "var(--tw-band-deep,var(--qs-ink,#049dc5))", position: "relative", overflow: "hidden" }}>
+<section style={{ background: "var(--tw-band-deep,var(--qs-band,#049dc5))", position: "relative", overflow: "hidden" }}>
 <img src="/assets/logo-mark-white.webp" alt="" style={{ position: "absolute", insetInlineEnd: "-150px", top: "-80px", height: "480px", opacity: ".1" }} />
 <div className="qa-sec qa-2col" style={{ position: "relative", paddingBlock: "28px", display: "grid", gridTemplateColumns: "minmax(0,1.05fr) minmax(0,.95fr)", gap: "36px", alignItems: "center" }}>
 <div style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
@@ -1947,7 +1947,7 @@ function   visaVals(country){
 <span style={{ display: "flex", flexDirection: "column", gap: "8px", width: "100%", maxWidth: "230px", padding: "16px", background: "#fff", borderRadius: "var(--tw-radius,16px)", boxShadow: "var(--tw-card-shadow,0 1px 3px rgba(29,39,51,.06))" }}>
 <span data-no-i18n="" style={{ fontFamily: "'IBM Plex Sans',system-ui,sans-serif", fontSize: "8px", fontWeight: "500", letterSpacing: ".2em", color: "var(--qs-ink-2,#5f666e)" }}>TEAM MEMBER</span>
 <span style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-<span style={{ flex: "none", width: "34px", height: "34px", borderRadius: "50%", background: "var(--qs-ink,#049dc5)" }}></span>
+<span style={{ flex: "none", width: "34px", height: "34px", borderRadius: "50%", background: "var(--qs-band,#049dc5)" }}></span>
 <span style={{ display: "flex", flexDirection: "column", gap: "4px", flex: "1" }}>
 <span style={{ height: "7px", borderRadius: "4px", background: "#d9edf5" }}></span>
 <span style={{ height: "7px", width: "66%", borderRadius: "4px", background: "#eef1f2" }}></span>
@@ -1964,7 +1964,7 @@ function   visaVals(country){
 </div>
 
 <div style={{ position: "relative", alignSelf: "center", width: "100%", maxWidth: "230px", padding: "16px 16px 16px", background: "#fff", borderRadius: "var(--tw-radius-sm,10px)", boxShadow: "var(--tw-card-shadow,0 1px 3px rgba(29,39,51,.06))", animation: "qa-pop 6.8s ease-in-out infinite" }}>
-<span style={{ position: "absolute", top: "-13px", left: "-13px", display: "grid", placeItems: "center", width: "34px", height: "34px", borderRadius: "50%", background: "var(--qs-ink,#049dc5)", color: "#fff", boxShadow: "var(--tw-card-shadow,0 1px 3px rgba(29,39,51,.06))" }}>
+<span style={{ position: "absolute", top: "-13px", left: "-13px", display: "grid", placeItems: "center", width: "34px", height: "34px", borderRadius: "50%", background: "var(--qs-band,#049dc5)", color: "#fff", boxShadow: "var(--tw-card-shadow,0 1px 3px rgba(29,39,51,.06))" }}>
 <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6 9 17l-5-5"></path></svg>
 </span>
 <span style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
@@ -2001,7 +2001,7 @@ function   visaVals(country){
 
 {isFaq ? (<>
 <div className="qa-page">
-<section style={{ background: "var(--tw-band-deep,var(--qs-ink,#049dc5))", position: "relative", overflow: "hidden" }}>
+<section style={{ background: "var(--tw-band-deep,var(--qs-band,#049dc5))", position: "relative", overflow: "hidden" }}>
 <img src="/assets/logo-mark-white.webp" alt="" style={{ position: "absolute", insetInlineStart: "-140px", bottom: "-160px", height: "460px", opacity: ".1" }} />
 <div className="qa-sec qa-2col" style={{ position: "relative", paddingBlock: "28px", display: "grid", gridTemplateColumns: "minmax(0,1.05fr) minmax(0,.95fr)", gap: "36px", alignItems: "center" }}>
 <div style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
@@ -2099,7 +2099,7 @@ function   visaVals(country){
 
 {isInsurance ? (<>
 <div className="qa-page">
-<section style={{ background: "var(--tw-band-deep,var(--qs-ink,#049dc5))", position: "relative", overflow: "hidden" }}>
+<section style={{ background: "var(--tw-band-deep,var(--qs-band,#049dc5))", position: "relative", overflow: "hidden" }}>
 <div className="qa-sec qa-2col" style={{ position: "relative", paddingBlock: "28px", display: "grid", gridTemplateColumns: "minmax(0,1.05fr) minmax(0,.95fr)", gap: "36px", alignItems: "center" }}>
 <div style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
 <span style={{ fontSize: "14px", fontWeight: "600", color: "rgba(255,255,255,.85)" }}>خدمة إضافية</span>
@@ -2147,7 +2147,7 @@ function   visaVals(country){
 
 {isGroups ? (<>
 <div className="qa-page">
-<section style={{ background: "var(--tw-band-deep,var(--qs-ink,#049dc5))", position: "relative", overflow: "hidden" }}>
+<section style={{ background: "var(--tw-band-deep,var(--qs-band,#049dc5))", position: "relative", overflow: "hidden" }}>
 <div className="qa-sec qa-2col" style={{ position: "relative", paddingBlock: "28px", display: "grid", gridTemplateColumns: "minmax(0,1.05fr) minmax(0,.95fr)", gap: "36px", alignItems: "center" }}>
 <div style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
 <span style={{ fontSize: "14px", fontWeight: "600", color: "rgba(255,255,255,.85)" }}>حلول للمؤسسات</span>
@@ -2195,7 +2195,7 @@ function   visaVals(country){
 
 {isPrivacy ? (<>
 <div className="qa-page">
-<section style={{ background: "var(--tw-band-deep,var(--qs-ink,#049dc5))", position: "relative", overflow: "hidden" }}>
+<section style={{ background: "var(--tw-band-deep,var(--qs-band,#049dc5))", position: "relative", overflow: "hidden" }}>
 <div className="qa-sec qa-2col" style={{ position: "relative", display: "grid", gridTemplateColumns: "1.25fr .75fr", gap: "44px", alignItems: "center" }}>
 <div style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
 <span style={{ fontSize: "14px", fontWeight: "600", color: "rgba(255,255,255,.8)" }}>حماية بياناتك</span>
@@ -2255,7 +2255,7 @@ function   visaVals(country){
 
 {isTerms ? (<>
 <div className="qa-page">
-<section style={{ background: "var(--tw-band-deep,var(--qs-ink,#049dc5))", position: "relative", overflow: "hidden" }}>
+<section style={{ background: "var(--tw-band-deep,var(--qs-band,#049dc5))", position: "relative", overflow: "hidden" }}>
 <div className="qa-sec qa-2col" style={{ position: "relative", display: "grid", gridTemplateColumns: "1.25fr .75fr", gap: "44px", alignItems: "center" }}>
 <div style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
 <span style={{ fontSize: "14px", fontWeight: "600", color: "rgba(255,255,255,.8)" }}>اتفاقية الاستخدام</span>
@@ -2320,7 +2320,7 @@ function   visaVals(country){
 
 {isAbout ? (<>
 <div className="qa-page">
-<section style={{ background: "var(--tw-band-deep,var(--qs-ink,#049dc5))", position: "relative", overflow: "hidden" }}>
+<section style={{ background: "var(--tw-band-deep,var(--qs-band,#049dc5))", position: "relative", overflow: "hidden" }}>
 <div className="qa-sec" style={{ position: "relative" }}>
 <div style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
 <span style={{ fontSize: "14px", fontWeight: "600", color: "rgba(255,255,255,.8)" }}>من نحن</span>
@@ -2348,7 +2348,7 @@ function   visaVals(country){
 </div>
 </div>
 </section>
-<section style={{ background: "var(--tw-band-deep,var(--qs-ink,#049dc5))", position: "relative", overflow: "hidden" }}>
+<section style={{ background: "var(--tw-band-deep,var(--qs-band,#049dc5))", position: "relative", overflow: "hidden" }}>
 <div className="qa-sec" style={{ position: "relative", display: "flex", flexDirection: "column", gap: "28px" }}>
 <div style={{ maxWidth: "700px", margin: "0 auto", textAlign: "center", display: "flex", flexDirection: "column", gap: "12px" }}>
 <h2 style={{ fontSize: "36px", fontWeight: "700", color: "#fff" }}>قيمنا الأساسية</h2>
@@ -2402,7 +2402,7 @@ function   visaVals(country){
 <p style={{ fontSize: "16px", lineHeight: "1.75" }}>باقات متكاملة تضم وجهات مميزة ومطاعم محلية، أنشطة استثنائية، واستكشاف الأماكن التي لا تزورها الجولات التقليدية.</p>
 </div>
 </section>
-<div style={{ background: "var(--tw-band,var(--qs-ink,#34bbe1))", position: "relative", overflow: "hidden" }}>
+<div style={{ background: "var(--tw-band,var(--qs-band,#34bbe1))", position: "relative", overflow: "hidden" }}>
 <section style={{ position: "relative" }}>
 <div className="qa-sec" style={{ position: "relative", display: "flex", flexDirection: "column", gap: "32px" }}>
 <div style={{ maxWidth: "680px", margin: "0 auto", textAlign: "center", display: "flex", flexDirection: "column", gap: "16px" }}>
@@ -2471,7 +2471,7 @@ function   visaVals(country){
 <p style={{ fontSize: "16px", lineHeight: "1.75", textWrap: "pretty" }}>كما نهدف إلى تنشيط السياحة العكسية من خلال استقبال المسافرين الأجانب وتنظيم جولات سياحية لاكتشاف العراق، وإبراز معالمه التاريخية والثقافية والطبيعية، مما يساهم في تعزيز مكانته كوجهة سياحية متميزة على مستوى العالم.</p>
 </div>
 </section>
-<section style={{ background: "var(--tw-band-deep,var(--qs-ink,#049dc5))", position: "relative", overflow: "hidden" }}>
+<section style={{ background: "var(--tw-band-deep,var(--qs-band,#049dc5))", position: "relative", overflow: "hidden" }}>
 <div className="qa-sec qa-2col" style={{ position: "relative", display: "grid", gridTemplateColumns: ".85fr 1.15fr", gap: "56px", alignItems: "center" }}>
 <div style={{ position: "relative", justifySelf: "center", width: "100%", maxWidth: "420px" }}>
 <img src="/assets/ceo-interview.webp" alt="حمزة سعد، المدير التنفيذي، في مقابلة تلفزيونية" style={{ position: "relative", display: "block", width: "100%", aspectRatio: "4/3", objectFit: "cover", objectPosition: "center 38%", borderRadius: "var(--tw-radius,16px)", boxShadow: "var(--tw-card-shadow,0 1px 3px rgba(29,39,51,.06))" }} />
@@ -2584,7 +2584,7 @@ function   visaVals(country){
 
 
 </main>
-<footer style={{ background: "var(--qs-ink,#049dc5)", color: "rgba(255,255,255,.95)" }}>
+<footer style={{ background: "var(--qs-band,#049dc5)", color: "rgba(255,255,255,.95)" }}>
 <div className="qa-foot" style={{ maxWidth: "1240px", margin: "0 auto", padding: "24px 32px 16px", display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(196px,1fr))", gap: "28px 24px", alignItems: "start" }}>
 <div style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
 <div style={{ position: "relative", alignSelf: "flex-start", display: "flex", alignItems: "center", gap: "14px" }}>

@@ -47,7 +47,7 @@ export default function AchievementSpread({ items = [], active, onSelect, assetB
               width: 96,
               height: 96,
               borderRadius: '50%',
-              background: 'var(--qs-ink,#049dc5)',
+              background: 'var(--qs-band,#049dc5)',
               color: '#fff',
               display: 'flex',
               flexDirection: 'column',

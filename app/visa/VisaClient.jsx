@@ -254,7 +254,7 @@ export default function VisaLandingPage({ initialCards = null }) {
       <SiteHeader active="التأشيرات" />
       <main style={{ flex: 1 }}>
         <div className="qa-page">
-          <section style={{ position: 'relative', background: 'var(--tw-band-deep,var(--qs-ink,#049dc5))', paddingBottom: 50, overflow: 'hidden' }}>
+          <section style={{ position: 'relative', background: 'var(--tw-band-deep,var(--qs-band,#049dc5))', paddingBottom: 50, overflow: 'hidden' }}>
             <img src="/assets/logo-mark-white.webp" alt="" style={{ position: 'absolute', insetInlineEnd: -150, top: -80, height: 480, opacity: 0.1 }} />
             <div className="qa-sec qa-2col" style={{ position: 'relative', paddingTop: 36, paddingBottom: 0, display: 'grid', gridTemplateColumns: 'minmax(0,1.05fr) minmax(0,.95fr)', gap: 28, alignItems: 'center' }}>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 8, alignItems: 'flex-start', textAlign: 'start' }}>
@@ -284,7 +284,7 @@ export default function VisaLandingPage({ initialCards = null }) {
                   <div style={{ alignSelf: 'stretch', maxWidth: 178, padding: 12, background: '#fff', borderRadius: 'var(--tw-radius-sm,10px)', boxShadow: 'var(--tw-card-shadow,0 1px 3px rgba(29,39,51,.06))', display: 'flex', flexDirection: 'column', gap: 6, animation: 'qa-swing 5.6s ease-in-out infinite', transformOrigin: '50% 0' }}>
                     <span style={{ fontFamily: "'IBM Plex Sans',system-ui,sans-serif", fontSize: 8, fontWeight: 500, letterSpacing: '.2em', color: 'var(--qs-ink-2,#5f666e)' }}>VISA STATUS</span>
                     <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                      <span style={{ flex: 'none', display: 'grid', placeItems: 'center', width: 24, height: 24, borderRadius: '50%', background: 'var(--qs-ink,#049dc5)', color: '#fff' }}>
+                      <span style={{ flex: 'none', display: 'grid', placeItems: 'center', width: 24, height: 24, borderRadius: '50%', background: 'var(--qs-band,#049dc5)', color: '#fff' }}>
                         <svg width={13} height={13} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={3} strokeLinecap="round" strokeLinejoin="round"><path d="M20 6 9 17l-5-5" /></svg>
                       </span>
                       <span style={{ display: 'flex', flexDirection: 'column', gap: 4, flex: 1 }}>
@@ -573,7 +573,7 @@ export default function VisaLandingPage({ initialCards = null }) {
               {STAGES.map((sg, gi) => (
                 <div key={sg.n} style={{ display: 'flex', alignItems: 'flex-start', gap: 16 }}>
                   <div style={{ position: 'relative', alignSelf: 'stretch', flex: 'none', width: 'clamp(28px,3.4vw,36px)' }}>
-                    <span data-no-i18n="" style={{ position: 'relative', zIndex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', width: 'clamp(28px,3.4vw,36px)', height: 'clamp(28px,3.4vw,36px)', borderRadius: 999, background: 'var(--qs-ink,#049dc5)', color: '#fff', fontFamily: "'IBM Plex Sans',system-ui,sans-serif", fontSize: 'clamp(13px,1.1vw,15px)', fontWeight: 700, lineHeight: 1 }}>{sg.n}</span>
+                    <span data-no-i18n="" style={{ position: 'relative', zIndex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', width: 'clamp(28px,3.4vw,36px)', height: 'clamp(28px,3.4vw,36px)', borderRadius: 999, background: 'var(--qs-band,#049dc5)', color: '#fff', fontFamily: "'IBM Plex Sans',system-ui,sans-serif", fontSize: 'clamp(13px,1.1vw,15px)', fontWeight: 700, lineHeight: 1 }}>{sg.n}</span>
                     {gi < STAGES.length - 1 ? (
                       <span aria-hidden="true" style={{ position: 'absolute', insetInlineStart: 'calc(50% - 1px)', top: 'clamp(28px,3.4vw,36px)', bottom: -24, width: 2, background: 'var(--qs-line,#e6e9eb)' }} />
                     ) : null}
@@ -680,7 +680,7 @@ export default function VisaLandingPage({ initialCards = null }) {
                                         fontSize: 11,
                                         fontWeight: 500,
                                         color: done ? '#fff' : '#a8adb3',
-                                        background: done ? 'var(--qs-ink,#049dc5)' : '#f0f0f0',
+                                        background: done ? 'var(--qs-band,#049dc5)' : '#f0f0f0',
                                       }}
                                     >
                                       {done ? <Icon name="check" size={13} strokeWidth={3} /> : i + 1}
@@ -690,7 +690,7 @@ export default function VisaLandingPage({ initialCards = null }) {
                                     </span>
                                   </div>
                                   {i < trackStages.length - 1 && (
-                                    <span style={{ flex: 1, height: 2, background: currentIdx >= 0 && i < currentIdx ? 'var(--qs-ink,#049dc5)' : '#f0f0f0', margin: '0 2px', marginBottom: 16 }} />
+                                    <span style={{ flex: 1, height: 2, background: currentIdx >= 0 && i < currentIdx ? 'var(--qs-band,#049dc5)' : '#f0f0f0', margin: '0 2px', marginBottom: 16 }} />
                                   )}
                                 </div>
                               );

@@ -147,7 +147,7 @@ export default function PaymentMethods({ title, note, methods, defaultOpen = 'ca
               </span>
             )}
             <button disabled={!ready || submitting || uploading} onClick={handleConfirm}
-              style={{ cursor: (ready && !submitting && !uploading) ? 'pointer' : 'not-allowed', opacity: (ready && !submitting && !uploading) ? 1 : 0.45, border: 0, borderRadius: 999, padding: '12px 24px', background: 'var(--qs-ink,#049dc5)', color: '#fff', fontFamily: 'inherit', fontSize: 14, fontWeight: 600 }}>
+              style={{ cursor: (ready && !submitting && !uploading) ? 'pointer' : 'not-allowed', opacity: (ready && !submitting && !uploading) ? 1 : 0.45, border: 0, borderRadius: 999, padding: '12px 24px', background: 'var(--qs-band,#049dc5)', color: '#fff', fontFamily: 'inherit', fontSize: 14, fontWeight: 600 }}>
               {submitting ? 'جارٍ الإرسال...' : 'تأكيد الدفع'}
             </button>
           </div>

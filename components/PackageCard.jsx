@@ -360,7 +360,7 @@ export default function PackageCard({ title, destination, image, nights, groupTy
         .qa-pkg-continue {
           display: inline-flex; align-items: center; justify-content: center; min-height: 46px;
           padding: 0 18px; border: 1px solid var(--q-cyan,var(--qs-brand-deep,#049dc5)); border-radius: 999px;
-          background: var(--q-cyan,var(--qs-ink,#049dc5)); color: #fff;
+          background: var(--q-cyan,var(--qs-band,#049dc5)); color: #fff;
           font-family: inherit; font-size: 13.5px; font-weight: 700; cursor: pointer;
         }
 

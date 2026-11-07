@@ -381,7 +381,7 @@ export default function CountryVisaListPage() {
                           }}
                         >
                           <span style={{ width: 14, height: 14, borderRadius: '50%', border: '1.5px solid ' + (typeFilter === t ? '#049dc5' : 'var(--qs-line-2,#cacbcc)'), display: 'grid', placeItems: 'center', flex: 'none' }}>
-                            {typeFilter === t ? <span style={{ width: 7, height: 7, borderRadius: '50%', background: 'var(--qs-ink,#049dc5)' }} /> : null}
+                            {typeFilter === t ? <span style={{ width: 7, height: 7, borderRadius: '50%', background: 'var(--qs-band,#049dc5)' }} /> : null}
                           </span>
                           {t === 'الكل' ? nm('الكل', 'All') : nm(t, typeNameMap[t])}
                         </button>
@@ -407,7 +407,7 @@ export default function CountryVisaListPage() {
                         }}
                       >
                         <span style={{ width: 14, height: 14, borderRadius: '50%', border: '1.5px solid ' + (speedFilter === key ? '#049dc5' : 'var(--qs-line-2,#cacbcc)'), display: 'grid', placeItems: 'center', flex: 'none' }}>
-                          {speedFilter === key ? <span style={{ width: 7, height: 7, borderRadius: '50%', background: 'var(--qs-ink,#049dc5)' }} /> : null}
+                          {speedFilter === key ? <span style={{ width: 7, height: 7, borderRadius: '50%', background: 'var(--qs-band,#049dc5)' }} /> : null}
                         </span>
                         {label}
                       </button>

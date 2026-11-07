@@ -218,7 +218,7 @@ export default function PackagesPage({ initialPackages = null }) {
             {heroImage ? (
               <img src={heroImage} alt="" className="qa-hero-bg-img" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }} />
             ) : (
-              <div style={{ position: 'absolute', inset: 0, background: 'var(--tw-band-deep,var(--qs-ink,#049dc5))' }} />
+              <div style={{ position: 'absolute', inset: 0, background: 'var(--tw-band-deep,var(--qs-band,#049dc5))' }} />
             )}
             <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(1,20,28,.82) 0%, rgba(1,20,28,.42) 55%, rgba(1,20,28,.18) 100%)' }} />
 
@@ -346,7 +346,7 @@ export default function PackagesPage({ initialPackages = null }) {
                   className="qa-search-cta"
                   aria-label={lang === 'en' ? 'Search' : 'بحث'}
                   style={{
-                    width: 52, height: 52, borderRadius: 'var(--tw-radius,16px)', border: 'none', cursor: 'pointer', background: 'var(--qs-ink,#049dc5)', color: '#fff',
+                    width: 52, height: 52, borderRadius: 'var(--tw-radius,16px)', border: 'none', cursor: 'pointer', background: 'var(--qs-band,#049dc5)', color: '#fff',
                     display: 'grid', placeItems: 'center', flex: 'none', gap: 8,
                   }}
                 >
@@ -409,7 +409,7 @@ export default function PackagesPage({ initialPackages = null }) {
                             onClick={() => togglePref(p.id)}
                             style={{
                               padding: '8px 16px', borderRadius: 999, fontSize: 14, fontWeight: 500, cursor: 'pointer', fontFamily: 'inherit',
-                              background: on ? 'var(--qs-ink,#049dc5)' : '#fff', color: on ? '#fff' : 'var(--qs-body,#3d4650)', border: `1px solid ${on ? 'var(--qs-brand-deep,#049dc5)' : 'var(--qs-line-2,#cacbcc)'}`,
+                              background: on ? 'var(--qs-band,#049dc5)' : '#fff', color: on ? '#fff' : 'var(--qs-body,#3d4650)', border: `1px solid ${on ? 'var(--qs-brand-deep,#049dc5)' : 'var(--qs-line-2,#cacbcc)'}`,
                             }}
                           >
                             {nm(p.ar, p.en)}
@@ -488,7 +488,7 @@ export default function PackagesPage({ initialPackages = null }) {
             }
             .qa-fchip { padding: 8px 14px; border-radius: 999px; font-size: 13.5px; font-weight: 500; cursor: pointer; font-family: inherit; background: #fff; color: var(--qs-body,#3d4650); border: 1px solid var(--qs-line-2,#cacbcc); display: inline-flex; align-items: center; gap: 6px; }
             .qa-fchip span { font-size: 12px; opacity: .65; }
-            .qa-fchip.on { background: var(--qs-ink,#049dc5); border-color: var(--qs-brand-deep,#049dc5); color: #fff; }
+            .qa-fchip.on { background: var(--qs-band,#049dc5); border-color: var(--qs-brand-deep,#049dc5); color: #fff; }
             .qa-dest-chip:hover { border-color: var(--qs-brand-deep,#049dc5); background: var(--qs-brand-soft,#eaf8fd); }
             .qa-dest-chip img { width: 20px; height: 14px; object-fit: cover; border-radius: 2px; box-shadow:var(--tw-card-shadow,0 1px 3px rgba(29,39,51,.06)); }
             .qa-pkg-group { display: flex; flex-direction: column; gap: 16px; margin-bottom: 40px; }
@@ -519,7 +519,7 @@ export default function PackagesPage({ initialPackages = null }) {
               transition: background .15s ease, border-color .15s ease, color .15s ease, transform .15s ease;
             }
             .qa-pill:hover { border-color: var(--qs-brand-deep,#049dc5); transform: translateY(-1px); }
-            .qa-pill-active { background: var(--qs-ink,#049dc5); border-color: var(--qs-brand-deep,#049dc5); color: #fff; }
+            .qa-pill-active { background: var(--qs-band,#049dc5); border-color: var(--qs-brand-deep,#049dc5); color: #fff; }
             .qa-pill-scroll::-webkit-scrollbar { display: none; }
             .qa-filters-btn {
               flex: none; display: inline-flex; align-items: center; gap: 8px; cursor: pointer; font-family: inherit;
@@ -715,7 +715,7 @@ export default function PackagesPage({ initialPackages = null }) {
                           type="button"
                           onClick={() => setReviewIndex(i)}
                           aria-label={`review-${i}`}
-                          style={{ width: 8, height: 8, padding: 0, borderRadius: '50%', border: 'none', cursor: 'pointer', background: i === reviewIndex ? 'var(--qs-ink,#049dc5)' : '#c7dee6' }}
+                          style={{ width: 8, height: 8, padding: 0, borderRadius: '50%', border: 'none', cursor: 'pointer', background: i === reviewIndex ? 'var(--qs-band,#049dc5)' : '#c7dee6' }}
                         />
                       ))}
                     </div>
