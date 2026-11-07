@@ -2,6 +2,34 @@
 import { useEffect, useState } from 'react';
 import HeroCinematic from './HeroCinematic';
 import { waLink } from '../lib/whatsapp';
+import { loadPackages, upcomingDates } from '../lib/publicPackages';
+import { destinationLabel, nightsLabel } from '../lib/destinations';
+import { formatPrice } from '../lib/currency';
+import { baghdadToday } from '../lib/packageUrgency';
+
+// The next real group departures for the glass panel in the hero: one per
+// destination, nearest first, from the same packages list as the rest of
+// the homepage.
+function nextDepartures(list, lang) {
+  const en = lang === 'en';
+  const today = baghdadToday();
+  const rows = (Array.isArray(list) ? list : [])
+    .map((p) => ({ p, date: upcomingDates(p, today).filter((d) => d > today)[0], dest: destinationLabel(p, lang) || (en && p.title_en) || p.title_ar }))
+    .filter((r) => r.date && r.dest)
+    .sort((a, b) => a.date.localeCompare(b.date) || (Number(a.p.price) || 0) - (Number(b.p.price) || 0));
+  const seen = new Set();
+  const out = [];
+  for (const r of rows) {
+    if (seen.has(r.dest)) continue;
+    seen.add(r.dest);
+    const d = new Date(r.date + 'T00:00:00Z');
+    let month = '';
+    try { month = new Intl.DateTimeFormat(en ? 'en-GB' : 'ar-IQ', { month: 'short', timeZone: 'UTC' }).format(d); } catch { month = r.date.slice(5, 7); }
+    out.push({ href: '/packages/' + r.p.id, day: String(d.getUTCDate()), month, dest: r.dest, nights: nightsLabel(r.p, lang), price: formatPrice(r.p.price, 'IQD', lang) });
+    if (out.length >= 3) break;
+  }
+  return out;
+}
 
 // Chooses the homepage hero slides:
 //   1. slides uploaded in the dashboard (Homepage tab)
@@ -11,12 +39,19 @@ export default function HomeHero({ hero, lang = 'ar', onPrimary, children }) {
   const en = lang === 'en';
   const saved = (hero && Array.isArray(hero.slides) ? hero.slides : []).filter((s) => s && s.url);
   const [auto, setAuto] = useState(null);
+  const [pkgs, setPkgs] = useState([]);
+
+  useEffect(() => {
+    let alive = true;
+    loadPackages().then((l) => { if (alive) setPkgs(l); });
+    return () => { alive = false; };
+  }, []);
 
   useEffect(() => {
     if (saved.length) return;
     let alive = true;
     Promise.all([
-      fetch('/api/packages').then((r) => r.json()).catch(() => []),
+      loadPackages(),
       fetch('/api/visa/cards').then((r) => r.json()).catch(() => []),
     ]).then(([pk, vc]) => {
       if (!alive) return;
@@ -51,6 +86,8 @@ export default function HomeHero({ hero, lang = 'ar', onPrimary, children }) {
     <HeroCinematic
       slides={slides}
       lang={lang}
+      live={nextDepartures(pkgs, lang)}
+      liveTitle={en ? 'Next departures' : 'أقرب المغادرات'}
       kicker={en ? h.kickerEn || 'Your trusted travel partner' : h.kickerAr || 'شريكك الموثوق في السفر'}
       title={en ? h.titleEn || 'Your journey starts with us' : h.titleAr || 'رحلتك تبدأ معنا'}
       subtitle={en ? h.subtitleEn || 'Your memories begin with us.' : h.subtitleAr || 'نأخذك إلى حيث تتمنى، لنصنع ذكريات لا تُنسى.'}

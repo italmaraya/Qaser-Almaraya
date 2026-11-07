@@ -128,7 +128,7 @@ const PACKAGES=[
  {title:'إستانبول للعائلة',destination:'إستانبول',nights:'6 ليالٍ',groupType:'عائلي',departs:'كل خميس',price:'740 $',badge:'الأكثر طلباً',includes:['طيران ذهاب وعودة','إقامة 4 نجوم مع إفطار','جولة البوسفور','مرشد يتحدث العربية']},
  {title:'جورجيا الخضراء',destination:'تبليسي وباتومي',nights:'7 ليالٍ',groupType:'شبابي',departs:'كل سبت',price:'890 $',includes:['طيران ذهاب وعودة','إقامة في وسط المدينة','جولات يومية','تنقلات المطار']},
  {title:'دبي في نهاية الأسبوع',destination:'دبي',nights:'3 ليالٍ',groupType:'رجال أعمال',departs:'كل أربعاء',price:'590 $',includes:['طيران ذهاب وعودة','فندق 5 نجوم','تأشيرة زيارة','خدمة استقبال خاصة']},
- {title:'عمرة رمضان',destination:'مكة والمدينة',nights:'10 ليالٍ',groupType:'حج وعمرة',departs:'مواعيد محددة',price:'1250 $',badge:'مقاعد محدودة',includes:['طيران ذهاب وعودة','إقامة قريبة من الحرم','تنقلات بالباص','مشرف ديني']},
+ {title:'عمرة رمضان',destination:'مكة والمدينة',nights:'10 ليالٍ',groupType:'حج وعمرة',departs:'مواعيد محددة',price:'1250 $',badge:'مقاعد محدودة',includes:['طيران ذهاب وعودة','إقامة قريبة من الحرم','تنقلات بالحافلة','مشرف ديني']},
  {title:'ماليزيا وسنغافورة',destination:'كوالالمبور',nights:'9 ليالٍ',groupType:'عائلي',departs:'كل اثنين',price:'1390 $',includes:['طيران داخلي','إقامة 4 نجوم','جولات المدينتين','تذاكر الحدائق']},
  {title:'أذربيجان الشتوية',destination:'باكو',nights:'5 ليالٍ',groupType:'شبابي',departs:'كل جمعة',price:'640 $',includes:['طيران ذهاب وعودة','إقامة وسط باكو','جولة قوبوستان','تنقلات المطار']}];
 
@@ -976,7 +976,7 @@ function   visaVals(country){
 <img src="/assets/logo-flamingo.webp" alt="Flamingo" style={{ height: "42px", width: "auto" }} />
 </div>
 <h2 style={{ fontSize: "36px", fontWeight: "700", color: "#fff", lineHeight: "1.25" }}>شريك واحد… وكل رحلات العالم</h2>
-<p style={{ fontSize: "18px", lineHeight: "1.75", color: "rgba(255,255,255,.92)" }}>إذا رغبت بإتمام الحجز بنفسك، اكمل حجز الطيران والفنادق مباشرة عبر فلامنغو — نفس الأسعار التعاقدية، ونفس فريق قصر المرايا خلف الكواليس.</p>
+<p style={{ fontSize: "18px", lineHeight: "1.75", color: "rgba(255,255,255,.92)" }}>إذا رغبت بإتمام الحجز بنفسك، أكمل حجز الطيران والفنادق مباشرة عبر فلامنغو — نفس الأسعار التعاقدية، ونفس فريق قصر المرايا خلف الكواليس.</p>
 <p style={{ fontSize: "13px", color: "rgba(255,255,255,.78)" }}>أو اتصل بالرقم المختصر 6393 وسنحجز لك نحن.</p>
 </div>
 <a href="https://flamingo.iq" target="_blank" rel="noopener" className="qa-ticket">
@@ -1018,7 +1018,7 @@ function   visaVals(country){
 <span style={{ position: "relative", zIndex: "1", flex: "none", display: "grid", placeItems: "center", width: "28px", height: "28px", borderRadius: "999px", background: "var(--q-cyan,var(--qs-band,#049dc5))", color: "#fff", fontFamily: "'IBM Plex Sans',system-ui,sans-serif", fontSize: "var(--q-t6,13px)", fontWeight: "700", lineHeight: "1" }}>3</span>
 <div style={{ display: "flex", flexDirection: "column", gap: "6px", flex: "1 1 auto", minWidth: "0" }}>
 <h4 style={{ margin: "0", display: "flex", alignItems: "center", flexWrap: "wrap", gap: "8px", fontSize: "var(--q-t4,17px)", fontWeight: "700", color: "var(--q-ink,var(--qs-ink,#1d2733))" }}>نتابع نحن الباقي</h4>
-<p style={{ margin: "0", fontSize: "var(--q-t5,15px)", lineHeight: "1.7", color: "var(--q-ink-2,var(--qs-ink-2,#5f666e))" }}>تغيير موعد، أمتعة إضافية، أو تأشيرة — كلّم قصر المرايا وسنتولى الأمر.</p>
+<p style={{ margin: "0", fontSize: "var(--q-t5,15px)", lineHeight: "1.7", color: "var(--q-ink-2,var(--qs-ink-2,#5f666e))" }}>تغيير موعد، أمتعة إضافية، أو تأشيرة — تواصل مع قصر المرايا وسنتولى الأمر.</p>
 </div>
 </div>
 </div>
@@ -1513,7 +1513,7 @@ function   visaVals(country){
 </div>
 <div style={{ display: "flex", flexWrap: "wrap", alignItems: "stretch", gap: "0", border: "1px solid var(--qs-line,#ececed)", borderRadius: "var(--tw-radius,16px)", overflow: "hidden" }}>
 <span style={{ flex: "1 1 220px", display: "flex", flexDirection: "column", gap: "3px", padding: "14px 16px", borderInlineEnd: "1px solid var(--qs-line,#ececed)" }}>
-<span style={{ fontSize: "12px", fontWeight: "600", color: "var(--qs-ink-2,#5f666e)" }}>إلى أين تريد السفر؟</span>
+<span style={{ fontSize: "12px", fontWeight: "600", color: "var(--qs-ink-2,#5f666e)" }}>إلى أين ترغب في السفر؟</span>
 <input type="text" value={hotelQuery} onChange={setHotelQuery} placeholder="ابحث عن وجهة أو باقة" style={{ border: "0", padding: "0", background: "transparent", fontFamily: "inherit", fontSize: "17px", fontWeight: "700", color: "var(--qs-ink,#1d2733)" }} />
 </span>
 <span style={{ flex: "1 1 180px", display: "flex", flexDirection: "column", gap: "3px", padding: "14px 16px", borderInlineEnd: "1px solid var(--qs-line,#ececed)" }}>
@@ -2183,7 +2183,7 @@ function   visaVals(country){
 </div>
 <div style={{ display: "flex", flexDirection: "column", gap: "6px", paddingBlock: "var(--q-s2,16px)", borderBottom: "1px solid var(--q-line,var(--qs-line,#e6e9eb))" }}>
 <dt style={{ fontSize: "var(--q-t3,22px)", fontWeight: "700", lineHeight: "1.3", color: "var(--q-ink,var(--qs-ink,#1d2733))" }}>الإقامة والتنقلات</dt>
-<dd style={{ margin: "0", fontSize: "var(--q-t4,17px)", lineHeight: "1.75", color: "var(--q-ink-2,var(--qs-ink-2,#5f666e))", textWrap: "pretty" }}>عقود فندقية مباشرة، وتنقلات مطار وباصات داخلية منظّمة حسب برنامج الفوج.</dd>
+<dd style={{ margin: "0", fontSize: "var(--q-t4,17px)", lineHeight: "1.75", color: "var(--q-ink-2,var(--qs-ink-2,#5f666e))", textWrap: "pretty" }}>عقود فندقية مباشرة، وتنقلات مطار وحافلات داخلية منظّمة حسب برنامج الفوج.</dd>
 </div>
 <div style={{ display: "flex", flexDirection: "column", gap: "6px", paddingBlock: "var(--q-s2,16px)", borderBottom: "1px solid var(--q-line,var(--qs-line,#e6e9eb))" }}>
 <dt style={{ fontSize: "var(--q-t3,22px)", fontWeight: "700", lineHeight: "1.3", color: "var(--q-ink,var(--qs-ink,#1d2733))" }}>فعاليات ومؤتمرات</dt>

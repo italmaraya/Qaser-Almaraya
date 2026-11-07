@@ -331,25 +331,15 @@ html[data-area=site] .qa-tf-chip.on{color:var(--qs-ink)!important}
 html[data-area=site] .qs-btn-light,html[data-area=site] .qs-btn-light:hover{color:var(--qs-ink)!important}
 html[data-area=site] .qs-btn-line{color:var(--qs-ink)!important}
 
-/* Hero (HeroCinematic): square-cornered actions, white primary on the photo */
-html[data-area=site] .qh .qh-btn{border-radius:var(--qs-r-xs);font-weight:600;min-height:50px;padding:0 26px}
-html[data-area=site] .qh .qh-btn.pri{background:#fff;color:var(--qs-ink);border-color:#fff}
-html[data-area=site] .qh .qh-btn.pri:hover{background:var(--qs-paper)}
-html[data-area=site] .qh .qh-btn.sec{border-color:rgba(255,255,255,.5)}
-html[data-area=site] .qh .qh-eyebrow{color:rgba(255,255,255,.82);font-weight:600;font-size:15px;display:inline-flex;align-items:center;gap:10px}
-html[data-area=site] .qh .qh-eyebrow::before{content:"";width:24px;height:2px;background:var(--qs-amber);border-radius:2px}
-html[data-area=site] .qh .qh-title{font-size:clamp(36px,4.6vw,64px)}
-html[data-area=site] .qh .qh-bar{border-radius:0}
+/* Hero (HeroCinematic): its own inline styles carry the look (bold sans
+   title, amber primary, glass secondary, glass departures panel). Here only
+   the room left for the booking panel that overlaps the hero's lower edge. */
+html[data-area=site] .qh .qh-bar{border-radius:4px}
 @media (min-width:821px){
-  /* leave room for the booking panel that overlaps the hero's lower edge */
-  html[data-area=site] .qh{height:min(82vh,780px);min-height:560px}
+  html[data-area=site] .qh{height:min(84vh,800px);min-height:580px}
   html[data-area=site] .qh .qh-copy{top:46%}
   html[data-area=site] .qh .qh-foot{bottom:88px}
-}
-@media (max-width:820px){
-  html[data-area=site] .qh .qh-btn.pri{background:var(--qs-amber);color:var(--qs-ink);border-color:var(--qs-amber)}
-  html[data-area=site] .qh .qh-btn.sec{background:transparent;color:var(--qs-ink);border-color:var(--qs-line-2)}
-  html[data-area=site] .qh .qh-eyebrow{color:var(--qs-brand-deep)}
+  html[data-area=site] .qh .qh-live{bottom:136px}
 }
 
 /* Trip finder: same ink band, square chips, white action */
@@ -384,7 +374,6 @@ html[data-area=site] .qa-offer-urg{border-radius:var(--qs-r-xs)!important;box-sh
 }
 @media (prefers-reduced-motion:reduce){html[data-area=site] .qa-offer-img img{transition:none}}
 html[data-area=site] .qa-tf .qa-btn.qa-amber{min-height:48px!important}
-@media (max-width:820px){html[data-area=site] .qh .qh-title{font-size:34px!important;line-height:1.35!important}}
 /* Tablet portrait: the phone's 4:5 photo crop made the hero taller than the screen */
 @media (min-width:600px) and (max-width:820px){html[data-area=site] .qh .qh-media{max-height:68svh}}
 

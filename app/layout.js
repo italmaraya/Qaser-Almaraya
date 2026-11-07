@@ -1,5 +1,6 @@
 import './site.css';
 import './qs.css';
+import './qs-modern.css';
 import AreaMark from '../components/AreaMark';
 import MobileBottomBar from '../components/MobileBottomBar';
 import LiveChat from '../components/LiveChat';
@@ -7,6 +8,7 @@ import AirportChime from '../components/AirportChime';
 import RoutePrefetch from '../components/RoutePrefetch';
 import LangGuard from '../components/LangGuard';
 import TravelAlert from '../components/TravelAlert';
+import ScrollReveal from '../components/ScrollReveal';
 import { SITE_URL, DEFAULT_OG, ORG_JSON_LD } from '../lib/seo';
 
 export const viewport = {
@@ -33,7 +35,6 @@ export default function RootLayout({ children }) {
             data-area="site", so /admin and /staff keep their own look untouched. */}
         <script dangerouslySetInnerHTML={{ __html: "if(/^\\/(admin|staff)(\\/|$)/.test(location.pathname))document.documentElement.setAttribute('data-area','admin')" }} />
         <link rel="preload" href="/fonts/ibmplexsansarabic-arabic-400.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
-        <link rel="preload" href="/fonts/notonaskharabic-arabic-600.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link
@@ -52,6 +53,7 @@ export default function RootLayout({ children }) {
       <body>
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(ORG_JSON_LD) }} />
         <TravelAlert />
+        <ScrollReveal />
         {children}
         <MobileBottomBar />
         <LiveChat />
