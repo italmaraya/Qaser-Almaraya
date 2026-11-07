@@ -1,22 +1,24 @@
 'use client';
 
-// The partner wall: one moving row per partner family, each logo on its own
-// white tile. Airlines travel one way and hotels the other, so the two rows
+// The partner wall: one moving row per partner family, each logo in its own
+// colours on a white tile. Airlines travel one way and hotels the other, so the two rows
 // read as separate networks instead of one long strip.
 //
 // A logo's w/h is its drawn size inside the tile, picked by visual weight so
 // a wide wordmark and a tall roundel look equally large.
+// Coloured artwork lives in /assets/airlines-color/. Fly Erbil has no coloured
+// file yet, so its white artwork is drawn dark (mono) until one arrives.
 const AIRLINES = [
-  { slug: 'flydubai', name: 'flydubai', w: 112, h: 31 },
-  { slug: 'salamair', name: 'SalamAir', w: 110, h: 32 },
-  { slug: 'flynas', name: 'flynas', w: 80, h: 40 },
-  { slug: 'airarabia', name: 'Air Arabia', w: 85, h: 40 },
-  { slug: 'qatar', name: 'Qatar Airways', w: 102, h: 34 },
-  { slug: 'flyerbil', name: 'Fly Erbil', w: 122, h: 29 },
-  { slug: 'chamwings', name: 'Cham Wings', w: 114, h: 30 },
-  { slug: 'royal-jordanian', name: 'Royal Jordanian', w: 114, h: 31 },
-  { slug: 'turkish', name: 'Turkish Airlines', w: 92, h: 38 },
-  { slug: 'egyptair', name: 'EgyptAir', w: 124, h: 28 },
+  { slug: 'flydubai', name: 'flydubai', w: 127, h: 26 },
+  { slug: 'salamair', name: 'SalamAir', w: 124, h: 27 },
+  { slug: 'flynas', name: 'flynas', w: 86, h: 38 },
+  { slug: 'airarabia', name: 'Air Arabia', w: 94, h: 35 },
+  { slug: 'qatar', name: 'Qatar Airways', w: 98, h: 34 },
+  { slug: 'flyerbil', name: 'Fly Erbil', w: 116, h: 28, mono: true },
+  { slug: 'chamwings', name: 'Cham Wings', w: 99, h: 33 },
+  { slug: 'royal-jordanian', name: 'Royal Jordanian', w: 78, h: 42 },
+  { slug: 'turkish', name: 'Turkish Airlines', w: 113, h: 29 },
+  { slug: 'egyptair', name: 'EgyptAir', w: 128, h: 19 },
 ];
 
 // Hotel chains, once we carry their logos: each entry needs
@@ -29,8 +31,8 @@ const evens = AIRLINES.filter((_, i) => i % 2 === 0);
 const odds = AIRLINES.filter((_, i) => i % 2 === 1);
 
 const ROWS = [
-  { key: 'airlines-a', base: '/assets/airlines/', items: evens, reverse: false, label: 'شركات الطيران الشريكة' },
-  { key: 'airlines-b', base: '/assets/airlines/', items: odds, reverse: true, label: 'شركات الطيران الشريكة' },
+  { key: 'airlines-a', base: '/assets/airlines-color/', items: evens, reverse: false, label: 'شركات الطيران الشريكة' },
+  { key: 'airlines-b', base: '/assets/airlines-color/', items: odds, reverse: true, label: 'شركات الطيران الشريكة' },
   { key: 'hotels', base: '/assets/hotels/', items: HOTELS, reverse: true, label: 'سلاسل الفنادق الشريكة' },
 ];
 
@@ -52,7 +54,8 @@ function Row({ row }) {
         <span key={i} className="qpw-tile" title={a.name}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src={row.base + a.slug + '.webp'}
+            src={(a.mono ? '/assets/airlines/' : row.base) + a.slug + '.webp'}
+            className={a.mono ? 'qpw-mono' : undefined}
             alt={hidden || i >= row.items.length ? '' : a.name}
             width={a.w}
             height={a.h}
@@ -88,13 +91,12 @@ export default function PartnersWall() {
 .qpw-rev{animation-direction:reverse}
 .qpw-row:hover .qpw-track{animation-play-state:paused}
 .qpw-set{display:flex;align-items:stretch;gap:${GAP}px;padding-inline-end:${GAP}px;flex:none}
-/* The logos are white artwork, so they sit straight on the deep band with a
-   soft shadow for depth — a white tile behind them would hide them. */
-.qpw-tile{flex:none;display:grid;place-items:center;width:${TILE}px;height:72px;transition:transform .2s}
-.qpw-tile:hover{transform:translateY(-2px) scale(1.04)}
-.qpw-tile img{display:block;width:calc(var(--w) * 1px);height:calc(var(--h) * 1px);object-fit:contain;opacity:.92;filter:drop-shadow(0 2px 6px rgba(1,42,55,.18))}
-.qpw-tile:hover img{opacity:1}
-@media(max-width:820px){.qpw{padding:16px 0 24px;gap:12px}.qpw-set{gap:12px;padding-inline-end:12px}.qpw-tile{width:104px;height:56px}.qpw-tile img{width:calc(var(--w) * .72px);height:calc(var(--h) * .72px)}}
+/* Each logo keeps its real colours on its own white tile. */
+.qpw-tile{flex:none;display:grid;place-items:center;width:${TILE}px;height:72px;background:#fff;border-radius:6px;box-shadow:0 1px 2px rgba(10,31,40,.12);transition:transform .2s,box-shadow .2s}
+.qpw-tile:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(10,31,40,.22)}
+.qpw-tile img{display:block;width:calc(var(--w) * 1px);height:calc(var(--h) * 1px);object-fit:contain}
+.qpw-tile img.qpw-mono{filter:brightness(0);opacity:.78}
+@media(max-width:820px){.qpw{padding:16px 0 24px;gap:12px}.qpw-set{gap:12px;padding-inline-end:12px}.qpw-tile{width:112px;height:56px}.qpw-tile img{width:calc(var(--w) * .76px);height:calc(var(--h) * .76px)}}
 @keyframes qpw-slide{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 @media(prefers-reduced-motion:reduce){.qpw-track{animation:none}}
 `}</style>
