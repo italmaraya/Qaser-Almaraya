@@ -37,6 +37,7 @@ export default function OfferStories({ lang = 'ar' }) {
   const [open, setOpen] = useState(null); // { s: story index, i: slide index }
   const [paused, setPaused] = useState(false);
   const [progress, setProgress] = useState(0);
+  const [loadedId, setLoadedId] = useState(null); // the slide timer waits for its photo
   const touch = useRef(null);
   const holdTimer = useRef(null);
 
@@ -75,9 +76,11 @@ export default function OfferStories({ lang = 'ar' }) {
     });
   }, [stories]);
 
-  // Timer: fills the bar of the current slide, then moves on.
+  const curId = open && stories[open.s] && stories[open.s].items[open.i] ? stories[open.s].items[open.i].id : null;
+  const ready = curId !== null && loadedId === curId;
+  // Timer: fills the bar of the current slide (once its photo is in), then moves on.
   useEffect(() => {
-    if (!open || paused) return undefined;
+    if (!open || paused || !ready) return undefined;
     const reduce = typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (reduce) return undefined;
     const step = 50;
@@ -89,7 +92,7 @@ export default function OfferStories({ lang = 'ar' }) {
       });
     }, step);
     return () => clearInterval(id);
-  }, [open, paused, go]);
+  }, [open, paused, ready, go]);
 
   useEffect(() => { if (open) markSeen(stories[open.s].iso); }, [open, stories, markSeen]);
 
@@ -159,6 +162,7 @@ export default function OfferStories({ lang = 'ar' }) {
       {open && p ? createPortal(
         <div className="qs-st-view" role="dialog" aria-modal="true" data-no-i18n="" dir={en ? 'ltr' : 'rtl'} aria-label={(en ? cur.en : cur.ar) + ' — ' + title}>
           <div
+            style={{ backgroundImage: `url("${photo(p.image_url, 384)}")` }}
             className="qs-st-card"
             onClick={onTap}
             onMouseDown={holdStart}
@@ -168,7 +172,7 @@ export default function OfferStories({ lang = 'ar' }) {
             onTouchEnd={holdEnd}
           >
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img key={p.id} className="qs-st-photo" src={photo(p.image_url, 1080)} onError={fallback(p.image_url)} alt="" />
+            <img key={p.id} className="qs-st-photo" src={photo(p.image_url, 1080)} onLoad={() => setLoadedId(p.id)} onError={(e) => { if (e.currentTarget.dataset.fallback) setLoadedId(p.id); fallback(p.image_url)(e); }} alt="" />
             <div className="qs-st-shade" aria-hidden="true" />
             <div className="qs-st-bars" aria-hidden="true">
               {cur.items.map((x, n) => (

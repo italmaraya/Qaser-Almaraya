@@ -562,7 +562,7 @@ html[data-area=site] .qs-alert-x:hover{background:rgba(0,0,0,.06)}
 .qs-st-name{max-width:84px;font-size:13px;font-weight:600;color:var(--qs-ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .qs-st-view{position:fixed;inset:0;z-index:2147483600;display:grid;place-items:center;background:rgba(10,14,20,.94);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);animation:qs-st-fade .25s ease both}
 @keyframes qs-st-fade{from{opacity:0}}
-.qs-st-card{position:relative;height:min(92svh,860px);aspect-ratio:9/16;max-width:100vw;border-radius:14px;overflow:hidden;background:#000;color:#fff;user-select:none;-webkit-user-select:none;touch-action:pan-y}
+.qs-st-card{position:relative;height:min(92svh,860px);aspect-ratio:9/16;max-width:100vw;border-radius:14px;overflow:hidden;background:#000 center/cover no-repeat;color:#fff;user-select:none;-webkit-user-select:none;touch-action:pan-y}
 .qs-st-photo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;animation:qs-kb 6s ease-out both}
 @keyframes qs-kb{from{transform:scale(1.1)}to{transform:scale(1)}}
 .qs-st-shade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.55) 0,rgba(0,0,0,0) 22%,rgba(0,0,0,0) 45%,rgba(0,0,0,.82) 100%)}

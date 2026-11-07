@@ -15,6 +15,7 @@ import { dateOnly, baghdadToday, daysUntil } from '../../lib/packageUrgency';
 const PAGE = 6;
 const MAX_ROWS = 18;
 const TURN_MS = 7000;
+const PER_DEST = 2;
 
 function nextDate(p, today) {
   const own = dateOnly(p.departure_date);
@@ -80,11 +81,27 @@ export default function DeparturesBoard({ lang = 'ar' }) {
 
   const rows = useMemo(() => {
     const today = baghdadToday();
-    return (pkgs || [])
-      .map((p) => ({ p, date: nextDate(p, today) }))
+    const sorted = (pkgs || [])
+      .map((p) => ({ p, date: nextDate(p, today), dest: destinationLabel(p, 'ar') }))
       .filter((r) => r.date)
-      .sort((a, b) => a.date.localeCompare(b.date) || (Number(a.p.price) || 0) - (Number(b.p.price) || 0))
-      .slice(0, MAX_ROWS);
+      .sort((a, b) => a.date.localeCompare(b.date) || (Number(a.p.price) || 0) - (Number(b.p.price) || 0));
+    // One row per destination and date (its cheapest package, which the sort
+    // puts first), and at most PER_DEST rows per destination, so the board
+    // shows the range of places instead of one city's many hotel options.
+    const seenKey = new Set();
+    const perDest = new Map();
+    const out = [];
+    for (const r of sorted) {
+      const key = r.dest + '|' + r.date;
+      if (seenKey.has(key)) continue;
+      const n = perDest.get(r.dest) || 0;
+      if (n >= PER_DEST) continue;
+      seenKey.add(key);
+      perDest.set(r.dest, n + 1);
+      out.push(r);
+      if (out.length >= MAX_ROWS) break;
+    }
+    return out;
   }, [pkgs]);
   const pages = Math.max(1, Math.ceil(rows.length / PAGE));
 
