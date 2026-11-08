@@ -14,6 +14,8 @@ const intOrNull = (v) => (v === '' || v === null || v === undefined || Number.is
 const cleanDates = (a) => (Array.isArray(a) ? a.filter((d) => d && d.date).map((d) => ({ date: String(d.date).slice(0, 10), adjust: Math.round(Number(d.adjust) || 0) })).sort((x, y) => x.date.localeCompare(y.date)) : []);
 const seats = (v) => (v === '' || v === null || v === undefined || Number.isNaN(Number(v)) ? null : Math.max(0, Math.round(Number(v))));
 const clean = (a) => (Array.isArray(a) ? a.map((s) => String(s || '').trim()).filter(Boolean) : []);
+// Story video: only an https link (uploaded to Blob from the editor), else empty.
+const videoUrl = (v) => { const u = String(v || '').trim(); return /^https:\/\/\S+$/i.test(u) && u.length < 1000 ? u : ''; };
 
 export async function GET(request) {
   if (!(await requireAdmin(request))) return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
@@ -33,7 +35,7 @@ export async function POST(request) {
       cat, countries, dest_ar, dest_en, title_ar, title_en, nights_ar, nights_en,
       departs_ar, departs_en, price, child_price, adult_cost, child_cost, cost_currency,
       badge_ar, badge_en, prefs,
-      includes_ar, includes_en, hotels, flights, days, image_url, active, sort_order, iqd_migrated, rating, pdf_banner_url, excludes_ar, excludes_en, publish_at, departure_date, seats_left,
+      includes_ar, includes_en, hotels, flights, days, image_url, active, sort_order, iqd_migrated, rating, pdf_banner_url, story_video_url, excludes_ar, excludes_en, publish_at, departure_date, seats_left,
       child_nobed_price, infant_price, child_nobed_cost, infant_cost, nights, day_count, available_dates,
       general_notes_ar, general_notes_en, price_currency, supplier_id,
       adult_commission, child_commission, child_nobed_commission, infant_commission
@@ -45,7 +47,7 @@ export async function POST(request) {
       ${b.badge_ar || ''}, ${b.badge_en || ''}, ${JSON.stringify(b.prefs || [])},
       ${JSON.stringify(b.includes_ar || [])}, ${JSON.stringify(b.includes_en || [])},
       ${JSON.stringify(cleanHotels(b.hotels))}, ${JSON.stringify(firstFree(b.flights))}, ${JSON.stringify(b.days || [])},
-      ${b.image_url || ''}, ${b.active !== false}, ${b.sort_order || 0}, true, ${b.rating || 4.8}, ${b.pdf_banner_url || ''},
+      ${b.image_url || ''}, ${b.active !== false}, ${b.sort_order || 0}, true, ${b.rating || 4.8}, ${b.pdf_banner_url || ''}, ${videoUrl(b.story_video_url)},
       ${JSON.stringify(clean(b.excludes_ar))}, ${JSON.stringify(clean(b.excludes_en))},
       ${b.publish_at || null}, ${b.departure_date || null}, ${seats(b.seats_left)},
       ${px.child_nobed_price}, ${px.infant_price}, ${num(b.child_nobed_cost)}, ${num(b.infant_cost)}, ${intOrNull(b.nights)}, ${intOrNull(b.day_count ?? b.days)}, ${JSON.stringify(cleanDates(b.available_dates))},

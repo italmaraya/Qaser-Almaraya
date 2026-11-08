@@ -131,13 +131,60 @@ function ImageUploadField({ label, value, onChange }) {
   );
 }
 
+// Optional short vertical video for the homepage offer stories. Uploads straight
+// to Vercel Blob (same route as the hero videos), so large files are fine.
+const STORY_VIDEO_MAX_MB = 25;
+function StoryVideoField({ value, onChange }) {
+  const [busy, setBusy] = useState(false);
+  const [err, setErr] = useState('');
+  const inputId = React.useId();
+  async function handleFile(file) {
+    if (!file) return;
+    setErr('');
+    if (!/^video\/(mp4|webm|quicktime)$/.test(file.type)) { setErr('الصيغة غير مدعومة. ارفع فيديو MP4 أو MOV أو WebM.'); return; }
+    if (file.size > STORY_VIDEO_MAX_MB * 1024 * 1024) { setErr('حجم الفيديو أكبر من ' + STORY_VIDEO_MAX_MB + ' ميغابايت. اختصره أو صغّر جودته (الأفضل أقل من 5 ميغابايت).'); return; }
+    setBusy(true);
+    try {
+      const { upload } = await import('@vercel/blob/client');
+      const safe = file.name.replace(/[^a-zA-Z0-9.\-_]/g, '-');
+      const blob = await upload('stories/' + safe, file, { access: 'public', handleUploadUrl: '/api/admin/upload-media' });
+      onChange(blob.url);
+    } catch (e) {
+      setErr('تعذّر رفع الفيديو: ' + (e.message || ''));
+    } finally {
+      setBusy(false);
+    }
+  }
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+      <span style={{ fontSize: 13.5, fontWeight: 600, color: '#3d4650' }}>فيديو القصة (اختياري)</span>
+      <span style={{ fontSize: 12, color: '#7b8087' }}>فيديو عمودي قصير (10–15 ثانية) يظهر في «قصص العروض» بالصفحة الرئيسية بدل الصورة. يعمل بدون صوت حتى يضغط الزائر زر الصوت. إذا تُرك فارغًا تظهر صورة الغلاف بحركة بطيئة.</span>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
+        {value ? (
+          <video src={value} muted loop playsInline autoPlay style={{ width: 54, height: 96, borderRadius: 10, objectFit: 'cover', border: '1px solid #ececed', background: '#000' }} />
+        ) : (
+          <div style={{ width: 54, height: 96, borderRadius: 10, background: '#f4f4f4', display: 'grid', placeItems: 'center', fontSize: 11, color: '#7b8087', textAlign: 'center' }}>لا فيديو</div>
+        )}
+        <label htmlFor={inputId} style={{ ...btnStyle('ghost'), cursor: busy ? 'wait' : 'pointer' }}>
+          {busy ? 'جارٍ الرفع...' : value ? 'تغيير الفيديو' : 'رفع فيديو'}
+        </label>
+        <input id={inputId} type="file" accept="video/mp4,video/quicktime,video/webm" disabled={busy} style={{ display: 'none' }} onChange={(e) => { const f = e.target.files?.[0]; e.target.value = ''; handleFile(f); }} />
+        {value && !busy && (
+          <button type="button" style={btnStyle('danger')} onClick={() => onChange('')}>إزالة</button>
+        )}
+      </div>
+      {err && <span style={{ fontSize: 12, color: '#d2324f' }}>{err}</span>}
+    </div>
+  );
+}
+
 function blankPackage() {
   return {
     cat: 'family', countries: [], dest_ar: '', dest_en: '', title_ar: '', title_en: '',
     nights_ar: '', nights_en: '', departs_ar: '', departs_en: '', price: 0, child_price: 0,
     adult_cost: 0, child_cost: 0, child_nobed_price: 0, infant_price: 0, child_nobed_cost: 0, infant_cost: 0, cost_currency: 'IQD', nights: '', day_count: '', available_dates: [], general_notes_ar: '', general_notes_en: '', price_currency: 'IQD', supplier_id: null, adult_commission: '', child_commission: '', child_nobed_commission: '', infant_commission: '',
     badge_ar: '', badge_en: '', prefs: [], includes_ar: [], includes_en: [],
-    hotels: [], flights: [], days: [], image_url: '', pdf_banner_url: '', excludes_ar: [], excludes_en: [], active: true, sort_order: 0, rating: 4.8,
+    hotels: [], flights: [], days: [], image_url: '', pdf_banner_url: '', story_video_url: '', excludes_ar: [], excludes_en: [], active: true, sort_order: 0, rating: 4.8,
   };
 }
 
@@ -484,6 +531,7 @@ function PackageForm({ initial, onSave, onCancel, saving }) {
         <span style={{ fontSize: 12, color: '#7b8087' }}>اترك الحقول فارغة إذا لا تحتاجها. عند إدخال تاريخ الانطلاق يظهر للعملاء "باقي 12 يوماً"، وعند إدخال المقاعد يظهر "8 مقاعد متبقية" — مناسب لباقات الحفلات والرياضة.</span>
       </div>
       <ImageUploadField label="صورة الغلاف" value={form.image_url} onChange={(url) => set('image_url', url)} />
+      <StoryVideoField value={form.story_video_url || ''} onChange={(url) => set('story_video_url', url)} />
       <ImageUploadField label="بانر ملف PDF (صورة عريضة للدولة/الوجهة — إذا تُركت فارغة تُستخدم صورة الغلاف)" value={form.pdf_banner_url || ''} onChange={(url) => set('pdf_banner_url', url)} />
 
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>

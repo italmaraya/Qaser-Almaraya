@@ -548,7 +548,7 @@ html[data-area=site] .qs-alert-x:hover{background:rgba(0,0,0,.06)}
 .qs-st-ring-img{display:block;width:76px;height:76px;padding:3px;border-radius:50%;background:conic-gradient(from 210deg,var(--qs-amber),#00b8f8,var(--qs-band),var(--qs-amber));transition:transform .2s var(--qs-ease)}
 .qs-st-ring:hover .qs-st-ring-img{transform:scale(1.05)}
 .qs-st-ring.seen .qs-st-ring-img{background:#cfd4d9}
-.qs-st-ring-img img{display:block;width:100%;height:100%;object-fit:cover;border-radius:50%;border:3px solid var(--qs-paper);box-sizing:border-box;background:var(--qs-sand)}
+.qs-st-ring-img img,.qs-st-ring-img video{display:block;width:100%;height:100%;object-fit:cover;border-radius:50%;border:3px solid var(--qs-paper);box-sizing:border-box;background:var(--qs-sand)}
 .qs-st-name{max-width:84px;font-size:13px;font-weight:600;color:var(--qs-ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .qs-st-view{position:fixed;inset:0;z-index:2147483600;display:grid;place-items:center;background:rgba(10,14,20,.94);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);animation:qs-st-fade .25s ease both}
 @keyframes qs-st-fade{from{opacity:0}}
@@ -557,6 +557,7 @@ html[data-area=site] .qs-alert-x:hover{background:rgba(0,0,0,.06)}
 /* Slow "living photo" motion, a different camera move on each slide; it pauses while the story is held. */
 .qs-st-photo.kb1{animation-name:qs-kb1}.qs-st-photo.kb2{animation-name:qs-kb2}.qs-st-photo.kb3{animation-name:qs-kb3}
 .qs-st-photo.hold{animation-play-state:paused}
+.qs-st-video{animation:none;background:#000}
 @keyframes qs-kb0{from{transform:scale(1.04) translate3d(2%,1%,0)}to{transform:scale(1.2) translate3d(-2%,-1.5%,0)}}
 @keyframes qs-kb1{from{transform:scale(1.22) translate3d(-2.5%,0,0)}to{transform:scale(1.06) translate3d(2.5%,1%,0)}}
 @keyframes qs-kb2{from{transform:scale(1.08) translate3d(0,3%,0)}to{transform:scale(1.2) translate3d(0,-3%,0)}}
