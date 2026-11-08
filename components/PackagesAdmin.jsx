@@ -8,7 +8,7 @@ import SupplierPicker from './SupplierPicker';
 import ScanFill from './ScanFill';
 import { mergeScan } from '../lib/scanMerge';
 import { dateOnly, baghdadToday, packageUrgency } from '../lib/packageUrgency';
-import { isPackageArchived } from '../lib/packageExpiry';
+import { isPackageArchived, daysUntilPurge } from '../lib/packageExpiry';
 import BulkActionBar from './BulkActionBar';
 import { usePackagesBulk } from './usePackagesBulk';
 // Badge for the admin list: scheduled / expired / countdown.
@@ -834,7 +834,7 @@ function load() {
       <GroupsImportFull onDone={load} />
       {visFilter === 'expired' && (
         <p style={{ margin: 0, fontSize: 13.5, color: '#5f666e', background: '#f8fafb', border: '1px solid #ececed', borderRadius: 10, padding: '10px 12px' }}>
-          هذه الباقات انتهت كل تواريخها، فأُخفيت عن الموقع وخرجت من القائمة تلقائياً. لم يُحذف منها شيء: أضف تاريخاً جديداً من «تعديل» فتعود إلى القائمة والموقع.
+          هذه الباقات انتهت كل تواريخها، فأُخفيت عن الموقع وخرجت من القائمة تلقائياً. تُحذف كل باقة نهائياً بعد 30 يوماً من آخر تاريخ لها. لإبقائها أضف تاريخاً جديداً من «تعديل» فتعود إلى القائمة والموقع.
         </p>
       )}
       {Array.isArray(packages) && packages.length > 0 && (() => {
@@ -902,6 +902,7 @@ function load() {
             <div>
               <div style={{ fontWeight: 700 }}>{p.title_ar} {!p.active && <span style={{ color: '#d2324f', fontSize: 12 }}>(مخفية)</span>}
                 {p.supplier_name && <span style={{ marginInlineStart: 6, fontSize: 11.5, fontWeight: 700, borderRadius: 999, padding: '1px 9px', background: '#f3f0ff', color: '#5b3fb5', border: '1px solid #e2daf8' }}>🏢 {p.supplier_name}</span>}
+                {visFilter === 'expired' && daysUntilPurge(p) !== null && <span style={{ marginInlineStart: 6, fontSize: 12, fontWeight: 700, borderRadius: 999, padding: '1px 9px', background: '#fdecef', color: '#c02643' }}>🗑 {daysUntilPurge(p) <= 1 ? 'تُحذف نهائياً الليلة' : 'تُحذف نهائياً بعد ' + daysUntilPurge(p) + ' يوم'}</span>}
                 {p.active && scheduleStatus(p) && <span style={{ marginInlineStart: 6, fontSize: 12, fontWeight: 700, borderRadius: 999, padding: '1px 9px', ...scheduleStatus(p).style }}>{scheduleStatus(p).label}</span>}
               </div>
               <div style={{ fontSize: 13, color: '#7b8087' }}>{p.dest_ar} · {p.nights_ar} · {Number(p.price).toLocaleString()} IQD</div>
