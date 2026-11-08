@@ -2,11 +2,20 @@
 import { useEffect, useState } from 'react';
 import HeroCinematic from './HeroCinematic';
 import { waLink } from '../lib/whatsapp';
+import { loadPackages } from '../lib/publicPackages';
 
-// Chooses the homepage hero slides:
-//   1. slides uploaded in the dashboard (Homepage tab)
-//   2. otherwise, built automatically from package and country cover photos
-//   3. otherwise, the original hero (passed as children)
+// Owner, 8 Nov 2026: the Skylo-with-passport artwork (no text on it) plays
+// right after the Skylo video. It is part of the code, not the dashboard
+// slides, so it ships with the site like any other change.
+const SKYLO_SLIDE = { type: 'image', url: '/assets/hero-skylo-passport.webp', posMobile: '25% 50%', builtIn: true };
+
+function withSkylo(list) {
+  if (!list.length || list.some((s) => s.url === SKYLO_SLIDE.url)) return list;
+  const v = list.findIndex((s) => s.type === 'video');
+  const at = v === -1 ? 0 : v + 1;
+  return [...list.slice(0, at), SKYLO_SLIDE, ...list.slice(at)];
+}
+
 export default function HomeHero({ hero, lang = 'ar', onPrimary, children }) {
   const en = lang === 'en';
   const saved = (hero && Array.isArray(hero.slides) ? hero.slides : []).filter((s) => s && s.url);
@@ -16,7 +25,7 @@ export default function HomeHero({ hero, lang = 'ar', onPrimary, children }) {
     if (saved.length) return;
     let alive = true;
     Promise.all([
-      fetch('/api/packages').then((r) => r.json()).catch(() => []),
+      loadPackages(),
       fetch('/api/visa/cards').then((r) => r.json()).catch(() => []),
     ]).then(([pk, vc]) => {
       if (!alive) return;
@@ -39,9 +48,9 @@ export default function HomeHero({ hero, lang = 'ar', onPrimary, children }) {
     return () => { alive = false; };
   }, [saved.length, en]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const slides = saved.length
+  const slides = withSkylo(saved.length
     ? saved.map((s) => ({ ...s, caption: en ? s.captionEn || s.captionAr : s.captionAr || s.captionEn }))
-    : auto || [];
+    : auto || []);
 
   // Placeholder matches the hero's new height so the page does not jump.
   if (!slides.length) return auto === null && !saved.length ? <div style={{ height: 'min(78vh,720px)', minHeight: 520, background: '#04161f' }} /> : children;

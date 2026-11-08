@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from 'react';
 import NewsBody, { NEWS_BODY_CSS } from './NewsBody';
 
 const CATS = [
-  ['news', 'أخبار الشركة'], ['tips', 'نصائح السفر'], ['visas', 'تأشيرات'], ['offers', 'عروض ورحلات'], ['events', 'فعاليات ومعارض'],
+  ['news', 'أخبار الشركة'], ['tips', 'نصائح السفر'], ['visas', 'تأشيرات'], ['offers', 'عروض ورحلات'], ['events', 'فعاليات ومعارض'], ['alert', 'تنبيه للمسافرين (يظهر أعلى الموقع 14 يوماً)'],
 ];
 const input = { width: '100%', boxSizing: 'border-box', padding: '10px 12px', borderRadius: 8, border: '1px solid #ececed', fontSize: 14, fontFamily: 'inherit' };
 const label = { display: 'flex', flexDirection: 'column', gap: 6, fontSize: 13, fontWeight: 600, color: '#3d4650' };

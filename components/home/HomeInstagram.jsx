@@ -10,7 +10,7 @@ const TOPICS = [
   { ar: 'أسعار الطيران من بغداد', en: 'Airfares from Baghdad' },
   { ar: 'مقاطع من الوجهات', en: 'Destination clips' },
   { ar: 'التأشيرات', en: 'Visas' },
-  { ar: 'تجارب الزبائن', en: 'Customer stories' },
+  { ar: 'تجارب العملاء', en: 'Customer stories' },
 ];
 
 export default function HomeInstagram({ lang = 'ar' }) {
