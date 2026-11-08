@@ -114,7 +114,7 @@ export default function VisaChecker({ lang = 'ar' }) {
       <div className="qa-vc">
         <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
           <h2>{en ? 'Visa checker' : 'فاحص التأشيرة'}</h2>
-          <p style={{ fontSize: 16, color: 'var(--qs-ink-2,#5f666e)' }}>{en ? 'Choose where you are going and see the price, processing time and the documents to prepare.' : 'اختر وجهتك واعرف فوراً السعر ومدة الإصدار والمستمسكات المطلوبة.'}</p>
+          <p style={{ fontSize: 16, color: 'var(--qs-ink-2,#5f666e)' }}>{en ? 'Choose where you are going and see the price, processing time and the documents to prepare.' : 'اختر وجهتك واعرف فوراً السعر ومدة الإصدار والمستندات المطلوبة.'}</p>
         </div>
         <div className="qa-vc-row">
           <label>{en ? 'Nationality' : 'الجنسية'}
@@ -159,7 +159,7 @@ export default function VisaChecker({ lang = 'ar' }) {
                 {iso && guideFor(iso) && <Link href={'/guide/' + iso} style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 14, fontWeight: 700, color: 'var(--qs-brand-deep,#036f8c)', marginTop: 4 }}><Icon name="compass" size={14} />{en ? 'Travel guide for this country →' : 'دليل السفر لهذه الدولة ←'}</Link>}
               </div>
               <div className="qa-vc-box" style={{ background: '#fff', border: '1px solid var(--qs-line,#ececed)' }}>
-                <b style={{ fontSize: 16, color: 'var(--qs-ink,#1d2733)' }}>{en ? 'Documents to prepare' : 'المستمسكات المطلوبة'}</b>
+                <b style={{ fontSize: 16, color: 'var(--qs-ink,#1d2733)' }}>{en ? 'Documents to prepare' : 'المستندات المطلوبة'}</b>
                 {loading && !detail ? <span style={{ color: 'var(--qs-ink-2,#5f666e)', fontSize: 14 }}>{en ? 'Loading…' : 'جارٍ التحميل…'}</span> : null}
                 {detail && req.length === 0 && opt.length === 0 ? <span style={{ color: 'var(--qs-ink-2,#5f666e)', fontSize: 14 }}>{en ? 'Message us and we will tell you exactly what is needed.' : 'راسلنا ونخبرك بالمطلوب بالضبط.'}</span> : null}
                 {req.length > 0 && <ul className="qa-vc-docs">{req.map((d) => <li key={d.id}>{nm(d.name_ar, d.name_en)}{audience(d.audience) ? <span style={{ color: 'var(--qs-ink-2,#5f666e)', fontSize: 13 }}> ({audience(d.audience)})</span> : null}</li>)}</ul>}

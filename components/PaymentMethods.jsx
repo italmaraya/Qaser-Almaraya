@@ -1,6 +1,7 @@
 'use client';
 import React from 'react';
 import Icon from './Icon';
+import { ADDRESS_AR, HOURS_AR } from '../lib/company';
 
 export const QA_PAYMENT_METHODS = [
   { id: 'card', icon: 'credit-card', label: 'ماستر كارد / فيزا', hint: 'كي كارد — مصرف الرافدين / تطبيق سوبر كي',
@@ -10,7 +11,7 @@ export const QA_PAYMENT_METHODS = [
     rows: [['رقم الوكيل', '530181'], ['طريقة الاستلام', 'من خلال عمل سحب أموال — مكتب قصر المرايا'], ['رقم الهاتف', '07835073219']],
     body: 'أرسل المبلغ عبر تطبيق زين كاش إلى رقم الوكيل أعلاه (سحب أموال)، واحتفظ برمز العملية لإرساله إلى موظف الحجز.' },
   { id: 'office', icon: 'building-2', label: 'الدفع في المكتب', hint: 'نقداً — خلال يوم واحد', warn: true,
-    rows: [['العنوان', 'بغداد — حي السلام، شارع 14 رمضان'], ['أوقات العمل', 'السبت – الخميس · 9:00 – 18:00']],
+    rows: [['العنوان', ADDRESS_AR], ['أوقات العمل', HOURS_AR]],
     body: 'إذا اخترت هذه الطريقة يجب دفع المبلغ خلال يوم واحد من تاريخ الطلب، وإلا سيُرفض طلبك تلقائياً.' }
 ];
 
@@ -91,7 +92,7 @@ export default function PaymentMethods({ title, note, methods, defaultOpen = 'ca
       <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
         {list.map((m, i) => {
           const on = open === m.id;
-          const accent = m.warn ? '#c07f00' : '#036f8c';
+          const accent = m.warn ? '#c07f00' : '#049dc5';
           return (
             <div key={m.id} style={{ border: '1px solid ' + (on ? accent : 'var(--qs-line,#ececed)'), borderRadius: 'var(--tw-radius-sm,10px)', overflow: 'hidden', background: '#fff' }}>
               <button onClick={() => setOpen(on ? '' : m.id)} style={{ width: '100%', boxSizing: 'border-box', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 12, padding: '14px 16px', border: 0, background: on ? (m.warn ? '#fef3dc' : 'var(--qs-brand-soft,#eaf8fd)') : 'var(--qs-paper,#f8f7f8)', fontFamily: 'inherit', textAlign: 'start' }}>

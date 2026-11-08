@@ -21,12 +21,12 @@ import { workDaysLabel } from '../../../../lib/destinations';
 // matched by keyword against the type's Arabic name, since types are
 // admin-defined free text rather than a fixed enum.
 const VISA_THEMES = [
-  { test: /سريع|مستعجل|urgent|express/i, icon: 'zap', gradient: '#0e6f8f', iconColor: '#e8590c' },
-  { test: /متعدد|سنة|سنوات|multiple/i, icon: 'refresh-cw', gradient: '#0e6f8f', iconColor: '#5b3df0' },
-  { test: /الكترون|electronic|e-?visa/i, icon: 'laptop', gradient: '#0e6f8f', iconColor: '#0e968c' },
-  { test: /أمن|موافق|security|approval/i, icon: 'shield-check', gradient: '#0e6f8f', iconColor: '#232f3d' },
+  { test: /سريع|مستعجل|urgent|express/i, icon: 'zap', gradient: 'linear-gradient(135deg,#1db4e8,#049dc5)', iconColor: '#e8590c' },
+  { test: /متعدد|سنة|سنوات|multiple/i, icon: 'refresh-cw', gradient: 'linear-gradient(135deg,#1db4e8,#049dc5)', iconColor: '#5b3df0' },
+  { test: /الكترون|electronic|e-?visa/i, icon: 'laptop', gradient: 'linear-gradient(135deg,#1db4e8,#049dc5)', iconColor: '#0e968c' },
+  { test: /أمن|موافق|security|approval/i, icon: 'shield-check', gradient: 'linear-gradient(135deg,#1db4e8,#049dc5)', iconColor: '#232f3d' },
 ];
-const DEFAULT_VISA_THEME = { icon: 'plane-takeoff', gradient: '#0e6f8f', iconColor: '#049dc5' };
+const DEFAULT_VISA_THEME = { icon: 'plane-takeoff', gradient: 'linear-gradient(135deg,#1db4e8,#049dc5)', iconColor: '#049dc5' };
 function getVisaTheme(nameAr) {
   return VISA_THEMES.find((t) => t.test.test(nameAr || '')) || DEFAULT_VISA_THEME;
 }
@@ -202,7 +202,7 @@ export default function CountryVisaListPage() {
                         <img {...imgProps(photo, '(max-width: 820px) 92vw, 400px')} alt="" loading="lazy" decoding="async" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }} />
                       ) : (
                         <>
-                          <Icon name={theme.icon} size={130} strokeWidth={1} style={{ position: 'absolute', insetInlineStart: -26, bottom: -30, color: 'rgba(255,255,255,.16)' }} />
+                          <Icon name={theme.icon} size={130} strokeWidth={1} style={{ position: 'absolute', insetInlineStart: -26, bottom: -30, color: 'rgba(255,255,255,.22)' }} />
                           <span style={{ position: 'absolute', inset: 0, display: 'grid', placeItems: 'center' }}>
                             <span style={{ width: 68, height: 68, borderRadius: '50%', background: 'rgba(255,255,255,.14)', border: '2px solid rgba(255,255,255,.55)', display: 'grid', placeItems: 'center', boxShadow: 'var(--tw-card-shadow,0 1px 3px rgba(29,39,51,.06))' }}>
                               {c.flag_code ? (

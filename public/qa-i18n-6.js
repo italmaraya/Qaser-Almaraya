@@ -39,7 +39,14 @@
   "المستمسكات المطلوبة": "Required documents",
   "المستمسكات المطلوبة:": "Required documents:",
   "ما يشمله هذا النوع": "What this type includes",
-  "طرق الدفع": "Payment methods"
+  "طرق الدفع": "Payment methods",
+
+  /* MSA wording pass (7 Nov 2026): new Arabic keys, same English. */
+  "إذا رغبت بإتمام الحجز بنفسك، أكمل حجز الطيران والفنادق مباشرة عبر فلامنغو — نفس الأسعار التعاقدية، ونفس فريق قصر المرايا خلف الكواليس.": "If you'd rather book yourself, complete your flights and hotels directly on Flamingo — the same contracted rates and the same Qaser Almaraya team behind the scenes.",
+  "تغيير موعد، أمتعة إضافية، أو تأشيرة — تواصل مع قصر المرايا وسنتولى الأمر.": "Date change, extra baggage or a visa — talk to Qaser Almaraya and we'll handle it.",
+  "عقود فندقية مباشرة، وتنقلات مطار وحافلات داخلية منظّمة حسب برنامج الفوج.": "Direct hotel contracts, airport transfers and internal coaches organised around the group's programme.",
+  "تنقلات بالحافلة": "Coach transfers",
+  "إلى أين ترغب في السفر؟": "Where would you like to travel?"
 });
 
 /* Last dictionary file: tell the site the dictionary is complete. */

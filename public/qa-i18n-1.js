@@ -2,7 +2,7 @@
   "تأشيرة إلكترونية": "E-visa", "تأشيرة زيارة سياحية": "Tourist visit visa",
   "تأشيرة إلكترونية (ASAN)": "E-visa (ASAN)", "تأشيرة سياحية": "Tourist visa",
   "دخول متعدد": "Multiple entry", "دخول مفرد": "Single entry",
-  "رحلتك تبدي ويانا": "Your journey starts with us", "العراق: شارع 14 رمضان، بغداد": "Iraq: 14 Ramadan Street, Baghdad",
+  "رحلتك تبدي ويانا": "Your journey starts with us", "رحلتك تبدأ معنا": "Your journey starts with us", "العراق: شارع 14 رمضان، بغداد": "Iraq: 14 Ramadan Street, Baghdad", "أوقات الدوام: يومياً من 9 صباحاً حتى 12 منتصف الليل": "Opening hours: every day, 9 am to midnight", "بغداد — قرب نزلة جسر 14 رمضان، مقابل مجمع النعيمي": "Baghdad — by the 14 Ramadan bridge exit, opposite Al-Nuaimi complex", "أوقات العمل": "Opening hours", "يومياً من 9 صباحاً حتى 12 منتصف الليل": "Every day, 9 am to midnight",
   "سفر المجموعات والفعاليات": "Group & event travel", "رؤيتنا ورسالتنا": "Our vision & mission",
   "الطيران والفنادق": "Flights & Hotels", "التوظيف": "Careers", "المدونة": "Blog",
   "من نحن؟": "Who are we?", "خدماتنا": "Our services", "للتواصل": "Contact",

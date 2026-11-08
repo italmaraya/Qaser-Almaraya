@@ -1,5 +1,7 @@
 'use client';
 import Link from 'next/link';
+import { useState } from 'react';
+import GuideGlobe from '../../components/GuideGlobe';
 import SiteHeader from '../../components/SiteHeader';
 import SiteFooter from '../../components/SiteFooter';
 import { GuideFull, guideName } from '../../components/DestinationGuide';
@@ -11,6 +13,7 @@ import { openWhatsApp } from '../../lib/whatsapp';
 // Guide pages: the list of countries (no iso) or one country's guide.
 export default function GuideClient({ iso = null }) {
   const { lang } = useLangToggle();
+  const [focus, setFocus] = useState(null);
   const en = lang === 'en';
   const name = iso ? guideName(iso, lang) : '';
   const g = iso ? guideFor(iso, lang) : null;
@@ -51,11 +54,12 @@ export default function GuideClient({ iso = null }) {
                 <h1 style={{ fontSize: 34, fontWeight: 700 }}>{en ? 'Destination guides' : 'دليل الوجهات'}</h1>
                 <p style={{ fontSize: 16, color: 'var(--qs-ink-2,#5f666e)' }}>{en ? 'Weather by month, currency, time difference, plugs and tips for every country we travel to.' : 'الطقس في كل شهر، العملة، فرق التوقيت، نوع المقبس ونصائح لكل دولة نسافر إليها.'}</p>
               </div>
+              <GuideGlobe countries={list} lang={lang} focus={focus} />
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(200px,1fr))', gap: 12 }}>
                 {list.map((c) => {
                   const gi = guideFor(c.iso, lang);
                   return (
-                    <Link key={c.iso} href={'/guide/' + c.iso} className="qa-card qa-hover-lift" style={{ display: 'flex', alignItems: 'center', gap: 12, padding: 14, color: 'var(--qs-ink,#1d2733)' }}>
+                    <Link key={c.iso} href={'/guide/' + c.iso} onMouseEnter={() => setFocus(c.iso)} onFocus={() => setFocus(c.iso)} className="qa-card qa-hover-lift" style={{ display: 'flex', alignItems: 'center', gap: 12, padding: 14, color: 'var(--qs-ink,#1d2733)' }}>
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img src={flagUrl(c.iso)} alt="" width="40" height="28" loading="lazy" style={{ width: 40, height: 28, objectFit: 'cover', borderRadius: 5, border: '1px solid var(--qs-line,#ececed)' }} />
                       <div style={{ display: 'flex', flexDirection: 'column', minWidth: 0 }}>
