@@ -8,6 +8,7 @@ import SupplierPicker from './SupplierPicker';
 import ScanFill from './ScanFill';
 import { mergeScan } from '../lib/scanMerge';
 import { dateOnly, baghdadToday, packageUrgency } from '../lib/packageUrgency';
+import { isPackageArchived, daysUntilPurge } from '../lib/packageExpiry';
 import BulkActionBar from './BulkActionBar';
 import { usePackagesBulk } from './usePackagesBulk';
 // Badge for the admin list: scheduled / expired / countdown.
@@ -15,7 +16,7 @@ function scheduleStatus(p) {
   const today = baghdadToday();
   const pub = dateOnly(p.publish_at), dep = dateOnly(p.departure_date);
   if (pub && pub > today) return { label: '⏳ مجدولة — تُنشر في ' + pub, style: { background: '#fff4dc', color: '#8a5a00' } };
-  if (dep && dep < today) return { label: '⌛ انتهت — مخفية تلقائياً', style: { background: '#f1f3f5', color: '#7b8087' } };
+  if (isPackageArchived(p, today)) return { label: '⌛ انتهت — مخفية تلقائياً', style: { background: '#f1f3f5', color: '#7b8087' } };
   const u = packageUrgency(p, 'ar');
   if (u && u.label) return { label: '🔥 ' + u.label, style: { background: '#fdecef', color: '#c02643' } };
   return null;
@@ -800,7 +801,13 @@ function load() {
   // Dashboard list filters: supplier, free-text country/city, visibility.
   const placeText = (p) => [p.dest_ar, p.dest_en, p.title_ar, p.title_en, ...(Array.isArray(p.countries) ? p.countries : [])]
     .filter(Boolean).join(' ').toLowerCase();
-  const filtered = (packages || []).filter((p) => {
+  // Expired packages (every date passed) leave the main list by themselves
+  // and wait in the «المنتهية» view; nothing is deleted, and adding a new
+  // date brings a package back.
+  const archived = (p) => isPackageArchived(p);
+  const current = (packages || []).filter((p) => !archived(p));
+  const archivedCount = (packages || []).length - current.length;
+  const filtered = (visFilter === 'expired' ? (packages || []).filter(archived) : current).filter((p) => {
     if (supplierFilter && (supplierFilter === '__none__' ? !!p.supplier_name : p.supplier_name !== supplierFilter)) return false;
     if (visFilter === 'on' && !p.active) return false;
     if (visFilter === 'off' && p.active) return false;
@@ -825,6 +832,11 @@ function load() {
       {error && <p style={{ color: '#d2324f' }}>{error}</p>}
       <GroupsImport onDone={load} />
       <GroupsImportFull onDone={load} />
+      {visFilter === 'expired' && (
+        <p style={{ margin: 0, fontSize: 13.5, color: '#5f666e', background: '#f8fafb', border: '1px solid #ececed', borderRadius: 10, padding: '10px 12px' }}>
+          هذه الباقات انتهت كل تواريخها، فأُخفيت عن الموقع وخرجت من القائمة تلقائياً. تُحذف كل باقة نهائياً بعد 30 يوماً من آخر تاريخ لها. لإبقائها أضف تاريخاً جديداً من «تعديل» فتعود إلى القائمة والموقع.
+        </p>
+      )}
       {Array.isArray(packages) && packages.length > 0 && (() => {
         const names = [...new Set(packages.map((p) => p.supplier_name).filter(Boolean))].sort();
         const sel = { padding: '7px 10px', borderRadius: 8, border: '1px solid #ececed', fontFamily: 'inherit', fontSize: 13.5 };
@@ -838,8 +850,9 @@ function load() {
             />
             <select value={visFilter} onChange={(e) => setVisFilter(e.target.value)} style={sel}>
               <option value="">كل الحالات</option>
-              <option value="on">الظاهرة فقط ({packages.filter((p) => p.active).length})</option>
-              <option value="off">المخفية فقط ({packages.filter((p) => !p.active).length})</option>
+              <option value="on">الظاهرة فقط ({current.filter((p) => p.active).length})</option>
+              <option value="off">المخفية فقط ({current.filter((p) => !p.active).length})</option>
+              <option value="expired">المنتهية ({archivedCount})</option>
             </select>
             {names.length > 0 && (
               <select value={supplierFilter} onChange={(e) => setSupplierFilter(e.target.value)} style={{ ...sel, minWidth: 180 }}>
@@ -848,7 +861,10 @@ function load() {
                 <option value="__none__">بدون مورد ({packages.filter((p) => !p.supplier_name).length})</option>
               </select>
             )}
-            <span style={{ fontSize: 13, color: '#5f666e' }}>الظاهر: <b>{filtered.length}</b> من {packages.length}</span>
+            <span style={{ fontSize: 13, color: '#5f666e' }}>الظاهر: <b>{filtered.length}</b> من {visFilter === 'expired' ? archivedCount : current.length}</span>
+            {archivedCount > 0 && visFilter !== 'expired' && (
+              <button type="button" style={btnStyle('ghost')} onClick={() => setVisFilter('expired')}>⌛ المنتهية ({archivedCount})</button>
+            )}
             {(placeFilter || visFilter || supplierFilter) && (
               <button type="button" style={btnStyle('ghost')} onClick={() => { setPlaceFilter(''); setVisFilter(''); setSupplierFilter(''); }}>مسح التصفية</button>
             )}
@@ -878,7 +894,7 @@ function load() {
         <p style={{ color: '#7b8087' }}>لا توجد باقات بعد.</p>
       ) : (
         filtered.length === 0 ? (
-          <p style={{ color: '#7b8087' }}>لا توجد باقة مطابقة للتصفية.</p>
+          <p style={{ color: '#7b8087' }}>{visFilter === 'expired' ? 'لا توجد باقات منتهية.' : 'لا توجد باقة مطابقة للتصفية.'}</p>
         ) : (
         filtered.map((p) => (
           <div key={p.id} style={{ ...cardStyle, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
@@ -886,6 +902,7 @@ function load() {
             <div>
               <div style={{ fontWeight: 700 }}>{p.title_ar} {!p.active && <span style={{ color: '#d2324f', fontSize: 12 }}>(مخفية)</span>}
                 {p.supplier_name && <span style={{ marginInlineStart: 6, fontSize: 11.5, fontWeight: 700, borderRadius: 999, padding: '1px 9px', background: '#f3f0ff', color: '#5b3fb5', border: '1px solid #e2daf8' }}>🏢 {p.supplier_name}</span>}
+                {visFilter === 'expired' && daysUntilPurge(p) !== null && <span style={{ marginInlineStart: 6, fontSize: 12, fontWeight: 700, borderRadius: 999, padding: '1px 9px', background: '#fdecef', color: '#c02643' }}>🗑 {daysUntilPurge(p) <= 1 ? 'تُحذف نهائياً الليلة' : 'تُحذف نهائياً بعد ' + daysUntilPurge(p) + ' يوم'}</span>}
                 {p.active && scheduleStatus(p) && <span style={{ marginInlineStart: 6, fontSize: 12, fontWeight: 700, borderRadius: 999, padding: '1px 9px', ...scheduleStatus(p).style }}>{scheduleStatus(p).label}</span>}
               </div>
               <div style={{ fontSize: 13, color: '#7b8087' }}>{p.dest_ar} · {p.nights_ar} · {Number(p.price).toLocaleString()} IQD</div>
