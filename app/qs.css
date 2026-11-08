@@ -504,7 +504,7 @@ html[data-area=site] .qs-alert-x:hover{background:rgba(0,0,0,.06)}
 }
 
 /* Departures board (components/home/DeparturesBoard.jsx) */
-.qs-db{background:#161d26;border-radius:var(--qs-r);padding:20px 20px 16px;box-shadow:0 30px 60px -30px rgba(15,21,28,.6);color:#fff}
+.qs-db{background:#1d2733;border-radius:var(--qs-r);padding:20px 20px 16px;box-shadow:0 18px 40px -28px rgba(15,21,28,.45);color:#fff}
 .qs-db-top{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:0 4px 14px;border-bottom:1px solid rgba(255,255,255,.08);margin-bottom:12px}
 .qs-db-title{display:inline-flex;align-items:center;gap:10px;font-size:15px;font-weight:700;color:var(--qs-amber);letter-spacing:.02em}
 [dir=rtl] .qs-db-title{letter-spacing:0}

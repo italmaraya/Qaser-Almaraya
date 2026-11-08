@@ -510,9 +510,9 @@ export default function PackagesPage({ initialPackages = null }) {
               .qa-pkg-row > :global(*) { flex: 0 0 84%; scroll-snap-align: start; }
               .qa-pkg-group-head button { margin-inline-start: 0; width: 100%; text-align: start; }
             }
-:global(.qa-upc-row) { display: flex; align-items: center; gap: 10px; color: #fff; font-size: 13.5px; padding: 7px 10px; border-radius:var(--tw-radius-sm,10px); background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.12); text-decoration: none; transition: background .15s; min-width: 0; }
-            :global(.qa-upc-row:hover) { background: rgba(255,255,255,.16); color: #fff; }
-            :global(.qa-upc-date) { flex-shrink: 0; font-weight: 700; color: var(--qs-line-2,#bfe9f6); min-width: 92px; }
+:global(.qa-upc-row) { display: flex; align-items: center; gap: 10px; color: #fff; font-size: 13.5px; padding: 7px 10px; border-radius:var(--tw-radius-sm,10px); background: rgba(255,255,255,.16); border: 1px solid rgba(255,255,255,.28); text-decoration: none; transition: background .15s; min-width: 0; }
+            :global(.qa-upc-row:hover) { background: rgba(255,255,255,.26); color: #fff; }
+            :global(.qa-upc-date) { flex-shrink: 0; font-weight: 700; color: #fff; min-width: 92px; }
             .qa-pill {
               flex: none; cursor: pointer; font-family: inherit; white-space: nowrap; padding: 9px 16px; border-radius: 999px;
               border: 1px solid var(--qs-line,#ececed); background: #fff; color: var(--qs-body,#3d4650); font-size: 13.5px; font-weight: 600;
@@ -624,22 +624,22 @@ export default function PackagesPage({ initialPackages = null }) {
 
           {/* Discover all destinations */}
           <section className="qa-sec" style={{ maxWidth: 1240, margin: '0 auto', padding: '8px 24px 8px' }}>
-            <div style={{ background: '#0d4a5c', borderRadius: 'var(--tw-radius,16px)', overflow: 'hidden' }}>
+            <div style={{ background: 'linear-gradient(135deg,#1db4e8,#049dc5)', borderRadius: 'var(--tw-radius,16px)', overflow: 'hidden' }}>
               <div style={{ padding: 'clamp(26px,4vw,40px)', display: 'flex', flexDirection: 'column', gap: 14, color: '#fff' }}>
-                <span style={{ fontSize: 12, fontWeight: 500, letterSpacing: '.08em', color: 'rgba(255,255,255,.7)' }}>
+                <span style={{ fontSize: 12, fontWeight: 500, letterSpacing: '.08em', color: 'rgba(255,255,255,.9)' }}>
                   {lang === 'en' ? 'EXPLORE THE WORLD' : 'استكشف العالم'}
                 </span>
                 <h2 style={{ margin: 0, fontSize: 'clamp(22px,3vw,30px)', color: '#fff' }}>
                   {lang === 'en' ? 'Discover all destinations' : 'اكتشف كل الوجهات'}
                 </h2>
-                <p style={{ margin: 0, fontSize: 14, lineHeight: 1.8, color: 'rgba(255,255,255,.78)', maxWidth: 620 }}>
+                <p style={{ margin: 0, fontSize: 14, lineHeight: 1.8, color: 'rgba(255,255,255,.95)', maxWidth: 620 }}>
                   {lang === 'en'
                     ? 'Every country we travel to, in one place: pick a destination below and its packages appear.'
                     : 'كل الدول التي نسافر إليها في مكان واحد: اختر وجهتك من الأسفل وتظهر باقاتها.'}
                 </p>
                 {upcoming.length > 0 && (
                   <div data-no-i18n="" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(240px,1fr))', gap: 8, marginTop: 4 }}>
-                    <span style={{ gridColumn: '1 / -1', display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 13, fontWeight: 500, color: '#faab18' }}><Icon name="plane-takeoff" size={14} />{lang === 'en' ? 'Our next departures from Baghdad' : 'رحلاتنا القادمة من بغداد'}</span>
+                    <span style={{ gridColumn: '1 / -1', display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 13, fontWeight: 600, color: '#fff' }}><Icon name="plane-takeoff" size={14} />{lang === 'en' ? 'Our next departures from Baghdad' : 'رحلاتنا القادمة من بغداد'}</span>
                     {upcoming.map(({ p, date }) => (
                       <Link key={p.id} href={'/packages/' + p.id} className="qa-upc-row">
                         <span className="qa-upc-date">{fmtDay(date)}</span>

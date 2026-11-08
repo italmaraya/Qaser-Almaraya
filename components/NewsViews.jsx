@@ -30,16 +30,16 @@ const CSS = `
 .qn-hero p{margin:0;max-width:640px;font-size:17px;line-height:1.8;color:rgba(255,255,255,.92)}
 .qn-chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
 .qn-chip{padding:7px 15px;border-radius:999px;font-size:13.5px;font-weight:700;text-decoration:none;color:#fff;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.3)}
-.qn-chip.on{background:#fff;color:#036f8c}
+.qn-chip.on{background:#fff;color:#049dc5}
 .qn-wrap{max-width:1240px;margin:0 auto;padding:36px 32px 70px}
 .qn-feat{display:grid;grid-template-columns:1.25fr 1fr;border-radius:var(--tw-radius,16px);overflow:hidden;background:#fff;border:1px solid #ececed;text-decoration:none;color:inherit;box-shadow:var(--tw-card-shadow,0 1px 3px rgba(29,39,51,.06));margin-bottom:28px;transition:transform .2s,box-shadow .2s}
-.qn-feat:hover{transform:translateY(-2px);box-shadow:var(--tw-lift-shadow,0 8px 22px rgba(1,42,55,.12))}
+.qn-feat:hover{transform:translateY(-2px);box-shadow:var(--tw-lift-shadow,0 8px 22px rgba(29,39,51,.12))}
 .qn-feat .img{min-height:320px;background:#dff3fa center/cover}
 .qn-feat .txt{padding:30px;display:flex;flex-direction:column;gap:12px;justify-content:center}
 .qn-feat h2{margin:0;font-size:28px;line-height:1.3}
 .qn-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:22px}
 .qn-card{display:flex;flex-direction:column;border-radius:var(--tw-radius,16px);overflow:hidden;background:#fff;border:1px solid #ececed;text-decoration:none;color:inherit;box-shadow:var(--tw-card-shadow,0 1px 3px rgba(29,39,51,.06));transition:transform .2s,box-shadow .2s}
-.qn-card:hover{transform:translateY(-2px);box-shadow:var(--tw-lift-shadow,0 8px 22px rgba(1,42,55,.12))}
+.qn-card:hover{transform:translateY(-2px);box-shadow:var(--tw-lift-shadow,0 8px 22px rgba(29,39,51,.12))}
 .qn-card .img{aspect-ratio:16/9;background:#dff3fa center/cover}
 .qn-card .txt{padding:18px 20px 20px;display:flex;flex-direction:column;gap:9px;flex:1}
 .qn-card h3{margin:0;font-size:19px;line-height:1.4}
@@ -48,8 +48,8 @@ const CSS = `
 .qn-cat{font-size:12px;font-weight:700;border-radius:999px;padding:2px 10px;color:#fff}
 .qn-more{margin-top:auto;font-size:14px;font-weight:700;color:#049dc5}
 .qn-empty{text-align:center;padding:60px 20px;color:#5f666e;display:flex;flex-direction:column;align-items:center;gap:10px}
-.qn-art-hero{position:relative;min-height:380px;display:flex;align-items:flex-end;background:#036f8c center/cover;color:#fff}
-.qn-art-hero:before{content:"";position:absolute;inset:0;background:linear-gradient(to top,rgba(2,30,40,.88),rgba(2,30,40,.25) 60%,rgba(2,30,40,.1))}
+.qn-art-hero{position:relative;min-height:380px;display:flex;align-items:flex-end;background:linear-gradient(135deg,#1db4e8,#049dc5) center/cover;color:#fff}
+.qn-art-hero.has-cover:before{content:"";position:absolute;inset:0;background:linear-gradient(to top,rgba(2,30,40,.88),rgba(2,30,40,.25) 60%,rgba(2,30,40,.1))}
 .qn-art-hero .in{position:relative;max-width:860px;width:100%;margin:0 auto;padding:40px 24px 34px;display:flex;flex-direction:column;gap:12px}
 .qn-art-hero h1{margin:0;font-size:clamp(28px,3.6vw,44px);line-height:1.25;color:#fff}
 .qn-art-hero .qn-meta{color:rgba(255,255,255,.85)}
@@ -146,7 +146,7 @@ export function NewsArticleView({ post, related }) {
       <style>{CSS}</style>
       <SiteHeader active="المدونة" />
       <main style={{ flex: 1 }} data-no-i18n="">
-        <section className="qn-art-hero" style={{ backgroundImage: post.cover_url ? `url("${post.cover_url}")` : undefined }}>
+        <section className={post.cover_url ? 'qn-art-hero has-cover' : 'qn-art-hero'} style={{ backgroundImage: post.cover_url ? `url("${post.cover_url}")` : undefined }}>
           <div className="in">
             <Link href="/news" style={{ color: 'rgba(255,255,255,.85)', fontSize: 14, fontWeight: 600, textDecoration: 'none' }}>{en ? '← All posts' : '← كل المقالات'}</Link>
             <div className="qn-meta"><span className="qn-cat" style={{ background: cat.c }}>{en ? cat.en : cat.ar}</span><span>{fmtDate(post.published_at, en)}</span><span>· {post.minutes} {en ? 'min read' : 'دقائق قراءة'}</span></div>

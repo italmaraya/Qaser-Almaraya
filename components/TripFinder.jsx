@@ -94,17 +94,17 @@ export default function TripFinder({ lang = 'ar' }) {
   return (
     <section className="qa-sec" data-no-i18n="" dir={en ? 'ltr' : 'rtl'}>
       <style>{`
-.qa-tf{position:relative;overflow:hidden;border-radius:var(--tw-radius,16px);background:#035a73;color:#fff;padding:34px 34px 30px;display:flex;flex-direction:column;gap:22px}
+.qa-tf{position:relative;overflow:hidden;border-radius:var(--tw-radius,16px);background:var(--qs-band,#049dc5);color:#fff;padding:34px 34px 30px;display:flex;flex-direction:column;gap:22px}
 .qa-tf h2{color:#fff;font-size:32px;font-weight:700}
 .qa-tf-row{display:flex;flex-direction:column;gap:9px}
-.qa-tf-row>b{font-size:14px;color:var(--qs-line-2,#bfe9f6);font-weight:600}
+.qa-tf-row>b{font-size:14px;color:rgba(255,255,255,.92);font-weight:600}
 .qa-tf-chips{display:flex;flex-wrap:wrap;gap:8px}
 .qa-tf-chip{font-family:inherit;font-size:14px;font-weight:600;padding:8px 16px;border-radius:999px;border:1px solid rgba(255,255,255,.28);background:rgba(255,255,255,.08);color:#fff;cursor:pointer;transition:background .15s,transform .15s,border-color .15s}
 .qa-tf-chip:hover{background:rgba(255,255,255,.18)}
-.qa-tf-chip.on{background:#faab18;border-color:#faab18;color:#fff}
+.qa-tf-chip.on{background:#faab18;border-color:#faab18;color:#1d2733}
 .qa-tf-res{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
 .qa-tf-card{display:flex;gap:12px;align-items:stretch;background:#fff;color:var(--qs-ink,#1d2733);border-radius:var(--tw-radius-sm,10px);overflow:hidden;animation:qa-tf-in .45s cubic-bezier(.16,1,.3,1) both;transition:box-shadow .2s}
-.qa-tf-card:hover{color:var(--qs-ink,#1d2733);box-shadow:var(--tw-lift-shadow,0 8px 22px rgba(1,42,55,.12))}
+.qa-tf-card:hover{color:var(--qs-ink,#1d2733);box-shadow:var(--tw-lift-shadow,0 8px 22px rgba(29,39,51,.12))}
 .qa-tf-card img{width:96px;flex-shrink:0;object-fit:cover;background:var(--qs-brand-soft,#e4f5fb)}
 .qa-tf-card:nth-child(2){animation-delay:.07s}.qa-tf-card:nth-child(3){animation-delay:.14s}
 @keyframes qa-tf-in{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}

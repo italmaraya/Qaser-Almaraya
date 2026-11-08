@@ -92,7 +92,7 @@ export default function PaymentMethods({ title, note, methods, defaultOpen = 'ca
       <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
         {list.map((m, i) => {
           const on = open === m.id;
-          const accent = m.warn ? '#c07f00' : '#036f8c';
+          const accent = m.warn ? '#c07f00' : '#049dc5';
           return (
             <div key={m.id} style={{ border: '1px solid ' + (on ? accent : 'var(--qs-line,#ececed)'), borderRadius: 'var(--tw-radius-sm,10px)', overflow: 'hidden', background: '#fff' }}>
               <button onClick={() => setOpen(on ? '' : m.id)} style={{ width: '100%', boxSizing: 'border-box', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 12, padding: '14px 16px', border: 0, background: on ? (m.warn ? '#fef3dc' : 'var(--qs-brand-soft,#eaf8fd)') : 'var(--qs-paper,#f8f7f8)', fontFamily: 'inherit', textAlign: 'start' }}>

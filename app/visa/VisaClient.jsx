@@ -277,7 +277,7 @@ export default function VisaLandingPage({ initialCards = null }) {
                 <img
                   src="/assets/visa-fan-cutout.webp"
                   alt="سكايلو يحمل تأشيرات وجواز سفر"
-                  style={{ position: 'absolute', zIndex: 2, insetInlineStart: '2%', bottom: -14, display: 'block', width: 'clamp(150px,44%,220px)', height: 'auto', objectFit: 'contain', filter: 'drop-shadow(0 20px 30px rgba(1,42,55,.34))' }}
+                  style={{ position: 'absolute', zIndex: 2, insetInlineStart: '2%', bottom: -14, display: 'block', width: 'clamp(150px,44%,220px)', height: 'auto', objectFit: 'contain', filter: 'drop-shadow(0 16px 24px rgba(29,39,51,.26))' }}
                 />
 
                 <div aria-hidden="true" style={{ position: 'absolute', zIndex: 4, top: '8%', insetInlineEnd: -6, width: 'clamp(140px,36%,178px)', display: 'flex', flexDirection: 'column', alignItems: 'stretch', gap: 8, pointerEvents: 'none' }}>
@@ -615,7 +615,7 @@ export default function VisaLandingPage({ initialCards = null }) {
 
       {trackOpen && (
         <div
-          style={{ position: 'fixed', inset: 0, zIndex: 80, background: 'rgba(1,42,55,.55)', backdropFilter: 'blur(6px)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24 }}
+          style={{ position: 'fixed', inset: 0, zIndex: 80, background: 'rgba(29,39,51,.55)', backdropFilter: 'blur(6px)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24 }}
           onClick={closeTrack}
         >
           <div

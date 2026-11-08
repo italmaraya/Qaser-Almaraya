@@ -1,7 +1,8 @@
 /* ==========================================================================
    Qasr Al-Maraya — "modern energy" layer (Nov 2026)
    Loads after app/qs.css and only refines it: bold sans headlines, rounder
-   shapes, amber buttons with a warm glow, a glass header, cards that lift.
+   shapes, flat amber buttons, a glass header, cards that lift, and the
+   Instagram palette (white, light sky, cyan bands, charcoal, amber accent).
    Every rule is scoped to html[data-area=site] so /admin and /staff never
    change. Motion lives only inside prefers-reduced-motion:no-preference.
    Lifts use the independent `translate` property (not `transform`) so they
@@ -14,12 +15,22 @@ html[data-area=site]{
   --qs-display:var(--qs-sans);              /* headlines: bold sans, not Naskh */
   --qs-r-xs:12px;                           /* controls, chips, photos */
   --qs-r:20px;                              /* cards and panels */
-  --qs-grad-amber:linear-gradient(120deg,#ffc04a 0%,#faab18 45%,#f09c05 100%);
-  --qs-glow-amber:0 10px 24px -10px rgba(250,171,24,.75),inset 0 1px 0 rgba(255,255,255,.35);
-  --qs-glow-amber-hi:0 16px 32px -12px rgba(250,171,24,.85),inset 0 1px 0 rgba(255,255,255,.4);
-  --qs-glow-cyan:0 14px 30px -14px rgba(4,157,197,.7);
+  /* One identity with the Instagram account (8 Nov, Owner): white and light
+     sky instead of warm sand, cyan bands, charcoal type, amber as the accent. */
+  --qs-paper:#f6fbfd;
+  --qs-sand:#e9f6fb;
+  --qs-line:#dbe8ee;
+  --qs-line-2:#c3d6df;
+  --qs-brand-soft:#e3f5fc;
+  --qs-sky:linear-gradient(180deg,#f4fbfe 0%,#e2f4fb 100%);
+  --qs-band-grad:linear-gradient(150deg,#1fb6ea 0%,#049dc5 72%);
+  /* Owner: «قلل التوهج» — shadows stay neutral and small. */
+  --qs-grad-amber:linear-gradient(0deg,#faab18,#faab18);
+  --qs-glow-amber:0 1px 2px rgba(29,39,51,.14);
+  --qs-glow-amber-hi:0 6px 14px -8px rgba(29,39,51,.32);
+  --qs-glow-cyan:0 6px 14px -8px rgba(29,39,51,.3);
   --qs-card-rest:0 1px 2px rgba(29,39,51,.04);
-  --qs-card-lift:0 2px 6px rgba(29,39,51,.05),0 24px 48px -24px rgba(29,39,51,.32),0 18px 36px -28px rgba(4,157,197,.45);
+  --qs-card-lift:0 2px 6px rgba(29,39,51,.05),0 18px 36px -22px rgba(29,39,51,.28);
   --qs-spring:cubic-bezier(.22,1,.36,1);
 }
 
@@ -40,16 +51,16 @@ html[data-area=site] [dir=ltr] .qs-kicker::before{transform-origin:0 50%}
 html[data-area=site] :is(.qs-dark,.qs-on-dark) .qs-kicker{background:rgba(255,255,255,.16);color:#fff}
 @keyframes qs-kick{from{transform:scaleX(.45)}to{transform:scaleX(1)}}
 
-/* ---------- 4. Buttons: smooth, lift on hover, amber glows ---------- */
+/* ---------- 4. Buttons: smooth, lift on hover, no glow ---------- */
 html[data-area=site] :is(.qa-btn,.q-btn,.qs-btn){
   font-weight:700;
   transition:background-color .2s var(--qs-ease),background-position .45s var(--qs-ease),border-color .2s var(--qs-ease),color .2s var(--qs-ease),box-shadow .3s var(--qs-ease),translate .3s var(--qs-spring)!important}
-/* Primary amber (and the header CTA): warm gradient that slides on hover. Text stays charcoal. */
+/* Primary amber (and the header CTA): flat amber, small neutral shadow. Text stays charcoal. */
 html[data-area=site] :is(.qa-amber,.q-btn-pri,.qs-btn-pri,.qa-headcta){
   background:var(--qs-grad-amber) 0 50%/180% 100%!important;border-color:transparent!important;color:var(--qs-ink)!important;box-shadow:var(--qs-glow-amber)!important}
 html[data-area=site] :is(.qa-amber,.q-btn-pri,.qs-btn-pri,.qa-headcta):hover{
-  background:var(--qs-grad-amber) 100% 50%/180% 100%!important;border-color:transparent!important;color:var(--qs-ink)!important;box-shadow:var(--qs-glow-amber-hi)!important}
-/* Cyan buttons glow cyan on hover; line buttons pick up a cyan edge. */
+  background:var(--qs-amber-hover)!important;border-color:transparent!important;color:var(--qs-ink)!important;box-shadow:var(--qs-glow-amber-hi)!important}
+/* Cyan buttons get a soft shadow on hover; line buttons pick up a cyan edge. */
 html[data-area=site] :is(.qa-cyan,.qs-btn-brand):not(.qa-headcta):hover{box-shadow:var(--qs-glow-cyan)!important}
 html[data-area=site] :is(.q-btn-sec,.qs-btn-line):hover{border-color:var(--qs-brand)!important;background:#fff!important;box-shadow:0 10px 24px -16px rgba(29,39,51,.35)!important}
 html[data-area=site] .qs-btn-light:hover{box-shadow:0 12px 28px -14px rgba(29,39,51,.45)!important}
@@ -97,11 +108,9 @@ html[data-area=site] .qs-svc-icon{transition:background-color .25s var(--qs-ease
 html[data-area=site] .qs-svc-row:hover .qs-svc-icon{background:var(--qs-brand);color:#fff}
 html[data-area=site] .qs-svc-row:hover .qs-svc-go{color:var(--qs-brand)}
 
-/* ---------- 7. Bands: faint cyan / amber light, like sun on sand ---------- */
-html[data-area=site] .qs-band.qs-sand{
-  background-color:var(--qs-sand);
-  background-image:radial-gradient(640px 360px at 88% -6%,rgba(0,184,248,.10),transparent 70%),radial-gradient(560px 320px at 8% 108%,rgba(250,171,24,.13),transparent 70%)}
-html[data-area=site] .qs-ig{background-image:radial-gradient(520px 300px at 12% 0%,rgba(250,171,24,.10),transparent 70%)}
+/* ---------- 7. Bands: light sky like the Instagram posts, cyan brand bands ---------- */
+html[data-area=site] .qs-band.qs-sand{background:var(--qs-sky)}
+html[data-area=site] .qs-dark,html[data-area=site] .qa-tf{background:var(--qs-band-grad)!important}
 
 /* ---------- 8. Motion (only for people who have not asked for less) ---------- */
 @media (prefers-reduced-motion:no-preference){

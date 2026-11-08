@@ -374,7 +374,7 @@ function   printDoc(title, bodyHtml){
       'body{margin:0;font-family:"IBM Plex Sans Arabic",system-ui,sans-serif;color:#1d2733;line-height:1.7}' +
       'header{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;padding-bottom:14px;border-bottom:3px solid #049dc5;margin-bottom:26px}' +
       '.brand{font-size:19px;font-weight:700;color:#049dc5}.sub{font-size:12.5px;color:#5f666e}' +
-      'h1{margin:0 0 6px;font-size:27px;font-weight:700;color:#036f8c}' +
+      'h1{margin:0 0 6px;font-size:27px;font-weight:700;color:#049dc5}' +
       'h2{margin:26px 0 10px;font-size:18px;font-weight:700;color:#1d2733}' +
       'table{width:100%;border-collapse:collapse;margin-top:6px}' +
       'td{padding:9px 12px;font-size:14px;border-bottom:1px solid #ececed}' +
@@ -382,7 +382,7 @@ function   printDoc(title, bodyHtml){
       'ul{margin:6px 0 0;padding-inline-start:20px;font-size:14px}li{margin-bottom:4px}' +
       '.note{margin-top:16px;padding:12px 16px;border-radius:var(--tw-radius-sm,10px);background:#fef3dc;color:#a06a00;font-size:13px}' +
       '.card{border:1px solid #ececed;border-radius:var(--tw-radius-sm,10px);padding:16px 18px;margin-bottom:14px;page-break-inside:avoid}' +
-      '.card h3{margin:0 0 4px;font-size:17px;color:#036f8c}.meta{font-size:13px;color:#5f666e}' +
+      '.card h3{margin:0 0 4px;font-size:17px;color:#049dc5}.meta{font-size:13px;color:#5f666e}' +
       'footer{margin-top:34px;padding-top:12px;border-top:1px solid #ececed;font-size:12px;color:#5f666e;display:flex;justify-content:space-between;gap:12px}' +
       '</style></head><body>' +
       '<header><span class="brand">قصر المرايا للسفر و السياحة<span class="sub" style="display:block">QASER ALMARAYA · FOR TRAVEL &amp; TOURISM</span></span>' +
@@ -924,7 +924,7 @@ function   visaVals(country){
 <img src="/assets/cover-website.webp" alt="ذكرياتك تبدأ معنا — قصر المرايا للسفر و السياحة" style={{ display: "block", width: "100%", height: "auto" }} />
 <div className="qa-cover-copy" style={{ position: "absolute", right: "3%", top: "50%", transform: "translateY(-50%)", width: "34%", maxHeight: "94%", display: "flex", flexDirection: "column", alignItems: "flex-start", textAlign: "start", gap: "clamp(12px,1.3vw,22px)" }}>
 <h1 style={{ margin: "0", fontSize: "clamp(30px,3.4vw,62px)", fontWeight: "700", lineHeight: "1.12", color: "#0e88ad", textWrap: "pretty" }}>رحلتك تبدأ معنا!</h1>
-<p style={{ margin: "0", fontSize: "clamp(16px,1.25vw,24px)", lineHeight: "1.65", color: "#1d5f76", fontWeight: "500", textWrap: "pretty" }}>مع قصر المرايا للسفر والسياحة، نأخذك في رحلات لا تُنسى، بخدمات احترافية وتجارب مصممة خصيصًا لك.</p>
+<p style={{ margin: "0", fontSize: "clamp(16px,1.25vw,24px)", lineHeight: "1.65", color: "#1d2733", fontWeight: "500", textWrap: "pretty" }}>مع قصر المرايا للسفر والسياحة، نأخذك في رحلات لا تُنسى، بخدمات احترافية وتجارب مصممة خصيصًا لك.</p>
 <button className="qa-btn qa-amber" onClick={goPackages} style={{ alignSelf: "center", display: "inline-flex", alignItems: "center", whiteSpace: "nowrap", gap: "8px", color: "var(--qs-ink,#012a37)", fontWeight: "700", fontSize: "clamp(15px,1.05vw,19px)", padding: "clamp(11px,.9vw,16px) clamp(24px,2vw,38px)" }}>ابدأ رحلتك الآن
 <Icon name="chevron-left" size={14} strokeWidth={2.6} />
 </button>
@@ -986,7 +986,7 @@ function   visaVals(country){
 </span>
 <span aria-hidden="true" style={{ flex: "none", width: "1px", margin: "16px 0", background: "var(--qs-line,#ececed)" }}></span>
 <span style={{ flex: "none", padding: "0 20px", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: "8px" }}>
-<span className="qa-ticket-go" style={{ width: "60px", height: "60px", borderRadius: "50%", background: "#faab18", color: "#fff", display: "grid", placeItems: "center", boxShadow: "0 6px 16px rgba(250,171,24,.28)" }}>
+<span className="qa-ticket-go" style={{ width: "60px", height: "60px", borderRadius: "50%", background: "#faab18", color: "#1d2733", display: "grid", placeItems: "center", boxShadow: "0 2px 6px rgba(29,39,51,.10)" }}>
 <Icon name="chevron-left" size={24} strokeWidth={2.4} />
 </span>
 <span style={{ fontSize: "13px", fontWeight: "600", color: "var(--qs-ink,#1d2733)" }}>احجز الآن</span>
@@ -1323,7 +1323,7 @@ function   visaVals(country){
 <span aria-hidden="true" style={{ position: "relative", flex: "none", display: "grid", placeItems: "center", width: "64px", height: "64px", borderRadius: "50%", background: "#fff", border: "1px solid var(--qs-line-2,#bfe9f6)", color: "var(--qs-brand-deep,#049dc5)" }}>
 <Icon name="stamp" size={26} />
 </span>
-<span style={{ position: "relative", flex: "1", minWidth: "220px", fontSize: "16px", lineHeight: "1.7", color: "#046f8c" }}>اختر دولتك وتاريخ سفرك أعلاه، ثم اضغط <b style={{ color: "var(--qs-brand-deep,#036f8c)" }}>"عرض التفاصيل"</b> لتظهر لك نتائج التأشيرة هنا.</span>
+<span style={{ position: "relative", flex: "1", minWidth: "220px", fontSize: "16px", lineHeight: "1.7", color: "var(--qs-body,#3d4650)" }}>اختر دولتك وتاريخ سفرك أعلاه، ثم اضغط <b style={{ color: "var(--qs-brand-deep,#036f8c)" }}>"عرض التفاصيل"</b> لتظهر لك نتائج التأشيرة هنا.</span>
 </div>
 </>) : null}
 {showResults ? (<>
@@ -1945,7 +1945,7 @@ function   visaVals(country){
 <span style={{ position: "absolute", bottom: "-4px", left: "50%", width: "7px", height: "7px", marginLeft: "-3.5px", borderRadius: "50%", background: "rgba(255,255,255,.9)" }}></span>
 </span>
 
-<img src="/assets/mascot-skylo-recruit-phone-cut.webp" alt="سكايلو يستقبل طلبات التوظيف" className="qa-hero-mascot" style={{ position: "absolute", zIndex: "2", left: "-11%", bottom: "-30px", display: "block", width: "clamp(210px,62%,460px)", height: "auto", objectFit: "contain", filter: "drop-shadow(0 26px 38px rgba(1,42,55,.34))" }} />
+<img src="/assets/mascot-skylo-recruit-phone-cut.webp" alt="سكايلو يستقبل طلبات التوظيف" className="qa-hero-mascot" style={{ position: "absolute", zIndex: "2", left: "-11%", bottom: "-30px", display: "block", width: "clamp(210px,62%,460px)", height: "auto", objectFit: "contain", filter: "drop-shadow(0 18px 26px rgba(29,39,51,.34))" }} />
 
 <div aria-hidden="true" className="qa-hero-float" style={{ position: "absolute", zIndex: "4", top: "50%", right: "-18px", width: "clamp(186px,44%,246px)", transform: "translateY(-50%)", display: "flex", flexDirection: "column", alignItems: "stretch", gap: "14px", pointerEvents: "none" }}>
 <div style={{ alignSelf: "stretch", display: "flex", flexDirection: "column", alignItems: "center", transformOrigin: "50% 0", animation: "qa-swing 5.6s ease-in-out infinite" }}>
@@ -2051,7 +2051,7 @@ function   visaVals(country){
   style={{
     position: "absolute", zIndex: "2", left: "-11%", bottom: "-30px", display: "block",
     width: "clamp(240px,64%,420px)", height: "auto", objectFit: "contain",
-    filter: "drop-shadow(0 26px 38px rgba(1,42,55,.32))",
+    filter: "drop-shadow(0 18px 26px rgba(29,39,51,.32))",
   }}
 />
 
@@ -2123,7 +2123,7 @@ function   visaVals(country){
 <span style={{ position: "absolute", inset: "0", borderRadius: "50%", border: "1px dashed rgba(255,255,255,.42)" }}></span>
 <span style={{ position: "absolute", top: "-5px", left: "50%", width: "10px", height: "10px", marginLeft: "-5px", borderRadius: "50%", background: "#faab18" }}></span>
 </span>
-<img src="/assets/mascot-skylo-passport-hq.webp" alt="" style={{ position: "absolute", zIndex: "2", left: "-6%", top: "-10px", bottom: "-18px", display: "block", width: "auto", height: "calc(100% + 28px)", objectFit: "contain", objectPosition: "left bottom", filter: "drop-shadow(0 26px 38px rgba(1,42,55,.3))" }} />
+<img src="/assets/mascot-skylo-passport-hq.webp" alt="" style={{ position: "absolute", zIndex: "2", left: "-6%", top: "-10px", bottom: "-18px", display: "block", width: "auto", height: "calc(100% + 28px)", objectFit: "contain", objectPosition: "left bottom", filter: "drop-shadow(0 18px 26px rgba(29,39,51,.3))" }} />
 </div>
 </div>
 </section>
@@ -2171,7 +2171,7 @@ function   visaVals(country){
 <span style={{ position: "absolute", inset: "0", borderRadius: "50%", border: "1px dashed rgba(255,255,255,.42)" }}></span>
 <span style={{ position: "absolute", top: "-5px", left: "50%", width: "10px", height: "10px", marginLeft: "-5px", borderRadius: "50%", background: "#faab18" }}></span>
 </span>
-<img src="/assets/mascot-skylo-suit-hq.webp" alt="" style={{ position: "absolute", zIndex: "2", left: "-6%", top: "-10px", bottom: "-18px", display: "block", width: "auto", height: "calc(100% + 28px)", objectFit: "contain", objectPosition: "left bottom", filter: "drop-shadow(0 26px 38px rgba(1,42,55,.3))" }} />
+<img src="/assets/mascot-skylo-suit-hq.webp" alt="" style={{ position: "absolute", zIndex: "2", left: "-6%", top: "-10px", bottom: "-18px", display: "block", width: "auto", height: "calc(100% + 28px)", objectFit: "contain", objectPosition: "left bottom", filter: "drop-shadow(0 18px 26px rgba(29,39,51,.3))" }} />
 </div>
 </div>
 </section>
@@ -2658,7 +2658,7 @@ function   visaVals(country){
 </div>
 
 {trackOpen ? (<>
-<div style={{ position: "fixed", inset: "0", zIndex: "80", background: "rgba(1,42,55,.55)", backdropFilter: "blur(6px)", display: "flex", alignItems: "center", justifyContent: "center", padding: "24px" }} onClick={closeTrack}>
+<div style={{ position: "fixed", inset: "0", zIndex: "80", background: "rgba(29,39,51,.55)", backdropFilter: "blur(6px)", display: "flex", alignItems: "center", justifyContent: "center", padding: "24px" }} onClick={closeTrack}>
 <div dir="rtl" onClick={stopTrack} style={{ width: "100%", maxWidth: "460px", maxHeight: "88vh", overflow: "auto", background: "#fff", borderRadius: "var(--tw-radius,16px)", boxShadow: "var(--tw-card-shadow,0 1px 3px rgba(29,39,51,.06))" }}>
 <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: "14px", padding: "24px 24px 14px", borderBottom: "1px solid var(--qs-line,#ececed)" }}>
 <span style={{ display: "flex", flexDirection: "column", gap: "3px" }}>
@@ -2708,7 +2708,7 @@ function   visaVals(country){
 </>) : null}
 
 {applyOpen ? (<>
-<div style={{ position: "fixed", inset: "0", zIndex: "60", background: "rgba(1,42,55,.55)", display: "flex", alignItems: "center", justifyContent: "center", padding: "24px" }} onClick={closeApply}>
+<div style={{ position: "fixed", inset: "0", zIndex: "60", background: "rgba(29,39,51,.55)", display: "flex", alignItems: "center", justifyContent: "center", padding: "24px" }} onClick={closeApply}>
 <div dir="rtl" onClick={stopClose} style={{ width: "100%", maxWidth: "640px", maxHeight: "88vh", overflow: "auto", background: "#fff", borderRadius: "28px", boxShadow: "var(--tw-card-shadow,0 1px 3px rgba(29,39,51,.06))" }}>
 <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: "16px", padding: "24px 28px 16px", borderBottom: "1px solid var(--qs-line,#ececed)" }}>
 <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>

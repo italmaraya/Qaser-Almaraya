@@ -136,7 +136,7 @@ export default function VisaDetailPage() {
                 const tz = iso && iso !== 'iq' ? destinationTz(iso) : null;
                 return tz ? <WorldClocks tz={tz} place={nm(card.country_name_ar, card.country_name_en)} lang={lang} compact /> : null;
               })()}
-              <div style={{ background: '#0e6f8f', borderRadius: 'var(--tw-radius-sm,10px)', padding: 16, color: '#fff', display: 'flex', flexDirection: 'column', gap: 10 }}>
+              <div style={{ background: 'linear-gradient(135deg,#1db4e8,#049dc5)', borderRadius: 'var(--tw-radius-sm,10px)', padding: 16, color: '#fff', display: 'flex', flexDirection: 'column', gap: 10 }}>
                 <h4 style={{ margin: 0, fontSize: 15, color: '#fff' }}>لماذا قصر المرايا؟</h4>
                 {WHY_US.map((w, i) => (
                   <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
