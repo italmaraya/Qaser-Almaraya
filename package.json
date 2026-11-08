@@ -12,6 +12,7 @@
     "@neondatabase/serverless": "^0.10.4",
     "@upstash/redis": "^1.34.3",
     "@vercel/blob": "^2.8.0",
+    "cobe": "0.6.3",
     "next": "15.5.26",
     "node-html-parser": "^6.1.13",
     "nodemailer": "^10.0.12",
