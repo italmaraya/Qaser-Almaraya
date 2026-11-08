@@ -24,7 +24,7 @@ function Title({ text }) {
   return <>{t.slice(0, cut)} <span className="qh-accent">{t.slice(cut + 1)}</span></>;
 }
 
-export default function HeroCinematic({ slides: allSlides = [], kicker, title, subtitle, primary, secondary, live = [], liveTitle, lang = 'ar' }) {
+export default function HeroCinematic({ slides: allSlides = [], kicker, title, subtitle, primary, secondary, lang = 'ar' }) {
   const [active, setActive] = useState(0);
   // Pause only while the browser tab is hidden (the hero owns the first
   // screen, so pausing on hover would stop it for good).
@@ -97,7 +97,7 @@ export default function HeroCinematic({ slides: allSlides = [], kicker, title, s
 .qh-media{position:absolute;inset:0;z-index:0;overflow:hidden;background:#0d141c}
 .qh-slide{position:absolute;inset:0;opacity:0;transition:opacity ${FADE_MS}ms ease;z-index:0}
 .qh-slide.on{opacity:1;z-index:1}
-.qh-slide img,.qh-slide video{width:100%;height:100%;object-fit:cover;object-position:50% 40%;display:block}
+.qh-slide img,.qh-slide video{width:100%;height:100%;object-fit:cover;object-position:var(--qh-pos,50% 40%);display:block}
 .qh-slide.on img{animation:qh-zoom ${SLIDE_MS + FADE_MS}ms ease-out both}
 @keyframes qh-zoom{from{transform:scale(1.08)}to{transform:scale(1)}}
 /* Cinematic scrim: dark at the text edge and along the bottom, clear across
@@ -126,25 +126,6 @@ html[data-area] .qh .qh-title{margin:0;color:#fff;font-family:var(--qs-sans,inhe
 .qh-btn.sec{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.4);color:#fff;-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
 .qh-btn.sec:hover{border-color:#fff;background:rgba(255,255,255,.18);transform:translateY(-2px)}
 .qh-btn:focus-visible{outline:2px solid #00b8f8;outline-offset:3px}
-/* Glass panel: the next real departures from the packages list. */
-.qh-live{position:absolute;z-index:4;inset-inline-end:clamp(20px,5vw,72px);bottom:clamp(64px,9vh,96px);width:min(340px,30vw);padding:16px;border-radius:20px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.24);-webkit-backdrop-filter:blur(18px) saturate(1.4);backdrop-filter:blur(18px) saturate(1.4);box-shadow:0 18px 40px -24px rgba(0,0,0,.45);color:#fff;animation:qh-rise .9s .35s cubic-bezier(.2,.7,.2,1) both}
-.qh-live-h{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:0 0 10px;font-size:14px;font-weight:700}
-.qh-live-h span{display:inline-flex;align-items:center;gap:8px}
-.qh-live-h span::before{content:"";width:8px;height:8px;border-radius:50%;background:#2fd47a;animation:qh-ping-g 2s ease-out infinite}
-@keyframes qh-ping-g{0%{box-shadow:0 0 0 0 rgba(47,212,122,.6)}70%,100%{box-shadow:0 0 0 8px rgba(47,212,122,0)}}
-.qh-live-h a{color:#fff;font-weight:600;font-size:13px;opacity:.85;text-decoration:none}
-.qh-live-h a:hover{opacity:1;text-decoration:underline}
-.qh-live ol{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
-.qh-live li a{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:12px;padding:10px 12px;border-radius:14px;background:rgba(13,20,28,.28);color:#fff;text-decoration:none;transition:background .18s ease,transform .22s ease}
-.qh-live li a:hover{background:rgba(13,20,28,.5);transform:translateX(-3px)}
-.qh[dir="ltr"] .qh-live li a:hover{transform:translateX(3px)}
-.qh-live-d{display:flex;flex-direction:column;align-items:center;justify-content:center;min-width:44px;padding:4px 6px;border-radius:10px;background:#faab18;color:#1d2733;font-weight:700;line-height:1.1}
-.qh-live-d b{font-size:18px}.qh-live-d small{font-size:11px;font-weight:600}
-.qh-live-t{display:flex;flex-direction:column;min-width:0}
-.qh-live-t b{font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.qh-live-t small{font-size:12px;opacity:.8}
-.qh-live-p{font-size:13px;font-weight:700;white-space:nowrap;color:#ffd27a}
-@media (min-width:821px) and (max-width:1100px){.qh-live{display:none}}
 .qh-foot{position:absolute;z-index:5;inset-inline:0;bottom:var(--q-s3,24px);display:flex;align-items:center;justify-content:space-between;gap:var(--q-s2,16px);padding-inline:clamp(20px,5vw,72px)}
 .qh-cap{display:inline-flex;align-items:center;gap:7px;font-size:var(--q-t5,15px);font-weight:600;min-height:22px}
 .qh-bars{display:flex;gap:6px}
@@ -160,7 +141,7 @@ html[data-area] .qh .qh-title{margin:0;color:#fff;font-family:var(--qs-sans,inhe
 @media (max-width:820px){
   .qh{height:auto;min-height:0;max-height:none;background:linear-gradient(180deg,#ffffff 0%,#e4f5fc 100%);color:#1d2733;overflow:visible;display:flex;flex-direction:column}
   .qh-media{order:1;position:relative;inset:auto;width:100%;aspect-ratio:var(--qh-mr,4/5);transition:aspect-ratio .3s ease}
-  .qh-slide img{object-position:50% 30%}
+  .qh-slide img{object-position:var(--qh-pos-m,50% 30%)}
   .qh-slide video{object-fit:contain;object-position:50% 50%;background:#0d141c}
   .qh-scrim,.qh[dir="ltr"] .qh-scrim{background:linear-gradient(to top,rgba(13,20,28,.55) 0%,rgba(13,20,28,0) 30%)}
   .qh-copy{order:2;position:relative;transform:none;inset:auto;max-width:none;top:auto;padding:22px 16px 28px;gap:14px;background:transparent}
@@ -173,23 +154,18 @@ html[data-area] .qh .qh-title{margin:0;color:#fff;font-family:var(--qs-sans,inhe
   .qh-btn.sec{background:#fff;border-color:#c3d6df;color:#1d2733;-webkit-backdrop-filter:none;backdrop-filter:none}
   .qh-btn.sec:hover{border-color:#049dc5;background:#fff}
   .qh-foot{bottom:0;padding:24px 16px 12px;color:#fff;background:none}
-  .qh-live{order:3;position:relative;inset:auto;width:auto;margin:0 16px 32px;bottom:auto;background:#fff;border-color:#dbe8ee;color:#1d2733;box-shadow:0 1px 2px rgba(29,39,51,.06);-webkit-backdrop-filter:none;backdrop-filter:none}
-  .qh-live-h a{color:#049dc5}
-  .qh-live li a{background:#f2f9fc;color:#1d2733}
-  .qh-live li a:hover{background:#e3f5fc}
-  .qh-live-p{color:#049dc5}
 }
 @media (prefers-reduced-motion:reduce){
-  .qh-copy>*,.qh-live,.qh-slide.on img{animation:none}
+  .qh-copy>*,.qh-slide.on img{animation:none}
   .qh-accent::after{animation:none;transform:none}
-  .qh-eyebrow::before,.qh-live-h span::before{animation:none}
+  .qh-eyebrow::before{animation:none}
   .qh-slide{transition:none}
   .qh-bar.on i{animation:none;width:100%}
 }
 `}</style>
       <div className="qh-media" style={{ '--qh-mr': mobileRatio }}>
         {slides.map((s, i) => (
-          <div key={i} className={'qh-slide' + (i === active ? ' on' : '')} aria-hidden={i !== active}>
+          <div key={i} className={'qh-slide' + (i === active ? ' on' : '')} aria-hidden={i !== active} style={{ '--qh-pos': s.pos || undefined, '--qh-pos-m': s.posMobile || undefined }}>
             {s.type === 'video' && !reduced && !(lite && s.poster) ? (
               <video
                 ref={(el) => { videoRefs.current[i] = el; }}
@@ -233,23 +209,6 @@ html[data-area] .qh .qh-title{margin:0;color:#fff;font-family:var(--qs-sans,inhe
           )}
         </div>
       </div>
-
-      {live.length ? (
-        <aside className="qh-live" aria-label={liveTitle}>
-          <p className="qh-live-h"><span>{liveTitle}</span><a href="/packages">{lang === 'en' ? 'All' : 'الكل'}</a></p>
-          <ol>
-            {live.map((r) => (
-              <li key={r.href + r.day}>
-                <a href={r.href}>
-                  <span className="qh-live-d" dir="ltr" data-keep-dir=""><b>{r.day}</b><small>{r.month}</small></span>
-                  <span className="qh-live-t"><b>{r.dest}</b><small>{r.nights}</small></span>
-                  <span className="qh-live-p">{r.price}</span>
-                </a>
-              </li>
-            ))}
-          </ol>
-        </aside>
-      ) : null}
 
       <div className="qh-copy">
         {kicker && <p className="qh-eyebrow">{kicker}</p>}

@@ -339,7 +339,6 @@ html[data-area=site] .qh .qh-bar{border-radius:4px}
   html[data-area=site] .qh{height:min(84vh,800px);min-height:580px}
   html[data-area=site] .qh .qh-copy{top:46%}
   html[data-area=site] .qh .qh-foot{bottom:88px}
-  html[data-area=site] .qh .qh-live{bottom:136px}
 }
 
 /* Trip finder: same ink band, square chips, white action */
