@@ -14,6 +14,8 @@ const intOrNull = (v) => (v === '' || v === null || v === undefined || Number.is
 const cleanDates = (a) => (Array.isArray(a) ? a.filter((d) => d && d.date).map((d) => ({ date: String(d.date).slice(0, 10), adjust: Math.round(Number(d.adjust) || 0) })).sort((x, y) => x.date.localeCompare(y.date)) : []);
 const seats = (v) => (v === '' || v === null || v === undefined || Number.isNaN(Number(v)) ? null : Math.max(0, Math.round(Number(v))));
 const clean = (a) => (Array.isArray(a) ? a.map((s) => String(s || '').trim()).filter(Boolean) : []);
+// Story video: only an https link (uploaded to Blob from the editor), else empty.
+const videoUrl = (v) => { const u = String(v || '').trim(); return /^https:\/\/\S+$/i.test(u) && u.length < 1000 ? u : ''; };
 
 export async function PUT(request, { params }) {
   if (!(await requireAdmin(request))) return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
@@ -37,7 +39,7 @@ export async function PUT(request, { params }) {
       includes_ar = ${JSON.stringify(b.includes_ar || [])}, includes_en = ${JSON.stringify(b.includes_en || [])},
       hotels = ${JSON.stringify(cleanHotels(b.hotels))}, flights = ${JSON.stringify(firstFree(b.flights))},
       days = ${JSON.stringify(b.days || [])}, image_url = ${b.image_url || ''},
-      active = ${b.active !== false}, sort_order = ${b.sort_order || 0}, iqd_migrated = true, rating = ${b.rating || 4.8}, pdf_banner_url = ${b.pdf_banner_url || ''},
+      active = ${b.active !== false}, sort_order = ${b.sort_order || 0}, iqd_migrated = true, rating = ${b.rating || 4.8}, pdf_banner_url = ${b.pdf_banner_url || ''}, story_video_url = COALESCE(${b.story_video_url === undefined ? null : videoUrl(b.story_video_url)}, story_video_url),
       excludes_ar = ${JSON.stringify(clean(b.excludes_ar))}, excludes_en = ${JSON.stringify(clean(b.excludes_en))},
       publish_at = ${b.publish_at || null}, departure_date = ${b.departure_date || null}, seats_left = ${seats(b.seats_left)},
       child_nobed_price = ${px.child_nobed_price}, infant_price = ${px.infant_price}, child_nobed_cost = ${num(b.child_nobed_cost)}, infant_cost = ${num(b.infant_cost)},
