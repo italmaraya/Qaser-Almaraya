@@ -172,7 +172,7 @@ export default function OfferStories({ lang = 'ar' }) {
             onTouchEnd={holdEnd}
           >
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img key={p.id} className="qs-st-photo" src={photo(p.image_url, 1080)} onLoad={() => setLoadedId(p.id)} onError={(e) => { if (e.currentTarget.dataset.fallback) setLoadedId(p.id); fallback(p.image_url)(e); }} alt="" />
+            <img key={p.id} className={'qs-st-photo kb' + ((open.s + open.i) % 4) + (paused ? ' hold' : '')} src={photo(p.image_url, 1080)} onLoad={() => setLoadedId(p.id)} onError={(e) => { if (e.currentTarget.dataset.fallback) setLoadedId(p.id); fallback(p.image_url)(e); }} alt="" />
             <div className="qs-st-shade" aria-hidden="true" />
             <div className="qs-st-bars" aria-hidden="true">
               {cur.items.map((x, n) => (
