@@ -82,7 +82,7 @@ export default function DeparturesBoard({ lang = 'ar' }) {
   const rows = useMemo(() => {
     const today = baghdadToday();
     const sorted = (pkgs || [])
-      .map((p) => ({ p, date: nextDate(p, today), dest: destinationLabel(p, 'ar') }))
+      .map((p) => ({ p, date: nextDate(p, today), dest: destinationLabel(p, 'ar'), country: (Array.isArray(p.countries) && p.countries[0]) || destinationLabel(p, 'ar') }))
       .filter((r) => r.date)
       .sort((a, b) => a.date.localeCompare(b.date) || (Number(a.p.price) || 0) - (Number(b.p.price) || 0));
     // One row per destination and date (its cheapest package, which the sort
@@ -94,10 +94,11 @@ export default function DeparturesBoard({ lang = 'ar' }) {
     for (const r of sorted) {
       const key = r.dest + '|' + r.date;
       if (seenKey.has(key)) continue;
-      const n = perDest.get(r.dest) || 0;
+      // Cap per country, so one country's many city/hotel variants cannot fill the board.
+      const n = perDest.get(r.country) || 0;
       if (n >= PER_DEST) continue;
       seenKey.add(key);
-      perDest.set(r.dest, n + 1);
+      perDest.set(r.country, n + 1);
       out.push(r);
       if (out.length >= MAX_ROWS) break;
     }
