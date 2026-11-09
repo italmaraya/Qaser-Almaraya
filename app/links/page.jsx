@@ -1,84 +1,80 @@
-import Link from 'next/link';
 import Icon from '../../components/Icon';
 import { WA_ICON } from '../../components/WhatsAppButton';
-import OfferStories from '../../components/home/OfferStories';
-import LinksDepartures from '../../components/LinksDepartures';
 import { waLink } from '../../lib/whatsapp';
-import { ADDRESS_AR } from '../../lib/company';
 import { pageMeta } from '../../lib/seo';
 
-// Link-in-bio page for the Instagram profile (replaces qalmaraya.carrd.co,
-// whose login was lost — Owner, 9 Nov 2026). Quiet chrome; the one rich
-// moment is the boarding pass of the next real departures from Baghdad.
+// Link-in-bio page for the Instagram profile. Same content as the old
+// qalmaraya.carrd.co card (Owner, 9 Nov 2026: keep its details, only bring the
+// look to the new identity); the carrd login was lost, so it now lives here.
 export const metadata = pageMeta({
-  title: 'روابطنا',
-  description: 'تواصل مع قصر المرايا للسفر والسياحة عبر واتساب أو الرقم المختصر 6393، وتصفح الرحلات القادمة من بغداد والباقات والتأشيرات.',
+  title: 'شركة قصر المرايا',
+  description: 'قصر المرايا للسفر والسياحة: نرسم لك رحلتك من البداية إلى الذكرى. حجوزات الطيران والفنادق والتأشيرات والكروبات السياحية من بغداد.',
   path: '/links',
 });
 
-const LINKS = [
-  { href: '/packages', icon: 'luggage', title: 'الباقات السياحية' },
-  { href: '/visa', icon: 'id-card', title: 'التأشيرات' },
-  { href: '/flights', icon: 'plane', title: 'الطيران والفنادق' },
-  { href: '/guide', icon: 'compass', title: 'دليل الوجهات' },
-];
+const ln = { fill: 'none', stroke: 'currentColor', strokeWidth: 1.8, strokeLinecap: 'round', strokeLinejoin: 'round' };
+const I = {
+  mail: <svg width="20" height="20" viewBox="0 0 24 24" {...ln} aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2" /><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" /></svg>,
+  store: <svg width="16" height="16" viewBox="0 0 24 24" {...ln} aria-hidden="true"><path d="m2 7 4.41-4.41A2 2 0 0 1 7.83 2h8.34a2 2 0 0 1 1.42.59L22 7" /><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8" /><path d="M15 22v-4a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2v4" /><path d="M2 7h20" /><path d="M22 7v3a2 2 0 0 1-2 2a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 16 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 12 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 8 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 4 12a2 2 0 0 1-2-2V7" /></svg>,
+  linkedin: <svg width="16" height="16" viewBox="0 0 24 24" {...ln} aria-hidden="true"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7h-4v-7a6 6 0 0 1 6-6z" /><rect x="2" y="9" width="4" height="12" /><circle cx="4" cy="4" r="2" /></svg>,
+  youtube: <svg width="16" height="16" viewBox="0 0 24 24" {...ln} aria-hidden="true"><path d="M2.5 17a24 24 0 0 1 0-10 2 2 0 0 1 1.4-1.4 49.6 49.6 0 0 1 16.2 0A2 2 0 0 1 21.5 7a24 24 0 0 1 0 10 2 2 0 0 1-1.4 1.4 49.6 49.6 0 0 1-16.2 0A2 2 0 0 1 2.5 17" /><path d="m10 15 5-3-5-3z" /></svg>,
+  x: <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.8 3h3.1l-6.8 7.7L22 21h-6.2l-4.9-6.3L5.3 21H2.2l7.3-8.3L2 3h6.4l4.4 5.8zm-1.1 16.2h1.7L7.4 4.7H5.6z" /></svg>,
+  facebook: <svg width="16" height="16" viewBox="0 0 24 24" {...ln} aria-hidden="true"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" /></svg>,
+  tiktok: <svg width="16" height="16" viewBox="0 0 24 24" {...ln} aria-hidden="true"><path d="M15 3c.5 2.4 2 3.8 4.5 4v3a7.6 7.6 0 0 1-4.5-1.4V15a5.5 5.5 0 1 1-5.5-5.5v3.1A2.5 2.5 0 1 0 12 15V3z" /></svg>,
+};
 
-const SOCIAL = [
-  { href: 'https://www.instagram.com/qaseralmaraya/', label: 'Instagram', icon: <Icon name="instagram" size={18} /> },
-  { href: 'https://www.tiktok.com/@qaseralmaraya', label: 'TikTok', icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" aria-hidden="true"><path d="M15 3c.5 2.4 2 3.8 4.5 4v3a7.6 7.6 0 0 1-4.5-1.4V15a5.5 5.5 0 1 1-5.5-5.5V12.6A2.5 2.5 0 1 0 12 15V3z" /></svg> },
-  { href: 'https://www.facebook.com/profile.php?id=61567289284263', label: 'Facebook', icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M14 21v-8h3l.5-3.5H14V7.8c0-1 .3-1.8 1.8-1.8h1.8V3.1C17 3 16 3 15 3c-2.7 0-4.5 1.6-4.5 4.6v1.9h-3V13h3v8" /></svg> },
-  { href: 'https://www.youtube.com/@qaseralmarya', label: 'YouTube', icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" aria-hidden="true"><rect x="2.5" y="5.5" width="19" height="13" rx="4" /><path d="M10.5 9.5v5l4-2.5z" fill="currentColor" /></svg> },
-  { href: 'https://x.com/qaseralmaraya', label: 'X', icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" aria-hidden="true"><path d="M4 4l16 16M20 4L4 20" /></svg> },
-  { href: 'https://www.linkedin.com/company/qaseralmaraya', label: 'LinkedIn', icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="4" /><path d="M8 10.5V16M8 7.8v.2M12 16v-5.5M12 13a2.5 2.5 0 0 1 5 0v3" /></svg> },
+// The old card's buttons, in its order (Snapchat left out: its link was empty).
+const BUTTONS = [
+  { label: 'LinkedIn', href: 'https://www.linkedin.com/company/qaseralmaraya', icon: I.linkedin },
+  { label: 'YouTube', href: 'https://www.youtube.com/@qaseralmarya', icon: I.youtube },
+  { label: 'X', href: 'https://x.com/qaseralmaraya', icon: I.x },
+  { label: 'Instagram', href: 'https://www.instagram.com/qaseralmaraya/', icon: <Icon name="instagram" size={16} strokeWidth={1.8} /> },
+  { label: 'Facebook', href: 'https://www.facebook.com/profile.php?id=61567289284263', icon: I.facebook },
+  { label: 'WebSite', href: '/', icon: <Icon name="globe" size={16} strokeWidth={1.8} />, self: true },
+  { label: 'TikTok', href: 'https://www.tiktok.com/@qaseralmaraya', icon: I.tiktok },
+  { label: 'Google Business', href: 'https://share.google/mJh2iRvrcGKkMqNNO', icon: I.store },
 ];
 
 export default function LinksPage() {
-  const wa = waLink('مرحباً قصر المرايا، أتواصل معكم من إنستغرام وأرغب في الاستفسار عن رحلة.');
   return (
     <main className="ql" data-no-i18n="">
-      <div className="ql-wrap">
-        <div className="ql-head">
+      <article className="ql-card">
+        <div className="ql-intro">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img className="ql-logo" src="/assets/logo-mark-tight.webp" alt="" width="56" height="56" />
-          <div>
-            <h1>قصر المرايا للسفر والسياحة</h1>
-            <p>بغداد · يومياً من 9 صباحاً حتى منتصف الليل</p>
-          </div>
+          <img className="ql-logo" src="/assets/logo-mark-tight.webp" alt="قصر المرايا" width="96" height="96" />
+          <h1>شركة <span>قصر المرايا</span></h1>
+          <p className="ql-sub">قصر المرايا للسفر والسياحة</p>
+          <p className="ql-motto">نرسم لك رحلتك من البداية إلى الذكرى!</p>
         </div>
 
-        <div className="ql-actions">
-          <a className="ql-wa" href={wa} target="_blank" rel="noopener">{WA_ICON}<span>احجز عبر واتساب</span></a>
-          <a className="ql-call" href="tel:6393" aria-label="اتصل بالرقم المختصر 6393"><Icon name="phone" size={18} /><span dir="ltr">6393</span></a>
+        <div className="ql-about">
+          <p>شركة عراقية رائدة في مجال السفر والسياحة، متخصصة بتنظيم البرامج السياحية المتكاملة إلى مختلف الوجهات العالمية. نُقدّم خدماتنا باحترافية عالية تشمل حجوزات الطيران، الإقامة الفندقية، استخراج التأشيرات، الجولات السياحية، النقل، وخدمة العملاء على مدار الساعة.</p>
+          <p>نتميّز بتنظيم كروبات جماعية مميزة تناسب كل الأذواق، سواء كانت عائلية، شبابية، علاجية أو فاخرة، مع عروض حصرية في مواسم الأعياد والعطل الرسمية.</p>
+          <p>ثقة آلاف العملاء هي رأس مالنا الحقيقي، وخبرتنا هي جواز مرورك نحو تجربة سفر آمنة، منظمة، ومليئة بالذكريات.</p>
+          <p className="ql-sign">قصر المرايا – سفرتك تبدي ويّانا</p>
         </div>
 
-        <OfferStories lang="ar" />
+        <div className="ql-contact">
+          <a href="tel:+9647749999600" aria-label="Mobile" title="Mobile"><Icon name="smartphone" size={20} strokeWidth={1.8} /></a>
+          <a href={waLink('مرحباً قصر المرايا، أرغب في الاستفسار عن رحلة.')} target="_blank" rel="noopener" aria-label="WhatsApp" title="WhatsApp">{WA_ICON}</a>
+          <a href="mailto:sales@almarayagroup.com" aria-label="Email" title="Email">{I.mail}</a>
+        </div>
 
-        <LinksDepartures />
+        <hr className="ql-rule" />
 
-        <nav className="ql-list" aria-label="روابط الموقع">
-          {LINKS.map((l) => (
-            <Link key={l.href} href={l.href}>
-              <Icon name={l.icon} size={18} />
-              <span>{l.title}</span>
-              <Icon name="chevron-left" size={16} />
-            </Link>
+        <section className="ql-more">
+          <h2>رحلات مصممة لتناسب أحلامك</h2>
+          <p>نسهّل لك كل خطوات السفر من التأشيرة وحتى العودة، بخدمة احترافية ودعم متواصل.</p>
+          <h2>مع <span>قصر المرايا</span>... وجهتك أوضح</h2>
+          <p>من تركيا إلى شرق آسيا، نأخذك إلى وجهات تفوق التوقعات، بأسعار مدروسة وعروض موسمية مميزة.</p>
+        </section>
+
+        <nav className="ql-buttons" aria-label="حساباتنا">
+          {BUTTONS.map((b) => (
+            <a key={b.label} href={b.href} {...(b.self ? {} : { target: '_blank', rel: 'noopener' })} dir="ltr">{b.icon}<span>{b.label}</span></a>
           ))}
-          <a href="https://share.google/mJh2iRvrcGKkMqNNO" target="_blank" rel="noopener">
-            <Icon name="map-pin" size={18} />
-            <span>{ADDRESS_AR}</span>
-            <Icon name="chevron-left" size={16} />
-          </a>
         </nav>
-
-        <div className="ql-foot">
-          <div className="ql-social">
-            {SOCIAL.map((s) => (
-              <a key={s.label} href={s.href} target="_blank" rel="noopener" aria-label={s.label} title={s.label}>{s.icon}</a>
-            ))}
-          </div>
-          <a className="ql-mail" href="mailto:sales@almarayagroup.com" dir="ltr">sales@almarayagroup.com</a>
-        </div>
-      </div>
+      </article>
     </main>
   );
 }
