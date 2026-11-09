@@ -75,7 +75,7 @@ export default function LinksPage() {
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img className="ql-skylo-2" src="/assets/mascot-skylo-questions-cut.webp" alt="" width="793" height="689" loading="lazy" />
             <div className="ql-contact">
-              <a href="tel:+9647749999600" aria-label="Mobile" title="Mobile"><Icon name="smartphone" size={20} strokeWidth={1.8} /></a>
+              <a href="tel:+9647849999600" aria-label="Mobile" title="Mobile"><Icon name="smartphone" size={20} strokeWidth={1.8} /></a>
               <a href={wa} target="_blank" rel="noopener" aria-label="WhatsApp" title="WhatsApp">{WA_ICON}</a>
               <a href="mailto:sales@almarayagroup.com" aria-label="Email" title="Email">{I.mail}</a>
             </div>
