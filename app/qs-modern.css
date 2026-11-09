@@ -147,43 +147,76 @@ html[data-area=site] .qs-globe-pin:is(:hover,:focus-visible,.on){z-index:2}
 html[data-area=site] .qs-globe-hint{margin:0;font-size:14px;color:var(--qs-ink-2)}
 
 /* ── 10. /links: link-in-bio page for the Instagram profile ──
-   Same content as the old carrd card, in the Instagram identity: light sky,
-   white card, charcoal text, a cyan highlighted word, amber as a small mark. */
+   Same content as the old carrd card, in the Qasr identity from Instagram:
+   light sky, the Q mark, Skylo, amber lightning marks and arcs, a dotted
+   flight path, charcoal text with cyan highlighted words. */
 html[data-area=site] body:has(.ql){padding-bottom:0;background:#dff3fb}
 html[data-area=site] .ql{position:relative;min-height:100svh;padding:48px 16px calc(48px + env(safe-area-inset-bottom,0px));background:linear-gradient(180deg,#f4fbfe 0%,#dff3fb 55%,#bfe8f8 100%);overflow:hidden;color:#1d2733}
-html[data-area=site] .ql::before{content:"";position:absolute;inset-inline-start:-140px;top:38%;width:420px;height:420px;border:14px solid #faab18;border-radius:50%;border-inline-end-color:transparent;border-bottom-color:transparent;transform:rotate(-20deg);opacity:.9;pointer-events:none}
-html[data-area=site] .ql-card{position:relative;max-width:640px;margin:0 auto;background:#fff;border-radius:24px;padding:40px 40px 32px;box-shadow:0 1px 2px rgba(29,39,51,.05),0 24px 48px -28px rgba(4,84,110,.35)}
-html[data-area=site] .ql-intro{display:flex;flex-direction:column;align-items:center;text-align:center}
-html[data-area=site] .ql-logo{width:96px;height:96px;border-radius:50%;padding:14px;box-sizing:border-box;background:#fff;border:1px solid #dbe8ee}
-html[data-area=site] .ql h1{margin:20px 0 0;font-size:32px!important;line-height:1.3!important;font-weight:700;color:#1d2733}
+html[data-area=site] .ql::before,html[data-area=site] .ql::after{content:"";position:absolute;border-radius:50%;pointer-events:none;border:14px solid #faab18;border-inline-end-color:transparent;border-bottom-color:transparent}
+html[data-area=site] .ql::before{inset-inline-start:-140px;top:42%;width:420px;height:420px;transform:rotate(-20deg)}
+html[data-area=site] .ql::after{inset-inline-end:-120px;top:6%;width:300px;height:300px;border-width:10px;border-color:#00b8f8;border-inline-start-color:transparent;border-top-color:transparent;transform:rotate(-10deg);opacity:.6}
+html[data-area=site] .ql-card{position:relative;max-width:760px;margin:0 auto;background:#fff;border-radius:24px;overflow:hidden;box-shadow:0 1px 2px rgba(29,39,51,.05),0 24px 48px -28px rgba(4,84,110,.35)}
 html[data-area=site] .ql h1 span,html[data-area=site] .ql h2 span{color:#049dc5}
-html[data-area=site] .ql-sub{margin:8px 0 0;font-size:15px!important;color:#4a5a66}
-html[data-area=site] .ql-motto{margin:4px 0 0;font-size:17px!important;font-weight:600;color:#1d2733}
-html[data-area=site] .ql-about{margin-top:28px;display:flex;flex-direction:column;gap:12px}
+/* hero */
+html[data-area=site] .ql-hero{position:relative;display:grid;grid-template-columns:1.05fr 1fr;align-items:end;gap:8px;padding:36px 40px 0;background:linear-gradient(160deg,#e8f6fd 0%,#bfe8f8 70%,#8fd8f4 100%);overflow:hidden;isolation:isolate}
+html[data-area=site] .ql-q{position:absolute;z-index:-1;inset-inline-end:-60px;top:-40px;width:360px;height:auto;opacity:.55}
+html[data-area=site] .ql-path{position:absolute;z-index:-1;inset-inline-start:10%;top:20px;width:70%;height:auto;transform:scaleX(-1)}
+html[data-area=site] .ql-plane{position:absolute;z-index:-1;inset-inline-end:16%;top:22px;color:#049dc5;transform:rotate(-20deg) scaleX(-1)}
+html[data-area=site] .ql-skylo{order:2;width:100%;max-width:360px;height:auto;justify-self:center}
+html[data-area=site] .ql-intro{display:flex;flex-direction:column;align-items:flex-start;padding-bottom:36px}
+html[data-area=site] .ql-logo{width:64px;height:64px;border-radius:50%;padding:10px;box-sizing:border-box;background:#fff}
+html[data-area=site] .ql-slogan{position:relative;margin:16px 0 0;font-size:38px!important;line-height:1.25!important;font-weight:700;color:#1d2733}
+html[data-area=site] .ql-slogan span{color:#049dc5;box-shadow:inset 0 -8px 0 rgba(250,171,24,.55)}
+html[data-area=site] .ql-spark{position:absolute;inset-inline-start:-28px;top:-18px}
+html[data-area=site] .ql-slogan-en{margin:4px 0 0;font-family:'IBM Plex Sans',system-ui,sans-serif;font-size:15px!important;font-weight:500;color:#047a99}
+html[data-area=site] .ql h1{margin:20px 0 0;font-size:24px!important;line-height:1.35!important;font-weight:700;color:#1d2733}
+html[data-area=site] .ql-sub{margin:4px 0 0;font-size:15px!important;color:#3d4c57}
+html[data-area=site] .ql-motto{margin:8px 0 0;display:inline-flex;padding:6px 14px;border-radius:999px;background:#fff;font-size:15px!important;font-weight:600;color:#1d2733}
+html[data-area=site] .ql-body{padding:32px 40px;display:flex;flex-direction:column;gap:28px}
+html[data-area=site] .ql-about{display:flex;flex-direction:column;gap:12px}
 html[data-area=site] .ql-about p,html[data-area=site] .ql-more p{margin:0;font-size:16px!important;line-height:1.85!important;color:#3d4c57}
-html[data-area=site] .ql-sign{display:inline-flex;align-self:flex-start;align-items:center;gap:8px;margin-top:4px!important;font-weight:600;color:#1d2733!important}
+html[data-area=site] .ql-sign{display:inline-flex;align-self:flex-start;align-items:center;gap:8px;font-weight:600;color:#1d2733!important}
 html[data-area=site] .ql-sign::before{content:"";width:20px;height:3px;border-radius:2px;background:#faab18}
-html[data-area=site] .ql-contact{display:flex;justify-content:center;gap:12px;margin-top:28px}
-html[data-area=site] .ql-contact a{display:grid;place-items:center;width:52px;height:52px;border-radius:50%;background:#e3f5fc;color:#047a99;text-decoration:none;transition:background-color .15s ease,color .15s ease}
+/* contact band with Skylo */
+html[data-area=site] .ql-reach{position:relative;display:flex;align-items:center;justify-content:center;gap:24px;padding:16px 24px;border-radius:20px;background:linear-gradient(150deg,#1fb6ea 0%,#049dc5 72%);overflow:hidden}
+html[data-area=site] .ql-skylo-2{width:150px;height:auto;margin:-8px 0 -20px}
+html[data-area=site] .ql-contact{position:relative;z-index:1;display:flex;gap:12px}
+html[data-area=site] .ql-contact a{display:grid;place-items:center;width:52px;height:52px;border-radius:50%;background:#fff;color:#047a99;text-decoration:none;transition:background-color .15s ease,color .15s ease}
 html[data-area=site] .ql-contact a svg{width:22px;height:22px}
-html[data-area=site] .ql-contact a:hover{background:#049dc5;color:#fff}
-html[data-area=site] .ql-rule{margin:32px -40px;border:0;border-top:1px solid #e3edf2}
-html[data-area=site] .ql-more{display:flex;flex-direction:column;gap:8px}
-html[data-area=site] .ql h2{margin:16px 0 0;font-size:22px!important;line-height:1.4!important;font-weight:700;color:#1d2733}
-html[data-area=site] .ql h2:first-child{margin-top:0}
-html[data-area=site] .ql-buttons{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin-top:32px}
+html[data-area=site] .ql-contact a:hover{background:#faab18;color:#1d2733}
+/* two short sections */
+html[data-area=site] .ql-more{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+html[data-area=site] .ql-more>div{position:relative;display:flex;flex-direction:column;gap:8px;padding:20px 20px 20px;border-radius:16px;background:#f4fbfe;border:1px solid #e3edf2;border-inline-start:4px solid #049dc5}
+html[data-area=site] .ql h2{margin:0;font-size:19px!important;line-height:1.4!important;font-weight:700;color:#1d2733}
+html[data-area=site] .ql-more p{font-size:15px!important}
+/* social buttons */
+html[data-area=site] .ql-buttons{display:flex;flex-wrap:wrap;justify-content:center;gap:8px}
 html[data-area=site] .ql-buttons a{display:inline-flex;align-items:center;gap:8px;height:44px;padding:0 18px;border-radius:999px;border:1px solid #c3d6df;background:#fff;color:#1d2733;font-family:'IBM Plex Sans',system-ui,sans-serif;font-size:15px;font-weight:500;text-decoration:none;transition:background-color .15s ease,border-color .15s ease,color .15s ease}
 html[data-area=site] .ql-buttons a svg{color:#049dc5}
 html[data-area=site] .ql-buttons a:hover{background:#049dc5;border-color:#049dc5;color:#fff}
 html[data-area=site] .ql-buttons a:hover svg{color:#fff}
 html[data-area=site] .ql a:focus-visible{outline:2px solid #049dc5;outline-offset:2px}
-@media (max-width:600px){
-  html[data-area=site] .ql{padding:24px 12px calc(32px + env(safe-area-inset-bottom,0px))}
+@media (max-width:640px){
+  html[data-area=site] .ql{padding:16px 12px calc(32px + env(safe-area-inset-bottom,0px))}
   html[data-area=site] .ql::before{display:none}
-  html[data-area=site] .ql-card{padding:28px 20px 24px;border-radius:20px}
-  html[data-area=site] .ql-rule{margin:28px -20px}
-  html[data-area=site] .ql h1{font-size:26px!important}
-  html[data-area=site] .ql h2{font-size:19px!important}
-  html[data-area=site] .ql-about p,html[data-area=site] .ql-more p{font-size:15px!important}
+  html[data-area=site] .ql::after{display:none}
+  html[data-area=site] .ql-card{border-radius:20px}
+  html[data-area=site] .ql-hero{grid-template-columns:1fr;padding:24px 20px 0;gap:0}
+  html[data-area=site] .ql-q{width:240px;inset-inline-end:-50px;top:-30px}
+  html[data-area=site] .ql-path{inset-inline-start:0;width:100%;top:150px}
+  html[data-area=site] .ql-plane{top:150px;inset-inline-end:10%}
+  html[data-area=site] .ql-skylo{order:2;max-width:280px;margin-top:8px}
+  html[data-area=site] .ql-intro{align-items:center;text-align:center;padding:0}
+  html[data-area=site] .ql-logo{width:56px;height:56px}
+  html[data-area=site] .ql-slogan{font-size:32px!important}
+  html[data-area=site] .ql-spark{inset-inline-start:-24px;top:-16px;width:28px;height:28px}
+  html[data-area=site] .ql h1{font-size:21px!important;margin-top:16px}
+  html[data-area=site] .ql-body{padding:24px 20px;gap:24px}
+  html[data-area=site] .ql-about p{font-size:15px!important}
+  html[data-area=site] .ql-reach{gap:12px;padding:12px 16px}
+  html[data-area=site] .ql-skylo-2{width:110px}
+  html[data-area=site] .ql-contact{gap:8px}
+  html[data-area=site] .ql-contact a{width:46px;height:46px}
+  html[data-area=site] .ql-more{grid-template-columns:1fr}
   html[data-area=site] .ql-buttons a{height:40px;padding:0 14px;font-size:14px}
 }
