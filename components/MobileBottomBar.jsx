@@ -6,7 +6,7 @@ import { usePathname } from 'next/navigation';
 import { getStoredLang } from '../lib/i18n';
 import { waLink } from '../lib/whatsapp';
 
-const HIDE_ON = ['/admin', '/staff', '/login'];
+const HIDE_ON = ['/admin', '/staff', '/login', '/links'];
 
 const ICONS = { home: 'house', visa: 'id-card', pkg: 'luggage', flight: 'plane' };
 
