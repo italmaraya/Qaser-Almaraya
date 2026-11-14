@@ -55,7 +55,6 @@ export default function PackageDetailPage() {
     ? 'Add at least one adult to continue — children and infants cannot travel on their own.'
     : 'أضف بالغاً واحداً على الأقل لإكمال الحجز — لا يمكن حجز الأطفال والرضّع بدون بالغ.';
   const [toast, setToast] = useState('');
-  const [tripDate, setTripDate] = useState('');
   // Phone-only booking bar: shown while the price card's WhatsApp button is off screen.
   const ctaRef = useRef(null);
   const [showBar, setShowBar] = useState(false);
@@ -201,7 +200,7 @@ export default function PackageDetailPage() {
       selectedDate,
       fmtPrice: (n) => formatPrice(n, 'IQD', lang),
       lang,
-      startDate: tripDate,
+      startDate: selectedDate ? String(selectedDate.date || '') : '',
       pageUrl: window.location.href,
       quote: staffMode ? { customer: quote.customer.trim(), discount, discountLabel: quote.discountType === 'percent' && Number(quote.discount) > 0 ? Math.min(Number(quote.discount), 100) + '%' : '', validUntil: quote.validUntil, note: quote.note.trim() } : null,
     });
@@ -220,7 +219,7 @@ export default function PackageDetailPage() {
       hotel: h ? nm(h.nameAr, h.nameEn) + ((h.notesAr || h.notesEn) ? ' (' + nm(h.notesAr, h.notesEn) + ')' : '') : '',
       flight: f ? nm(f.nameAr, f.nameEn) : '',
       travellers: travellerSummary(en),
-      date: tripDate,
+      date: selectedDate ? String(selectedDate.date || '') : '',
       url: window.location.href,
     }, lang);
   };
@@ -401,16 +400,6 @@ export default function PackageDetailPage() {
                 </div>
               )}
 
-              <label style={{ display: 'flex', flexDirection: 'column', gap: 6, fontSize: 13, fontWeight: 500, color: 'var(--qs-body,#3d4650)' }}>
-                {lang === 'en' ? 'Travel date (optional — adds dates to the PDF)' : 'تاريخ السفر (اختياري — يضيف التواريخ إلى ملف PDF)'}
-                <input
-                  type="date"
-                  value={tripDate}
-                  min={new Date().toISOString().slice(0, 10)}
-                  onChange={(e) => setTripDate(e.target.value)}
-                  style={{ padding: '8px 12px', borderRadius: 'var(--tw-radius-sm,10px)', border: '1px solid var(--qs-line,#ececed)', fontFamily: 'inherit', fontSize: 14 }}
-                />
-              </label>
               <div style={{ display: 'flex', gap: 8 }}>
                 <button
                   type="button"
@@ -454,7 +443,7 @@ export default function PackageDetailPage() {
               })()}
               {(() => {
                 const iso = packageCountries(pkg)[0];
-                const d = tripDate || (selectedDate && String(selectedDate.date || '')) || nextDeparture(pkg);
+                const d = (selectedDate && String(selectedDate.date || '')) || nextDeparture(pkg);
                 const m = /^\d{4}-\d{2}/.test(d || '') ? Number(d.slice(5, 7)) - 1 : null;
                 return iso ? <GuideCompact iso={iso} lang={lang} month={m} /> : null;
               })()}
